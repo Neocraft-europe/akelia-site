@@ -70,4 +70,78 @@ import Layout from '../layouts/Layout.astro';
               <option value="">Sélectionnez un projet</option>
               <option value="Pompe à chaleur (PAC)">Pompe à chaleur (PAC)</option>
               <option value="Isolation thermique (murs, combles)">Isolation thermique</option>
-              <option value="Panneaux solaires photovoltaïques
+              <option value="Panneaux solaires photovoltaïques">Panneaux solaires photovoltaïques</option>
+              <option value="Rénovation globale">Rénovation énergétique globale</option>
+              <option value="Autre demande">Autre projet</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="message" class="block text-sm font-semibold text-slate-700">Détails de votre projet</label>
+            <textarea
+              name="message"
+              id="message"
+              rows="4"
+              class="mt-1 block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-emerald-600 focus:ring-emerald-600 focus:outline-none"
+              placeholder="Indiquez l'année de construction du logement, la surface, le mode de chauffage actuel..."
+            ></textarea>
+          </div>
+
+          <div id="form-feedback" class="hidden rounded-lg p-4 text-sm font-medium"></div>
+
+          <div>
+            <button
+              type="submit"
+              id="submit-btn"
+              class="w-full inline-flex justify-center items-center rounded-lg bg-emerald-600 px-6 py-3.5 text-base font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition"
+            >
+              Envoyer ma demande
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('quote-form');
+    const feedback = document.getElementById('form-feedback');
+    const submitBtn = document.getElementById('submit-btn');
+
+    if (form && feedback && submitBtn) {
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const initialBtnText = submitBtn.textContent;
+        submitBtn.setAttribute('disabled', 'true');
+        submitBtn.textContent = 'Envoi en cours...';
+        feedback.className = 'hidden';
+
+        const formData = new FormData(form as HTMLFormElement);
+
+        try {
+          const response = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            body: formData,
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            feedback.className = 'rounded-lg p-4 text-sm font-medium bg-emerald-50 text-emerald-800 border border-emerald-200';
+            feedback.textContent = 'Merci ! Votre demande a bien été envoyée. Nos experts reviendront vers vous très vite.';
+            (form as HTMLFormElement).reset();
+          } else {
+            feedback.className = 'rounded-lg p-4 text-sm font-medium bg-rose-50 text-rose-800 border border-rose-200';
+            feedback.textContent = result.message || "Une erreur est survenue lors de l'envoi du formulaire. Veuillez réessayer.";
+          }
+        } catch {
+          feedback.className = 'rounded-lg p-4 text-sm font-medium bg-rose-50 text-rose-800 border border-rose-200';
+          feedback.textContent = 'Impossible de joindre le serveur. Veuillez vérifier votre connexion et réessayer.';
+        } finally {
+          submitBtn.removeAttribute('disabled');
+          submitBtn.textContent = initialBtnText;
+        }
+      });
+    }
+  </script>
+</Layout>
