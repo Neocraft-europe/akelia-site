@@ -1,0 +1,96 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Demande de devis gratuit | Akelia Rénovation Énergétique"
+  description="Obtenez un devis gratuit et personnalisé pour vos travaux de rénovation énergétique : pompe à chaleur, isolation, panneaux solaires."
+>
+  <div class="bg-slate-50 py-12 md:py-20">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h1 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">Demandez votre devis gratuit</h1>
+        <p class="mt-4 text-lg text-slate-600">
+          Remplissez le formulaire ci-dessous. Nos experts vous recontactent sous 24 à 48 heures pour étudier votre projet et vos aides financières.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-10">
+        <form id="quote-form" class="space-y-6">
+          <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE" />
+          <input type="hidden" name="subject" value="Nouvelle demande de devis sur Akelia" />
+          <input type="hidden" name="from_name" value="Akelia Contact" />
+          <input type="checkbox" name="botcheck" class="hidden" style="display: none;" />
+
+          <div>
+            <label for="name" class="block text-sm font-semibold text-slate-700">Nom complet *</label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              required
+              class="mt-1 block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-emerald-600 focus:ring-emerald-600 focus:outline-none"
+              placeholder="Ex: Jean Dupont"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label for="email" class="block text-sm font-semibold text-slate-700">Adresse email *</label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                required
+                class="mt-1 block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-emerald-600 focus:ring-emerald-600 focus:outline-none"
+                placeholder="jean.dupont@example.com"
+              />
+            </div>
+            <div>
+              <label for="phone" class="block text-sm font-semibold text-slate-700">Numéro de téléphone *</label>
+              <input
+                type="tel"
+                name="phone"
+                id="phone"
+                required
+                class="mt-1 block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-emerald-600 focus:ring-emerald-600 focus:outline-none"
+                placeholder="06 12 34 56 78"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="service" class="block text-sm font-semibold text-slate-700">Type de travaux envisagés *</label>
+            <select
+              id="service"
+              name="service"
+              required
+              class="mt-1 block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 focus:border-emerald-600 focus:ring-emerald-600 focus:outline-none"
+            >
+              <option value="">Sélectionnez un projet</option>
+              <option value="Pompe à chaleur (PAC)">Pompe à chaleur (PAC)</option>
+              <option value="Isolation thermique (murs, combles)">Isolation thermique</option>
+              <option value="Panneaux solaires photovoltaïques">Panneaux solaires photovoltaïques</option>
+              <option value="Rénovation globale">Rénovation énergétique globale</option>
+              <option value="Autre demande">Autre projet</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="message" class="block text-sm font-semibold text-slate-700">Détails de votre projet</label>
+            <textarea
+              name="message"
+              id="message"
+              rows="4"
+              class="mt-1 block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-emerald-600 focus:ring-emerald-600 focus:outline-none"
+              placeholder="Indiquez l'année de construction du logement, la surface, le mode de chauffage actuel..."
+            ></textarea>
+          </div>
+
+          <div id="form-feedback" class="hidden rounded-lg p-4 text-sm font-medium"></div>
+
+          <div>
+            <button
+              type="submit"
+              id="submit-btn"
+              class="w-full inline-flex justify-center items-center rounded-lg bg-emerald-600 px-6 py-3.5 text-base font-medium text-white shadow-sm hover:
