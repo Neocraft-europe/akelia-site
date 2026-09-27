@@ -21,4 +21,59 @@ const {
   title,
   description,
   image = '/images/og-default.jpg',
-  canonicalURL = new URL(Astro.url.pathname, Astro.site
+  canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://akelia.fr').href,
+  type = 'website'
+} = Astro.props;
+
+// Construction de l'URL absolue pour l'image Open Graph (exigé par la majorité des crawlers)
+const resolvedImageURL = new URL(image, Astro.site || 'https://akelia.fr').href;
+---
+
+<!doctype html>
+<html lang="fr" class="scroll-smooth antialiased">
+  <head>
+    {/* Encodage et compatibilité navigateur */}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    {/* Balises SEO Primaires */}
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    {/* Directives d'indexation robots */}
+    <meta name="robots" content="index, follow" />
+
+    {/* Protocole Open Graph (Facebook, LinkedIn, Discord, etc.) */}
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="Akelia" />
+    <meta property="og:image" content={resolvedImageURL} />
+
+    {/* Cartes Twitter / X */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={resolvedImageURL} />
+
+    {/* Optimisations de performance : DNS Prefetch / Preconnect si nécessaire */}
+    <link rel="preconnect" href="https://api.web3forms.com" crossorigin />
+  </head>
+  <body class="flex min-h-screen flex-col bg-white text-slate-900">
+    {/* En-tête global du site */}
+    <Header />
+
+    {/* Contenu principal de chaque page avec rôle sémantique explicite */}
+    <main id="main-content" class="flex-grow">
+      <slot />
+    </main>
+
+    {/* Pied de page global du site */}
+    <Footer />
+  </body>
+</html>
