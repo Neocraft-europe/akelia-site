@@ -1,135 +1,388 @@
 ---
-// =========================================================================
+// ==========================================================================================
 // COMPOSANT HEADER (src/components/Header.astro)
-// Objectif : Navigation Mobile-First sémantique avec support de sous-menu déroulant
-// =========================================================================
+// ==========================================================================================
+// Conception 100 % Mobile-First avec Tailwind CSS (sans CSS custom).
+// Inspiré de l'ancien modèle Webflow Akelia :
+// - Double barre sur desktop (Barre utilitaire supérieure + Méga-menu inférieur avec images)
+// - Tiroir vertical accordéon sur mobile avec bascule ultra-légère en JavaScript natif
+// - Support de l'accessibilité sémantique (ARIA, navigation clavier, focus states)
+// ==========================================================================================
 
-// Liste des services pour le sous-menu déroulant
-const servicesList = [
-  { name: 'Systèmes de Chauffage', href: '/services#chauffage' },
-  { name: 'Chauffe-eau Écologique', href: '/services#chauffe-eau' },
-  { name: 'Production d’Électricité', href: '/services#electricite' },
-  { name: 'Rénovation Énergétique', href: '/services#renovation' },
-  { name: 'Voitures Électriques (Bornes)', href: '/services#bornes' },
+// Liste des grandes villes desservies par Akelia
+const citiesList = [
+  { name: 'Paris', href: '/ville/paris' },
+  { name: 'Strasbourg', href: '/ville/strasbourg' },
+  { name: 'Nantes', href: '/ville/nantes' },
+  { name: 'Nice', href: '/ville/nice' },
+  { name: 'Lille', href: '/ville/lille' },
+  { name: 'Bordeaux', href: '/ville/bordeaux' },
+  { name: 'Lyon', href: '/ville/lyon' },
+  { name: 'Montpellier', href: '/ville/montpellier' },
+  { name: 'Marseille', href: '/ville/marseille' },
+  { name: 'Toulouse', href: '/ville/toulouse' },
 ];
 ---
 
-<header class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-sm">
-  <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+{/* ========================================================================================
+    CONTENEUR PRINCIPAL DU HEADER
+    - "sticky top-0 z-50" : Reste visible lors du scroll tout en restant au-dessus des sections.
+    - "bg-white/95 backdrop-blur-md" : Effet de flou moderne tout en assurant un contraste net.
+    - "border-b border-slate-200" : Séparation discrète avec le contenu principal.
+========================================================================================= */}
+<header class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-sm">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     
-    {/* Logo de la marque */}
-    <a href="/" class="text-2xl font-black tracking-tight text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-      AKELIA
-    </a>
-
-    {/* Bouton Toggle Menu Mobile (Accessible via aria-expanded) */}
-    <button
-      id="mobile-menu-button"
-      type="button"
-      aria-expanded="false"
-      aria-controls="mobile-nav"
-      aria-label="Ouvrir le menu de navigation"
-      class="inline-flex items-center justify-center p-2 text-slate-700 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 md:hidden"
-    >
-      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-      </svg>
-    </button>
-
-    {/* Navigation Desktop */}
-    <nav class="hidden md:flex md:items-center md:gap-8">
-      <a href="/" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">
-        Accueil
+    {/* ====================================================================================
+        LIGNE 1 : LOGO + ACTIONS SUPÉRIEURES (Version Mobile & Écrans Larges)
+        - Sur mobile : Logo à gauche, bouton devis direct et burger à droite.
+        - Sur desktop (lg:) : Affiche les liens de second niveau (Aides, Blog, Qui sommes-nous)
+          et le bouton CTA principal mis en avant.
+    ===================================================================================== */}
+    <div class="flex items-center justify-between py-3.5 lg:border-b lg:border-slate-100">
+      
+      {/* IDENTITÉ DE MARQUE (LOGO) */}
+      <a
+        href="/"
+        aria-label="Akelia - Retour à l'accueil"
+        class="inline-flex items-center gap-1 font-black text-2xl tracking-tight text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-lg py-1 px-2 -ml-2 transition-transform hover:scale-105"
+      >
+        <span>Akelia</span>
       </a>
 
-      {/* Menu déroulant "Services" */}
+      {/* LIENS HAUTS DE NAVIGATION (Desktop uniquement : lg:flex) */}
+      <div class="hidden lg:flex lg:items-center lg:gap-8">
+        <a
+          href="/services"
+          class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors"
+        >
+          Tous nos services
+        </a>
+        <a
+          href="/aides-renovation"
+          class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors"
+        >
+          Aides rénovation
+        </a>
+        <a
+          href="/blog"
+          class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors"
+        >
+          Blog et conseils
+        </a>
+        <a
+          href="/qui-sommes-nous"
+          class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors"
+        >
+          Qui sommes nous ?
+        </a>
+      </div>
+
+      {/* ACTIONS RAPIDES (Bouton CTA Devis + Bouton Hamburger pour mobile) */}
+      <div class="flex items-center gap-3">
+        {/* Bouton Devis (toujours visible pour maximiser la conversion commerciale) */}
+        <a
+          href="/devis"
+          class="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-3.5 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors"
+        >
+          Obtenir un devis
+        </a>
+
+        {/* Bouton Toggle Mobile : visible sur mobile/tablette (< lg), masqué sur grand écran (lg:hidden) */}
+        <button
+          id="mobile-nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="mobile-nav-drawer"
+          aria-label="Ouvrir le menu de navigation"
+          class="inline-flex items-center justify-center rounded-lg p-2 text-slate-700 hover:bg-slate-100 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 lg:hidden"
+        >
+          {/* Icône SVG 3 barres (burger) transformable */}
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    {/* ====================================================================================
+        LIGNE 2 : MÉGA-MENU DES SOLUTIONS (Desktop uniquement : caché sur mobile, actif dès lg:)
+        - Conçu pour remplacer le menu bas Webflow (Isolation, Chauffage, Autonomie, Rénovation)
+        - Utilise les groupes hover Tailwind ("group", "group-hover:block", etc.)
+    ===================================================================================== */}
+    <nav aria-label="Menu principal des solutions" class="hidden lg:flex lg:items-center lg:gap-6 py-2.5">
+      
+      {/* ----------------------------------------------------------------------------------
+          1. SOUS-MENU : ISOLATION & MENUISERIES
+      ---------------------------------------------------------------------------------- */}
       <div class="relative group">
         <button
           type="button"
-          class="inline-flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors"
-          aria-haspopup="true"
+          aria-expanded="false"
+          class="inline-flex items-center gap-1.5 py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none"
         >
-          <span>Services</span>
-          <svg class="h-4 w-4 transition-transform group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+          <span>Isolation et menuiseries</span>
+          <svg class="h-4 w-4 text-slate-400 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
 
-        {/* Panneau déroulant desktop */}
-        <div class="invisible absolute left-0 top-full pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-          <div class="w-64 rounded-md border border-slate-200 bg-white py-2 shadow-lg">
-            <a href="/services" class="block px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-emerald-600">
-              Voir tous les services
-            </a>
-            <div class="border-t border-slate-100 my-1"></div>
-            {servicesList.map((service) => (
+        {/* Panneau déroulant Méga-Menu avec images */}
+        <div class="invisible absolute left-0 top-full z-40 w-[720px] origin-top-left rounded-2xl border border-slate-200 bg-white p-6 shadow-xl opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+          <div class="grid grid-cols-3 gap-6">
+            
+            {/* Colonne 1 : Isolation */}
+            <div class="space-y-3">
+              <div class="overflow-hidden rounded-xl bg-slate-100 h-28 border border-slate-100">
+                <img
+                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696647b4bef277899edacc11_Isolation.png"
+                  alt="Isolation thermique des combles et murs"
+                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Isolation</h3>
+              <ul class="space-y-2 text-xs">
+                <li><a href="/solutions/isolation-thermique-toiture-comble" class="text-slate-600 hover:text-emerald-600 block transition-colors">Isolation toît / combles</a></li>
+                <li><a href="/solutions/isolation-thermique-par-linterieur-iti" class="text-slate-600 hover:text-emerald-600 block transition-colors">Isolation par l'intérieur (ITI)</a></li>
+                <li><a href="/solutions/isolation-thermique-par-l-exterieur-ite" class="text-slate-600 hover:text-emerald-600 block transition-colors">Isolation par l'extérieur (ITE)</a></li>
+              </ul>
+            </div>
+
+            {/* Colonne 2 : Menuiseries */}
+            <div class="space-y-3">
+              <div class="overflow-hidden rounded-xl bg-slate-100 h-28 border border-slate-100">
+                <img
+                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696647b4304186491ebad18d_menuiserie.png"
+                  alt="Menuiseries fenêtres et volets double vitrage"
+                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Menuiseries</h3>
+              <ul class="space-y-2 text-xs">
+                <li><a href="/solutions/menuiseries-fenetres-volets" class="text-slate-600 hover:text-emerald-600 block transition-colors">Fenêtres & volets performants</a></li>
+              </ul>
+            </div>
+
+            {/* Colonne 3 : Ventilation */}
+            <div class="space-y-3">
+              <div class="overflow-hidden rounded-xl bg-slate-100 h-28 border border-slate-100">
+                <img
+                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696647b4530ba6197e9f2209_vmc-double_flux.png"
+                  alt="Centrale VMC double flux connectée"
+                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Ventilation</h3>
+              <ul class="space-y-2 text-xs">
+                <li><a href="/solutions/ventilation-vmc-simple-et-double-flux" class="text-slate-600 hover:text-emerald-600 block transition-colors">VMC simple & double flux</a></li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {/* ----------------------------------------------------------------------------------
+          2. SOUS-MENU : CHAUFFAGE, CLIMATISATION & EAU CHAUDE
+      ---------------------------------------------------------------------------------- */}
+      <div class="relative group">
+        <button
+          type="button"
+          aria-expanded="false"
+          class="inline-flex items-center gap-1.5 py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none"
+        >
+          <span>Chauffage & Eau chaude</span>
+          <svg class="h-4 w-4 text-slate-400 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {/* Panneau déroulant Méga-Menu 4 colonnes */}
+        <div class="invisible absolute -left-20 top-full z-40 w-[890px] origin-top-left rounded-2xl border border-slate-200 bg-white p-6 shadow-xl opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+          <div class="grid grid-cols-4 gap-5">
+            
+            {/* Colonne 1 : PAC */}
+            <div class="space-y-3">
+              <div class="overflow-hidden rounded-xl bg-slate-100 h-24 border border-slate-100">
+                <img
+                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696653dc3c79cd8b88380ce3_Installer%20une%20pompe%20a%CC%80%20chaleur%20en%20appartement%20est-ce%20possible%20_%20Guide%20Complet%20copie.jpg"
+                  alt="Pompe à chaleur moderne"
+                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Pompes à chaleur</h3>
+              <ul class="space-y-2 text-xs">
+                <li><a href="/solutions/climatisation-reversible-pac-air-air" class="text-slate-600 hover:text-emerald-600 block transition-colors">Climatisation réversible</a></li>
+                <li><a href="/solutions/pompe-a-chaleur-air-eau" class="text-slate-600 hover:text-emerald-600 block transition-colors">PAC Air / Eau</a></li>
+                <li><a href="/solutions/pac-geothermique" class="text-slate-600 hover:text-emerald-600 block transition-colors">PAC Géothermique</a></li>
+              </ul>
+            </div>
+
+            {/* Colonne 2 : Chaudières */}
+            <div class="space-y-3">
+              <div class="overflow-hidden rounded-xl bg-slate-100 h-24 border border-slate-100">
+                <img
+                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696653df27d0e303b839cff3_Gemini_Generated_Image_vuo7jjvuo7jjvuo7%20(1).png"
+                  alt="Chaudière à condensation"
+                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Chaudières</h3>
+              <ul class="space-y-2 text-xs">
+                <li><a href="/solutions/chaudiere-gaz-condensation" class="text-slate-600 hover:text-emerald-600 block transition-colors">Chaudière condensation gaz</a></li>
+                <li><a href="/solutions/chaudiere-biomasse-bois-ou-pellets" class="text-slate-600 hover:text-emerald-600 block transition-colors">Chaudière biomasse / granulés</a></li>
+              </ul>
+            </div>
+
+            {/* Colonne 3 : Chauffage d'appoint */}
+            <div class="space-y-3">
+              <div class="overflow-hidden rounded-xl bg-slate-100 h-24 border border-slate-100">
+                <img
+                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696653dd0fabe5b3bf0bfadd_Gemini_Generated_Image_eklp7eklp7eklp7e%20copie%202.png"
+                  alt="Poêle à granulés ou à bois contemporain"
+                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Appoint</h3>
+              <ul class="space-y-2 text-xs">
+                <li><a href="/services#poele" class="text-slate-600 hover:text-emerald-600 block transition-colors">Poêle à bois / granulés</a></li>
+                <li><a href="/services#radiateurs" class="text-slate-600 hover:text-emerald-600 block transition-colors">Radiateurs inertie basse conso</a></li>
+              </ul>
+            </div>
+
+            {/* Colonne 4 : ECS */}
+            <div class="space-y-3">
+              <div class="overflow-hidden rounded-xl bg-slate-100 h-24 border border-slate-100">
+                <img
+                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696653ddf789ac81a037ead8_Gemini_Generated_Image_4luthr4luthr4lut%20(1).png"
+                  alt="Chauffe-eau thermodynamique"
+                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Eau Chaude (ECS)</h3>
+              <ul class="space-y-2 text-xs">
+                <li><a href="/services#chauffe-eau" class="text-slate-600 hover:text-emerald-600 block transition-colors">Chauffe-eau électrique</a></li>
+                <li><a href="/services#chauffe-eau" class="text-slate-600 hover:text-emerald-600 block transition-colors">Chauffe-eau thermodynamique</a></li>
+                <li><a href="/services#chauffe-eau" class="text-slate-600 hover:text-emerald-600 block transition-colors">Chauffe-eau solaire</a></li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {/* ----------------------------------------------------------------------------------
+          3. SOUS-MENU : AUTONOMIE ÉNERGÉTIQUE
+      ---------------------------------------------------------------------------------- */}
+      <div class="relative group">
+        <button
+          type="button"
+          aria-expanded="false"
+          class="inline-flex items-center gap-1.5 py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none"
+        >
+          <span>Autonomie énergétique</span>
+          <svg class="h-4 w-4 text-slate-400 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {/* Panneau déroulant Méga-Menu Autonomie */}
+        <div class="invisible absolute -left-10 top-full z-40 w-[720px] origin-top-left rounded-2xl border border-slate-200 bg-white p-6 shadow-xl opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+          <div class="grid grid-cols-3 gap-6">
+            
+            {/* Colonne 1 : Panneaux Solaires */}
+            <div class="space-y-3">
+              <div class="overflow-hidden rounded-xl bg-slate-100 h-28 border border-slate-100">
+                <img
+                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/6966662356720f9769775234_oanneaux_photovoltaiques.png"
+                  alt="Installation de panneaux solaires photovoltaïques"
+                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Électricité solaire</h3>
+              <ul class="space-y-2 text-xs">
+                <li><a href="/solutions/panneaux-photovoltaiques" class="text-slate-600 hover:text-emerald-600 block transition-colors">Panneaux photovoltaïques</a></li>
+              </ul>
+            </div>
+
+            {/* Colonne 2 : Borne de recharge */}
+            <div class="space-y-3">
+              <div class="overflow-hidden rounded-xl bg-slate-100 h-28 border border-slate-100">
+                <img
+                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696666203c04011decfd2c99_borne%20de%20recharge.png"
+                  alt="Borne de recharge véhicule électrique"
+                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Mobilité verte</h3>
+              <ul class="space-y-2 text-xs">
+                <li><a href="/services#bornes" class="text-slate-600 hover:text-emerald-600 block transition-colors">Borne de recharge à domicile</a></li>
+              </ul>
+            </div>
+
+            {/* Colonne 3 : Gestion & Stockage */}
+            <div class="space-y-3">
+              <div class="overflow-hidden rounded-xl bg-slate-100 h-28 border border-slate-100">
+                <img
+                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696666201f01402171c3d9df_batterie_domestique.png"
+                  alt="Batterie de stockage domestique connectée"
+                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Gestion d'énergie</h3>
+              <ul class="space-y-2 text-xs">
+                <li><a href="/services#electricite" class="text-slate-600 hover:text-emerald-600 block transition-colors">Batteries de stockage</a></li>
+                <li><a href="/services#electricite" class="text-slate-600 hover:text-emerald-600 block transition-colors">Thermostats et domotique</a></li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {/* ----------------------------------------------------------------------------------
+          4. SOUS-MENU : IMPLANTATIONS / VILLES
+      ---------------------------------------------------------------------------------- */}
+      <div class="relative group">
+        <button
+          type="button"
+          aria-expanded="false"
+          class="inline-flex items-center gap-1.5 py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none"
+        >
+          <span>Nos villes</span>
+          <svg class="h-4 w-4 text-slate-400 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {/* Panneau déroulant : grille de 2 colonnes avec les villes */}
+        <div class="invisible absolute -left-4 top-full z-40 w-64 origin-top-left rounded-2xl border border-slate-200 bg-white p-4 shadow-xl opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+          <p class="px-2 pb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Intervention locale</p>
+          <div class="grid grid-cols-2 gap-1 text-sm">
+            {citiesList.map((city) => (
               <a
-                href={service.href}
-                class="block px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700"
+                href={city.href}
+                class="rounded-md px-2 py-1.5 text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
               >
-                {service.name}
+                {city.name}
               </a>
             ))}
           </div>
         </div>
       </div>
 
-      <a href="/aides-renovation" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">
-        Aides Rénovation
-      </a>
-
-      <a href="/blog" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">
-        Blog
-      </a>
-
-      <a href="/qui-sommes-nous" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">
-        Qui sommes-nous
-      </a>
-
+      {/* ----------------------------------------------------------------------------------
+          5. LIENS DIRECTS STRATÉGIQUES (Rénovation globale & Maison autonome)
+      ---------------------------------------------------------------------------------- */}
       <a
-        href="/devis"
-        class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-      >
-        Demander un devis
-      </a>
-    </nav>
-  </div>
-
-  {/* Tiroir de Navigation Mobile (Masqué par défaut) */}
-  <div id="mobile-nav" class="hidden border-t border-slate-200 bg-white px-4 py-6 md:hidden">
-    <nav class="flex flex-col gap-4">
-      <a href="/" class="text-base font-medium text-slate-700 hover:text-emerald-600">Accueil</a>
-      <a href="/services" class="text-base font-medium text-slate-700 hover:text-emerald-600 font-bold">Services :</a>
-      <div class="pl-4 flex flex-col gap-2">
-        {servicesList.map((service) => (
-          <a href={service.href} class="text-sm text-slate-600 hover:text-emerald-600">
-            • {service.name}
-          </a>
-        ))}
-      </div>
-      <a href="/aides-renovation" class="text-base font-medium text-slate-700 hover:text-emerald-600">Aides Rénovation</a>
-      <a href="/blog" class="text-base font-medium text-slate-700 hover:text-emerald-600">Blog</a>
-      <a href="/qui-sommes-nous" class="text-base font-medium text-slate-700 hover:text-emerald-600">Qui sommes-nous</a>
-      <a
-        href="/devis"
-        class="mt-2 text-center rounded-md bg-emerald-600 px-4 py-3 text-base font-medium text-white shadow hover:bg-emerald-700"
-      >
-        Demander un devis
-      </a>
-    </nav>
-  </div>
-</header>
-
-{/* Script client ultra-léger pour basculer le menu mobile sans framework externe */}
-<script>
-  const button = document.getElementById('mobile-menu-button');
-  const nav = document.getElementById('mobile-nav');
-
-  if (button && nav) {
-    button.addEventListener('click', () => {
-      const isExpanded = button.getAttribute('aria-expanded') === 'true';
-      button.setAttribute('aria-expanded', String(!isExpanded));
-      nav.classList.toggle('hidden');
-    });
-  }
-</script>
+        href="/solutions/renovation-energetique-globale
