@@ -1,0 +1,102 @@
+---
+// =========================================================================
+// COMPOSANT MÉTHODE : LES DEUX FAÇONS DE TRAVAILLER
+// (src/components/MethodeFacons.astro)
+// -------------------------------------------------------------------------
+// Bloc 2 de la section « Méthode » de l'accueil (appelé par Methode.astro).
+// Fond blanc (le bleu pâle a été retiré à l'étape 23 : autour d'un bloc
+// blanc et d'un bloc bleu nuit, il affaiblissait l'opposition). Traits
+// noirs en haut et en bas de la section. Le bloc blanc intérieur reste
+// distinct du fond grâce au cadre noir de 2px de l'ensemble.
+//
+// VERSION STATIQUE (étape 22, remplace l'écran partagé de l'étape 20) :
+// tout est visible en permanence, aucune interaction cachée.
+// - Deux blocs qui SE TOUCHENT et forment un seul ensemble (un cadre noir,
+//   coins arrondis à l'extérieur seulement) :
+//     bloc 1 : fond blanc, texte noir ;
+//     bloc 2 : fond bleu nuit (marque-900), texte blanc.
+//   L'opposition se fait UNIQUEMENT par les fonds. Même marge, mêmes
+//   tailles de texte, même taille de bouton : aucun n'est recommandé.
+// - Téléphone : empilés. À partir de 768px (md:) : côte à côte, à hauteur
+//   égale (50/50).
+// - Chaque bloc : citation (titre entre guillemets, l'élément le plus
+//   visible), texte, puis un BOUTON adapté à son fond, poussé en bas du
+//   bloc (flex + mt-auto) : à partir de 768px, les deux boutons sont
+//   toujours alignés, même si un texte change de longueur.
+//
+// ANIMATION D'ENTRÉE (rejouée à chaque retour à l'écran, voir
+// Methode.astro) : les deux blocs apparaissent en fondu, à 80ms d'écart.
+//
+// Pour modifier un bloc : éditer le tableau `facons` ci-dessous. Les
+// guillemets « » font partie du titre (voulus) ; les espaces qui les
+// suivent ou les précèdent, et celle avant « : », sont insécables
+// ( ) pour ne jamais laisser un signe seul en début ou fin de ligne.
+// =========================================================================
+
+const facons = [
+  {
+    titre: '« Je veux rénover, mais je ne sais pas par où commencer »',
+    texte: "Un architecte ou un spécialiste du collectif prend tout en charge : l'audit, l'ordre des travaux, la coordination des artisans, le suivi du chantier. Un seul interlocuteur, du début à la fin.",
+    bouton: 'Demander un accompagnement',
+    lien: '/devis',
+    // Bloc clair : fond blanc, texte noir.
+    classesBloc: 'bg-fond text-texte',
+    // Bouton bleu nuit, texte blanc (13,18:1) ; contour de focus bleu nuit
+    // décalé de 2px, sur le fond blanc.
+    classesBouton: 'bg-marque-900 text-texte-inverse hover:shadow-elevee focus-visible:outline-marque-900',
+  },
+  {
+    titre: '« Je sais ce que je veux, il me faut le bon artisan »',
+    // « En direct », comme dans le hero : Akelia n'est pas une plateforme
+    // de mise en relation.
+    texte: "Vous avez déjà votre idée\u00a0: isoler les combles, changer les fenêtres, remplacer la chaudière. Vous travaillez en direct avec l'artisan Akelia de votre secteur, sans intermédiaire ni centre d'appel. Il vient chez vous, il chiffre, il réalise.",
+    bouton: 'Voir nos solutions',
+    lien: '/services',
+    // Bloc sombre : fond bleu nuit, texte blanc.
+    classesBloc: 'bg-marque-900 text-texte-inverse',
+    // Bouton orange, texte noir (10,82:1) : ressort nettement sur le bleu
+    // nuit (6,79:1). Contour de focus blanc, sur le fond bleu nuit.
+    classesBouton: 'bg-action-500 text-texte hover:bg-action-600 focus-visible:outline-texte-inverse',
+  },
+];
+---
+
+<section aria-labelledby="facons-titre" class="border-y-2 border-bordure bg-fond">
+  <div class="mx-auto max-w-site px-gouttiere py-bloc md:py-section">
+
+    <h2 id="facons-titre" class="text-h2 text-texte">Vous pilotez, ou on pilote&nbsp;?</h2>
+
+    {/* L'ENSEMBLE : un seul cadre noir de 2px, coins arrondis à l'extérieur
+        (overflow-hidden) ; les deux blocs se touchent.
+        - Liste <ul> : deux options équivalentes, sans ordre de préférence.
+        - md:grid-cols-2 : côte à côte, même largeur, même hauteur.
+        data-apparition="facons" : animation d'entrée, voir Methode.astro. */}
+    <ul data-apparition="facons" class="mt-bloc grid overflow-hidden rounded-carte border-2 border-bordure md:grid-cols-2">
+      {facons.map((facon, index) => (
+        <li class={`methode-apparition flex flex-col px-6 py-8 md:p-7 lg:p-10 ${facon.classesBloc}`} style={`--rang: ${index}`}>
+          {/* CITATION : l'élément le plus visible (gras, 1.5rem, 1.875rem à
+              partir de 992px), barre orange de 6px à gauche. Pas
+              d'italique (moins lisible pour un public senior). */}
+          <h3 class="border-l-[6px] border-action-500 pl-4 text-h3 font-bold lg:text-[1.875rem] lg:leading-tight">{facon.titre}</h3>
+          {/* mb-6 : écart minimum de 24px entre le texte et le bouton. */}
+          <p class="mt-4 mb-6 text-corps">{facon.texte}</p>
+          {/* BOUTON : 48px de haut (44px minimum), texte 1.125rem gras ;
+              pleine largeur sur petit téléphone, largeur du texte au-delà
+              (sm:self-start). ALIGNEMENT (étape 24) : le bloc est une
+              colonne flex et le bouton a mt-auto. Il est donc poussé en bas
+              du bloc, et comme les deux blocs ont la même hauteur (grille),
+              les deux boutons sont toujours sur la même ligne, quelle que
+              soit la longueur des textes. md:px-4 et md:p-7 sur le bloc :
+              « Demander un accompagnement » tient sur une ligne dès 768px,
+              pour que les deux boutons aient aussi la même hauteur. */}
+          <a
+            href={facon.lien}
+            class={`mt-auto flex min-h-12 w-full items-center justify-center gap-2 rounded-bouton px-5 py-2 text-center text-corps leading-snug font-semibold shadow-legere focus-visible:outline-4 focus-visible:outline-offset-2 sm:w-auto sm:self-start md:px-4 lg:px-5 ${facon.classesBouton}`}
+          >
+            {facon.bouton} <span aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

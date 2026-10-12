@@ -1,0 +1,193 @@
+---
+// =========================================================================
+// COMPOSANT : QUESTIONS DU SIMULATEUR (src/components/SimulateurQuestions.astro)
+// -------------------------------------------------------------------------
+// Le bloc du simulateur : barre de progression, puis TROIS PANNEAUX qui se
+// remplacent dans le même bloc :
+//   1. les 3 questions (une seule visible à la fois, boutons Retour/Suivant) ;
+//   2. le résultat (mention, bouton « Obtenir vos aides réelles », puis la
+//      liste des aides) ;
+//   3. le formulaire de contact (SimulateurEstimation.astro), avec un lien
+//      « Revenir à mes résultats ».
+// Appelé par SimulateurAides.astro.
+// Le fonctionnement est dans src/scripts/simulateur-etapes.ts.
+//
+// HAUTEUR : le bloc s'ajuste au contenu AFFICHÉ (pas de hauteur fixe).
+// - Les panneaux et les questions inactifs sont retirés de la mise en page
+//   (display: none) : ils ne prennent aucune place.
+// - Quand le contenu change (question suivante, résultat, formulaire,
+//   erreur, ligne dépliée), la hauteur du bloc glisse en douceur de
+//   l'ancienne à la nouvelle valeur (0,3 s ; script simulateur-etapes.ts).
+// - Pas de zone réservée pour les erreurs : un message vide ne prend pas de
+//   place. Les boutons inutiles (question 1) sont retirés.
+//
+// TRANSITION : la question ou le panneau qui arrive apparaît en fondu avec
+// un léger glissement (0,3 s, règle CSS @starting-style, classes
+// « starting: »). Tout est supprimé si « réduire les animations » est
+// activé (motion-reduce:transition-none).
+// =========================================================================
+
+import type { Statut, Travaux } from '../data/aides';
+import SimulateurEstimation from './SimulateurEstimation.astro';
+
+// Réponses proposées. Les « valeur » doivent correspondre aux types de
+// src/data/aides.ts (ne pas les modifier) ; les « libelle » sont libres.
+const optionsStatut: { valeur: Statut; libelle: string }[] = [
+  { valeur: 'proprietaire-occupant', libelle: 'Propriétaire occupant' },
+  { valeur: 'proprietaire-bailleur', libelle: 'Propriétaire bailleur' },
+  { valeur: 'locataire', libelle: 'Locataire' },
+];
+
+const optionsTravaux: { valeur: Travaux; libelle: string }[] = [
+  { valeur: 'isolation', libelle: 'Isolation' },
+  { valeur: 'fenetres', libelle: 'Fenêtres et volets' },
+  { valeur: 'chauffage', libelle: 'Chauffage' },
+  { valeur: 'ventilation', libelle: 'Ventilation' },
+  { valeur: 'photovoltaique', libelle: 'Panneaux photovoltaïques' },
+  { valeur: 'ne-sait-pas', libelle: 'Je ne sais pas encore' },
+];
+
+// Une question : affichée seulement si elle porte l'attribut data-actif
+// (ajouté par le script), sinon retirée de la mise en page. À l'apparition :
+// fondu et léger glissement.
+const classesEtape =
+  'min-w-0 hidden data-actif:block transition-[opacity,translate] duration-300 ease-out starting:translate-y-2 starting:opacity-0 motion-reduce:transition-none';
+// Titre de la question : reçoit le focus à chaque changement de question.
+const classesTitre = 'block text-h3 text-texte focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-marque-900';
+// Grande case de choix (bouton radio ou case à cocher), entièrement
+// cliquable. Cochée : cadre bleu nuit et fond bleu pâle.
+const classesChoix =
+  'flex min-h-14 cursor-pointer items-center gap-3 rounded-carte border-2 border-bordure-douce bg-fond px-4 text-corps text-texte hover:border-marque-900 has-checked:border-marque-900 has-checked:bg-secondaire-50 has-checked:font-semibold has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-marque-900';
+const classesPastille = 'size-6 shrink-0 accent-marque-900';
+// Phrase d'aide sous le titre.
+const classesAide = 'mt-1 text-base text-neutre-700';
+// Zone d'erreur : remplie par le script ; vide, elle ne prend aucune place
+// (empty:mt-0). role="alert" : le message est annoncé.
+const classesErreur = 'mt-2 text-corps font-semibold text-alerte-700 empty:mt-0';
+// Un panneau (questions, résultat ou contact) : seul celui qui porte
+// data-actif est affiché, les autres sont retirés de la mise en page.
+const classesPanneau =
+  'min-w-0 hidden data-actif:block transition-[opacity,translate] duration-300 ease-out starting:translate-y-2 starting:opacity-0 motion-reduce:transition-none';
+// Boutons du bas : affichés seulement quand ils servent (attribut
+// data-visible ajouté par le script), sinon retirés de la mise en page.
+const classesBouton = 'hidden min-h-14 w-full items-center justify-center rounded-bouton px-6 text-h4 font-semibold data-visible:flex focus-visible:outline-4 focus-visible:outline-offset-2 sm:w-auto';
+---
+
+{/* BLOC DU SIMULATEUR : masqué sans JavaScript (le script retire hidden). */}
+{/* overflow-hidden + transition-[height] : la hauteur du bloc glisse en
+    douceur quand le contenu change (le script fixe l'ancienne puis la
+    nouvelle hauteur, puis rend la main à la hauteur automatique). */}
+<div data-simulateur-bloc hidden class="scroll-mt-24 overflow-hidden rounded-carte border-2 border-bordure bg-fond shadow-carte transition-[height] duration-300 ease-out motion-reduce:transition-none xl:scroll-mt-36">
+<div data-simulateur-contenu class="p-5 md:p-8">
+
+  {/* -----------------------------------------------------------------------
+      BARRE DE PROGRESSION : texte « Question 1 sur 3 » + barre de 12px de
+      haut, cerclée de bleu nuit, qui se remplit en orange.
+  ------------------------------------------------------------------------ */}
+  <div>
+    <p id="simulateur-progression" data-progression-texte class="text-corps font-semibold text-texte">Question 1 sur 3</p>
+    <div
+      data-progression
+      role="progressbar"
+      aria-labelledby="simulateur-progression"
+      aria-valuemin="0"
+      aria-valuemax="3"
+      aria-valuenow="1"
+      class="mt-2 h-3 overflow-hidden rounded-pilule border-2 border-marque-900 bg-neutre-50"
+    >
+      <div data-progression-barre class="h-full w-1/3 bg-action-500 transition-[width] duration-300 ease-out motion-reduce:transition-none"></div>
+    </div>
+  </div>
+
+  {/* -----------------------------------------------------------------------
+      LES 3 QUESTIONS (formulaire jamais envoyé : pas d'attribut action ;
+      novalidate : erreurs affichées en toutes lettres par le script).
+  ------------------------------------------------------------------------ */}
+  <div class="mt-6">
+
+  {/* PANNEAU 1 : LES 3 QUESTIONS (formulaire jamais envoyé : pas d'attribut
+      action ; novalidate : erreurs affichées en toutes lettres par le
+      script). */}
+  <form data-simulateur data-panneau="questions" data-actif novalidate class={classesPanneau}>
+    <div>
+
+      {/* QUESTION 1 : STATUT — un clic ou un toucher passe à la suite */}
+      <fieldset data-etape="1" data-champ="statut" aria-describedby="aide-statut erreur-statut" class={classesEtape}>
+        <legend class="contents"><span data-titre-etape tabindex="-1" class={classesTitre}>Vous êtes</span></legend>
+        <p id="aide-statut" class={classesAide}>Touchez votre réponse : la question suivante s'affiche automatiquement.</p>
+        <div class="mt-4 grid gap-3">
+          {optionsStatut.map((option) => (
+            <label class={classesChoix}>
+              <input type="radio" name="statut" value={option.valeur} class={classesPastille} />
+              {option.libelle}
+            </label>
+          ))}
+        </div>
+        <p id="erreur-statut" role="alert" class={classesErreur}></p>
+      </fieldset>
+
+      {/* QUESTION 2 : CODE POSTAL — bouton « Suivant »
+          inputmode="numeric" : clavier chiffré sur téléphone. Pas de
+          maxlength : le script garde 5 chiffres au maximum, ce qui accepte
+          aussi un code collé avec une espace (« 31 000 »). */}
+      <div data-etape="2" data-champ="code-postal" class={classesEtape}>
+        <label for="simulateur-code-postal" data-titre-etape tabindex="-1" class={classesTitre}>Votre code postal</label>
+        <p id="aide-code-postal" class={classesAide}>5 chiffres, par exemple 31000. Il sert seulement à trouver votre département.</p>
+        <input
+          id="simulateur-code-postal"
+          name="code-postal"
+          type="text"
+          inputmode="numeric"
+          autocomplete="postal-code"
+          aria-describedby="aide-code-postal erreur-code-postal"
+          class="mt-4 block min-h-14 w-full max-w-60 rounded-carte border-2 border-bordure bg-fond px-4 text-h4 tracking-widest text-texte focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marque-900 aria-invalid:border-alerte-700"
+        />
+        <p id="erreur-code-postal" role="alert" class={classesErreur}></p>
+      </div>
+
+      {/* QUESTION 3 : TRAVAUX — plusieurs choix, bouton « Voir mes aides » */}
+      <fieldset data-etape="3" data-champ="travaux" aria-describedby="aide-travaux erreur-travaux" class={classesEtape}>
+        <legend class="contents"><span data-titre-etape tabindex="-1" class={classesTitre}>Vos travaux</span></legend>
+        <p id="aide-travaux" class={classesAide}>Plusieurs choix possibles.</p>
+        {/* 1 colonne sur petit téléphone, 2 à partir de 480px (sm:).
+            Libellé coupé avec un tiret seulement s'il ne tient pas. */}
+        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+          {optionsTravaux.map((option) => (
+            <label class={classesChoix}>
+              <input type="checkbox" name="travaux" value={option.valeur} class={classesPastille} />
+              <span class="min-w-0 hyphens-auto">{option.libelle}</span>
+            </label>
+          ))}
+        </div>
+        <p id="erreur-travaux" role="alert" class={classesErreur}></p>
+      </fieldset>
+    </div>
+
+    {/* BOUTONS : « Retour » (à partir de la question 2) et « Suivant » /
+        « Voir mes aides » (questions 2 et 3).
+        - Téléphone : empilés (bouton principal en pleine largeur,
+          « Retour » dessous).
+        - À partir de 480px (sm:) : côte à côte, « Retour » à gauche. */}
+    <div class="flex flex-col-reverse gap-3 has-[[data-visible]]:mt-4 sm:flex-row sm:items-center sm:justify-between">
+      <button type="button" data-action="retour" class={`${classesBouton} border-2 border-marque-900 text-marque-900 hover:bg-secondaire-50 focus-visible:outline-marque-900`}>
+        <span aria-hidden="true">←</span> Retour
+      </button>
+      <button type="submit" data-action="suivant" class={`${classesBouton} bg-marque-900 text-texte-inverse hover:shadow-elevee focus-visible:outline-action-500`}>
+        Suivant
+      </button>
+    </div>
+  </form>
+
+  {/* PANNEAU 2 : LE RÉSULTAT (rempli par le script).
+      Au chargement, le script y place le résultat LE PLUS LONG possible
+      (invisible) : la pile prend donc d'emblée la hauteur du plus long des
+      résultats, et le bloc ne grandit pas quand le vrai résultat s'affiche.
+      tabindex="-1" : le focus y est placé pour qu'il soit lu dès qu'il
+      apparaît. */}
+  <div data-simulateur-resultat data-panneau="resultat" tabindex="-1" class={`${classesPanneau} focus:outline-none`}></div>
+
+  {/* PANNEAU 3 : LE FORMULAIRE DE CONTACT (« Obtenir vos aides réelles ») */}
+  <SimulateurEstimation />
+  </div>
+</div>
+</div>

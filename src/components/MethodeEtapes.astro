@@ -1,0 +1,115 @@
+---
+// =========================================================================
+// COMPOSANT MÉTHODE : LES 4 ÉTAPES (src/components/MethodeEtapes.astro)
+// -------------------------------------------------------------------------
+// Bloc 1 de la section « Méthode » de l'accueil (appelé par Methode.astro).
+// Fond blanc. Présente la méthode Akelia en 4 étapes ORDONNÉES.
+//
+// L'ordre est le message : tout est fait pour qu'on lise une SÉQUENCE et
+// non une liste d'options.
+// - Balise <ol> (liste numérotée) : les lecteurs d'écran annoncent
+//   « liste de 4 éléments » et le rang de chaque étape.
+// - NUMÉROS en très grand, en orange, dans l'en-tête de chaque carte :
+//   c'est l'élément visuel dominant, lisible même en défilant vite.
+// - Une LIGNE DE LIAISON bleu nuit relie les cartes (visible dans l'espace
+//   entre deux cartes, à la hauteur des numéros) :
+//     téléphone et tablette (moins de 1280px) → étapes empilées, ligne
+//                 verticale, lecture de haut en bas ;
+//     grand écran (xl:, 1280px et plus) → étapes en ligne, ligne horizontale,
+//                 lecture de gauche à droite.
+// - Mention « Étape X sur 4 » au-dessus de chaque titre (à partir de 768px).
+// - ANIMATION (rejouée à chaque retour à l'écran, voir Methode.astro) : les étapes apparaissent
+//   l'une après l'autre (120ms d'écart) pendant que la ligne se trace.
+//
+// Pour modifier une étape : éditer le tableau `etapes` ci-dessous.
+// L'affichage d'une étape (numéro, carte) est dans MethodeEtape.astro.
+// =========================================================================
+
+import MethodeEtape from './MethodeEtape.astro';
+
+// -------------------------------------------------------------------------
+// LES 4 ÉTAPES, dans l'ordre d'affichage.
+// icone : tracés SVG au trait (grille 24 × 24), même style que le Hero.
+// -------------------------------------------------------------------------
+const etapes = [
+  {
+    titre: 'Étudier la situation',
+    texte: 'Analyser les qualités et les faiblesses de votre habitat pour établir un plan précis, adapté à votre logement et à votre budget.',
+    // Loupe posée sur une petite maison : l'audit du logement.
+    icone: `
+      <circle cx="10" cy="10" r="7" />
+      <path d="m15 15 6 6" />
+      <path d="M6.5 10.5 10 7.5l3.5 3" />
+      <path d="M7.5 9.8V13h5V9.8" />
+    `,
+  },
+  {
+    titre: 'Isoler et ventiler',
+    texte: "C'est l'étape la plus importante : moins votre maison perd de chaleur, moins elle a besoin d'énergie. Et une fois le logement rendu étanche, il lui faut une ventilation efficace pour éviter l'humidité.",
+    // Maison à double paroi (l'isolant) traversée par un courant d'air.
+    icone: `
+      <path d="M2 11.5 12 3.5l10 8" />
+      <path d="M4.5 9.5V21h15V9.5" />
+      <path d="M7.5 11.5 12 8l4.5 3.5V18h-9Z" />
+      <path d="M9.5 13.5c1-.7 2-.7 3 0s2 .7 3 0M9.5 16c1-.7 2-.7 3 0s2 .7 3 0" />
+    `,
+  },
+  {
+    titre: "Produire de l'énergie",
+    texte: "Identifier ce que votre logement peut produire — ensoleillement, surface de toiture, orientation — avant de choisir vos équipements.",
+    // Soleil au-dessus d'un panneau solaire.
+    icone: `
+      <circle cx="6" cy="6" r="2.5" />
+      <path d="M6 1.5v1M6 9.5v1M1.5 6h1M9.5 6h1M2.8 2.8l.7.7M8.5 8.5l.7.7M2.8 9.2l.7-.7M8.5 3.5l.7-.7" />
+      <path d="M10 12h12l-1.5 7.5H8.5Z" />
+      <path d="M9.3 15.75h12M16 12l-.75 7.5" />
+    `,
+  },
+  {
+    titre: "S'équiper",
+    texte: 'Une fois le bien isolé et la production connue, choisir le système adapté : chauffage, thermostat, borne de recharge, batterie, domotique.',
+    // Thermostat mural à molette : le pilotage des équipements.
+    icone: `
+      <rect x="3" y="3" width="18" height="18" rx="4" />
+      <circle cx="12" cy="12" r="5" />
+      <path d="M12 7v3" />
+      <path d="M6 6.5h.01M18 6.5h.01M6 17.5h.01M18 17.5h.01" />
+    `,
+  },
+];
+---
+
+<section aria-labelledby="methode-titre" class="bg-fond">
+  <div class="mx-auto max-w-site px-gouttiere py-bloc md:py-section">
+
+    {/* EN-TÊTE DU BLOC : titre et phrase d'introduction, sur toute la
+        largeur du conteneur (limite de 60 caractères retirée à l'étape 20,
+        à la demande). */}
+    <h2 id="methode-titre" class="text-h2 text-texte">Votre logement autonome</h2>
+    <p class="mt-4 text-corps text-neutre-700">
+      Changer sa chaudière avant d'isoler, c'est payer une pompe à chaleur trop grosse pour rien. L'ordre compte autant que les travaux.
+    </p>
+
+    {/* LISTE ORDONNÉE DES ÉTAPES
+        - téléphone et tablette (moins de 1280px) : une colonne, gap-6 (24px)
+          puis gap-8 (32px) à partir de 768px ;
+        - grand écran (xl:, 1280px et plus) : 4 colonnes côte à côte,
+          gap-bloc (40px). En dessous de 1280px, les colonnes seraient trop
+          étroites (environ 20 caractères par ligne) pour un public senior.
+        data-apparition="etapes" : animation, voir Methode.astro. */}
+    {/* LIGNE DE LIAISON (pseudo-élément « before: » de la liste, donc
+        jamais lue ni comptée comme une étape) : elle passe DERRIÈRE les
+        cartes et n'est visible qu'entre deux cartes, au niveau des numéros.
+        - moins de 1280px : verticale (4px), au milieu du numéro (36px du
+          bord sur téléphone, 46px à partir de 768px) ;
+        - xl: : horizontale (4px), à mi-hauteur du numéro (76px du haut).
+        Ses extrémités s'arrêtent 48px avant les bords de la liste
+        (inset-y-12, xl:inset-x-12), donc toujours cachées derrière la
+        première et la dernière carte. */}
+    <ol data-apparition="etapes" class="relative mt-bloc grid gap-6 before:pointer-events-none before:absolute before:inset-y-12 before:left-9 before:w-1 before:bg-marque-900 md:gap-8 md:before:left-[46px] xl:grid-cols-4 xl:gap-bloc xl:before:inset-x-12 xl:before:top-[76px] xl:before:bottom-auto xl:before:h-1 xl:before:w-auto">
+      {etapes.map((etape, index) => (
+        <MethodeEtape etape={etape} numero={index + 1} total={etapes.length} />
+      ))}
+    </ol>
+  </div>
+</section>

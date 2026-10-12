@@ -1,0 +1,88 @@
+---
+// =========================================================================
+// COMPOSANT COLLECTIF : UN ENGAGEMENT (src/components/CollectifEngagement.astro)
+// -------------------------------------------------------------------------
+// Affiche UNE ligne de la liste des 5 engagements (appelé par
+// Collectif.astro, qui fournit le contenu).
+//
+// Mise en page « fiche technique » (et non une carte) : une ligne par
+// engagement, séparée de la suivante par un filet gris.
+// - Téléphone (moins de 768px) : icône et titre côte à côte, texte
+//   explicatif en dessous, sur toute la largeur.
+// - À partir de 768px (md:) : trois colonnes alignées d'une ligne à
+//   l'autre → icône | titre | texte. Tous les titres forment ainsi une
+//   colonne qu'on lit de haut en bas sans lire le reste : c'est la
+//   « lecture en diagonale » demandée.
+//
+// Hiérarchie : le titre est en GRAS (700), noir, plus grand que le texte
+// (text-h4, 1.25rem, puis text-h3, 1.5rem, à partir de 992px). Le texte
+// explicatif est en taille courante (text-corps, 1.125rem), gris foncé
+// (neutre-700, 7,6:1 sur blanc) : il se lit bien, mais passe après.
+//
+// Animation : classe « collectif-apparition » et variable --rang (0 à 4),
+// utilisées par le CSS de Collectif.astro (fondu, 80ms d'écart).
+// =========================================================================
+
+interface Props {
+  engagement: {
+    titre: string;
+    texte: string;
+    icone: string; // tracés SVG au trait, grille 24 × 24
+  };
+  rang: number; // position dans la liste (0 = premier), pour l'échelonnement
+}
+
+const { engagement, rang } = Astro.props;
+---
+
+{/* LIGNE D'ENGAGEMENT
+    - py-6 (24px) en haut et en bas sur téléphone, md:py-8 (32px) au-delà.
+    - border-t : filet gris (bordure-douce) au-dessus de chaque ligne,
+      sauf la première (first:border-t-0), qui est sous le trait noir de
+      la liste. Le trait du bas est porté par la liste (Collectif.astro).
+    - Grille à partir de 768px : 3rem (icône) | 2 parts (titre) |
+      3 parts (texte). minmax(0, …) empêche un mot long d'élargir une
+      colonne et de faire déborder la ligne. */}
+<li
+  class="collectif-apparition grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-4 gap-y-3 border-t border-bordure-douce py-6 first:border-t-0 md:grid-cols-[3rem_minmax(0,2fr)_minmax(0,3fr)] md:gap-x-6 md:py-8 lg:gap-x-bloc"
+  style={`--rang: ${rang}`}
+>
+  {/* ICÔNE : bleu nuit (13,18:1), au trait, même style que les étapes de
+      la section Méthode (trait 1.75, bouts arrondis). Purement décorative
+      (aria-hidden) : le titre dit déjà tout. 40px sur téléphone, 48px
+      au-delà. Calée sur la première ligne du titre (self-start). */}
+  <svg
+    class="size-10 self-start text-marque-900 md:size-12"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="1.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <Fragment set:html={engagement.icone} />
+  </svg>
+
+  {/* TITRE DE L'ENGAGEMENT : l'élément qui doit se détacher.
+      Balise <h4> : il est sous l'intertitre <h3> de la section, donc la
+      hiérarchie des titres reste correcte pour les lecteurs d'écran (qui
+      peuvent ainsi sauter d'un engagement à l'autre).
+      font-bold : 700 au lieu des 600 par défaut des h4, pour un contraste
+      net avec le texte. self-center sur téléphone : centré verticalement
+      sur l'icône quand il tient en peu de lignes. */}
+  <h4 class="self-center text-h4 font-bold text-texte md:self-start lg:text-h3">
+    {engagement.titre}
+  </h4>
+
+  {/* TEXTE EXPLICATIF
+      - Téléphone : sous l'icône et le titre, sur toute la largeur
+        (col-span-2), pour garder des lignes longues et éviter un texte
+        en colonne étroite.
+      - À partir de 768px : troisième colonne, à droite du titre.
+      md:mt-0.5 : aligne visuellement la première ligne du texte sur la
+      première ligne du titre (le titre est plus grand). */}
+  <p class="col-span-2 text-corps text-neutre-700 md:col-span-1 md:mt-0.5">
+    {engagement.texte}
+  </p>
+</li>

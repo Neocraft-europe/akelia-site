@@ -1,0 +1,457 @@
+---
+// =========================================================================
+// COMPOSANT SCHÉMA DE LA MAISON (src/components/SchemaMaison.astro)
+// -------------------------------------------------------------------------
+// Illustration du Hero : une maison en perspective, dont la moitié gauche de
+// la façade et du toit est « ouverte » en coupe, façon plan d'architecte
+// annoté. Elle montre les 8 équipements de la méthode Akelia, chacun avec
+// un repère numéroté et une ligne de légende.
+//
+// STYLE (plan technique) :
+// - Trait uniquement. Couleurs de la charte : structure et équipements en
+//   marque-900, cotes et traits de rappel en neutre-500, repères en
+//   action-500. Fond transparent (le quadrillage du Hero reste visible).
+// - Épaisseurs à l'écran : 2px structure, 1.5px équipements, 1px cotes et
+//   traits de rappel. Comme le dessin change de taille avec l'écran, ces
+//   épaisseurs sont réglées par des variables CSS (--t-structure, --t-equip,
+//   --t-fin) adaptées à chaque largeur (voir <style> en bas du fichier).
+// - Hachures (motif #hachure) pour les parois isolées.
+//
+// ANIMATIONS (aucune en boucle) :
+// 1. Tracé : les contours du bâtiment se dessinent en 1,2s quand le schéma
+//    entre dans l'écran (une seule fois).
+// 2. Apparition : les 8 équipements apparaissent ensuite en fondu, 80ms
+//    d'écart, dans l'ordre de la méthode (isolation et ventilation, puis
+//    production, puis équipements) : variable --rang de chaque groupe.
+// 3. Survol : survoler (ou atteindre au clavier) un repère ou une ligne de
+//    légende met l'équipement correspondant en orange, trait épaissi,
+//    sans transition.
+// Si « réduire les animations » est activé sur l'appareil, tout s'affiche
+// immédiatement, sans aucun mouvement.
+//
+// POUR RETOUCHER UN ÉQUIPEMENT : chaque équipement est un <g> avec un
+// identifiant en français (ex. id="isolation-combles") ; le même
+// identifiant est utilisé dans le tableau `legende` ci-dessous et dans les
+// règles de survol du <style>.
+//
+// MOBILE (moins de 768px) : version simplifiée. Les cotes et annotations
+// manuscrites (classe .detail) sont masquées et les repères sont agrandis.
+// =========================================================================
+
+// Légende, dans l'ordre des numéros.
+// rang : ordre d'apparition (0 = premier), qui suit la méthode Akelia.
+const legende = [
+  { numero: 1, id: 'isolation-combles', libelle: 'Isolation des combles', rang: 0 },
+  { numero: 2, id: 'isolation-murs', libelle: 'Isolation des murs', rang: 1 },
+  { numero: 3, id: 'menuiseries', libelle: 'Fenêtres double vitrage', rang: 2 },
+  { numero: 4, id: 'ventilation', libelle: 'Ventilation (VMC)', rang: 3 },
+  { numero: 5, id: 'pompe-a-chaleur', libelle: 'Pompe à chaleur', rang: 5 },
+  { numero: 6, id: 'panneaux-photovoltaiques', libelle: 'Panneaux photovoltaïques', rang: 4 },
+  { numero: 7, id: 'chauffe-eau', libelle: 'Chauffe-eau', rang: 6 },
+  { numero: 8, id: 'borne-de-recharge', libelle: 'Borne de recharge', rang: 7 },
+];
+const rangDe = (id: string) => legende.find((l) => l.id === id)!.rang;
+---
+
+{/* Conteneur : schéma + légende. data-etat est piloté par le petit script
+    en bas du fichier (« attente » → « anime ») ; sans script, tout est
+    affiché à l'état final. */}
+<figure class="schema-maison" data-schema>
+  <svg
+    viewBox="0 0 820 470"
+    class="h-auto w-full"
+    role="img"
+    aria-labelledby="schema-titre schema-desc"
+  >
+    <title id="schema-titre">Schéma d'une maison rénovée par Akelia</title>
+    <desc id="schema-desc">
+      Maison individuelle à deux niveaux et toit à deux pans, vue en perspective, dont la moitié de la façade est ouverte pour montrer l'intérieur. Huit équipements sont numérotés : 1 isolation des combles, 2 isolation des murs, 3 fenêtres double vitrage, 4 ventilation VMC et ses gaines, 5 pompe à chaleur avec son unité extérieure et un radiateur intérieur, 6 panneaux photovoltaïques sur le toit, 7 chauffe-eau dans le local technique, 8 borne de recharge avec une voiture.
+    </desc>
+
+    <defs>
+      {/* Hachures des parois isolées : traits fins à 45°, comme sur un plan
+          de coupe. Deux versions : normale, et orange pour le survol. */}
+      <pattern id="hachure" patternUnits="userSpaceOnUse" width="9" height="9" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="9" class="hachure-trait" />
+      </pattern>
+      <pattern id="hachure-action" patternUnits="userSpaceOnUse" width="9" height="9" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="9" class="hachure-trait hachure-trait-action" />
+      </pattern>
+      {/* Flèche des cotes (pointe ouverte, style plan technique) */}
+      <marker id="fleche-cote" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M1 1 9 5 1 9" class="fleche" />
+      </marker>
+    </defs>
+
+    {/* =====================================================================
+        STRUCTURE DU BÂTIMENT (trait 2px, se dessine à l'arrivée)
+        pathLength="1" sert à l'animation de tracé (longueur normalisée).
+    ====================================================================== */}
+    <g class="structure">
+      {/* Terrain */}
+      <path pathLength="1" d="M20 400H800" />
+      {/* Partie intacte de la façade avant (moitié droite) */}
+      <path pathLength="1" d="M390 400V180H510V400" />
+      {/* Angle avant gauche de la maison */}
+      <path pathLength="1" d="M230 400V180" />
+      {/* Mur gauche vu de l'intérieur, par la coupe */}
+      <path pathLength="1" d="M242 400 350 340V120" />
+      {/* Rive gauche du toit, faîtage, et rive arrière */}
+      <path pathLength="1" d="M230 180 290 60H570M290 60 350 120" />
+      {/* Bord coupé du pan de toit avant, et rive droite du pan */}
+      <path pathLength="1" d="M390 180 450 60M510 180 570 60" />
+      {/* Façade latérale et pignon */}
+      <path pathLength="1" d="M510 400 630 340V120L570 60" />
+      {/* Plancher de l'étage (dalle) et mur du fond visible */}
+      <path pathLength="1" d="M242 290H390M242 296H390M242 290 350 236H390M350 340H390M350 120H390" />
+      {/* Plafond de l'étage (plancher des combles) */}
+      <path pathLength="1" d="M242 180H390" />
+    </g>
+
+    {/* =====================================================================
+        ÉQUIPEMENTS (trait 1.5px), chacun dans un <g> identifié.
+        style="--rang:N" : ordre d'apparition en fondu.
+        Chaque groupe contient aussi son repère numéroté (cercle orange) et
+        son trait de rappel (fin, gris).
+    ====================================================================== */}
+
+    {/* 1. ISOLATION DES COMBLES : couche hachurée sur le plancher des combles */}
+    <g id="isolation-combles" class="equip" style={`--rang:${rangDe('isolation-combles')}`}>
+      <path class="trait hachure" d="M242 180H390L417 126H350Z" />
+      <path class="rappel" d="M178 122 300 160" />
+      <g class="repere" data-repere="isolation-combles"><circle cx="165" cy="120" r="13" /><text x="165" y="120">1</text></g>
+      {/* Annotation manuscrite : résistance thermique visée */}
+      <text class="manuscrit detail" x="186" y="96">R ≥ 7</text>
+    </g>
+
+    {/* 2. ISOLATION DES MURS : parois coupées, double trait hachuré */}
+    <g id="isolation-murs" class="equip" style={`--rang:${rangDe('isolation-murs')}`}>
+      <path class="trait hachure" d="M230 180H242V400H230Z" />
+      <path class="trait hachure" d="M390 180 402 174V394L390 400Z" />
+      <path class="rappel" d="M178 250H236" />
+      <g class="repere" data-repere="isolation-murs"><circle cx="165" cy="250" r="13" /><text x="165" y="250">2</text></g>
+    </g>
+
+    {/* 3. MENUISERIES : fenêtres en double trait (double vitrage) */}
+    <g id="menuiseries" class="equip" style={`--rang:${rangDe('menuiseries')}`}>
+      <path class="trait" d="M420 318h60v52h-60zM424 322h52v44h-52zM450 322v44" />
+      <path class="trait" d="M420 208h60v52h-60zM424 212h52v44h-52zM450 212v44" />
+      <path class="trait" d="M552 199 588 181V226L552 244ZM556 201 584 187V222L556 236Z" />
+      <path class="rappel" d="M678 191 590 205" />
+      <g class="repere" data-repere="menuiseries"><circle cx="690" cy="190" r="13" /><text x="690" y="190">3</text></g>
+    </g>
+
+    {/* 4. VENTILATION : caisson VMC dans les combles, gaines en pointillés
+        vers les deux niveaux, et sortie en toiture */}
+    <g id="ventilation" class="equip" style={`--rang:${rangDe('ventilation')}`}>
+      <path class="trait" d="M286 136h32v14h-32z" />
+      <circle class="trait" cx="302" cy="143" r="4" />
+      <path class="trait gaine" d="M296 150V186M310 150V302M302 136V96" />
+      <path class="trait" d="M288 188H304M302 304H318M294 96H310" />
+      <path class="rappel" d="M392 34 308 132" />
+      <g class="repere" data-repere="ventilation"><circle cx="400" cy="26" r="13" /><text x="400" y="26">4</text></g>
+    </g>
+
+    {/* 5. POMPE À CHALEUR : unité extérieure posée au pied de la façade
+        latérale, et émetteur (radiateur) dans la pièce du rez-de-chaussée */}
+    <g id="pompe-a-chaleur" class="equip" style={`--rang:${rangDe('pompe-a-chaleur')}`}>
+      <path class="trait" d="M598 350h50v40h-50zM603 390v6M643 390v6" />
+      <circle class="trait" cx="614" cy="370" r="12" />
+      <path class="trait" d="M614 358v24M602 370h24M632 358h10M632 366h10M632 374h10M632 382h10" />
+      <path class="trait" d="M356 306h30v22h-30zM362 306v22M368 306v22M374 306v22M380 306v22" />
+      <path class="rappel" d="M620 427 621 398" />
+      <g class="repere" data-repere="pompe-a-chaleur"><circle cx="620" cy="440" r="13" /><text x="620" y="440">5</text></g>
+    </g>
+
+    {/* 6. PANNEAUX PHOTOVOLTAÏQUES : sur le pan de toit avant (exposé) */}
+    <g id="panneaux-photovoltaiques" class="equip" style={`--rang:${rangDe('panneaux-photovoltaiques')}`}>
+      <path class="trait" d="M414 162H504L546 78H456Z" />
+      <path class="trait" d="M444 162 486 78M474 162 516 78M435 120H525" />
+      <path class="rappel" d="M638 44 527 108" />
+      <g class="repere" data-repere="panneaux-photovoltaiques"><circle cx="650" cy="40" r="13" /><text x="650" y="40">6</text></g>
+    </g>
+
+    {/* 7. CHAUFFE-EAU : ballon dans le local technique du rez-de-chaussée */}
+    <g id="chauffe-eau" class="equip" style={`--rang:${rangDe('chauffe-eau')}`}>
+      <path class="trait" d="M262 334V384A15 5 0 0 0 292 384V334" />
+      <ellipse class="trait" cx="277" cy="334" rx="15" ry="5" />
+      <path class="trait" d="M270 329V316M284 329V316" />
+      <path class="rappel" d="M178 360H261" />
+      <g class="repere" data-repere="chauffe-eau"><circle cx="165" cy="360" r="13" /><text x="165" y="360">7</text></g>
+      <text class="manuscrit detail" x="252" y="422">local technique</text>
+    </g>
+
+    {/* 8. BORNE DE RECHARGE : borne sur le côté, voiture en quelques traits */}
+    <g id="borne-de-recharge" class="equip" style={`--rang:${rangDe('borne-de-recharge')}`}>
+      <path class="trait" d="M664 330h14v70h-14zM667 338h8v10h-8z" />
+      <path class="trait" d="M678 362C690 382 696 384 704 374" />
+      <path class="trait" d="M690 392V375Q692 366 702 364L722 348H768L786 364H798Q806 366 806 376V392M724 352H766L777 363H713Z" />
+      <circle class="trait" cx="712" cy="394" r="10" />
+      <circle class="trait" cx="784" cy="394" r="10" />
+      <path class="rappel" d="M745 313 745 346" />
+      <g class="repere" data-repere="borne-de-recharge"><circle cx="745" cy="300" r="13" /><text x="745" y="300">8</text></g>
+    </g>
+
+    {/* =====================================================================
+        COTES DIMENSIONNELLES (trait 1px gris, flèches aux extrémités).
+        Classe .detail : masquées sur téléphone.
+        Volontairement SANS chiffres : des dimensions inventées n'ont pas
+        leur place sur un site technique. Seuls les traits de cote restent,
+        pour le style « plan d'architecte ».
+    ====================================================================== */}
+    <g class="cotes detail">
+      {/* Largeur de la façade */}
+      <path class="cote-rappel" d="M230 406V446M510 406V446" />
+      <path class="cote" d="M230 438H510" />
+      {/* Hauteur des murs (jusqu'à l'égout du toit) */}
+      <path class="cote-rappel" d="M199 180H224M199 400H224" />
+      <path class="cote" d="M205 400V180" />
+      {/* Hauteur au faîtage */}
+      <path class="cote-rappel" d="M114 60H284M114 400H140" />
+      <path class="cote" d="M120 400V60" />
+    </g>
+  </svg>
+
+  {/* =======================================================================
+      LÉGENDE : associe chaque numéro à son libellé.
+      - Survol à la souris OU focus clavier d'une ligne : l'équipement
+        correspondant passe en orange dans le schéma.
+      - Clavier : UN SEUL arrêt de tabulation pour toute la légende (la
+        première ligne a tabindex="0", les autres tabindex="-1"). Une fois
+        dans la légende, les flèches passent d'un repère à l'autre
+        (← ↑ : précédent, → ↓ : suivant, Début / Fin : premier / dernier).
+        Tab fait sortir de la légende. Technique dite du « tabindex mobile » :
+        la ligne qui a eu le focus en dernier garde tabindex="0".
+      - 2 colonnes, cases de 44px de haut minimum. Sur téléphone, espacements
+        resserrés (px-1, gap-x-2) pour que « photovoltaïques » tienne entier
+        dès 375px.
+  ======================================================================== */}
+  <figcaption>
+    {/* Mode d'emploi pour les lecteurs d'écran (invisible à l'écran) */}
+    <p id="schema-aide-clavier" class="sr-only">
+      Légende des repères : utilisez les flèches pour passer d'un repère à l'autre.
+    </p>
+    <ol class="mt-3 grid grid-cols-2 gap-x-2 gap-y-1 md:gap-x-3" data-legende aria-describedby="schema-aide-clavier">
+      {legende.map((ligne, index) => (
+        <li
+          tabindex={index === 0 ? '0' : '-1'}
+          data-repere={ligne.id}
+          class="flex min-h-11 items-center gap-2 rounded-petit px-1 text-base md:px-2 leading-tight text-texte hover:bg-action-50 focus-visible:bg-action-50 focus-visible:outline-2 focus-visible:outline-marque-900"
+        >
+          <span aria-hidden="true" class="flex size-7 shrink-0 items-center justify-center rounded-pilule border-2 border-action-500 bg-fond text-petit font-bold text-marque-900">
+            {ligne.numero}
+          </span>
+          {/* min-w-0 + hyphens-auto : un mot trop long pour la colonne (par exemple
+              « photovoltaïques » à 320px) est coupé avec un tiret au lieu de
+              déborder ; sans effet quand le mot tient. */}
+          <span class="min-w-0 hyphens-auto"><span class="sr-only">Repère {ligne.numero} : </span>{ligne.libelle}</span>
+        </li>
+      ))}
+    </ol>
+  </figcaption>
+</figure>
+
+{/* Script minimal, écrit juste après le schéma pour s'exécuter avant le
+    premier affichage (pas de clignotement). Deux rôles :
+    1. CLAVIER : flèches pour passer d'une ligne de légende à l'autre
+       (toujours actif, même si les animations sont réduites).
+    2. ANIMATION :
+       - si « réduire les animations » est actif, ou si le navigateur ne
+         sait pas détecter l'entrée à l'écran : rien (état final) ;
+       - sinon : état « attente » (contours invisibles), puis « anime » dès
+         que 30 % du schéma est visible, une seule fois. */}
+<script is:inline>
+  (function () {
+    var schema = document.currentScript.previousElementSibling;
+    if (!schema) return;
+
+    // 1. NAVIGATION CLAVIER DANS LA LÉGENDE (« tabindex mobile »)
+    var lignes = Array.prototype.slice.call(schema.querySelectorAll('[data-legende] > li'));
+    lignes.forEach(function (ligne, index) {
+      ligne.addEventListener('keydown', function (evenement) {
+        var cible = null;
+        if (evenement.key === 'ArrowDown' || evenement.key === 'ArrowRight') cible = lignes[(index + 1) % lignes.length];
+        else if (evenement.key === 'ArrowUp' || evenement.key === 'ArrowLeft') cible = lignes[(index - 1 + lignes.length) % lignes.length];
+        else if (evenement.key === 'Home') cible = lignes[0];
+        else if (evenement.key === 'End') cible = lignes[lignes.length - 1];
+        if (!cible) return;
+        evenement.preventDefault(); // empêche la page de défiler
+        lignes.forEach(function (l) { l.setAttribute('tabindex', '-1'); });
+        cible.setAttribute('tabindex', '0');
+        cible.focus();
+      });
+    });
+
+    // 2. ANIMATION
+    if (!('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    schema.setAttribute('data-etat', 'attente');
+    var observateur = new IntersectionObserver(function (entrees) {
+      if (entrees.some(function (e) { return e.isIntersecting; })) {
+        schema.setAttribute('data-etat', 'anime');
+        observateur.disconnect();
+      }
+    }, { threshold: 0.3 });
+    observateur.observe(schema);
+  })();
+</script>
+
+<style>
+  /* =======================================================================
+     ÉPAISSEURS DE TRAIT
+     Le dessin (viewBox de 820 de large) est réduit ou agrandi selon l'écran.
+     Pour garder à l'écran environ 2px (structure), 1.5px (équipements) et
+     1px (cotes, rappels), les épaisseurs sont exprimées en unités du dessin
+     et ajustées à chaque largeur :
+     - téléphone (schéma d'environ 335px de large, échelle ≈ 0,41) ;
+     - tablette, md: (environ 670px, échelle ≈ 0,82) ;
+     - grand écran, xl: (colonne d'environ 490px, échelle ≈ 0,6).
+  ======================================================================= */
+  .schema-maison {
+    --t-structure: 4.8;
+    --t-equip: 3.6;
+    --t-fin: 2.4;
+    --echelle-repere: 2.1; /* repères agrandis sur téléphone */
+  }
+  @media (width >= 48rem) {
+    .schema-maison { --t-structure: 2.4; --t-equip: 1.8; --t-fin: 1.2; --echelle-repere: 1; }
+  }
+  @media (width >= 80rem) {
+    .schema-maison { --t-structure: 3.3; --t-equip: 2.5; --t-fin: 1.7; --echelle-repere: 1.45; }
+  }
+
+  /* =======================================================================
+     STYLE DE BASE (état final, affiché aussi sans JavaScript)
+  ======================================================================= */
+  .structure path {
+    fill: none;
+    stroke: var(--color-marque-900);
+    stroke-width: var(--t-structure);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .trait {
+    fill: none;
+    stroke: var(--color-marque-900);
+    stroke-width: var(--t-equip);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .hachure { fill: url(#hachure); }
+  .hachure-trait { stroke: var(--color-marque-900); stroke-width: calc(var(--t-fin) * 0.8); }
+  .hachure-trait-action { stroke: var(--color-action-500); }
+  .gaine { stroke-dasharray: 5 4; }
+  /* Traits de rappel (repère → équipement) et cotes : fins et gris */
+  .rappel, .cote, .cote-rappel {
+    fill: none;
+    stroke: var(--color-neutre-500);
+    stroke-width: var(--t-fin);
+  }
+  .cote { marker-start: url(#fleche-cote); marker-end: url(#fleche-cote); }
+  .fleche { fill: none; stroke: var(--color-neutre-500); stroke-width: 1.5; }
+   /* Annotations « manuscrites » (« R ≥ 7 », « local technique ») :
+     Source Sans 3 italique, la police du site, pour un rendu identique sur
+     tous les appareils (l'italique 400 est chargé dans global.css).
+     18 unités du dessin : environ 15px à l'écran sur tablette et 10,6px sur
+     grand écran (elles sont masquées sur téléphone). */
+  .manuscrit {
+    fill: var(--color-neutre-500);
+    font-family: var(--font-base);
+    font-size: 18px;
+    font-style: italic;
+    text-anchor: start;
+  }
+  /* Repères numérotés : cercle orange, chiffre bleu nuit centré.
+     Agrandis sur téléphone (--echelle-repere), autour de leur centre. */
+  .repere {
+    transform-box: fill-box;
+    transform-origin: center;
+    scale: var(--echelle-repere);
+    cursor: default;
+  }
+  .repere circle { fill: var(--color-fond); stroke: var(--color-action-500); stroke-width: 2.5; }
+  .repere text {
+    fill: var(--color-marque-900);
+    font-family: var(--font-base);
+    font-size: 15px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  /* Téléphone : version simplifiée, sans cotes ni annotations */
+  @media (width < 48rem) {
+    .detail { display: none; }
+  }
+
+  /* =======================================================================
+     ANIMATIONS (déclenchées par le script, une seule fois)
+  ======================================================================= */
+  /* En attente : contours non tracés, équipements et cotes invisibles */
+  .schema-maison[data-etat='attente'] .structure path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .schema-maison[data-etat='attente'] :is(.equip, .cotes) { opacity: 0; }
+
+  /* 1. Tracé du bâtiment : 1,2 s, comme un crayon */
+  .schema-maison[data-etat='anime'] .structure path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: schema-trace 1.2s ease-in-out forwards;
+  }
+  @keyframes schema-trace { to { stroke-dashoffset: 0; } }
+
+  /* 2. Apparition des équipements : après le tracé, 80 ms d'écart, dans
+        l'ordre de la méthode (--rang). Les cotes viennent en dernier. */
+  .schema-maison[data-etat='anime'] .equip {
+    opacity: 0;
+    animation: schema-apparition 0.3s ease-out forwards;
+    animation-delay: calc(1.2s + var(--rang) * 80ms);
+  }
+  .schema-maison[data-etat='anime'] .cotes {
+    opacity: 0;
+    animation: schema-apparition 0.3s ease-out forwards;
+    animation-delay: calc(1.2s + 8 * 80ms);
+  }
+  @keyframes schema-apparition { to { opacity: 1; } }
+
+  /* Réduire les animations : tout à l'état final, sans aucun mouvement */
+  @media (prefers-reduced-motion: reduce) {
+    .schema-maison .structure path,
+    .schema-maison .equip,
+    .schema-maison .cotes {
+      animation: none !important;
+      stroke-dasharray: none !important;
+      opacity: 1 !important;
+    }
+  }
+
+  /* =======================================================================
+     3. SURVOL D'UN REPÈRE OU D'UNE LIGNE DE LÉGENDE
+     L'équipement correspondant passe en orange, trait doublé, sans
+     transition. Une règle par équipement (même identifiant partout).
+  ======================================================================= */
+  .schema-maison:has([data-repere='isolation-combles']:is(:hover, :focus-visible)) #isolation-combles,
+  .schema-maison:has([data-repere='isolation-murs']:is(:hover, :focus-visible)) #isolation-murs,
+  .schema-maison:has([data-repere='menuiseries']:is(:hover, :focus-visible)) #menuiseries,
+  .schema-maison:has([data-repere='ventilation']:is(:hover, :focus-visible)) #ventilation,
+  .schema-maison:has([data-repere='pompe-a-chaleur']:is(:hover, :focus-visible)) #pompe-a-chaleur,
+  .schema-maison:has([data-repere='panneaux-photovoltaiques']:is(:hover, :focus-visible)) #panneaux-photovoltaiques,
+  .schema-maison:has([data-repere='chauffe-eau']:is(:hover, :focus-visible)) #chauffe-eau,
+  .schema-maison:has([data-repere='borne-de-recharge']:is(:hover, :focus-visible)) #borne-de-recharge {
+    --t-equip-actif: calc(var(--t-equip) * 2);
+  }
+  .equip[style] .trait { stroke-width: var(--t-equip-actif, var(--t-equip)); }
+  .schema-maison:has([data-repere='isolation-combles']:is(:hover, :focus-visible)) #isolation-combles .trait,
+  .schema-maison:has([data-repere='isolation-murs']:is(:hover, :focus-visible)) #isolation-murs .trait,
+  .schema-maison:has([data-repere='menuiseries']:is(:hover, :focus-visible)) #menuiseries .trait,
+  .schema-maison:has([data-repere='ventilation']:is(:hover, :focus-visible)) #ventilation .trait,
+  .schema-maison:has([data-repere='pompe-a-chaleur']:is(:hover, :focus-visible)) #pompe-a-chaleur .trait,
+  .schema-maison:has([data-repere='panneaux-photovoltaiques']:is(:hover, :focus-visible)) #panneaux-photovoltaiques .trait,
+  .schema-maison:has([data-repere='chauffe-eau']:is(:hover, :focus-visible)) #chauffe-eau .trait,
+  .schema-maison:has([data-repere='borne-de-recharge']:is(:hover, :focus-visible)) #borne-de-recharge .trait {
+    stroke: var(--color-action-500);
+  }
+  .schema-maison:has([data-repere='isolation-combles']:is(:hover, :focus-visible)) #isolation-combles .hachure,
+  .schema-maison:has([data-repere='isolation-murs']:is(:hover, :focus-visible)) #isolation-murs .hachure {
+    fill: url(#hachure-action);
+  }
+</style>

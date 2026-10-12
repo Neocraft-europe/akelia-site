@@ -1,0 +1,92 @@
+---
+// =========================================================================
+// COMPOSANT SIMULATEUR D'AIDES (src/components/SimulateurAides.astro)
+// -------------------------------------------------------------------------
+// Section 4 de la page d'accueil : « est-ce que j'y ai droit, moi ? ».
+//
+// DISPOSITION :
+// - à partir de 1024px (min-[64rem]:) : deux moitiés. À gauche le texte
+//   d'accroche, à droite le simulateur (questions, résultat, puis
+//   formulaire de contact, tous dans le même bloc) ;
+// - en dessous de 1024px : empilé, le texte puis le simulateur.
+//
+// SOUS-COMPOSANTS :
+// - SimulateurQuestions.astro  : les 3 questions, une à la fois, et le
+//   résultat (scripts simulateur-etapes.ts et simulateur-aides.ts) ;
+// - SimulateurEstimation.astro : le formulaire de contact « Obtenir vos aides
+//   réelles », affiché DANS le bloc du simulateur, à la place du résultat
+//   (script simulateur-estimation.ts, envoi Web3Forms).
+//
+// DONNÉES : les réponses au simulateur restent dans le navigateur. Seul le
+// formulaire d'estimation, s'il est rempli, envoie prénom, e-mail et
+// téléphone. Tous les montants et règles : src/data/aides.ts.
+//
+// SANS JAVASCRIPT : le simulateur reste masqué ; un message invite à nous
+// contacter (lien vers /devis). Aucun renvoi vers un service externe.
+// =========================================================================
+
+import SimulateurQuestions from './SimulateurQuestions.astro';
+---
+
+<section aria-labelledby="simulateur-titre" class="border-b-2 border-bordure bg-marque-900">
+  <div class="mx-auto max-w-site px-gouttiere py-bloc md:py-section">
+    <div class="grid gap-8 min-[64rem]:grid-cols-2 min-[64rem]:items-start min-[64rem]:gap-bloc">
+
+      {/* -------------------------------------------------------------------
+          MOITIÉ 1 : ACCROCHE (texte fourni, repris mot pour mot)
+          Fond de section bleu nuit (marque-900) pour arrêter l'œil : textes
+          en blanc (texte-inverse), montant en orange (action-500). Aucune
+          mention du RGE ici. Indépendante du simulateur.
+          Sur grand écran, la colonne reste en vue pendant qu'on répond
+          (sticky), sous l'en-tête du site (top-36 = 144px).
+      -------------------------------------------------------------------- */}
+      <div class="min-[64rem]:sticky min-[64rem]:top-36">
+        {/* TITRE : UNE seule phrase continue. Le montant est seulement en
+            orange et en gras, sans aplat ni retour à la ligne. Le montant
+            ne se coupe pas (espaces insécables). */}
+        <p class="text-h2 leading-tight font-bold text-texte-inverse md:text-h1">
+          Votre maison peut vous rapporter <span class="text-action-500">plus&nbsp;de&nbsp;30&nbsp;000&nbsp;€</span>. Il suffit de la rénover.
+        </p>
+
+        <p class="mt-6 text-corps text-texte-inverse">
+          L'État les verse pour isoler, chauffer, produire votre énergie. Vous ne les remboursez pas. Votre maison vaut plus cher et vos factures baissent.
+        </p>
+        {/* Accroche à part entière : plus grande, en gras. */}
+        <p class="mt-6 text-h3 font-bold text-texte-inverse">
+          Et vous n'avez presque rien à faire.
+        </p>
+        <p class="mt-3 text-corps text-texte-inverse">
+          On monte votre dossier, on dépose les demandes, on suit les versements.
+        </p>
+      </div>
+
+      {/* -------------------------------------------------------------------
+          MOITIÉ 2 : LE SIMULATEUR
+      -------------------------------------------------------------------- */}
+      <div class="min-w-0">
+        {/* Titre de la colonne : rien d'autre au-dessus du formulaire.
+            Posé sur le fond bleu nuit : en blanc. Le bloc du formulaire,
+            lui, reste sur fond blanc (SimulateurQuestions.astro). */}
+        <h2 id="simulateur-titre" class="mb-4 text-h3 text-texte-inverse">Estimez vos aides</h2>
+        {/* Sans JavaScript : message de remplacement */}
+        <noscript>
+          <p class="rounded-carte border-2 border-bordure bg-fond p-5 text-corps text-texte">
+            Le simulateur a besoin de JavaScript pour fonctionner. Pour connaître les aides auxquelles vous avez droit,
+            <a href="/devis" class="font-semibold text-marque-900 underline underline-offset-4">contactez-nous : nous étudions votre projet avec vous</a>.
+          </p>
+        </noscript>
+
+        <SimulateurQuestions />
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Démarre le simulateur : navigation entre les questions, puis formulaire
+  // d'estimation (voir src/scripts/).
+  import { initialiserEtapes } from '../scripts/simulateur-etapes';
+  import { initialiserEstimation } from '../scripts/simulateur-estimation';
+  initialiserEtapes();
+  initialiserEstimation();
+</script>

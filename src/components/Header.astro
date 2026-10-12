@@ -1,388 +1,652 @@
 ---
-// ==========================================================================================
+// =========================================================================
 // COMPOSANT HEADER (src/components/Header.astro)
-// ==========================================================================================
-// Conception 100 % Mobile-First avec Tailwind CSS (sans CSS custom).
-// Inspiré de l'ancien modèle Webflow Akelia :
-// - Double barre sur desktop (Barre utilitaire supérieure + Méga-menu inférieur avec images)
-// - Tiroir vertical accordéon sur mobile avec bascule ultra-légère en JavaScript natif
-// - Support de l'accessibilité sémantique (ARIA, navigation clavier, focus states)
-// ==========================================================================================
+// -------------------------------------------------------------------------
+// En-tête de toutes les pages : logo, méga-menu des solutions, liens
+// secondaires et bouton « Obtenir un devis ».
+//
+// Principes :
+// - 100 % Tailwind, uniquement avec les couleurs de la charte
+//   (src/styles/global.css) : marque, action, secondaire, neutre, fond,
+//   texte. Aucune couleur Tailwind par défaut (slate, emerald…).
+// - Mobile d'abord : sous 1280px (breakpoint xl), un bouton « Menu » ouvre
+//   un tiroir latéral. À partir de 1280px, le méga-menu s'affiche.
+//   Pourquoi 1280px et pas 992px : en dessous, les libellés du menu ne
+//   tiennent plus sur une ligne (ils se coupent en deux, ce qui fait
+//   négligé), et sur tablette en paysage le tiroir est plus confortable
+//   au doigt.
+// - Public senior, souvent sur tablette : tout élément cliquable mesure au
+//   moins 44px de haut (classes min-h-11 = 44px, ou min-h-12 = 48px).
+// - Méga-menu hybride : ouverture au SURVOL avec une souris (délai de
+//   fermeture de 200ms pour ne pas le perdre en chemin), au CLIC sur écran
+//   tactile, et au clavier (Entrée, Espace, Échap, Tab).
+// - Le panneau du méga-menu prolonge le Header (même fond blanc, pleine
+//   largeur, sans ombre ni arrondi) ; l'onglet ouvert est signalé par un
+//   soulignement orange épais et une graisse 600.
+//
+// Pour modifier le menu : il suffit d'éditer le tableau `menuSolutions`
+// ci-dessous. Le menu ordinateur ET le tiroir mobile se mettent à jour
+// ensemble.
+// =========================================================================
 
-// Liste des grandes villes desservies par Akelia
-const citiesList = [
-  { name: 'Paris', href: '/ville/paris' },
-  { name: 'Strasbourg', href: '/ville/strasbourg' },
-  { name: 'Nantes', href: '/ville/nantes' },
-  { name: 'Nice', href: '/ville/nice' },
-  { name: 'Lille', href: '/ville/lille' },
-  { name: 'Bordeaux', href: '/ville/bordeaux' },
-  { name: 'Lyon', href: '/ville/lyon' },
-  { name: 'Montpellier', href: '/ville/montpellier' },
-  { name: 'Marseille', href: '/ville/marseille' },
-  { name: 'Toulouse', href: '/ville/toulouse' },
+import { Image } from 'astro:assets';
+
+// -------------------------------------------------------------------------
+// IMAGES DU MÉGA-MENU
+// Bannières 350 × 120 reprises du site Webflow d'origine, rangées dans
+// src/assets/menu/. Astro les optimise automatiquement (format, poids).
+// Pour changer une image : remplacer le fichier en gardant le même nom.
+// -------------------------------------------------------------------------
+import imgIsolation from '../assets/menu/isolation.png';
+import imgMenuiseries from '../assets/menu/menuiseries.png';
+import imgVentilation from '../assets/menu/ventilation.png';
+import imgPompesAChaleur from '../assets/menu/pompes-a-chaleur.webp'; // unité extérieure sans marque visible
+import imgChaudieres from '../assets/menu/chaudieres.png';
+import imgAppoint from '../assets/menu/appoint.png';
+import imgEauChaude from '../assets/menu/eau-chaude-sanitaire.png';
+import imgProductionElectricite from '../assets/menu/production-electricite.png';
+import imgBorneDeRecharge from '../assets/menu/borne-de-recharge.png';
+import imgSystemeDeGestion from '../assets/menu/systeme-de-gestion.png';
+
+// -------------------------------------------------------------------------
+// MÉGA-MENU DES SOLUTIONS
+// Chaque entrée = un bouton du menu principal.
+// Chaque groupe = une colonne du panneau déroulant, avec son image
+// (champ `image`, facultatif : sans image, l'espace reste vide).
+// Les adresses suivent le format /solutions/nom-de-la-solution (repris de
+// l'ancien site Webflow). Les liens marqués « page à créer » pointent vers
+// une adresse cohérente, mais la page n'existe pas encore.
+// -------------------------------------------------------------------------
+const menuSolutions = [
+  {
+    id: 'isolation',
+    titre: 'Isolation et menuiseries',
+    groupes: [
+      {
+        titre: 'Isolation',
+        image: imgIsolation,
+        liens: [
+          { nom: 'Toit et combles', href: '/solutions/isolation-thermique-toiture-comble' },
+          { nom: "Isolation par l'intérieur", href: '/solutions/isolation-thermique-par-linterieur-iti' },
+          { nom: "Isolation par l'extérieur", href: '/solutions/isolation-thermique-par-l-exterieur-ite' },
+        ],
+      },
+      {
+        titre: 'Menuiseries',
+        image: imgMenuiseries,
+        liens: [
+          { nom: 'Fenêtres et volets', href: '/solutions/menuiseries-fenetres-volets' },
+        ],
+      },
+      {
+        titre: 'Ventilation',
+        image: imgVentilation,
+        liens: [
+          { nom: 'VMC simple et double flux', href: '/solutions/ventilation-vmc-simple-et-double-flux' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'chauffage',
+    titre: 'Chauffage, climatisation et eau chaude',
+    groupes: [
+      {
+        titre: 'Pompes à chaleur',
+        image: imgPompesAChaleur,
+        liens: [
+          { nom: 'Climatisation réversible', href: '/solutions/climatisation-reversible-pac-air-air' },
+          { nom: 'Pompe à chaleur air-eau', href: '/solutions/pompe-a-chaleur-air-eau' },
+          { nom: 'Pompe à chaleur géothermique', href: '/solutions/pac-geothermique' },
+        ],
+      },
+      {
+        titre: 'Chaudières',
+        image: imgChaudieres,
+        liens: [
+          { nom: 'Chaudière gaz à condensation', href: '/solutions/chaudiere-gaz-condensation' },
+          { nom: 'Chaudière bois et pellets', href: '/solutions/chaudiere-biomasse-bois-ou-pellets' },
+        ],
+      },
+      {
+        titre: 'Appoint',
+        image: imgAppoint,
+        liens: [
+          { nom: 'Poêle à granulés ou à bois', href: '/solutions/poele-a-granules-ou-a-bois' }, // page à créer
+          { nom: 'Radiateurs', href: '/solutions/radiateurs' }, // page à créer
+        ],
+      },
+      {
+        titre: 'Eau chaude sanitaire',
+        image: imgEauChaude,
+        liens: [
+          { nom: 'Chauffe-eau électrique', href: '/solutions/chauffe-eau-electrique' }, // page à créer
+          { nom: 'Chauffe-eau thermodynamique', href: '/solutions/chauffe-eau-thermodynamique' }, // page à créer
+          { nom: 'Chauffe-eau solaire', href: '/solutions/chauffe-eau-solaire' }, // page à créer
+        ],
+      },
+    ],
+  },
+  {
+    id: 'autonomie',
+    titre: 'Autonomie énergétique',
+    groupes: [
+      {
+        titre: "Production d'électricité",
+        image: imgProductionElectricite,
+        liens: [
+          { nom: 'Panneaux photovoltaïques', href: '/solutions/panneaux-photovoltaiques' },
+        ],
+      },
+      {
+        titre: 'Borne de recharge',
+        image: imgBorneDeRecharge,
+        liens: [
+          { nom: 'Borne de recharge', href: '/solutions/borne-de-recharge' }, // page à créer
+        ],
+      },
+      {
+        titre: 'Système de gestion',
+        image: imgSystemeDeGestion,
+        liens: [
+          { nom: 'Batterie', href: '/solutions/batterie' }, // page à créer
+          { nom: 'Thermostat et domotique', href: '/solutions/thermostat-et-domotique' }, // page à créer
+        ],
+      },
+    ],
+  },
 ];
+
+// -------------------------------------------------------------------------
+// LIENS DIRECTS DU MENU PRINCIPAL (ordinateur)
+// Affichés après les 3 entrées déroulantes, sans sous-menu, dans le menu
+// ordinateur ET dans le tiroir mobile.
+// « Maison autonome » a été retiré : il pointait vers /qui-sommes-nous, déjà
+// lié sous un autre nom. Il sera remis quand il aura sa propre page.
+// -------------------------------------------------------------------------
+const liensDirects = [
+  { nom: 'Rénovation globale', href: '/solutions/renovation-energetique-globale' }, // page à migrer
+];
+
+// -------------------------------------------------------------------------
+// LIENS SECONDAIRES (pages d'information)
+// -------------------------------------------------------------------------
+const liensSecondaires = [
+  { nom: 'Aides rénovation', href: '/aides-renovation' },
+  { nom: 'Blog et conseils', href: '/blog' },
+  { nom: 'Qui sommes-nous', href: '/qui-sommes-nous' }, // page à créer
+];
+
+// -------------------------------------------------------------------------
+// PAGE EN COURS
+// Sert à signaler aux lecteurs d'écran (aria-current) et visuellement le
+// lien de la page sur laquelle on se trouve.
+// -------------------------------------------------------------------------
+const cheminActuel = Astro.url.pathname.replace(/\/$/, '') || '/';
+const estPageActuelle = (href: string) => cheminActuel === href;
 ---
 
-{/* ========================================================================================
-    CONTENEUR PRINCIPAL DU HEADER
-    - "sticky top-0 z-50" : Reste visible lors du scroll tout en restant au-dessus des sections.
-    - "bg-white/95 backdrop-blur-md" : Effet de flou moderne tout en assurant un contraste net.
-    - "border-b border-slate-200" : Séparation discrète avec le contenu principal.
-========================================================================================= */}
-<header class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-sm">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    
-    {/* ====================================================================================
-        LIGNE 1 : LOGO + ACTIONS SUPÉRIEURES (Version Mobile & Écrans Larges)
-        - Sur mobile : Logo à gauche, bouton devis direct et burger à droite.
-        - Sur desktop (lg:) : Affiche les liens de second niveau (Aides, Blog, Qui sommes-nous)
-          et le bouton CTA principal mis en avant.
-    ===================================================================================== */}
-    <div class="flex items-center justify-between py-3.5 lg:border-b lg:border-slate-100">
-      
-      {/* IDENTITÉ DE MARQUE (LOGO) */}
+{/* =========================================================================
+    LIEN D'ÉVITEMENT
+    Invisible tant qu'on ne navigue pas au clavier : permet de sauter le
+    menu et d'aller directement au contenu (exigence d'accessibilité).
+========================================================================== */}
+<a
+  href="#main-content"
+  class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:inline-flex focus:min-h-12 focus:items-center focus:rounded-bouton focus:bg-marque-900 focus:px-5 focus:text-texte-inverse"
+>
+  Aller au contenu
+</a>
+
+{/* =========================================================================
+    EN-TÊTE
+    - sticky top-0 : reste visible pendant le défilement.
+    - relative : sert de repère au panneau du méga-menu, qui s'ouvre
+      juste en dessous, sur toute la largeur.
+========================================================================== */}
+<header id="site-header" class="sticky top-0 z-50 border-b border-bordure-douce bg-fond">
+  <div class="mx-auto max-w-site px-gouttiere">
+
+    {/* ---------------------------------------------------------------------
+        LIGNE 1 : logo, liens secondaires (ordinateur), bouton devis,
+        bouton « Menu » (mobile et tablette).
+    ---------------------------------------------------------------------- */}
+    <div class="flex min-h-18 items-center justify-between gap-4">
+
+      {/* LOGO : retour à l'accueil */}
       <a
         href="/"
-        aria-label="Akelia - Retour à l'accueil"
-        class="inline-flex items-center gap-1 font-black text-2xl tracking-tight text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-lg py-1 px-2 -ml-2 transition-transform hover:scale-105"
+        aria-label="Akelia, retour à l'accueil"
+        class="inline-flex min-h-12 items-center rounded-petit text-h3 font-bold text-marque-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marque-900"
       >
-        <span>Akelia</span>
+        Akelia
       </a>
 
-      {/* LIENS HAUTS DE NAVIGATION (Desktop uniquement : lg:flex) */}
-      <div class="hidden lg:flex lg:items-center lg:gap-8">
-        <a
-          href="/services"
-          class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors"
-        >
-          Tous nos services
-        </a>
-        <a
-          href="/aides-renovation"
-          class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors"
-        >
-          Aides rénovation
-        </a>
-        <a
-          href="/blog"
-          class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors"
-        >
-          Blog et conseils
-        </a>
-        <a
-          href="/qui-sommes-nous"
-          class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors"
-        >
-          Qui sommes nous ?
-        </a>
-      </div>
+      <div class="flex items-center gap-2 xl:gap-6">
 
-      {/* ACTIONS RAPIDES (Bouton CTA Devis + Bouton Hamburger pour mobile) */}
-      <div class="flex items-center gap-3">
-        {/* Bouton Devis (toujours visible pour maximiser la conversion commerciale) */}
+        {/* LIENS SECONDAIRES : visibles à partir de 1280px uniquement */}
+        <nav aria-label="Informations" class="hidden xl:block">
+          <ul class="flex items-center gap-1">
+            {liensSecondaires.map((lien) => (
+              <li>
+                <a
+                  href={lien.href}
+                  aria-current={estPageActuelle(lien.href) ? 'page' : undefined}
+                  class="inline-flex min-h-11 items-center rounded-petit px-3 text-base text-neutre-700 underline-offset-4 hover:bg-secondaire-50 hover:text-marque-900 aria-[current=page]:font-semibold aria-[current=page]:text-marque-900 aria-[current=page]:underline focus-visible:outline-2 focus-visible:outline-marque-900"
+                >
+                  {lien.nom}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* BOUTON D'ACTION : toujours visible, même sur téléphone.
+            Sur les très petits écrans (moins de 360px), seul le mot « Devis »
+            s'affiche pour que le bouton tienne sur une ligne ; les lecteurs
+            d'écran annoncent toujours « Obtenir un devis ». */}
         <a
           href="/devis"
-          class="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-3.5 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors"
+          class="inline-flex min-h-12 items-center whitespace-nowrap rounded-bouton bg-action-500 px-4 text-base font-semibold text-texte shadow-legere hover:bg-action-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marque-900 sm:px-5"
         >
-          Obtenir un devis
+          <span class="max-[22.5rem]:sr-only">Obtenir un&nbsp;</span>
+          <span class="min-[22.5rem]:hidden">Devis</span>
+          <span class="max-[22.5rem]:hidden">devis</span>
         </a>
 
-        {/* Bouton Toggle Mobile : visible sur mobile/tablette (< lg), masqué sur grand écran (lg:hidden) */}
+        {/* BOUTON « MENU » : ouvre le tiroir latéral, masqué à partir de 1280px */}
         <button
-          id="mobile-nav-toggle"
           type="button"
+          id="tiroir-ouvrir"
+          aria-controls="tiroir-mobile"
           aria-expanded="false"
-          aria-controls="mobile-nav-drawer"
-          aria-label="Ouvrir le menu de navigation"
-          class="inline-flex items-center justify-center rounded-lg p-2 text-slate-700 hover:bg-slate-100 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 lg:hidden"
+          class="inline-flex min-h-12 min-w-12 flex-col items-center justify-center rounded-bouton text-marque-900 hover:bg-secondaire-50 focus-visible:outline-2 focus-visible:outline-marque-900 xl:hidden"
         >
-          {/* Icône SVG 3 barres (burger) transformable */}
-          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          <svg class="size-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
+          {/* Le mot « Menu » sous l'icône aide les personnes qui ne
+              reconnaissent pas l'icône « burger ». */}
+          <span class="text-legende font-semibold">Menu</span>
         </button>
       </div>
     </div>
 
-    {/* ====================================================================================
-        LIGNE 2 : MÉGA-MENU DES SOLUTIONS (Desktop uniquement : caché sur mobile, actif dès lg:)
-        - Conçu pour remplacer le menu bas Webflow (Isolation, Chauffage, Autonomie, Rénovation)
-        - Utilise les groupes hover Tailwind ("group", "group-hover:block", etc.)
-    ===================================================================================== */}
-    <nav aria-label="Menu principal des solutions" class="hidden lg:flex lg:items-center lg:gap-6 py-2.5">
-      
-      {/* ----------------------------------------------------------------------------------
-          1. SOUS-MENU : ISOLATION & MENUISERIES
-      ---------------------------------------------------------------------------------- */}
-      <div class="relative group">
-        <button
-          type="button"
-          aria-expanded="false"
-          class="inline-flex items-center gap-1.5 py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none"
-        >
-          <span>Isolation et menuiseries</span>
-          <svg class="h-4 w-4 text-slate-400 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
+    {/* ---------------------------------------------------------------------
+        LIGNE 2 : MÉGA-MENU (ordinateur, à partir de 1280px)
+        - 3 entrées déroulantes, puis 2 liens directs (sans sous-menu).
+        - Un seul panneau ouvert à la fois.
+        - Ouverture : au SURVOL avec une souris, au CLIC sur écran tactile,
+          avec Entrée ou Espace au clavier (voir le script en bas du fichier).
+        - Fermeture : la souris quitte l'entrée (après 200ms), nouveau clic,
+          touche Échap, clic ailleurs, ou focus clavier sorti du menu.
+    ---------------------------------------------------------------------- */}
+    <nav id="mega-nav" aria-label="Nos solutions" class="hidden border-t border-bordure-douce xl:block">
+      <ul class="flex items-stretch gap-1">
+        {menuSolutions.map((entree) => (
+          <li data-mega-entree>
+            {/* ONGLET : fond blanc en permanence.
+                - Fermé : texte en graisse 400, soulignement transparent.
+                - Ouvert (aria-expanded) : soulignement orange de 4px et
+                  graisse 600. Le soulignement touche le haut du panneau :
+                  onglet et panneau forment un seul bloc.
+                - Le libellé est écrit deux fois, superposés : la copie
+                  invisible en graisse 600 réserve la largeur, pour que les
+                  onglets ne bougent pas quand la graisse change. */}
+            <button
+              type="button"
+              data-mega-bouton
+              aria-expanded="false"
+              aria-controls={`mega-${entree.id}`}
+              class="group inline-flex min-h-12 items-center gap-2 border-b-4 border-transparent px-3 text-base text-marque-900 aria-expanded:border-action-500 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-marque-900"
+            >
+              <span class="grid">
+                <span aria-hidden="true" class="invisible col-start-1 row-start-1 font-semibold">{entree.titre}</span>
+                <span class="col-start-1 row-start-1 font-normal group-aria-expanded:font-semibold">{entree.titre}</span>
+              </span>
+              {/* Chevron : pivote quand le panneau est ouvert */}
+              <svg class="size-5 transition-transform group-aria-expanded:rotate-180 motion-reduce:transition-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
 
-        {/* Panneau déroulant Méga-Menu avec images */}
-        <div class="invisible absolute left-0 top-full z-40 w-[720px] origin-top-left rounded-2xl border border-slate-200 bg-white p-6 shadow-xl opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-          <div class="grid grid-cols-3 gap-6">
-            
-            {/* Colonne 1 : Isolation */}
-            <div class="space-y-3">
-              <div class="overflow-hidden rounded-xl bg-slate-100 h-28 border border-slate-100">
-                <img
-                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696647b4bef277899edacc11_Isolation.png"
-                  alt="Isolation thermique des combles et murs"
-                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
+            {/* PANNEAU DU MÉGA-MENU : prolongement du Header, pas une popup.
+                - absolute inset-x-0 top-full : part exactement du bas du
+                  Header (il recouvre son trait gris) et occupe toute la
+                  largeur de l'écran.
+                - Même fond blanc que le Header, sans ombre ni arrondi.
+                - Trait noir net de 2px en bas, qui le sépare de la page. */}
+            <div
+              id={`mega-${entree.id}`}
+              data-mega-panneau
+              hidden
+              class="absolute inset-x-0 top-full border-b-2 border-bordure bg-fond"
+            >
+              <div class="mx-auto grid max-w-site grid-cols-4 gap-bloc px-gouttiere pt-6 pb-bloc">
+                {entree.groupes.map((groupe) => (
+                  <div>
+                    {/* IMAGE DE LA SOUS-CATÉGORIE (bannière 350 × 120, reprise
+                        du site d'origine). Elle illustre seulement : hauteur
+                        limitée à 96px, et alt="" car le titre juste en
+                        dessous dit déjà de quoi il s'agit. Si une image
+                        manque, l'espace reste vide (aucune image générique). */}
+                    <div class="mb-3 aspect-[350/120] max-h-24 w-full bg-neutre-50">
+                      {groupe.image && (
+                        <Image src={groupe.image} alt="" width={350} height={120} class="h-full w-full object-cover" />
+                      )}
+                    </div>
+                    {/* Titre de colonne (non cliquable) */}
+                    <p class="mb-2 border-b-2 border-action-500 pb-2 text-h4 text-marque-900">
+                      {groupe.titre}
+                    </p>
+                    <ul>
+                      {groupe.liens.map((lien) => (
+                        <li>
+                          <a
+                            href={lien.href}
+                            aria-current={estPageActuelle(lien.href) ? 'page' : undefined}
+                            class="flex min-h-11 items-center rounded-petit px-2 text-corps text-texte hover:bg-secondaire-50 hover:text-marque-900 aria-[current=page]:font-semibold aria-[current=page]:text-marque-900 focus-visible:outline-2 focus-visible:outline-marque-900"
+                          >
+                            {lien.nom}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
-              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Isolation</h3>
-              <ul class="space-y-2 text-xs">
-                <li><a href="/solutions/isolation-thermique-toiture-comble" class="text-slate-600 hover:text-emerald-600 block transition-colors">Isolation toît / combles</a></li>
-                <li><a href="/solutions/isolation-thermique-par-linterieur-iti" class="text-slate-600 hover:text-emerald-600 block transition-colors">Isolation par l'intérieur (ITI)</a></li>
-                <li><a href="/solutions/isolation-thermique-par-l-exterieur-ite" class="text-slate-600 hover:text-emerald-600 block transition-colors">Isolation par l'extérieur (ITE)</a></li>
-              </ul>
             </div>
+          </li>
+        ))}
 
-            {/* Colonne 2 : Menuiseries */}
-            <div class="space-y-3">
-              <div class="overflow-hidden rounded-xl bg-slate-100 h-28 border border-slate-100">
-                <img
-                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696647b4304186491ebad18d_menuiserie.png"
-                  alt="Menuiseries fenêtres et volets double vitrage"
-                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
+        {/* LIENS DIRECTS (sans sous-menu), après les 3 entrées déroulantes.
+            Même style que les onglets : fond blanc, graisse 400, soulignement
+            orange au survol et sur la page en cours (avec graisse 600). */}
+        {liensDirects.map((lien) => (
+          <li>
+            <a
+              href={lien.href}
+              aria-current={estPageActuelle(lien.href) ? 'page' : undefined}
+              class="group inline-flex min-h-12 items-center border-b-4 border-transparent px-3 text-base text-marque-900 hover:border-action-500 aria-[current=page]:border-action-500 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-marque-900"
+            >
+              <span class="grid">
+                <span aria-hidden="true" class="invisible col-start-1 row-start-1 font-semibold">{lien.nom}</span>
+                <span class="col-start-1 row-start-1 font-normal group-aria-[current=page]:font-semibold">{lien.nom}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+{/* =========================================================================
+    TIROIR LATÉRAL (téléphone, tablette et petit ordinateur, sous 1280px)
+    - Placé hors du <header> pour couvrir tout l'écran.
+    - Fermé : « invisible » le retire de la navigation clavier et des
+      lecteurs d'écran.
+    - Ouvert : le script ajoute l'attribut data-open, ce qui active toutes
+      les classes « group-data-open:… » (fond assombri, tiroir qui glisse).
+========================================================================== */}
+<div id="tiroir-mobile" class="group invisible fixed inset-0 z-50 data-open:visible xl:hidden">
+
+  {/* Fond assombri : un clic dessus ferme le tiroir */}
+  <div
+    data-tiroir-fermer
+    class="absolute inset-0 bg-marque-900/60 opacity-0 transition-opacity group-data-open:opacity-100 motion-reduce:transition-none"
+    aria-hidden="true"
+  ></div>
+
+  {/* Panneau du tiroir, qui glisse depuis la droite */}
+  <div
+    role="dialog"
+    aria-modal="true"
+    aria-label="Menu principal"
+    class="absolute inset-y-0 right-0 flex w-full max-w-md translate-x-full flex-col bg-fond shadow-elevee transition-transform group-data-open:translate-x-0 motion-reduce:transition-none"
+  >
+    {/* En-tête du tiroir : titre + bouton fermer */}
+    <div class="flex min-h-18 items-center justify-between border-b border-bordure-douce px-gouttiere">
+      <p class="text-h4 text-marque-900">Menu</p>
+      <button
+        type="button"
+        id="tiroir-fermer"
+        data-tiroir-fermer
+        class="inline-flex min-h-12 items-center gap-2 rounded-bouton px-3 font-semibold text-marque-900 hover:bg-secondaire-50 focus-visible:outline-2 focus-visible:outline-marque-900"
+      >
+        Fermer
+        <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    {/* Contenu défilant du tiroir */}
+    <nav aria-label="Menu principal" class="flex-1 overflow-y-auto px-gouttiere py-6">
+
+      {/* SOLUTIONS : un accordéon par entrée du méga-menu.
+          <details> fonctionne sans JavaScript. */}
+      <ul class="space-y-2">
+        {menuSolutions.map((entree) => (
+          <li>
+            <details class="group/accordeon rounded-carte border border-bordure-douce open:bg-secondaire-50">
+              <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 rounded-carte px-4 text-corps font-semibold text-marque-900 focus-visible:outline-2 focus-visible:outline-marque-900 [&::-webkit-details-marker]:hidden">
+                {entree.titre}
+                <svg class="size-6 shrink-0 transition-transform group-open/accordeon:rotate-180 motion-reduce:transition-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div class="space-y-4 px-4 pb-4">
+                {entree.groupes.map((groupe) => (
+                  <div>
+                    <p class="pt-2 text-petit font-semibold uppercase tracking-wide text-neutre-700">
+                      {groupe.titre}
+                    </p>
+                    <ul>
+                      {groupe.liens.map((lien) => (
+                        <li>
+                          <a
+                            href={lien.href}
+                            aria-current={estPageActuelle(lien.href) ? 'page' : undefined}
+                            class="flex min-h-12 items-center rounded-petit px-2 text-corps text-texte hover:bg-fond aria-[current=page]:font-semibold aria-[current=page]:text-marque-900 focus-visible:outline-2 focus-visible:outline-marque-900"
+                          >
+                            {lien.nom}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
-              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Menuiseries</h3>
-              <ul class="space-y-2 text-xs">
-                <li><a href="/solutions/menuiseries-fenetres-volets" class="text-slate-600 hover:text-emerald-600 block transition-colors">Fenêtres & volets performants</a></li>
-              </ul>
-            </div>
+            </details>
+          </li>
+        ))}
+      </ul>
 
-            {/* Colonne 3 : Ventilation */}
-            <div class="space-y-3">
-              <div class="overflow-hidden rounded-xl bg-slate-100 h-28 border border-slate-100">
-                <img
-                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696647b4530ba6197e9f2209_vmc-double_flux.png"
-                  alt="Centrale VMC double flux connectée"
-                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              </div>
-              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Ventilation</h3>
-              <ul class="space-y-2 text-xs">
-                <li><a href="/solutions/ventilation-vmc-simple-et-double-flux" class="text-slate-600 hover:text-emerald-600 block transition-colors">VMC simple & double flux</a></li>
-              </ul>
-            </div>
+      {/* LIENS DIRECTS (« Rénovation globale ») : après les 3 accordéons,
+          avant les liens secondaires. Même cadre que les accordéons, car ils
+          sont du même niveau dans le menu ; une flèche remplace le chevron
+          pour montrer qu'ils ouvrent directement une page. */}
+      <ul class="mt-2 space-y-2">
+        {liensDirects.map((lien) => (
+          <li>
+            <a
+              href={lien.href}
+              aria-current={estPageActuelle(lien.href) ? 'page' : undefined}
+              class="flex min-h-14 items-center justify-between gap-3 rounded-carte border border-bordure-douce px-4 text-corps font-semibold text-marque-900 hover:bg-secondaire-50 aria-[current=page]:border-action-500 aria-[current=page]:bg-action-50 focus-visible:outline-2 focus-visible:outline-marque-900"
+            >
+              {lien.nom}
+              <svg class="size-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          </li>
+        ))}
+      </ul>
 
-          </div>
-        </div>
-      </div>
+      {/* LIENS SECONDAIRES */}
+      <ul class="mt-6 border-t border-bordure-douce pt-4">
+        {liensSecondaires.map((lien) => (
+          <li>
+            <a
+              href={lien.href}
+              aria-current={estPageActuelle(lien.href) ? 'page' : undefined}
+              class="flex min-h-12 items-center rounded-petit px-4 text-corps text-texte hover:bg-secondaire-50 aria-[current=page]:font-semibold aria-[current=page]:text-marque-900 focus-visible:outline-2 focus-visible:outline-marque-900"
+            >
+              {lien.nom}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
 
-      {/* ----------------------------------------------------------------------------------
-          2. SOUS-MENU : CHAUFFAGE, CLIMATISATION & EAU CHAUDE
-      ---------------------------------------------------------------------------------- */}
-      <div class="relative group">
-        <button
-          type="button"
-          aria-expanded="false"
-          class="inline-flex items-center gap-1.5 py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none"
-        >
-          <span>Chauffage & Eau chaude</span>
-          <svg class="h-4 w-4 text-slate-400 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        {/* Panneau déroulant Méga-Menu 4 colonnes */}
-        <div class="invisible absolute -left-20 top-full z-40 w-[890px] origin-top-left rounded-2xl border border-slate-200 bg-white p-6 shadow-xl opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-          <div class="grid grid-cols-4 gap-5">
-            
-            {/* Colonne 1 : PAC */}
-            <div class="space-y-3">
-              <div class="overflow-hidden rounded-xl bg-slate-100 h-24 border border-slate-100">
-                <img
-                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696653dc3c79cd8b88380ce3_Installer%20une%20pompe%20a%CC%80%20chaleur%20en%20appartement%20est-ce%20possible%20_%20Guide%20Complet%20copie.jpg"
-                  alt="Pompe à chaleur moderne"
-                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              </div>
-              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Pompes à chaleur</h3>
-              <ul class="space-y-2 text-xs">
-                <li><a href="/solutions/climatisation-reversible-pac-air-air" class="text-slate-600 hover:text-emerald-600 block transition-colors">Climatisation réversible</a></li>
-                <li><a href="/solutions/pompe-a-chaleur-air-eau" class="text-slate-600 hover:text-emerald-600 block transition-colors">PAC Air / Eau</a></li>
-                <li><a href="/solutions/pac-geothermique" class="text-slate-600 hover:text-emerald-600 block transition-colors">PAC Géothermique</a></li>
-              </ul>
-            </div>
-
-            {/* Colonne 2 : Chaudières */}
-            <div class="space-y-3">
-              <div class="overflow-hidden rounded-xl bg-slate-100 h-24 border border-slate-100">
-                <img
-                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696653df27d0e303b839cff3_Gemini_Generated_Image_vuo7jjvuo7jjvuo7%20(1).png"
-                  alt="Chaudière à condensation"
-                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              </div>
-              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Chaudières</h3>
-              <ul class="space-y-2 text-xs">
-                <li><a href="/solutions/chaudiere-gaz-condensation" class="text-slate-600 hover:text-emerald-600 block transition-colors">Chaudière condensation gaz</a></li>
-                <li><a href="/solutions/chaudiere-biomasse-bois-ou-pellets" class="text-slate-600 hover:text-emerald-600 block transition-colors">Chaudière biomasse / granulés</a></li>
-              </ul>
-            </div>
-
-            {/* Colonne 3 : Chauffage d'appoint */}
-            <div class="space-y-3">
-              <div class="overflow-hidden rounded-xl bg-slate-100 h-24 border border-slate-100">
-                <img
-                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696653dd0fabe5b3bf0bfadd_Gemini_Generated_Image_eklp7eklp7eklp7e%20copie%202.png"
-                  alt="Poêle à granulés ou à bois contemporain"
-                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              </div>
-              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Appoint</h3>
-              <ul class="space-y-2 text-xs">
-                <li><a href="/services#poele" class="text-slate-600 hover:text-emerald-600 block transition-colors">Poêle à bois / granulés</a></li>
-                <li><a href="/services#radiateurs" class="text-slate-600 hover:text-emerald-600 block transition-colors">Radiateurs inertie basse conso</a></li>
-              </ul>
-            </div>
-
-            {/* Colonne 4 : ECS */}
-            <div class="space-y-3">
-              <div class="overflow-hidden rounded-xl bg-slate-100 h-24 border border-slate-100">
-                <img
-                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696653ddf789ac81a037ead8_Gemini_Generated_Image_4luthr4luthr4lut%20(1).png"
-                  alt="Chauffe-eau thermodynamique"
-                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              </div>
-              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Eau Chaude (ECS)</h3>
-              <ul class="space-y-2 text-xs">
-                <li><a href="/services#chauffe-eau" class="text-slate-600 hover:text-emerald-600 block transition-colors">Chauffe-eau électrique</a></li>
-                <li><a href="/services#chauffe-eau" class="text-slate-600 hover:text-emerald-600 block transition-colors">Chauffe-eau thermodynamique</a></li>
-                <li><a href="/services#chauffe-eau" class="text-slate-600 hover:text-emerald-600 block transition-colors">Chauffe-eau solaire</a></li>
-              </ul>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      {/* ----------------------------------------------------------------------------------
-          3. SOUS-MENU : AUTONOMIE ÉNERGÉTIQUE
-      ---------------------------------------------------------------------------------- */}
-      <div class="relative group">
-        <button
-          type="button"
-          aria-expanded="false"
-          class="inline-flex items-center gap-1.5 py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none"
-        >
-          <span>Autonomie énergétique</span>
-          <svg class="h-4 w-4 text-slate-400 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        {/* Panneau déroulant Méga-Menu Autonomie */}
-        <div class="invisible absolute -left-10 top-full z-40 w-[720px] origin-top-left rounded-2xl border border-slate-200 bg-white p-6 shadow-xl opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-          <div class="grid grid-cols-3 gap-6">
-            
-            {/* Colonne 1 : Panneaux Solaires */}
-            <div class="space-y-3">
-              <div class="overflow-hidden rounded-xl bg-slate-100 h-28 border border-slate-100">
-                <img
-                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/6966662356720f9769775234_oanneaux_photovoltaiques.png"
-                  alt="Installation de panneaux solaires photovoltaïques"
-                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              </div>
-              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Électricité solaire</h3>
-              <ul class="space-y-2 text-xs">
-                <li><a href="/solutions/panneaux-photovoltaiques" class="text-slate-600 hover:text-emerald-600 block transition-colors">Panneaux photovoltaïques</a></li>
-              </ul>
-            </div>
-
-            {/* Colonne 2 : Borne de recharge */}
-            <div class="space-y-3">
-              <div class="overflow-hidden rounded-xl bg-slate-100 h-28 border border-slate-100">
-                <img
-                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696666203c04011decfd2c99_borne%20de%20recharge.png"
-                  alt="Borne de recharge véhicule électrique"
-                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              </div>
-              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Mobilité verte</h3>
-              <ul class="space-y-2 text-xs">
-                <li><a href="/services#bornes" class="text-slate-600 hover:text-emerald-600 block transition-colors">Borne de recharge à domicile</a></li>
-              </ul>
-            </div>
-
-            {/* Colonne 3 : Gestion & Stockage */}
-            <div class="space-y-3">
-              <div class="overflow-hidden rounded-xl bg-slate-100 h-28 border border-slate-100">
-                <img
-                  src="https://cdn.prod.website-files.com/67aa1600ee5cf5b9304c65d9/696666201f01402171c3d9df_batterie_domestique.png"
-                  alt="Batterie de stockage domestique connectée"
-                  class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              </div>
-              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Gestion d'énergie</h3>
-              <ul class="space-y-2 text-xs">
-                <li><a href="/services#electricite" class="text-slate-600 hover:text-emerald-600 block transition-colors">Batteries de stockage</a></li>
-                <li><a href="/services#electricite" class="text-slate-600 hover:text-emerald-600 block transition-colors">Thermostats et domotique</a></li>
-              </ul>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      {/* ----------------------------------------------------------------------------------
-          4. SOUS-MENU : IMPLANTATIONS / VILLES
-      ---------------------------------------------------------------------------------- */}
-      <div class="relative group">
-        <button
-          type="button"
-          aria-expanded="false"
-          class="inline-flex items-center gap-1.5 py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none"
-        >
-          <span>Nos villes</span>
-          <svg class="h-4 w-4 text-slate-400 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        {/* Panneau déroulant : grille de 2 colonnes avec les villes */}
-        <div class="invisible absolute -left-4 top-full z-40 w-64 origin-top-left rounded-2xl border border-slate-200 bg-white p-4 shadow-xl opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-          <p class="px-2 pb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Intervention locale</p>
-          <div class="grid grid-cols-2 gap-1 text-sm">
-            {citiesList.map((city) => (
-              <a
-                href={city.href}
-                class="rounded-md px-2 py-1.5 text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
-              >
-                {city.name}
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ----------------------------------------------------------------------------------
-          5. LIENS DIRECTS STRATÉGIQUES (Rénovation globale & Maison autonome)
-      ---------------------------------------------------------------------------------- */}
+    {/* BOUTON D'ACTION en bas du tiroir, toujours accessible */}
+    <div class="border-t border-bordure-douce p-gouttiere">
       <a
-        href="/solutions/renovation-energetique-globale
+        href="/devis"
+        class="flex min-h-14 w-full items-center justify-center rounded-bouton bg-action-500 px-5 text-corps font-semibold text-texte shadow-legere hover:bg-action-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marque-900"
+      >
+        Obtenir un devis
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // =========================================================================
+  // COMPORTEMENTS DU HEADER
+  // 1. Méga-menu (ordinateur) : survol à la souris, clic au toucher,
+  //    clavier ; un panneau à la fois.
+  // 2. Tiroir latéral (mobile/tablette) : ouverture, fermeture, focus.
+  // =========================================================================
+
+  // ---------------------------------------------------------------------------
+  // 1. MÉGA-MENU : comportement hybride
+  // - Souris (écran qui gère le survol ET pointeur précis) : le panneau
+  //   s'ouvre au survol de l'entrée et se referme 200ms après que la souris
+  //   l'a quittée. Ce délai évite une fermeture intempestive quand la souris
+  //   passe du bouton au panneau.
+  // - Écran tactile : ouverture et fermeture au toucher (clic).
+  // - Clavier : Entrée ou Espace ouvre/ferme, Échap ferme, et le panneau se
+  //   ferme quand le focus quitte le menu.
+  // ---------------------------------------------------------------------------
+  const boutonsMega = document.querySelectorAll<HTMLButtonElement>('[data-mega-bouton]');
+  const survolPossible = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const DELAI_FERMETURE = 200; // en millisecondes
+  let minuteurFermeture: number | undefined;
+
+  /** Renvoie le panneau commandé par un bouton du méga-menu. */
+  function panneauDe(bouton: HTMLButtonElement) {
+    return document.getElementById(bouton.getAttribute('aria-controls')!);
+  }
+
+  /** Ferme tous les panneaux du méga-menu. */
+  function fermerMega() {
+    window.clearTimeout(minuteurFermeture);
+    boutonsMega.forEach((bouton) => {
+      bouton.setAttribute('aria-expanded', 'false');
+      const panneau = panneauDe(bouton);
+      if (panneau) panneau.hidden = true;
+    });
+  }
+
+  /** Ouvre le panneau d'un bouton (et ferme les autres). */
+  function ouvrirMega(bouton: HTMLButtonElement) {
+    fermerMega();
+    bouton.setAttribute('aria-expanded', 'true');
+    const panneau = panneauDe(bouton);
+    if (panneau) panneau.hidden = false;
+  }
+
+  boutonsMega.forEach((bouton) => {
+    // CLIC / TOUCHER / CLAVIER
+    bouton.addEventListener('click', (evenement) => {
+      // Avec une souris, le panneau est déjà ouvert par le survol : un clic
+      // ne doit pas le refermer. (evenement.detail vaut 0 quand le « clic »
+      // vient du clavier : dans ce cas, on bascule normalement.)
+      if (survolPossible.matches && evenement.detail > 0) {
+        ouvrirMega(bouton);
+        return;
+      }
+      const dejaOuvert = bouton.getAttribute('aria-expanded') === 'true';
+      if (dejaOuvert) fermerMega();
+      else ouvrirMega(bouton);
+    });
+
+    // SURVOL À LA SOURIS : écouté sur l'entrée entière (bouton + panneau),
+    // pour que le panneau reste ouvert tant que la souris est dessus.
+    const entree = bouton.closest<HTMLElement>('[data-mega-entree]');
+    entree?.addEventListener('pointerenter', (evenement) => {
+      if (evenement.pointerType !== 'mouse' || !survolPossible.matches) return;
+      window.clearTimeout(minuteurFermeture);
+      if (bouton.getAttribute('aria-expanded') !== 'true') ouvrirMega(bouton);
+    });
+    entree?.addEventListener('pointerleave', (evenement) => {
+      if (evenement.pointerType !== 'mouse' || !survolPossible.matches) return;
+      window.clearTimeout(minuteurFermeture);
+      minuteurFermeture = window.setTimeout(fermerMega, DELAI_FERMETURE);
+    });
+  });
+
+  // Clic en dehors du header : on referme le méga-menu.
+  document.addEventListener('click', (evenement) => {
+    const header = document.getElementById('site-header');
+    if (header && !header.contains(evenement.target as Node)) fermerMega();
+  });
+
+  // Focus clavier sorti du menu (Tab après le dernier lien) : on referme.
+  document.getElementById('mega-nav')?.addEventListener('focusout', (evenement) => {
+    const nav = evenement.currentTarget as HTMLElement;
+    if (!nav.contains(evenement.relatedTarget as Node | null)) fermerMega();
+  });
+
+  // ---------------------------------------------------------------------------
+  // 2. TIROIR LATÉRAL
+  // ---------------------------------------------------------------------------
+  const tiroir = document.getElementById('tiroir-mobile');
+  const boutonOuvrir = document.getElementById('tiroir-ouvrir');
+  const boutonFermer = document.getElementById('tiroir-fermer');
+
+  function ouvrirTiroir() {
+    if (!tiroir || !boutonOuvrir) return;
+    tiroir.setAttribute('data-open', '');
+    boutonOuvrir.setAttribute('aria-expanded', 'true');
+    // Empêche la page de défiler derrière le tiroir.
+    document.documentElement.classList.add('overflow-hidden');
+    // Place le focus sur « Fermer » pour les utilisateurs du clavier.
+    boutonFermer?.focus();
+  }
+
+  function fermerTiroir() {
+    if (!tiroir || !boutonOuvrir || !tiroir.hasAttribute('data-open')) return;
+    tiroir.removeAttribute('data-open');
+    boutonOuvrir.setAttribute('aria-expanded', 'false');
+    document.documentElement.classList.remove('overflow-hidden');
+    // Rend le focus au bouton « Menu ».
+    boutonOuvrir.focus();
+  }
+
+  boutonOuvrir?.addEventListener('click', ouvrirTiroir);
+  document.querySelectorAll('[data-tiroir-fermer]').forEach((element) => {
+    element.addEventListener('click', fermerTiroir);
+  });
+
+  // Si l'écran est agrandi au-delà de 1280px (tablette tournée, fenêtre
+  // élargie), le tiroir n'a plus lieu d'être : on le ferme.
+  window.matchMedia('(width >= 80rem)').addEventListener('change', (requete) => {
+    if (requete.matches) fermerTiroir();
+  });
+
+  // ---------------------------------------------------------------------------
+  // TOUCHE ÉCHAP : ferme le méga-menu ou le tiroir, selon ce qui est ouvert.
+  // ---------------------------------------------------------------------------
+  document.addEventListener('keydown', (evenement) => {
+    if (evenement.key !== 'Escape') return;
+    const boutonOuvert = document.querySelector<HTMLButtonElement>('[data-mega-bouton][aria-expanded="true"]');
+    if (boutonOuvert) {
+      fermerMega();
+      boutonOuvert.focus();
+    }
+    fermerTiroir();
+  });
+</script>

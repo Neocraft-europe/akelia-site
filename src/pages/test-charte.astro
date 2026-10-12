@@ -1,0 +1,237 @@
+---
+// =========================================================================
+// PAGE DE TEST DE LA CHARTE (src/pages/test-charte.astro)
+// Objectif : vérifier visuellement les variables du bloc @theme de
+// src/styles/global.css. PAGE TEMPORAIRE : à supprimer avant la mise en ligne.
+// =========================================================================
+
+import '../styles/global.css';
+
+// Les classes sont écrites en entier (et non construites dynamiquement)
+// pour que Tailwind les détecte et génère le CSS correspondant.
+const groupesCouleurs = [
+  {
+    titre: 'Marque',
+    couleurs: [{ nom: 'marque-900', classe: 'bg-marque-900' }],
+  },
+  {
+    titre: 'Action',
+    couleurs: [
+      { nom: 'action-50', classe: 'bg-action-50' },
+      { nom: 'action-100', classe: 'bg-action-100' },
+      { nom: 'action-400', classe: 'bg-action-400' },
+      { nom: 'action-500', classe: 'bg-action-500' },
+      { nom: 'action-600', classe: 'bg-action-600' },
+    ],
+  },
+  {
+    titre: 'Secondaire',
+    couleurs: [
+      { nom: 'secondaire-50', classe: 'bg-secondaire-50' },
+      { nom: 'secondaire-100', classe: 'bg-secondaire-100' },
+      { nom: 'secondaire-400', classe: 'bg-secondaire-400' },
+      { nom: 'secondaire-500', classe: 'bg-secondaire-500' },
+      { nom: 'secondaire-600', classe: 'bg-secondaire-600' },
+    ],
+  },
+  {
+    titre: 'Succès',
+    couleurs: [
+      { nom: 'succes-50', classe: 'bg-succes-50' },
+      { nom: 'succes-600', classe: 'bg-succes-600' },
+    ],
+  },
+  {
+    titre: 'Alerte',
+    couleurs: [
+      { nom: 'alerte-50', classe: 'bg-alerte-50' },
+      { nom: 'alerte-500', classe: 'bg-alerte-500' },
+      { nom: 'alerte-600', classe: 'bg-alerte-600' },
+      { nom: 'alerte-700', classe: 'bg-alerte-700' },
+    ],
+  },
+  {
+    titre: 'Neutre',
+    couleurs: [
+      { nom: 'neutre-50', classe: 'bg-neutre-50' },
+      { nom: 'neutre-100', classe: 'bg-neutre-100' },
+      { nom: 'neutre-400', classe: 'bg-neutre-400' },
+      { nom: 'neutre-500', classe: 'bg-neutre-500' },
+      { nom: 'neutre-700', classe: 'bg-neutre-700' },
+    ],
+  },
+  {
+    titre: 'Bordure, fond et texte',
+    couleurs: [
+      { nom: 'bordure', classe: 'bg-bordure' },
+      { nom: 'bordure-douce', classe: 'bg-bordure-douce' },
+      { nom: 'fond', classe: 'bg-fond' },
+      { nom: 'texte', classe: 'bg-texte' },
+      { nom: 'texte-inverse', classe: 'bg-texte-inverse' },
+    ],
+  },
+];
+
+const tailles = [
+  { nom: 'display', classe: 'text-display', usage: 'Hero uniquement' },
+  { nom: 'h1', classe: 'text-h1', usage: 'Titre principal de la page' },
+  { nom: 'h2', classe: 'text-h2', usage: 'Titres de section' },
+  { nom: 'h3', classe: 'text-h3', usage: 'Sous-titres' },
+  { nom: 'h4', classe: 'text-h4', usage: 'Petits titres de carte' },
+  { nom: 'corps', classe: 'text-corps', usage: 'Texte courant' },
+  { nom: 'petit', classe: 'text-petit', usage: 'Texte secondaire' },
+  { nom: 'legende', classe: 'text-legende', usage: 'Légendes, dates' },
+];
+
+const arrondis = [
+  { nom: 'petit', classe: 'rounded-petit' },
+  { nom: 'bouton', classe: 'rounded-bouton' },
+  { nom: 'carte', classe: 'rounded-carte' },
+  { nom: 'bloc', classe: 'rounded-bloc' },
+  { nom: 'section', classe: 'rounded-section' },
+  { nom: 'pilule', classe: 'rounded-pilule' },
+];
+
+const ombres = [
+  { nom: 'shadow-legere', classe: 'shadow-legere' },
+  { nom: 'shadow-carte', classe: 'shadow-carte' },
+  { nom: 'shadow-elevee', classe: 'shadow-elevee' },
+  { nom: 'inset-shadow-assombrir', classe: 'inset-shadow-assombrir' },
+  { nom: 'inset-shadow-presse', classe: 'inset-shadow-presse' },
+];
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Test de la charte — Akelia</title>
+  </head>
+  <body>
+    <main class="mx-auto max-w-site px-gouttiere py-section">
+      <h1>Test de la charte graphique</h1>
+      <p class="text-neutre-700">
+        Page temporaire de vérification visuelle des variables de
+        <code>src/styles/global.css</code>. Les valeurs affichées sont lues
+        directement dans le CSS.
+      </p>
+
+      {/* ---------- COULEURS ---------- */}
+      <section class="mt-section">
+        <h2>Couleurs</h2>
+        {groupesCouleurs.map((groupe) => (
+          <div class="mt-bloc">
+            <h3>{groupe.titre}</h3>
+            <ul class="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+              {groupe.couleurs.map((couleur) => (
+                <li>
+                  <div class={`h-24 rounded-carte border border-bordure ${couleur.classe}`} />
+                  <p class="mt-2 font-semibold">{couleur.nom}</p>
+                  <p class="text-petit text-neutre-700">
+                    <code>--color-{couleur.nom}</code>
+                    <br />
+                    <span data-var={`--color-${couleur.nom}`} />
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </section>
+
+      {/* ---------- TAILLES DE TEXTE ---------- */}
+      <section class="mt-section">
+        <h2>Tailles de texte</h2>
+        <div class="mt-bloc space-y-8">
+          {tailles.map((taille) => (
+            <div class="border-b border-bordure-douce pb-6">
+              <p class="text-legende text-neutre-500">
+                {taille.classe} — {taille.usage} —{' '}
+                <span data-var={`--text-${taille.nom}`} /> /
+                interligne <span data-var={`--text-${taille.nom}--line-height`} />
+              </p>
+              <p class={taille.classe}>Rénovation énergétique à Toulouse</p>
+            </div>
+          ))}
+        </div>
+
+        <h3 class="mt-bloc">Balises sans classe (styles de base)</h3>
+        <div class="mt-4 rounded-carte border border-bordure p-6">
+          <h1>Titre h1</h1>
+          <h2>Titre h2 de section</h2>
+          <h3>Titre h3</h3>
+          <h4>Titre h4</h4>
+          <p>
+            Paragraphe en texte courant : Source Sans 3, graisse 400. Akelia
+            vous accompagne dans vos travaux de pompe à chaleur, d'isolation et
+            de chauffage, avec les aides de l'État.
+          </p>
+        </div>
+
+        <h3 class="mt-bloc">Graisses</h3>
+        <p class="font-normal">font-normal (400) — Demander mon devis gratuit</p>
+        <p class="font-semibold">font-semibold (600) — Demander mon devis gratuit</p>
+        <p class="font-bold">font-bold (700) — Demander mon devis gratuit</p>
+      </section>
+
+      {/* ---------- ARRONDIS ---------- */}
+      <section class="mt-section">
+        <h2>Arrondis</h2>
+        <ul class="mt-bloc grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
+          {arrondis.map((arrondi) => (
+            <li>
+              <div class={`h-28 border border-bordure bg-secondaire-50 ${arrondi.classe}`} />
+              <p class="mt-2 font-semibold">{arrondi.classe}</p>
+              <p class="text-petit text-neutre-700">
+                <span data-var={`--radius-${arrondi.nom}`} />
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* ---------- OMBRES ---------- */}
+      <section class="mt-section">
+        <h2>Ombres</h2>
+        <ul class="mt-bloc grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5">
+          {ombres.map((ombre) => (
+            <li>
+              <div class={`h-28 rounded-carte bg-fond ${ombre.classe}`} />
+              <p class="mt-3 font-semibold">{ombre.nom}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* ---------- EXEMPLES DE BOUTONS ---------- */}
+      <section class="mt-section">
+        <h2>Exemples de boutons</h2>
+        <div class="mt-bloc flex flex-wrap gap-4">
+          <a href="#" class="rounded-bouton border-2 border-action-500 bg-action-500 px-6 py-3 font-semibold text-texte hover:border-action-600 hover:bg-action-600 hover:shadow-legere hover:inset-shadow-presse">
+            Bouton action
+          </a>
+          <a href="#" class="rounded-bouton bg-secondaire-500 px-6 py-3 font-semibold text-texte hover:bg-secondaire-600">
+            Bouton secondaire
+          </a>
+          <a href="#" class="rounded-bouton bg-succes-600 px-6 py-3 font-semibold text-texte-inverse hover:inset-shadow-assombrir">
+            Bouton validation
+          </a>
+          <a href="#" class="rounded-bouton bg-marque-900 px-6 py-3 font-semibold text-texte-inverse hover:shadow-elevee">
+            Bouton marque
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // Affiche la valeur réelle de chaque variable CSS, lue dans la feuille de style.
+      const styles = getComputedStyle(document.documentElement);
+      document.querySelectorAll<HTMLElement>('[data-var]').forEach((el) => {
+        const valeur = styles.getPropertyValue(el.dataset.var!).trim();
+        el.textContent = valeur || '(non définie)';
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,341 @@
+/* =========================================================================
+   CHARTE GRAPHIQUE AKELIA (src/styles/global.css)
+   -------------------------------------------------------------------------
+   Ce fichier est la SOURCE UNIQUE de la charte : couleurs, polices, tailles
+   de texte, espacements, arrondis et ombres.
+
+   Comment ça marche ?
+   - Chaque variable déclarée dans le bloc @theme ci-dessous crée
+     automatiquement des classes Tailwind utilisables dans les pages.
+     Exemple : --color-action-500 crée bg-action-500, text-action-500,
+     border-action-500…
+   - Pour changer une couleur sur TOUT le site, il suffit de modifier sa
+     valeur ici (le code après les deux-points). Ne changez PAS le nom de
+     la variable (la partie avant les deux-points), sinon les pages qui
+     l'utilisent perdront leur style.
+   - Les noms décrivent un RÔLE (action, marque, alerte…) et non une teinte :
+     si l'orange devient vert demain, « action » reste juste.
+
+   Inventaire d'origine : inventaire-charte.md (racine du projet).
+   ========================================================================= */
+
+
+/* -------------------------------------------------------------------------
+   POLICE : Source Sans 3 (Google Fonts)
+   Graisses chargées : 400 (normal), 600 (semi-gras), 700 (gras), et
+   400 italique (annotations du schéma de la maison, SchemaMaison.astro).
+   Le navigateur ne télécharge l'italique que si une page l'utilise.
+   ⚠️ Cet import DOIT rester AVANT @import "tailwindcss" : en CSS, un
+   @import placé après d'autres règles est ignoré par le navigateur.
+   ------------------------------------------------------------------------- */
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+
+@import "tailwindcss";
+
+
+@theme {
+  /* =======================================================================
+     1. POLICE
+     -----------------------------------------------------------------------
+     --font-base : police de tout le site (classe : font-base).
+     Si Google Fonts ne répond pas, le navigateur utilise la police système
+     de l'appareil, dans l'ordre de la liste.
+     ======================================================================= */
+  --font-base: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+
+  /* =======================================================================
+     2. GRAISSES
+     -----------------------------------------------------------------------
+     Seules 400, 600 et 700 sont chargées. Les graisses fines (100, 200 et
+     300) sont supprimées : elles se lisent mal, surtout pour un public
+     senior. Les classes font-thin, font-extralight et font-light
+     n'existent donc plus.
+     Classes disponibles : font-normal (400), font-semibold (600),
+     font-bold (700).
+     ======================================================================= */
+  --font-weight-thin: initial;
+  --font-weight-extralight: initial;
+  --font-weight-light: initial;
+
+
+  /* =======================================================================
+     3. COULEURS
+     -----------------------------------------------------------------------
+     Chaque couleur s'utilise avec un préfixe selon ce qu'on colore :
+       bg-…     → fond          (ex. bg-marque-900)
+       text-…   → texte         (ex. text-alerte-600)
+       border-… → bordure       (ex. border-bordure)
+     Transparence : ajoutez /XX (en %) après le nom.
+       Exemple : bg-marque-900/60 = bleu nuit à 60 % d'opacité.
+
+     Les nombres suivent la convention Tailwind : 50 = très clair,
+     900 = très foncé. Il manque volontairement certains échelons : on
+     n'a gardé que les teintes réellement utilisées sur l'ancien site.
+     ======================================================================= */
+
+  /* --- MARQUE ------------------------------------------------------------
+     Bleu nuit, identité d'Akelia.
+     Où : fond du header, de la navigation et du footer ; couleur possible
+     des titres. Texte blanc par-dessus (text-texte-inverse). */
+  --color-marque-900: #22323e;
+
+  /* --- ACTION ------------------------------------------------------------
+     Orange des boutons d'appel à l'action (« Demander un devis »…) et des
+     mises en avant.
+     ⚠️ Accessibilité : l'orange sur fond blanc est trop peu contrasté pour
+     du TEXTE. Utilisez-le en fond de bouton ou en bordure, avec un texte
+     noir (text-texte) par-dessus. */
+  --color-action-50: #fff3cd;  /* Fond crème : cartes service, encarts « En bref » */
+  --color-action-100: #fcf1e1; /* Fond pêche : tableaux, blocs avantages */
+  --color-action-400: #f7b844; /* Orange clair : téléphone du header, contact du footer */
+  --color-action-500: #f8ab01; /* Orange principal : boutons et bordures des CTA */
+  --color-action-600: #e69e00; /* Orange foncé : survol des boutons action (hover:bg-action-600) */
+
+  /* --- SECONDAIRE --------------------------------------------------------
+     Bleu ciel, couleur d'accompagnement.
+     Où : fonds de section clairs, liens du blog, mots mis en valeur.
+     ⚠️ Comme l'orange, les teintes 400 et 500 manquent de contraste pour
+     du texte sur fond blanc : à réserver aux fonds, bordures et icônes. */
+  --color-secondaire-50: #e2f4f8;  /* Fond de section clair (le plus utilisé) */
+  --color-secondaire-100: #cde2ff; /* Fond bleu un peu plus soutenu (encadrés) */
+  --color-secondaire-400: #5dcefb; /* Bleu ciel vif : sous-titres, boutons du blog */
+  --color-secondaire-500: #38adec; /* Bleu vif : mots en gras, boutons secondaires */
+  --color-secondaire-600: #0093ce; /* Bleu foncé : survol des boutons secondaires (hover:bg-secondaire-600) */
+
+  /* --- SUCCÈS ------------------------------------------------------------
+     Vert de validation.
+     Où : boutons « Suivant » et « Envoyer » du formulaire de devis, bouton
+     téléphone, messages de confirmation, bonnes notes. */
+  --color-succes-50: #e8f5e9;  /* Fond vert pâle : message de confirmation */
+  --color-succes-600: #1da30f; /* Vert des boutons de validation */
+
+  /* --- ALERTE ------------------------------------------------------------
+     Rouges et roses de mise en garde.
+     Où : erreurs de formulaire, inconvénients, mauvaises notes. */
+  --color-alerte-50: #fce4ec;  /* Fond rose pâle : encart d'avertissement */
+  --color-alerte-500: #ff0256; /* Rose vif : mots soulignés, mauvaises notes */
+  --color-alerte-600: #fc3131; /* Rouge : messages d'erreur des formulaires */
+  --color-alerte-700: #ca0808; /* Rouge foncé : points négatifs importants */
+
+  /* --- NEUTRE ------------------------------------------------------------
+     Gris pour les textes secondaires et les fonds discrets. */
+  --color-neutre-50: #f3f3f5;  /* Fond des champs de formulaire */
+  --color-neutre-100: #e9e9e9; /* Fond gris clair : cartes, survols */
+  --color-neutre-400: #b3b1aa; /* Gris clair : textes très secondaires, notes */
+  --color-neutre-500: #818080; /* Gris moyen : dates, légendes */
+  --color-neutre-700: #535353; /* Gris foncé : texte secondaire lisible */
+
+  /* --- BORDURE -----------------------------------------------------------
+     Les bordures sont NOIRES : c'est un choix volontaire de la charte.
+     border-bordure       → bordure noire standard (cartes, formulaires)
+     border-bordure-douce → bordure grise, pour séparer sans souligner */
+  --color-bordure: #000;
+  --color-bordure-douce: #d1d1d1;
+
+  /* --- FOND ET TEXTE -----------------------------------------------------
+     Couleurs de base de toutes les pages : texte noir sur fond blanc.
+     text-texte-inverse sert pour le texte posé sur un fond foncé
+     (header, footer bleu nuit). */
+  --color-fond: #fff;
+  --color-texte: #000;
+  --color-texte-inverse: #fff;
+
+
+  /* =======================================================================
+     4. TAILLES DE TEXTE ET INTERLIGNES
+     -----------------------------------------------------------------------
+     Chaque taille définit aussi son interligne (--line-height) et sa
+     graisse (--font-weight). La classe text-h1 applique donc les trois
+     d'un coup.
+     Les balises h1 à h4 et le texte courant reçoivent déjà ces styles
+     automatiquement (voir @layer base en bas du fichier) : il n'est pas
+     nécessaire d'ajouter ces classes à la main.
+     Hiérarchie : le h1 est le plus grand titre d'une page. Seul le hero
+     (grand bandeau d'accueil) peut utiliser text-display, plus grand.
+     Les valeurs ci-dessous sont celles des écrans à partir de 768px.
+     Sur téléphone, display et h1 sont réduits automatiquement : voir
+     « RÉDUCTION DES GRANDS TITRES SUR MOBILE » en bas du fichier.
+     ======================================================================= */
+
+  /* Hero uniquement (grand titre du bandeau d'accueil) → text-display */
+  --text-display: 3.5rem;
+  --text-display--line-height: 1.1;
+  --text-display--font-weight: 700;
+
+  /* Titre principal de la page (<h1>), un seul par page → text-h1 */
+  --text-h1: 3rem;
+  --text-h1--line-height: 1.15;
+  --text-h1--font-weight: 700;
+
+  /* Titres de section (<h2>) → text-h2 */
+  --text-h2: 2.5rem;
+  --text-h2--line-height: 1.2;
+  --text-h2--font-weight: 600;
+
+  /* Sous-titres dans une section (<h3>) → text-h3 */
+  --text-h3: 1.5rem;
+  --text-h3--line-height: 1.3;
+  --text-h3--font-weight: 600;
+
+  /* Petits titres : cartes, encadrés (<h4>) → text-h4 */
+  --text-h4: 1.25rem;
+  --text-h4--line-height: 1.4;
+  --text-h4--font-weight: 600;
+
+  /* Texte courant des paragraphes → text-corps
+     Graisse 400 (et non 300 comme sur l'ancien site) : décision
+     d'accessibilité pour un public senior. Ne pas alléger.
+     Taille identique sur TOUS les écrans, téléphone compris : ne pas
+     ajouter de réduction mobile (même raison d'accessibilité). */
+  --text-corps: 1.125rem;
+  --text-corps--line-height: 1.75;
+  --text-corps--font-weight: 400;
+
+  /* Texte secondaire : mentions sous un bouton, infos pratiques → text-petit */
+  --text-petit: 0.9rem;
+  --text-petit--line-height: 1.5;
+
+  /* Légendes d'images, dates, notes de bas de page → text-legende */
+  --text-legende: 0.8rem;
+  --text-legende--line-height: 1.4;
+
+
+  /* =======================================================================
+     5. ESPACEMENTS NOMMÉS
+     -----------------------------------------------------------------------
+     La base Tailwind (1 unité = 4px : p-1 = 4px, p-4 = 16px…) est conservée.
+     Ces trois espacements nommés s'ajoutent aux classes habituelles :
+       py-section  → espace vertical haut/bas d'une section de page
+       gap-bloc    → espace entre deux blocs d'une même section
+       px-gouttiere → marge intérieure gauche/droite du contenu
+     Sur mobile, on peut réduire la section : « py-bloc md:py-section ».
+     ======================================================================= */
+  --spacing-section: 5rem;     /* 80px */
+  --spacing-bloc: 2.5rem;      /* 40px */
+  --spacing-gouttiere: 1.25rem; /* 20px */
+
+
+  /* =======================================================================
+     6. CONTENEURS (largeur maximale du contenu)
+     -----------------------------------------------------------------------
+     max-w-site  → largeur standard des pages (1250px)
+     max-w-large → sections qui ont besoin de plus de place (1400px)
+     À combiner avec mx-auto pour centrer : « mx-auto max-w-site ».
+     ======================================================================= */
+  --container-site: 78.125rem;  /* 1250px */
+  --container-large: 87.5rem;   /* 1400px */
+
+
+  /* =======================================================================
+     7. POINTS DE RUPTURE (tailles d'écran)
+     -----------------------------------------------------------------------
+     Repris de l'ancien site Webflow. Tailwind fonctionne « mobile d'abord » :
+     une classe sans préfixe s'applique partout, un préfixe s'applique À
+     PARTIR de cette largeur.
+       sm: → à partir de 480px (grands téléphones)
+       md: → à partir de 768px (tablettes)
+       lg: → à partir de 992px (ordinateurs)
+     xl: et 2xl: gardent les valeurs par défaut de Tailwind.
+     ======================================================================= */
+  --breakpoint-sm: 30rem;  /* 480px */
+  --breakpoint-md: 48rem;  /* 768px */
+  --breakpoint-lg: 62rem;  /* 992px */
+
+
+  /* =======================================================================
+     8. ARRONDIS DES ANGLES
+     -----------------------------------------------------------------------
+     Classes : rounded-petit, rounded-bouton, rounded-carte, rounded-bloc,
+     rounded-section, rounded-pilule.
+     ======================================================================= */
+  --radius-petit: 5px;      /* Badges, petites étiquettes, champs */
+  --radius-bouton: 8px;     /* Boutons d'action */
+  --radius-carte: 10px;     /* Cartes (services, articles, avis) */
+  --radius-bloc: 15px;      /* Grands encadrés, images */
+  --radius-section: 25px;   /* Sections entières à fond coloré */
+  --radius-pilule: 9999px;  /* Forme pilule ou cercle (avatars, pastilles) */
+
+
+  /* =======================================================================
+     9. OMBRES
+     -----------------------------------------------------------------------
+     Ombres portées (classes shadow-…) :
+       shadow-legere → relief discret : boutons, petites cartes
+       shadow-carte  → cartes d'articles, blocs mis en avant
+       shadow-elevee → carte au survol, éléments flottants
+     Ombres intérieures (classes inset-shadow-…), pour les survols :
+       inset-shadow-assombrir → assombrit uniformément un bouton
+       inset-shadow-presse    → effet « bouton enfoncé »
+     Les deux familles se combinent :
+       « hover:shadow-legere hover:inset-shadow-presse »
+     ======================================================================= */
+  --shadow-legere: 0 2px 5px #00000026;
+  --shadow-carte: 0 2px 11px #00000029;
+  --shadow-elevee: 0 4px 12px 4px #0000004d;
+
+  --inset-shadow-assombrir: inset 0 0 0 100px #00000026;
+  --inset-shadow-presse: inset 0 0 5px 6px #0000001a;
+}
+
+
+/* =========================================================================
+   STYLES DE BASE DES BALISES
+   -------------------------------------------------------------------------
+   Appliqués automatiquement à toutes les pages, sans classe à ajouter.
+   Une classe Tailwind posée sur un élément l'emporte toujours sur ces
+   styles (ex. <h2 class="text-h3"> affiche un h2 à la taille d'un h3).
+   ========================================================================= */
+@layer base {
+  /* Texte courant : Source Sans 3, 1.125rem, interligne 1.75, graisse 400,
+     noir sur fond blanc. */
+  body {
+    font-family: var(--font-base);
+    font-size: var(--text-corps);
+    line-height: var(--text-corps--line-height);
+    font-weight: var(--text-corps--font-weight);
+    color: var(--color-texte);
+    background-color: var(--color-fond);
+  }
+
+  h1 {
+    font-size: var(--text-h1);
+    line-height: var(--text-h1--line-height);
+    font-weight: var(--text-h1--font-weight);
+  }
+
+  h2 {
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    font-weight: var(--text-h2--font-weight);
+  }
+
+  h3 {
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    font-weight: var(--text-h3--font-weight);
+  }
+
+  h4 {
+    font-size: var(--text-h4);
+    line-height: var(--text-h4--line-height);
+    font-weight: var(--text-h4--font-weight);
+  }
+
+  /* -----------------------------------------------------------------------
+     RÉDUCTION DES GRANDS TITRES SUR MOBILE
+     En dessous de 768px (breakpoint md), le display et le h1 sont réduits
+     pour qu'un long titre ne remplisse pas tout l'écran du téléphone.
+     La réduction s'applique partout : balises <h1> ET classes text-h1 /
+     text-display.
+     Seuls display et h1 sont concernés. Le texte courant (text-corps)
+     reste volontairement à 1.125rem sur tous les écrans.
+     ----------------------------------------------------------------------- */
+  :root {
+    @variant max-md {
+      --text-display: 1.75rem;
+      --text-h1: 2.2rem;
+    }
+  }
+}

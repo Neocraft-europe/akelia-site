@@ -1,0 +1,137 @@
+---
+// =========================================================================
+// COMPOSANT MÉTHODE (src/components/Methode.astro)
+// -------------------------------------------------------------------------
+// Section 2 de la page d'accueil, placée juste après le Hero.
+// Elle regroupe deux blocs distincts, chacun dans son propre sous-composant
+// (pour que chaque fichier reste court et facile à modifier) :
+//
+//   1. MethodeEtapes.astro → « Votre logement autonome » : la méthode en
+//      4 étapes ordonnées, grands numéros orange. Fond blanc.
+//   2. MethodeFacons.astro → « Vous pilotez, ou on pilote ? » : deux
+//      blocs statiques qui se touchent (un blanc, un bleu nuit), chacun
+//      avec un bouton. Fond blanc, traits noirs en haut et en bas.
+//
+// Les deux blocs sont sur fond blanc (depuis l'étape 23) : c'est le trait
+// noir en haut du bloc 2 qui les sépare.
+//
+// ANIMATION D'ENTRÉE (même technique que SchemaMaison.astro) :
+// AUCUNE animation en boucle. L'animation se joue quand 30 % du bloc est
+// visible, et SE REJOUE à chaque retour du bloc à l'écran (étape 21), mais
+// SEULEMENT si le bloc a COMPLÈTEMENT quitté l'écran entre-temps : un petit
+// défilement au bord du bloc ne la relance jamais (pas de clignotement).
+// (Le schéma du hero, lui, ne se joue qu'une fois : non concerné.)
+// - Étapes : apparition l'une après l'autre (fondu et léger glissement,
+//   120ms d'écart) pendant que la ligne de liaison se trace.
+// - Deux blocs « Vous pilotez… » : fondu, à 80ms d'écart.
+// Mécanisme : le script ci-dessous met data-etat="attente" sur chaque liste
+// portant data-apparition (éléments cachés), puis data-etat="anime" à
+// l'entrée à l'écran ; les animations sont en CSS (<style> plus bas).
+// Quand le bloc est sorti de l'écran, il est remis en « attente » (état
+// initial, invisible puisque hors écran) ; au retour, le passage à
+// « anime » relance les animations CSS depuis le début.
+// - Sans JavaScript, ou sans IntersectionObserver : rien n'est caché,
+//   l'état final est l'état par défaut.
+// - « Réduire les animations » activé : le script ne fait rien, et le CSS
+//   force de toute façon l'état final.
+// =========================================================================
+
+import MethodeEtapes from './MethodeEtapes.astro';
+import MethodeFacons from './MethodeFacons.astro';
+---
+
+<MethodeEtapes />
+<MethodeFacons />
+
+{/* Script minimal, écrit juste après les deux blocs pour s'exécuter avant
+    le premier affichage (pas de clignotement). Déclenchement : 30 % du
+    bloc (la <section>) visible. Sur téléphone, le bloc des étapes est plus
+    haut que l'écran (il ne peut jamais être visible à 30 %) : on déclenche
+    donc aussi dès qu'il occupe 30 % de la hauteur de l'écran.
+    L'observateur reste actif : le bloc est « réarmé » quand il a
+    entièrement quitté l'écran (plus aucun pixel visible), et l'animation
+    se rejoue au retour suivant. Tant qu'il n'a pas entièrement quitté
+    l'écran, rien ne se relance. */}
+<script is:inline>
+  (function () {
+    if (!('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var listes = document.querySelectorAll('[data-apparition]');
+    Array.prototype.forEach.call(listes, function (liste) {
+      var bloc = liste.closest('section') || liste;
+      liste.setAttribute('data-etat', 'attente');
+      // arme : vrai au départ, puis seulement après une sortie complète.
+      var arme = true;
+      var observateur = new IntersectionObserver(function (entrees) {
+        var e = entrees[entrees.length - 1];
+        if (!e.isIntersecting) {
+          // Sorti entièrement de l'écran : remise à l'état initial (sans
+          // effet visible, le bloc est hors écran) et réarmement.
+          liste.setAttribute('data-etat', 'attente');
+          arme = true;
+          return;
+        }
+        var visible = e.intersectionRatio >= 0.3 || e.intersectionRect.height >= 0.3 * window.innerHeight;
+        if (visible && arme) {
+          arme = false;
+          liste.setAttribute('data-etat', 'attente');
+          void liste.offsetWidth; // applique l'état initial avant de relancer
+          liste.setAttribute('data-etat', 'anime');
+        }
+      }, { threshold: [0, 0.1, 0.2, 0.3] });
+      observateur.observe(bloc);
+    });
+  })();
+</script>
+
+{/* Styles globaux : ils visent des éléments des deux sous-composants
+    (classe methode-apparition, attribut data-apparition). */}
+<style is:global>
+  /* En attente : éléments invisibles, ligne non tracée */
+  [data-apparition][data-etat='attente'] .methode-apparition { opacity: 0; }
+  [data-apparition='etapes'][data-etat='attente'] .methode-apparition { transform: translateY(1rem); }
+  [data-apparition='etapes'][data-etat='attente']::before { transform: scaleY(0); transform-origin: top; }
+
+  /* 1. Étapes : 0,4 s chacune, 120 ms d'écart (--rang : 0 à 3) */
+  [data-apparition='etapes'][data-etat='anime'] .methode-apparition {
+    opacity: 0;
+    transform: translateY(1rem);
+    animation: methode-apparition 0.4s ease-out forwards;
+    animation-delay: calc(var(--rang) * 120ms);
+  }
+  /* Ligne de liaison : tracée de la 1re à la dernière étape, pendant toute
+     la durée d'apparition (3 × 120 ms + 0,4 s = 0,76 s), à vitesse
+     constante pour suivre les étapes. */
+  [data-apparition='etapes'][data-etat='anime']::before {
+    transform: scaleY(0);
+    transform-origin: top;
+    animation: methode-trace 0.76s linear forwards;
+  }
+  /* Grand écran (xl:, 1280px et plus) : étapes en ligne, ligne horizontale */
+  @media (width >= 80rem) {
+    [data-apparition='etapes']:is([data-etat='attente'], [data-etat='anime'])::before {
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+  }
+
+  /* 2. Deux cartes : fondu seul, 80 ms d'écart */
+  [data-apparition='facons'][data-etat='anime'] .methode-apparition {
+    opacity: 0;
+    animation: methode-apparition 0.4s ease-out forwards;
+    animation-delay: calc(var(--rang) * 80ms);
+  }
+
+  @keyframes methode-apparition { to { opacity: 1; transform: none; } }
+  @keyframes methode-trace { to { transform: none; } }
+
+  /* Réduire les animations : tout à l'état final, sans aucun mouvement */
+  @media (prefers-reduced-motion: reduce) {
+    [data-apparition] .methode-apparition,
+    [data-apparition]::before {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+</style>

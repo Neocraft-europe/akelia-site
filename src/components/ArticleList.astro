@@ -6,7 +6,7 @@
 
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
-import type { blogCategories } from '../content/config';
+import type { blogCategories } from '../content.config';
 
 export interface Props {
   // Catégorie facultative : si fournie, filtre strictement par cette catégorie
@@ -52,7 +52,7 @@ const filteredPosts = allPosts
               {post.data.category}
             </span>
             <h3 class="mt-2 text-lg font-bold text-slate-900 line-clamp-2">
-              <a href={`/blog/${post.slug}`} class="hover:text-emerald-600">
+              <a href={`/blog/${post.id}`} class="hover:text-emerald-600">
                 {post.data.title}
               </a>
             </h3>
@@ -69,7 +69,7 @@ const filteredPosts = allPosts
                 day: 'numeric',
               })}
             </time>
-            <a href={`/blog/${post.slug}`} class="font-medium text-emerald-600 hover:underline">
+            <a href={`/blog/${post.id}`} class="font-semibold text-emerald-600 hover:underline">
               Lire la suite →
             </a>
           </div>

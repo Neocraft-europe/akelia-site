@@ -5,6 +5,10 @@
 // =========================================================================
 
 import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Methode from '../components/Methode.astro';
+import SimulateurAides from '../components/SimulateurAides.astro';
+import Collectif from '../components/Collectif.astro';
 import ArticleList from '../components/ArticleList.astro';
 ---
 
@@ -12,31 +16,17 @@ import ArticleList from '../components/ArticleList.astro';
   title="Akelia - Expert Rénovation Énergétique & Solutions Durables"
   description="Accélérez votre transition écologique avec Akelia. Pompes à chaleur, isolation, panneaux solaires et bornes de recharge pour particuliers et professionnels."
 >
-  {/* Section Hero Mobile-First */}
-  <section class="border-b border-slate-200 bg-slate-50 py-16 sm:py-24">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center sm:text-left">
-      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-6xl">
-        L'énergie durable, <span class="text-emerald-600">simplifiée.</span>
-      </h1>
-      <p class="mt-4 max-w-2xl text-lg text-slate-600">
-        Akelia vous accompagne de A à Z dans vos travaux de rénovation énergétique : aides de l’État, audit thermique et installation certifiée.
-      </p>
-      <div class="mt-8 flex flex-col sm:flex-row gap-4 sm:justify-start">
-        <a
-          href="/devis"
-          class="rounded-md bg-emerald-600 px-6 py-3 text-center text-base font-semibold text-white shadow-sm hover:bg-emerald-700"
-        >
-          Obtenir mon étude gratuite
-        </a>
-        <a
-          href="/services"
-          class="rounded-md border border-slate-300 bg-white px-6 py-3 text-center text-base font-semibold text-slate-700 hover:bg-slate-50"
-        >
-          Découvrir nos services
-        </a>
-      </div>
-    </div>
-  </section>
+  {/* Section d'ouverture : titre, sous-titre, bouton devis et raccourcis vers les solutions */}
+  <Hero />
+
+  {/* Section 2 : la méthode en 4 étapes, puis les deux façons de travailler avec nous */}
+  <Methode />
+
+  {/* Section 4 : simulateur d'éligibilité aux aides (3 questions, résultat immédiat, aucune donnée envoyée) */}
+  <SimulateurAides />
+
+  {/* Section 5 : le collectif (réseau national d'artisans locaux) et ses 5 engagements. Fond blanc. */}
+  <Collectif />
 
   {/* Derniers articles du blog */}
   <section class="py-16">

@@ -9,7 +9,7 @@ import Layout from '../layouts/Layout.astro';
   <div class="bg-slate-50 py-12 md:py-20">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-10">
-        <h1 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">Demandez votre devis gratuit</h1>
+        <h1 class="text-3xl font-bold text-slate-900 sm:text-4xl">Demandez votre devis gratuit</h1>
         <p class="mt-4 text-lg text-slate-600">
           Remplissez le formulaire ci-dessous. Nos experts vous recontactent sous 24 à 48 heures pour étudier votre projet et vos aides financières.
         </p>
@@ -34,7 +34,7 @@ import Layout from '../layouts/Layout.astro';
             />
           </div>
 
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
               <label for="email" class="block text-sm font-semibold text-slate-700">Adresse email *</label>
               <input
@@ -87,13 +87,13 @@ import Layout from '../layouts/Layout.astro';
             ></textarea>
           </div>
 
-          <div id="form-feedback" class="hidden rounded-lg p-4 text-sm font-medium"></div>
+          <div id="form-feedback" class="hidden rounded-lg p-4 text-sm font-semibold"></div>
 
           <div>
             <button
               type="submit"
               id="submit-btn"
-              class="w-full inline-flex justify-center items-center rounded-lg bg-emerald-600 px-6 py-3.5 text-base font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition"
+              class="w-full inline-flex justify-center items-center rounded-lg bg-emerald-600 px-6 py-3.5 text-base font-semibold text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition"
             >
               Envoyer ma demande
             </button>
@@ -127,15 +127,15 @@ import Layout from '../layouts/Layout.astro';
           const result = await response.json();
 
           if (response.ok && result.success) {
-            feedback.className = 'rounded-lg p-4 text-sm font-medium bg-emerald-50 text-emerald-800 border border-emerald-200';
+            feedback.className = 'rounded-lg p-4 text-sm font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
             feedback.textContent = 'Merci ! Votre demande a bien été envoyée. Nos experts reviendront vers vous très vite.';
             (form as HTMLFormElement).reset();
           } else {
-            feedback.className = 'rounded-lg p-4 text-sm font-medium bg-rose-50 text-rose-800 border border-rose-200';
+            feedback.className = 'rounded-lg p-4 text-sm font-semibold bg-rose-50 text-rose-800 border border-rose-200';
             feedback.textContent = result.message || "Une erreur est survenue lors de l'envoi du formulaire. Veuillez réessayer.";
           }
         } catch {
-          feedback.className = 'rounded-lg p-4 text-sm font-medium bg-rose-50 text-rose-800 border border-rose-200';
+          feedback.className = 'rounded-lg p-4 text-sm font-semibold bg-rose-50 text-rose-800 border border-rose-200';
           feedback.textContent = 'Impossible de joindre le serveur. Veuillez vérifier votre connexion et réessayer.';
         } finally {
           submitBtn.removeAttribute('disabled');

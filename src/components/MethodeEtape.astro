@@ -1,0 +1,67 @@
+---
+// =========================================================================
+// COMPOSANT : UNE ÉTAPE DE LA MÉTHODE (src/components/MethodeEtape.astro)
+// -------------------------------------------------------------------------
+// Affiche UNE étape de la liste ordonnée de MethodeEtapes.astro : une carte
+// dont l'en-tête porte le NUMÉRO en très grand (l'élément visuel dominant),
+// puis l'icône, le titre et le texte. Doit être placé directement dans la
+// balise <ol> de MethodeEtapes (la ligne de liaison est dans cette <ol>).
+//
+// Props :
+// - etape  : { titre, texte, icone } (voir le tableau dans MethodeEtapes.astro)
+// - numero : rang de l'étape (1, 2, 3…)
+// - total  : nombre total d'étapes (pour « Étape 2 sur 4 »)
+//
+// ANIMATION : classe methode-apparition + variable --rang (0, 1, 2, 3) :
+// voir Methode.astro.
+// =========================================================================
+
+interface Props {
+  etape: { titre: string; texte: string; icone: string };
+  numero: number;
+  total: number;
+}
+
+const { etape, numero, total } = Astro.props;
+---
+
+  {/* relative : la carte passe AU-DESSUS de la ligne de liaison, qui n'est
+      donc visible que dans l'espace entre deux cartes. */}
+  <li class="methode-apparition relative" style={`--rang: ${numero - 1}`}>
+
+    {/* CARTE DE L'ÉTAPE : cadre noir (bordures noires de la charte).
+        Marge intérieure de 16px sur téléphone, 20px au-delà. */}
+    <div class="h-full rounded-carte border-2 border-bordure bg-fond p-4 md:p-5">
+
+      {/* EN-TÊTE (l'ordre change avec la largeur) :
+          - moins de 1280px (étapes empilées, cartes larges) : [numéro]
+            [« Étape X sur 4 » au-dessus du titre] [icône] sur une seule
+            ligne, pour ne pas allonger la section. « Étape X sur 4 » est
+            masqué sur téléphone, où le grand numéro suffit ;
+          - xl: (4 colonnes étroites) : [numéro] … [icône], puis
+            « Étape X sur 4 » et le titre en dessous (xl:order-*,
+            xl:basis-full).
+          NUMÉRO : orange (action-500), gras, 4.5rem (72px) sur téléphone,
+          6rem (96px) à partir de 768px, 7rem (112px) à partir de 1280px.
+          Contour bleu nuit (paint-order : le contour est dessiné SOUS le
+          remplissage, il ne mange pas le chiffre ; 2px visibles) : l'orange
+          seul sur blanc est trop pâle (1,9:1) pour un public senior.
+          aria-hidden : le rang est déjà annoncé par la liste <ol> et par
+          « Étape X sur 4 ». */}
+      <div class="flex items-center gap-x-3 md:gap-x-5 xl:flex-wrap xl:items-start">
+        <span aria-hidden="true" class="shrink-0 text-[4.5rem] leading-none font-bold text-action-500 tabular-nums [paint-order:stroke_fill] [-webkit-text-stroke:4px_var(--color-marque-900)] md:text-[6rem] xl:text-[7rem]">
+          {numero}
+        </span>
+        <div class="min-w-0 flex-1 xl:order-2 xl:mt-3 xl:basis-full">
+          <p class="hidden text-petit font-semibold tracking-wide text-neutre-700 uppercase md:block">
+            Étape {numero} sur {total}
+          </p>
+          <h3 class="text-h4 text-texte md:mt-1">{etape.titre}</h3>
+        </div>
+        <svg class="size-10 shrink-0 self-start text-marque-900 md:size-12 xl:order-1 xl:ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <Fragment set:html={etape.icone} />
+        </svg>
+      </div>
+      <p class="mt-3 text-corps text-texte">{etape.texte}</p>
+    </div>
+  </li>
