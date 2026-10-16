@@ -9,6 +9,8 @@
 //   d'accroche, à droite le simulateur (questions, résultat, puis
 //   formulaire de contact, tous dans le même bloc) ;
 // - en dessous de 1024px : empilé, le texte puis le simulateur.
+// Le bandeau bandeau-aides.png termine la colonne de gauche, sous le texte
+// (rien si le fichier manque).
 //
 // SOUS-COMPOSANTS :
 // - SimulateurQuestions.astro  : les 3 questions, une à la fois, et le
@@ -25,39 +27,79 @@
 // contacter (lien vers /devis). Aucun renvoi vers un service externe.
 // =========================================================================
 
+import { Image } from 'astro:assets';
 import SimulateurQuestions from './SimulateurQuestions.astro';
+import { illustration, zoneDessinee, styleCadre, styleRecadrage } from '../data/illustrations';
+
+// Bandeau 3D (format 3:1, fond transparent), recadré automatiquement sur
+// sa zone dessinée. Fichier absent : rien n'est affiché.
+const bandeau = illustration('bandeau-aides.png');
+const zoneBandeau = await zoneDessinee('bandeau-aides.png');
 ---
 
-<section aria-labelledby="simulateur-titre" class="border-b-2 border-bordure bg-marque-900">
-  <div class="mx-auto max-w-site px-gouttiere py-bloc md:py-section">
+<section data-scene aria-labelledby="simulateur-titre" class="overflow-x-clip bg-fond">
+  <div class="mx-auto max-w-site px-gouttiere py-scene md:py-scene-large">
     <div class="grid gap-8 min-[64rem]:grid-cols-2 min-[64rem]:items-start min-[64rem]:gap-bloc">
 
       {/* -------------------------------------------------------------------
-          MOITIÉ 1 : ACCROCHE (texte fourni, repris mot pour mot)
-          Fond de section bleu nuit (marque-900) pour arrêter l'œil : textes
-          en blanc (texte-inverse), montant en orange (action-500). Aucune
-          mention du RGE ici. Indépendante du simulateur.
-          Sur grand écran, la colonne reste en vue pendant qu'on répond
-          (sticky), sous l'en-tête du site (top-36 = 144px).
+          MOITIÉ 1 : ACCROCHE (textes raccourcis fournis le 15 octobre
+          2026, repris mot pour mot ; montant de 32 000 € NON CONFIRMÉ par
+          une source officielle, voir inventaire-charte.md)
+          Fond BLANC depuis le 15 octobre 2026 (au soir ; lagon avant,
+          lichen avant lui) : textes foncés, montant en vert-600 (6,3:1 sur
+          blanc ; l'orange serait illisible). Entre deux sections sombres
+          (Cas types violet, Collectif bleu nuit). Aucune mention du RGE ici. Indépendante
+          du simulateur.
+          ÉQUILIBRE (à partir de 1024px) : la colonne (environ 590px) est
+          un peu plus haute que le simulateur aux questions 1 à 3 (410 à
+          560px), mais bien moins haute que son résultat (environ 930px).
+          Elle est donc « collante » (accroche-colonne, <style> en bas) :
+          pendant qu'on fait défiler le résultat, le texte et le bandeau
+          restent à l'écran au lieu de laisser un grand vide sous eux.
       -------------------------------------------------------------------- */}
-      <div class="min-[64rem]:sticky min-[64rem]:top-36">
+      <div class="accroche-colonne flex flex-col">
         {/* TITRE : UNE seule phrase continue. Le montant est seulement en
-            orange et en gras, sans aplat ni retour à la ligne. Le montant
+            vert et en gras, sans aplat ni retour à la ligne. Le montant
             ne se coupe pas (espaces insécables). */}
-        <p class="text-h2 leading-tight font-bold text-texte-inverse md:text-h1">
-          Votre maison peut vous rapporter <span class="text-action-500">plus&nbsp;de&nbsp;30&nbsp;000&nbsp;€</span>. Il suffit de la rénover.
+        <p data-scene-titre class="text-h2 text-texte md:text-h1 md:font-black">
+          Augmentez la valeur de votre bien de <span class="text-vert-600">plus&nbsp;de&nbsp;32&nbsp;000&nbsp;€</span>.
         </p>
 
-        <p class="mt-6 text-corps text-texte-inverse">
-          L'État les verse pour isoler, chauffer, produire votre énergie. Vous ne les remboursez pas. Votre maison vaut plus cher et vos factures baissent.
+        {/* BANDEAU (bandeau-aides.png, 3D, 3:1, fond transparent), sous le
+            texte, sur toute la largeur de la colonne. Aucun cadre, aucun
+            arrondi, aucune ombre, aucun fond : il se pose sur le blanc.
+            Recadré sur sa zone dessinée (src/data/illustrations.ts).
+            Fichier manquant : AUCUN emplacement, la colonne s'arrête
+            après le texte.
+            ORDRE (16 octobre 2026) : placé juste après le titre dans le
+            code, donc sous 1024px : titre, bandeau, paragraphe,
+            sous-titre, puis le simulateur. À partir de 1024px (colonne en
+            flex), le bandeau repasse sous le texte (order-last). */}
+        {bandeau && zoneBandeau && (
+          <div data-scene-image class="relative mt-6 w-full overflow-hidden min-[64rem]:order-last min-[64rem]:mt-10" style={styleCadre(zoneBandeau)}>
+            <Image
+              src={bandeau}
+              alt="Des panneaux solaires, une pompe à chaleur, une borne de recharge et des panneaux d'isolant à côté d'une maison rénovée dont la valeur augmente, et d'une pile de pièces."
+              widths={[480, 800, 1200, 1600]}
+              sizes="(min-width: 1280px) 640px, (min-width: 1024px) 50vw, 100vw"
+              format="webp"
+              loading="lazy"
+              class="absolute h-auto"
+              style={styleRecadrage(zoneBandeau)}
+            />
+          </div>
+        )}
+
+        <p class="mt-6 text-corps text-texte-doux">
+          Offrez-vous plus de confort et des factures moins chères tout en augmentant la valeur de votre bien. Grâce aux aides (MaPrimeRénov', CEE, aides locales), vous réalisez cette plus-value immobilière sans sortir d'argent de votre poche (jusqu'à 90&nbsp;% du prix des travaux).
         </p>
-        {/* Accroche à part entière : plus grande, en gras. */}
-        <p class="mt-6 text-h3 font-bold text-texte-inverse">
-          Et vous n'avez presque rien à faire.
+        {/* Sous-titre : taille du texte courant, graisse 600, en couleur
+            pleine (texte) pour se distinguer du paragraphe (texte-doux)
+            sans l'écraser. */}
+        <p class="mt-4 text-corps font-semibold text-texte">
+          On s'occupe de tout : montage du dossier, dépôt des demandes et sécurisation des versements.
         </p>
-        <p class="mt-3 text-corps text-texte-inverse">
-          On monte votre dossier, on dépose les demandes, on suit les versements.
-        </p>
+
       </div>
 
       {/* -------------------------------------------------------------------
@@ -65,14 +107,17 @@ import SimulateurQuestions from './SimulateurQuestions.astro';
       -------------------------------------------------------------------- */}
       <div class="min-w-0">
         {/* Titre de la colonne : rien d'autre au-dessus du formulaire.
-            Posé sur le fond bleu nuit : en blanc. Le bloc du formulaire,
-            lui, reste sur fond blanc (SimulateurQuestions.astro). */}
-        <h2 id="simulateur-titre" class="mb-4 text-h3 text-texte-inverse">Estimez vos aides</h2>
+            Le bloc du formulaire est blanc sur fond blanc : filet et
+            ombre marquée le détachent (SimulateurQuestions.astro). */}
+        {/* scroll-mt : le lien « Estimer mes aides » du Hero vise ce titre ;
+            la marge le fait apparaître SOUS l'en-tête collant (73px, puis
+            122px à partir de 1280px), avec 23px d'air. */}
+        <h2 id="simulateur-titre" class="mb-4 scroll-mt-24 text-h3 text-texte xl:scroll-mt-36">Estimez vos aides</h2>
         {/* Sans JavaScript : message de remplacement */}
         <noscript>
-          <p class="rounded-carte border-2 border-bordure bg-fond p-5 text-corps text-texte">
+          <p class="rounded-bloc bg-fond p-5 text-corps text-texte shadow-carte">
             Le simulateur a besoin de JavaScript pour fonctionner. Pour connaître les aides auxquelles vous avez droit,
-            <a href="/devis" class="font-semibold text-marque-900 underline underline-offset-4">contactez-nous : nous étudions votre projet avec vous</a>.
+            <a href="/devis" class="font-semibold text-nuit-900 underline underline-offset-4">contactez-nous : nous étudions votre projet avec vous</a>.
           </p>
         </noscript>
 
@@ -81,6 +126,25 @@ import SimulateurQuestions from './SimulateurQuestions.astro';
     </div>
   </div>
 </section>
+
+<style>
+  /* COLONNE D'ACCROCHE COLLANTE (15 octobre 2026), à partir de 1024px et
+     seulement si l'écran est assez haut pour la montrer entière sous
+     l'en-tête collant (73px, 122px à partir de 1280px) : 600px de colonne
+     + en-tête + marges, d'où 50rem (800px) de hauteur d'écran minimum.
+     Sur un écran plus bas, elle reste en haut de la section. */
+  @media (width >= 64rem) and (height >= 50rem) {
+    .accroche-colonne {
+      position: sticky;
+      top: 7rem;
+    }
+  }
+  @media (width >= 80rem) and (height >= 50rem) {
+    .accroche-colonne {
+      top: 10rem;
+    }
+  }
+</style>
 
 <script>
   // Démarre le simulateur : navigation entre les questions, puis formulaire

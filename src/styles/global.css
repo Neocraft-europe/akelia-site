@@ -22,13 +22,15 @@
 
 /* -------------------------------------------------------------------------
    POLICE : Source Sans 3 (Google Fonts)
-   Graisses chargées : 400 (normal), 600 (semi-gras), 700 (gras), et
+   Graisses chargées : 400 (normal), 500 (moyen : titres des panneaux
+   Cas types, depuis le 15 octobre 2026), 600 (semi-gras), 700 (gras), 900
+   (noir : titres h2 et h3 depuis la refonte visuelle), et
    400 italique (annotations du schéma de la maison, SchemaMaison.astro).
    Le navigateur ne télécharge l'italique que si une page l'utilise.
    ⚠️ Cet import DOIT rester AVANT @import "tailwindcss" : en CSS, un
    @import placé après d'autres règles est ignoré par le navigateur.
    ------------------------------------------------------------------------- */
-@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400&display=swap");
 
 @import "tailwindcss";
 
@@ -48,12 +50,13 @@
   /* =======================================================================
      2. GRAISSES
      -----------------------------------------------------------------------
-     Seules 400, 600 et 700 sont chargées. Les graisses fines (100, 200 et
+     Seules 400, 500, 600, 700 et 900 sont chargées. Les graisses fines (100, 200 et
      300) sont supprimées : elles se lisent mal, surtout pour un public
      senior. Les classes font-thin, font-extralight et font-light
      n'existent donc plus.
-     Classes disponibles : font-normal (400), font-semibold (600),
-     font-bold (700).
+     Classes disponibles : font-normal (400), font-medium (500, titres
+     des panneaux Cas types), font-semibold (600),
+     font-bold (700), font-black (900, titres h2 et h3).
      ======================================================================= */
   --font-weight-thin: initial;
   --font-weight-extralight: initial;
@@ -64,83 +67,165 @@
      3. COULEURS
      -----------------------------------------------------------------------
      Chaque couleur s'utilise avec un préfixe selon ce qu'on colore :
-       bg-…     → fond          (ex. bg-marque-900)
-       text-…   → texte         (ex. text-alerte-600)
-       border-… → bordure       (ex. border-bordure)
+       bg-…     → fond          (ex. bg-nuit-900)
+       text-…   → texte         (ex. text-alerte-700)
+       border-… → bordure       (ex. border-creme-fonce)
      Transparence : ajoutez /XX (en %) après le nom.
-       Exemple : bg-marque-900/60 = bleu nuit à 60 % d'opacité.
+       Exemple : bg-nuit-900/60 = bleu nuit à 60 % d'opacité.
 
      Les nombres suivent la convention Tailwind : 50 = très clair,
-     900 = très foncé. Il manque volontairement certains échelons : on
-     n'a gardé que les teintes réellement utilisées sur l'ancien site.
+     900 = très foncé.
+
+     ⚠️ PLUS DE BORDURES NOIRES (refonte d'octobre 2026) : les sections et
+     les blocs se distinguent par leur FOND (blanc, crème, bleu nuit), pas
+     par des traits. Les anciennes couleurs marque, secondaire, neutre et
+     bordure sont supprimées (sauf deux alias réservés au schéma, en bas
+     de cette partie).
      ======================================================================= */
 
-  /* --- MARQUE ------------------------------------------------------------
-     Bleu nuit, identité d'Akelia.
-     Où : fond du header, de la navigation et du footer ; couleur possible
-     des titres. Texte blanc par-dessus (text-texte-inverse). */
-  --color-marque-900: #22323e;
+  /* --- NUIT ---------------------------------------------------------------
+     Bleu nuit, identité d'Akelia (refonte visuelle d'octobre 2026).
+     Où : sections sombres (bandeau des solutions, collectif), onglet
+     actif, texte fort. Texte blanc par-dessus (text-texte-inverse). */
+  --color-nuit-900: #1d2b36;  /* Fond sombre, texte fort */
+  --color-nuit-700: #2b3f4e;  /* Fonds sombres secondaires, survols sur fond sombre */
+  --color-nuit-filet: #35495a; /* Filets fins sur fond nuit-900 (engagements du collectif) */
 
   /* --- ACTION ------------------------------------------------------------
-     Orange des boutons d'appel à l'action (« Demander un devis »…) et des
-     mises en avant.
-     ⚠️ Accessibilité : l'orange sur fond blanc est trop peu contrasté pour
-     du TEXTE. Utilisez-le en fond de bouton ou en bordure, avec un texte
-     noir (text-texte) par-dessus. */
-  --color-action-50: #fff3cd;  /* Fond crème : cartes service, encarts « En bref » */
-  --color-action-100: #fcf1e1; /* Fond pêche : tableaux, blocs avantages */
-  --color-action-400: #f7b844; /* Orange clair : téléphone du header, contact du footer */
-  --color-action-500: #f8ab01; /* Orange principal : boutons et bordures des CTA */
-  --color-action-600: #e69e00; /* Orange foncé : survol des boutons action (hover:bg-action-600) */
+     Orange des boutons d'appel à l'action et des accents.
+     ⚠️ Accessibilité : l'orange sur fond clair est trop peu contrasté pour
+     du TEXTE courant. Utilisez-le en fond de bouton ou en bordure, avec un
+     texte foncé (text-texte) par-dessus. Sur fond nuit-900, il se lit bien. */
+  --color-action-50: #fdf0e0;  /* Fond d'encart orange (« L'erreur qui coûte cher ») */
+  --color-action-500: #f0920f; /* Orange principal : boutons et accents */
+  --color-action-600: #d17f08; /* Survol des boutons action, libellé d'encart orange */
+  /* CORAIL (16 octobre 2026) : phrase sur les aides sous les boutons du
+     Hero. Rouge corail vif, qui tranche avec l'orange du bouton sans le
+     concurrencer (contraste avec l'orange : 1,97:1, deux teintes
+     nettement distinctes). Texte sur blanc : 4,70:1 (AA). */
+  --color-corail: #d9304a;
+  --color-action-800: #9a5a00; /* RÉSERVÉ au texte du badge du collectif (Hero), sur action-50 : 4,88:1 (action-600 n'y faisait que 2,77:1) — 14 octobre 2026 */
 
-  /* --- SECONDAIRE --------------------------------------------------------
-     Bleu ciel, couleur d'accompagnement.
-     Où : fonds de section clairs, liens du blog, mots mis en valeur.
-     ⚠️ Comme l'orange, les teintes 400 et 500 manquent de contraste pour
-     du texte sur fond blanc : à réserver aux fonds, bordures et icônes. */
-  --color-secondaire-50: #e2f4f8;  /* Fond de section clair (le plus utilisé) */
-  --color-secondaire-100: #cde2ff; /* Fond bleu un peu plus soutenu (encadrés) */
-  --color-secondaire-400: #5dcefb; /* Bleu ciel vif : sous-titres, boutons du blog */
-  --color-secondaire-500: #38adec; /* Bleu vif : mots en gras, boutons secondaires */
-  --color-secondaire-600: #0093ce; /* Bleu foncé : survol des boutons secondaires (hover:bg-secondaire-600) */
+  /* --- VERT --------------------------------------------------------------
+     3e couleur de la charte : surtitres, chiffres, isolation. */
+  --color-vert-50: #e9f3ee;   /* Fond d'encart vert (« Ce que vous y gagnez ») */
+  --color-vert-100: #d6eadf;  /* Survol de l'entrée « Construction neuve » du menu (texte vert-600 : 5,04:1) — 16 octobre 2026 */
+  --color-vert-400: #4f9e7d;  /* Hachures, variantes */
+  --color-vert-clair: #8fd1b0; /* Vert sur fond SOMBRE (nuit-900 : 8,2:1 ; encarts prune : 9,5:1) : libellé « Ce que l'on fait » des Cas types (13 octobre 2026). Plus utilisé depuis le 14 octobre 2026 (encarts supprimés) ; gardé dans la charte */
+  --color-vert-600: #2a6b4f;  /* Surtitres, icônes de la méthode, chiffres  */
+  --color-vert-800: #1e5c45;  /* Vert foncé (texte blanc : 7,9:1). Plus utilisé (les Cas types sont sur fond bleu nuit depuis le 13 octobre 2026) ; gardé dans la charte */
 
-  /* --- SUCCÈS ------------------------------------------------------------
-     Vert de validation.
-     Où : boutons « Suivant » et « Envoyer » du formulaire de devis, bouton
-     téléphone, messages de confirmation, bonnes notes. */
+  /* --- CRÈME -------------------------------------------------------------
+     Fonds de section alternatifs : la différenciation entre sections et
+     blocs se fait par les FONDS, plus par des bordures. */
+  --color-creme: #f7f4ee;        /* Fond de section alternatif */
+  --color-creme-fonce: #ece7dd;  /* Bordures douces, chiffres en filigrane, emplacements d'image ; fond de la section « Deux façons de faire » depuis le 13 octobre 2026 (texte 13,3:1, texte-doux 5,8:1) */
+
+  /* --- FONDS DE SECTION CLAIRS (ajout d'octobre 2026) ---------------------
+     Quatre teintes douces, peu saturées, pour que les sections de la page
+     d'accueil se distinguent nettement en défilant (le crème seul rendait
+     la page uniforme). Toutes s'accordent avec l'orange et le bleu nuit.
+     Les blocs posés dessus (cartes, panneaux, formulaires) sont BLANCS.
+     Contrastes calculés (WCAG) :
+       texte #16212a  : 11,6:1 à 12,8:1 (minimum demandé : 7:1)
+       texte-doux     : 5,1:1 à 5,6:1 (AA)
+     Écart de couleur entre deux sections voisines (OKLab) : 5,5 à 10,
+     contre 3,3 entre le crème et le blanc. */
+  --color-argile: #f1dace;   /* Rose terre cuite pâle, chaud : étape 2 de la Méthode (fond de l'onglet actif). N'est plus un fond de section depuis le 13 octobre 2026 (texte 12,2:1) */
+  --color-brume: #ccdce8;    /* Bleu ardoise pâle, froid, cousin du bleu nuit : bandeau des solutions du Hero, étape 4 de la Méthode (fond de l'onglet actif). Plus le fond des Cas types depuis le 13 octobre 2026 (texte 11,7:1) */
+  --color-lichen: #e0e6d0;   /* Vert-gris pâle, tirant sur le jaune (rien à voir avec le vert sapin) : étape 3 de la Méthode (fond de l'onglet actif). N'est plus le fond du Simulateur d'aides depuis le 15 octobre 2026 (texte 12,8:1) */
+  /* LAGON (15 octobre 2026) : turquoise pâle, fond du Simulateur d'aides, à
+     la place du lichen (refusé). Teinte FROIDE choisie pour l'illustration
+     bandeau-aides.png : la crème (maison, isolant) a la même luminosité que
+     tout fond clair (1,00 à 1,03:1) et ne ressort que par la teinte ;
+     l'orange (tuiles, pièces) est l'opposé du turquoise et vibre ; le bleu
+     nuit (pompe à chaleur, panneaux) reste net.
+     Contrastes : texte 12,35:1 ; texte-doux 5,37:1 ; vert-600 4,79:1 (le
+     montant du titre, très grand texte gras) ; bloc blanc 1,32:1 (lichen :
+     1,28:1). Écart OKLab (×100) avec les autres fonds clairs de la page :
+     brume 3,5 (section Fonctionnement, loin) ; bruyère 6,1 ; Cas types
+     pâles 6,0 à 6,6 ; lichen 5,2 ; creme-fonce 6,0 ; blanc 10,9. */
+  --color-lagon: #bce8ea;
+  --color-bruyere: #e4d8e6;  /* Mauve grisé pâle : section des articles (texte 11,9:1) */
+
+  /* --- PRUNE (13 octobre 2026) ------------------------------------------
+     Fond FONCÉ de la section Cas types : rupture sombre dans une suite de
+     fonds clairs, sans reprendre le bleu nuit (réservé au Collectif). De la
+     famille de la bruyère (mauve). Texte blanc : 12,9:1. Les illustrations
+     (dessins à fond transparent, halos blancs) s'y lisent en traits clairs.
+     Nuances dérivées dans CasTypes.astro (color-mix).
+     Plus utilisé depuis le 14 octobre 2026 (jugé trop terne, remplacé par
+     le violet ci-dessous) ; gardé dans la charte. */
+  --color-prune: #3d2c40;
+
+  /* --- VIOLET (14 octobre 2026) ------------------------------------------
+     Fond de la section Cas types, à la place du prune : même famille
+     violette, mais teinte franche (intensité 3,3 fois celle du prune).
+     Texte blanc : 9,9:1 ; sur le bloc de contenu (+8 % de blanc) : 8,0:1 ;
+     sur un onglet survolé (+16 %) : 6,4:1. Bouton orange sur le bloc :
+     3,35:1. Détail : inventaire-charte.md.
+     Plus utilisé depuis la refonte complète des Cas types (14 octobre 2026,
+     une couleur par onglet, ci-dessous) ; gardé dans la charte. */
+  --color-violet: #5a2d82;
+
+  /* --- FONDS DES 6 CAS TYPES (14 octobre 2026, refonte complète) -------
+     Le violet ci-dessus est ABANDONNÉ (gardé dans la charte) : chaque
+     onglet de la section Cas types a sa propre couleur de fond, appliquée
+     à toute la section (CasTypes.astro), avec un texte blanc sur les 2 fonds
+     foncés et le texte foncé (#16212a) sur les 4 fonds pâles. Couleurs
+     proposées dans la demande, gardées telles quelles : toutes dépassent
+     7:1 avec leur texte. Détail des contrastes : inventaire-charte.md. */
+  --color-cas-ancien: #1a2b4a;        /* Bâti ancien : bleu nuit profond, texte blanc 14,1:1 */
+  --color-cas-annees50: #fdf0e3;      /* Années 50 à 90 : crème chaud, texte foncé 14,6:1 */
+  --color-cas-annees95: #e8f4f0;      /* Années 1995 à 2012 : vert d'eau pâle, texte foncé 14,5:1 */
+  --color-cas-appartement: #ede8f7;   /* Appartement : lavande pâle, texte foncé 13,6:1 */
+  --color-cas-neuf: #1e5c45;          /* Maison neuve : vert profond (= vert-800), texte blanc 7,9:1 */
+  --color-cas-modernisation: #fde8e0; /* Modernisation : pêche pâle, texte foncé 13,9:1 */
+
+  /* --- TEINTES FONCÉES DES 4 ÉTAPES DE LA MÉTHODE (13 octobre 2026) ------
+     Chaque étape de la Méthode a sa couleur, prise dans les 4 teintes
+     claires ci-dessus (fond de l'onglet actif). Une teinte pâle est
+     invisible en TRAIT sur fond blanc (1,3:1 à 1,4:1) : chaque teinte a
+     donc une version foncée, de même famille, pour le filet latéral des
+     onglets, la pastille numérotée et les éléments ajoutés au schéma
+     (MethodeSchema.astro). Contrastes : 5,8:1 à 6,3:1 sur blanc, 4,3:1 à
+     4,8:1 sur la teinte claire ; chiffre blanc sur la teinte foncée : idem.
+       1. Audit            : bruyère
+       2. Isoler et ventiler : argile
+       3. Produire         : lichen
+       4. S'équiper        : brume */
+  --color-bruyere-fonce: #765580; /* 6,21:1 sur blanc */
+  --color-argile-fonce: #a04e2c;  /* 5,80:1 sur blanc */
+  --color-lichen-fonce: #58682a;  /* 6,13:1 sur blanc */
+  --color-brume-fonce: #36648a;   /* 6,27:1 sur blanc */
+
+  /* --- SUCCÈS (conservé pour les formulaires) ----------------------------
+     Vert de validation : messages de confirmation, verdict « Oui » du
+     simulateur. */
   --color-succes-50: #e8f5e9;  /* Fond vert pâle : message de confirmation */
-  --color-succes-600: #1da30f; /* Vert des boutons de validation */
+  --color-succes-600: #1da30f; /* Vert de validation */
 
-  /* --- ALERTE ------------------------------------------------------------
-     Rouges et roses de mise en garde.
-     Où : erreurs de formulaire, inconvénients, mauvaises notes. */
+  /* --- ALERTE (conservé pour les formulaires) ----------------------------
+     Erreurs de formulaire, mises en garde. */
   --color-alerte-50: #fce4ec;  /* Fond rose pâle : encart d'avertissement */
-  --color-alerte-500: #ff0256; /* Rose vif : mots soulignés, mauvaises notes */
-  --color-alerte-600: #fc3131; /* Rouge : messages d'erreur des formulaires */
-  --color-alerte-700: #ca0808; /* Rouge foncé : points négatifs importants */
-
-  /* --- NEUTRE ------------------------------------------------------------
-     Gris pour les textes secondaires et les fonds discrets. */
-  --color-neutre-50: #f3f3f5;  /* Fond des champs de formulaire */
-  --color-neutre-100: #e9e9e9; /* Fond gris clair : cartes, survols */
-  --color-neutre-400: #b3b1aa; /* Gris clair : textes très secondaires, notes */
-  --color-neutre-500: #818080; /* Gris moyen : dates, légendes */
-  --color-neutre-700: #535353; /* Gris foncé : texte secondaire lisible */
-
-  /* --- BORDURE -----------------------------------------------------------
-     Les bordures sont NOIRES : c'est un choix volontaire de la charte.
-     border-bordure       → bordure noire standard (cartes, formulaires)
-     border-bordure-douce → bordure grise, pour séparer sans souligner */
-  --color-bordure: #000;
-  --color-bordure-douce: #d1d1d1;
+  --color-alerte-500: #ff0256; /* Rose vif */
+  --color-alerte-600: #fc3131; /* Rouge : messages d'erreur */
+  --color-alerte-700: #ca0808; /* Rouge foncé : erreurs des formulaires */
 
   /* --- FOND ET TEXTE -----------------------------------------------------
-     Couleurs de base de toutes les pages : texte noir sur fond blanc.
-     text-texte-inverse sert pour le texte posé sur un fond foncé
-     (header, footer bleu nuit). */
-  --color-fond: #fff;
-  --color-texte: #000;
+     text-texte-inverse : texte blanc posé sur un fond sombre (nuit-900). */
+  --color-fond: #ffffff;
+  --color-texte: #16212a;
+  --color-texte-doux: #4c5a64; /* Texte secondaire, introductions, onglets inactifs */
   --color-texte-inverse: #fff;
+
+  /* --- COMPATIBILITÉ : RÉSERVÉ À SchemaMaison.astro ----------------------
+     Le schéma de la maison (redessiné en octobre 2026) utilise encore ces
+     deux anciens noms : ils sont gardés pour lui seul. Ne pas les utiliser
+     ailleurs.
+     marque-900 suit le nouveau bleu nuit ; neutre-500 garde sa valeur. */
+  --color-marque-900: #1d2b36;
+  --color-neutre-500: #818080;
 
 
   /* =======================================================================
@@ -155,29 +240,47 @@
      Hiérarchie : le h1 est le plus grand titre d'une page. Seul le hero
      (grand bandeau d'accueil) peut utiliser text-display, plus grand.
      Les valeurs ci-dessous sont celles des écrans à partir de 768px.
-     Sur téléphone, display et h1 sont réduits automatiquement : voir
+     Sur téléphone, le h1 est réduit automatiquement : voir
      « RÉDUCTION DES GRANDS TITRES SUR MOBILE » en bas du fichier.
      ======================================================================= */
 
-  /* Hero uniquement (grand titre du bandeau d'accueil) → text-display */
-  --text-display: 3.5rem;
-  --text-display--line-height: 1.1;
-  --text-display--font-weight: 700;
+  /* Hero uniquement (grand titre du bandeau d'accueil) → text-display.
+     Fluide depuis octobre 2026 : 2.8rem sur téléphone, 6 % de la largeur
+     de l'écran ensuite, 5rem au plus. Pas de réduction mobile à part. */
+  --text-display: clamp(2.8rem, 6vw, 5rem);
+  --text-display--line-height: 1.05;
+  --text-display--font-weight: 900;
+
+  /* Sous-titre du Hero (chapeau sous le grand titre) → text-chapeau */
+  --text-chapeau: clamp(1.2rem, 1.8vw, 1.5rem);
+  --text-chapeau--line-height: 1.45;
+  --text-chapeau--font-weight: 400;
 
   /* Titre principal de la page (<h1>), un seul par page → text-h1 */
   --text-h1: 3rem;
   --text-h1--line-height: 1.15;
   --text-h1--font-weight: 700;
 
-  /* Titres de section (<h2>) → text-h2 */
-  --text-h2: 2.5rem;
-  --text-h2--line-height: 1.2;
-  --text-h2--font-weight: 600;
+  /* Titres de section (<h2>) → text-h2
+     Taille fluide (refonte d'octobre 2026) : 2.1rem sur téléphone, grandit
+     avec la largeur d'écran (4.4vw), plafonnée à 3.4rem. Graisse 900. */
+  --text-h2: clamp(2.1rem, 4.4vw, 3.4rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--font-weight: 900;
 
-  /* Sous-titres dans une section (<h3>) → text-h3 */
-  --text-h3: 1.5rem;
-  --text-h3--line-height: 1.3;
-  --text-h3--font-weight: 600;
+  /* Grand titre centré des sections Méthode, Cas types et Collectif
+     (refonte « alan.com », octobre 2026) → text-titre. À combiner avec
+     « mx-auto max-w-[20ch] text-center text-balance » : 20 caractères
+     par ligne au plus. */
+  --text-titre: clamp(2.4rem, 5vw, 3.8rem);
+  --text-titre--line-height: 1.05;
+  --text-titre--font-weight: 900;
+
+  /* Sous-titres dans une section (<h3>) → text-h3
+     Taille fluide : de 1.7rem à 2.4rem. Graisse 900. */
+  --text-h3: clamp(1.7rem, 3vw, 2.4rem);
+  --text-h3--line-height: 1.1;
+  --text-h3--font-weight: 900;
 
   /* Petits titres : cartes, encadrés (<h4>) → text-h4 */
   --text-h4: 1.25rem;
@@ -215,6 +318,10 @@
   --spacing-section: 5rem;     /* 80px */
   --spacing-bloc: 2.5rem;      /* 40px */
   --spacing-gouttiere: 1.25rem; /* 20px */
+  /* Sections de la page d'accueil (refonte « alan.com ») : beaucoup de
+     vide, il fait partie du rendu → « py-scene md:py-scene-large ». */
+  --spacing-scene: 4.5rem;        /* 72px, téléphone */
+  --spacing-scene-large: 7.5rem;  /* 120px, à partir de 768px */
 
 
   /* =======================================================================
@@ -247,15 +354,16 @@
   /* =======================================================================
      8. ARRONDIS DES ANGLES
      -----------------------------------------------------------------------
-     Classes : rounded-petit, rounded-bouton, rounded-carte, rounded-bloc,
-     rounded-section, rounded-pilule.
+     UNE SEULE valeur depuis la refonte d'octobre 2026 : rounded-bloc (10px),
+     pour les blocs, cartes, boutons, onglets, champs et images.
+     Pour un cercle (pastille, barre de progression) : rounded-full.
      ======================================================================= */
-  --radius-petit: 5px;      /* Badges, petites étiquettes, champs */
-  --radius-bouton: 8px;     /* Boutons d'action */
-  --radius-carte: 10px;     /* Cartes (services, articles, avis) */
-  --radius-bloc: 15px;      /* Grands encadrés, images */
-  --radius-section: 25px;   /* Sections entières à fond coloré */
-  --radius-pilule: 9999px;  /* Forme pilule ou cercle (avatars, pastilles) */
+  --radius-bloc: 10px;
+
+  /* Compatibilité : RÉSERVÉ à SchemaMaison.astro (anciens noms qu'il
+     utilise encore). Ne pas utiliser ailleurs. */
+  --radius-petit: 5px;
+  --radius-pilule: 9999px;
 
 
   /* =======================================================================
@@ -325,17 +433,150 @@
 
   /* -----------------------------------------------------------------------
      RÉDUCTION DES GRANDS TITRES SUR MOBILE
-     En dessous de 768px (breakpoint md), le display et le h1 sont réduits
-     pour qu'un long titre ne remplisse pas tout l'écran du téléphone.
-     La réduction s'applique partout : balises <h1> ET classes text-h1 /
-     text-display.
-     Seuls display et h1 sont concernés. Le texte courant (text-corps)
-     reste volontairement à 1.125rem sur tous les écrans.
+     En dessous de 768px (breakpoint md), le h1 est réduit pour qu'un long
+     titre ne remplisse pas tout l'écran du téléphone. La réduction
+     s'applique partout : balises <h1> ET classe text-h1.
+     Le display n'est plus concerné : sa taille est fluide (clamp), voir
+     plus haut. Le texte courant (text-corps) reste volontairement à
+     1.125rem sur tous les écrans.
      ----------------------------------------------------------------------- */
   :root {
     @variant max-md {
-      --text-display: 1.75rem;
       --text-h1: 2.2rem;
     }
+  }
+}
+
+
+/* =========================================================================
+   SURTITRE (classe : surtitre)
+   -------------------------------------------------------------------------
+   Petite ligne en majuscules espacées posée AU-DESSUS d'un titre, pour
+   annoncer la section ou la période (« Le collectif », « Avant 1948 »…).
+   0.85rem, graisse 700, lettres espacées de 0.14em, vert-600 par défaut.
+   Une classe de couleur l'emporte (ex. « surtitre text-action-500 » sur
+   fond bleu nuit).
+   ========================================================================= */
+@utility surtitre {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-vert-600);
+}
+
+
+/* =========================================================================
+   IMAGES QUI DÉBORDENT (classes : deborde-gauche, deborde-droite)
+   -------------------------------------------------------------------------
+   Refonte « alan.com » de la page d'accueil (octobre 2026) : les grandes
+   illustrations ne sont plus enfermées dans un cadre arrondi. Elles
+   sortent du conteneur et sont COUPÉES PAR LE BORD DE L'ÉCRAN d'un côté.
+   Calcul : --marge-ecran est la distance entre le bord du contenu
+   (conteneur max-w-site + px-gouttiere) et le bord de l'écran. L'image
+   s'élargit de cette distance, plus 5rem qui passent hors de l'écran.
+   La SECTION doit porter « overflow-x-clip » : la partie hors écran est
+   coupée sans créer de défilement horizontal (et sans casser les
+   éléments « sticky », contrairement à overflow-hidden).
+   ========================================================================= */
+@utility deborde-gauche {
+  --marge-ecran: max(var(--spacing-gouttiere), calc((100vw - var(--container-site)) / 2 + var(--spacing-gouttiere)));
+  margin-left: calc(-1 * (var(--marge-ecran) + 5rem));
+  width: calc(100% + var(--marge-ecran) + 5rem);
+}
+@utility deborde-droite {
+  --marge-ecran: max(var(--spacing-gouttiere), calc((100vw - var(--container-site)) / 2 + var(--spacing-gouttiere)));
+  width: calc(100% + var(--marge-ecran) + 5rem);
+}
+
+
+/* =========================================================================
+   ÉTIQUETTE FLOTTANTE (classe : etiquette)
+   -------------------------------------------------------------------------
+   Petite pastille blanche posée sur une grande illustration, en partie
+   hors de ses bords : un chiffre ou un fait court. Ombre douce. La
+   position (top, left…) est donnée au cas par cas.
+   ========================================================================= */
+@utility etiquette {
+  position: absolute;
+  z-index: 1;
+  border-radius: var(--radius-bloc);
+  background-color: var(--color-fond);
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--color-texte);
+  white-space: nowrap;
+  box-shadow: 0 10px 30px -8px #16212a40;
+}
+
+
+/* =========================================================================
+   ANIMATION D'ENTRÉE DES SECTIONS (attributs data-scene…)
+   -------------------------------------------------------------------------
+   Script : src/components/AnimationScenes.astro (page d'accueil).
+   Sur la <section> : data-scene. Dedans :
+     data-scene-titre     → fondu + montée de 20px, 0,5 s ;
+     data-scene-image     → fondu + montée de 30px, 0,5 s, 150 ms après ;
+     data-scene-etiquette → rebond, en dernier, 100 ms d'écart entre deux
+                            étiquettes (style="--rang: 0", 1…). Plus
+                            utilisé par aucune page au 16 octobre 2026
+                            (étiquettes de la carte supprimées) : règles
+                            gardées en attendant validation ;
+     data-scene-etape     → fondu + montée de 40px, 0,7 s. DÉCLENCHEMENT
+                            PROPRE à chaque étape, à son arrivée à
+                            l'écran (attribut data-visible posé par le
+                            script) ; 150 ms d'écart entre étapes qui
+                            arrivent ensemble (--decalage). Étapes de
+                            « Fonctionnement » (14 octobre 2026). Montée
+                            portée de 16 à 40px le 14 octobre 2026 : trop
+                            discrète.
+   [data-scenes] est posé sur <html> par le script seulement si le
+   navigateur sait observer (IntersectionObserver) et si « réduire les
+   animations » n'est pas activé : sinon rien n'est jamais caché.
+   Les animations agissent sur « transform » ; les positions des
+   étiquettes utilisent les classes translate-… de Tailwind (propriété
+   « translate », distincte) : elles ne se gênent pas.
+   ========================================================================= */
+[data-scenes] [data-scene-etape]:not([data-visible]),
+[data-scenes] [data-scene]:not([data-etat='anime']) :is([data-scene-titre], [data-scene-image], [data-scene-etiquette]) {
+  opacity: 0;
+}
+[data-scenes] [data-scene][data-etat='anime'] [data-scene-titre] {
+  animation: scene-montee-titre 0.5s ease-out both;
+}
+[data-scenes] [data-scene][data-etat='anime'] [data-scene-image] {
+  animation: scene-montee-image 0.5s ease-out 150ms both;
+}
+[data-scenes] [data-scene][data-etat='anime'] [data-scene-etiquette] {
+  animation: scene-rebond 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(550ms + var(--rang, 0) * 100ms);
+}
+[data-scenes] [data-scene-etape][data-visible] {
+  animation: scene-montee-etape 0.7s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+  animation-delay: var(--decalage, 0ms);
+}
+/* BANDEAU DU COLLECTIF (collectif.png, 15 octobre 2026) : déclenché comme
+   une étape (à SON arrivée à l'écran), mais en fondu et LÉGÈRE montée
+   (30px, comme les autres images), 100 ms après le titre quand les deux
+   arrivent ensemble (250 ms jusqu'au 16 octobre 2026 : il apparaissait
+   trop tard). */
+[data-scenes] [data-scene-etape][data-visible].bandeau-collectif {
+  animation: scene-montee-image 0.6s ease-out both;
+  animation-delay: calc(var(--decalage, 0ms) + 100ms);
+}
+@keyframes scene-montee-etape { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+@keyframes scene-montee-titre { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+@keyframes scene-montee-image { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+@keyframes scene-rebond { from { opacity: 0; transform: translateY(12px) scale(0.8); } to { opacity: 1; transform: none; } }
+
+/* Réduire les animations : tout s'affiche immédiatement, sans mouvement. */
+@media (prefers-reduced-motion: reduce) {
+  [data-scene] :is([data-scene-titre], [data-scene-image], [data-scene-etiquette], [data-scene-etape]) {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

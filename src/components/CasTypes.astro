@@ -1,0 +1,454 @@
+---
+// =========================================================================
+// COMPOSANT CAS TYPES (src/components/CasTypes.astro)
+// -------------------------------------------------------------------------
+// Section de la page d'accueil placée après « Deux façons de faire » et
+// avant le simulateur d'aides : « Chaque projet a ses spécificités ».
+//
+// Refonte complète du 14 octobre 2026 (soir) :
+// - UNE COULEUR DE FOND PAR ONGLET, appliquée à toute la section, avec une
+//   transition de 0,4 s (le violet est abandonné). Le texte est blanc sur
+//   les fonds foncés, foncé sur les fonds pâles. Onglets et bouton sont
+//   dérivés de ces deux seules couleurs (variables --cas-…, balise style
+//   en bas du fichier) : changer de fond suffit.
+// - À PARTIR DE 1024px (15 octobre 2026, façon alan.com) : texte et
+//   bouton à gauche, onglets au CENTRE EXACT de la page ; l'illustration
+//   est une COUCHE en position absolue, hors flux, CENTRÉE dans l'espace
+//   libre entre les onglets et le bord droit de l'écran ; 140 % de la hauteur du bloc texte + onglets, centrée
+//   dessus. La section (overflow: clip) coupe ce qui dépasse.
+//   Le titre et le sous-titre restent centrés au-dessus.
+//   Sous 1024px (16 octobre 2026) : titre, sous-titre, ILLUSTRATION, onglets
+//   en 2 colonnes (libellés courts), texte et bouton (pas de
+//   superposition). Avant : illustration en dernier.
+// - HAUTEUR STABLE (15 octobre 2026) : les 6 panneaux sont SUPERPOSÉS dans
+//   la même case ; seul l'actif est visible. La section garde la hauteur
+//   du plus haut, quel que soit l'onglet.
+// - ONGLETS : même principe que la colonne de gauche de la Méthode : fond
+//   plein pour l'actif, simple filet pour les inactifs. Uniquement au clic
+//   (pas d'avancement au défilement).
+// - PANNEAU : un titre h3 (rétabli le 15 octobre 2026, textes fournis),
+//   un paragraphe court, une liste de 2 points, un bouton vers /devis.
+// - CHANGEMENT D'ONGLET : fond en 0,4 s ; texte et illustration (le
+//   panneau) en fondu avec une légère montée (0,4 s).
+//   Tout est instantané si « réduire les animations » est activé.
+//
+// Versions précédentes : fond violet unique, 2 paragraphes par onglet,
+// illustration à gauche (14 octobre 2026) ; fond prune, encarts (13 octobre
+// 2026).
+//
+// ACCESSIBILITÉ : modèle « onglets » du W3C (role tablist / tab / tabpanel).
+// Flèches (haut, bas, gauche, droite), Début et Fin ; un seul onglet dans
+// l'ordre de tabulation (celui qui est actif).
+//
+// SANS JAVASCRIPT : la colonne d'onglets reste masquée, la section garde le
+// fond du 1er onglet et les 6 panneaux s'affichent les uns sous les autres.
+//
+// Textes et couleurs : src/data/cas-types.ts.
+// Illustrations : src/assets/illustrations/ (voir src/data/illustrations.ts).
+// =========================================================================
+
+import { Image } from 'astro:assets';
+import { casTypes } from '../data/cas-types';
+import { illustration, zoneDessinee, styleCadre, styleRecadrage } from '../data/illustrations';
+
+// Pour chaque cas : le premier fichier présent de sa liste (voir
+// cas-types.ts), et sa zone dessinée (mesurée à la construction).
+const panneaux = await Promise.all(
+  casTypes.map(async (cas) => {
+    const choisie = cas.images.find((i) => illustration(i.fichier));
+    return {
+      cas,
+      choisie,
+      image: choisie && illustration(choisie.fichier),
+      zone: choisie && (await zoneDessinee(choisie.fichier)),
+    };
+  }),
+);
+---
+
+<section
+  data-scene
+  data-cas-section
+  data-teinte={casTypes[0].teinte}
+  aria-labelledby="cas-titre"
+  class="cas-types overflow-x-clip lg:overflow-clip"
+>
+  <div class="mx-auto max-w-site px-gouttiere py-scene md:py-scene-large">
+
+    {/* EN-TÊTE CENTRÉ, sur toute la largeur (textes fournis). */}
+    <div data-scene-titre class="text-center">
+      <h2 id="cas-titre" class="mx-auto max-w-[20ch] text-titre text-balance">Chaque projet a&nbsp;ses spécificités</h2>
+      <p class="mx-auto mt-6 max-w-[52ch] text-h4 font-normal">
+        Nous partons toujours de l'état initial, pas d'une méthode toute faite.
+      </p>
+    </div>
+
+    <div data-cas class="cas-bloc mt-10 md:mt-14">
+
+      {/* ONGLETS
+          - hidden : masqués sans JavaScript (le script les montre).
+          - Sous 1024px : grille de 2 colonnes, libellés COURTS.
+          - À partir de 1024px : colonne du centre, onglets EMPILÉS,
+            libellés complets. */}
+      <div
+        role="tablist"
+        aria-label="Types de logement"
+        data-cas-onglets
+        hidden
+        class="cas-onglets grid grid-cols-2 gap-2 lg:flex lg:flex-col lg:gap-3"
+      >
+        {casTypes.map((cas, index) => (
+          // ONGLET : 48px de haut minimum. Inactif : filet de 2px
+          // (--cas-filet) sur le fond de la section, texte de la section ;
+          // survol : fond --cas-survol. Actif : fond PLEIN de la couleur du
+          // texte, texte de la couleur du fond (contraste identique à celui
+          // du texte courant). Contour de focus de la couleur du texte.
+          <button
+            type="button"
+            role="tab"
+            id={`cas-onglet-${cas.id}`}
+            aria-controls={`cas-panneau-${cas.id}`}
+            aria-selected={index === 0 ? 'true' : 'false'}
+            tabindex={index === 0 ? 0 : -1}
+            data-cas-onglet
+            data-teinte={cas.teinte}
+            class="cas-onglet flex min-h-12 cursor-pointer items-center rounded-bloc border-2 px-3 py-2.5 text-left text-corps leading-tight font-semibold focus-visible:outline-[3px] focus-visible:outline-offset-2 lg:px-4 lg:py-3"
+          >
+            <span class="lg:hidden">{cas.court}</span>
+            <span class="hidden lg:inline">{cas.onglet}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* LES 6 PANNEAUX : texte (colonne gauche), illustration (colonne
+          droite). La colonne du centre est occupée par les onglets. */}
+      {panneaux.map(({ cas, choisie, image, zone }) => (
+        <div
+          role="tabpanel"
+          id={`cas-panneau-${cas.id}`}
+          aria-labelledby={`cas-onglet-${cas.id}`}
+          tabindex="0"
+          data-cas-panneau
+          class="cas-panneau mt-8 grid gap-10 focus-visible:outline-[3px] focus-visible:outline-offset-8 lg:mt-0"
+        >
+          {/* TEXTE : paragraphe, liste de 2 points (coche dans un rond),
+              bouton. */}
+          <div class="cas-texte self-center">
+            {/* TITRE DU PANNEAU (15 octobre 2026) : h3, couleur du texte de
+                la section (héritée). Allégé le même jour (référence
+                alan.com) : graisse 500 (font-medium), 2rem (32px) à partir
+                de 1280px, réduit proportionnellement en dessous (2,5vw,
+                1,5rem = 24px minimum), interligne 1,25. Le paragraphe
+                reste à 18px, graisse 400. */}
+            <h3 class="text-[clamp(1.5rem,2.5vw,2rem)] leading-[1.25] font-medium text-balance">{cas.titre}</h3>
+            <p class="mt-5 text-corps">{cas.texte}</p>
+            <ul class="mt-5 space-y-3">
+              {cas.points.map((point) => (
+                <li class="flex gap-3 text-corps font-semibold">
+                  <svg class="mt-0.5 size-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m8 12.5 2.5 2.5L16 9.5" />
+                  </svg>
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+
+            {/* BOUTON : fond plein de la couleur du texte, texte de la
+                couleur du fond (dérivés, comme les onglets), 48px de haut
+                minimum, flèche. Pleine largeur sur téléphone. */}
+            <a
+              href="/devis"
+              class="cas-bouton mt-8 flex min-h-12 w-full items-center justify-center gap-3 rounded-bloc px-6 py-3 text-center text-corps leading-tight font-semibold focus-visible:outline-[3px] focus-visible:outline-offset-2 sm:inline-flex sm:w-auto"
+            >
+              {cas.bouton}
+              <svg class="size-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          </div>
+
+          {/* ILLUSTRATION
+              - Fond TRANSPARENT : ni cadre, ni arrondi, ni ombre.
+              - Recadrée sur sa zone dessinée (zoneDessinee()) : le dessin
+                remplit toute la largeur du cadre.
+              - À partir de 1024px (avec JavaScript) : COUCHE en position
+                absolue, hors flux, à droite des onglets, 140 % de la
+                hauteur du bloc de contenu (règles .cas-image en bas du
+                fichier).
+              - Fichier manquant : emplacement vide, carré. */}
+          <div class="cas-image self-center">
+            {image && zone && choisie ? (
+              <div class="cas-cadre relative overflow-hidden" style={`${styleCadre(zone)}; --cas-ratio: ${(zone.l / zone.h).toFixed(4)}`}>
+                <Image
+                  src={image}
+                  alt={choisie.alt}
+                  widths={[600, 900, 1200]}
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  format="webp"
+                  loading="lazy"
+                  class="absolute h-auto"
+                  style={styleRecadrage(zone)}
+                />
+              </div>
+            ) : (
+              <div class="cas-cadre aspect-square" data-illustration-absente={cas.images[0].fichier}></div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+{/* SCRIPT DES ONGLETS
+    Écrit juste après la section pour s'exécuter avant le premier affichage
+    (pas de clignotement). Pose data-teinte sur la section : c'est ce qui
+    change la couleur de fond. */}
+<script is:inline>
+  (function () {
+    var section = document.currentScript.previousElementSibling;
+    var bloc = section && section.querySelector('[data-cas]');
+    if (!bloc) return;
+    var liste = bloc.querySelector('[data-cas-onglets]');
+    var onglets = Array.prototype.slice.call(bloc.querySelectorAll('[data-cas-onglet]'));
+    var panneaux = Array.prototype.slice.call(bloc.querySelectorAll('[data-cas-panneau]'));
+    if (!liste || !onglets.length) return;
+    // Orientation annoncée aux lecteurs d'écran : verticale à partir de
+    // 1024px (colonne), horizontale en dessous (grille de 2).
+    var large = window.matchMedia('(min-width: 64rem)');
+    function orienter() { liste.setAttribute('aria-orientation', large.matches ? 'vertical' : 'horizontal'); }
+    orienter();
+    if (large.addEventListener) large.addEventListener('change', orienter);
+
+    function activer(i, focus) {
+      onglets.forEach(function (onglet, j) {
+        var actif = i === j;
+        onglet.setAttribute('aria-selected', actif ? 'true' : 'false');
+        onglet.tabIndex = actif ? 0 : -1;
+        // Panneau inactif : masqué (visibility: hidden, donc aussi pour
+        // les lecteurs d'écran), mais il garde sa place dans la pile :
+        // la hauteur de la section ne change pas d'un onglet à l'autre.
+        if (actif) panneaux[j].removeAttribute('data-inactif');
+        else panneaux[j].setAttribute('data-inactif', '');
+      });
+      section.setAttribute('data-teinte', onglets[i].getAttribute('data-teinte'));
+      if (focus) onglets[i].focus();
+    }
+
+    liste.hidden = false;
+    bloc.setAttribute('data-actif', '');
+    activer(0, false);
+
+    onglets.forEach(function (onglet, i) {
+      onglet.addEventListener('click', function () { activer(i, true); });
+      onglet.addEventListener('keydown', function (e) {
+        var n = onglets.length;
+        var cible = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') cible = (i + 1) % n;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') cible = (i - 1 + n) % n;
+        else if (e.key === 'Home') cible = 0;
+        else if (e.key === 'End') cible = n - 1;
+        if (cible === null) return;
+        e.preventDefault();
+        activer(cible, true);
+      });
+    });
+  })();
+</script>
+
+<style>
+  /* =======================================================================
+     COULEURS DE LA SECTION
+     Deux couleurs par onglet : --cas-fond et --cas-texte (blanc ou texte
+     foncé). Tout le reste en est dérivé :
+     - --cas-filet  : contour des onglets inactifs (55 % texte) ;
+     - --cas-survol : fond d'un onglet inactif survolé (10 % texte) ;
+     - --cas-plein-survol : bouton survolé (82 % texte).
+     Sur les 2 fonds FONCÉS (bâti ancien, maison neuve), le survol est
+     différent (15 octobre 2026) : éclaircir le fond vert de 10 % faisait
+     tomber le texte blanc à 6,2:1, et le bouton survolé à 5,8:1. Là, le
+     survol d'un onglet ASSOMBRIT le fond (20 % de noir) et le bouton
+     survolé ne se grise que de 5 % ; il se souligne (tous les fonds).
+     Onglet actif et bouton : fond --cas-texte, texte --cas-fond.
+     Contrastes de chaque couple, nuances comprises : inventaire-charte.md
+     (tous les textes ≥ 7:1 ; filets ≥ 3,5:1, ce ne sont pas des textes).
+  ======================================================================= */
+  .cas-types {
+    --cas-fond: var(--color-cas-ancien);
+    --cas-texte: var(--color-texte-inverse);
+    --cas-filet: color-mix(in oklab, var(--cas-texte) 55%, var(--cas-fond));
+    --cas-survol: color-mix(in oklab, var(--cas-texte) 10%, var(--cas-fond));
+    --cas-plein-survol: color-mix(in oklab, var(--cas-texte) 82%, var(--cas-fond));
+    background-color: var(--cas-fond);
+    color: var(--cas-texte);
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+  .cas-types[data-teinte='annees50'] { --cas-fond: var(--color-cas-annees50); --cas-texte: var(--color-texte); }
+  .cas-types[data-teinte='annees95'] { --cas-fond: var(--color-cas-annees95); --cas-texte: var(--color-texte); }
+  .cas-types[data-teinte='appartement'] { --cas-fond: var(--color-cas-appartement); --cas-texte: var(--color-texte); }
+  .cas-types[data-teinte='neuf'] { --cas-fond: var(--color-cas-neuf); --cas-texte: var(--color-texte-inverse); }
+  .cas-types[data-teinte='ancien'],
+  .cas-types[data-teinte='neuf'] {
+    --cas-survol: color-mix(in oklab, black 20%, var(--cas-fond));
+    --cas-plein-survol: color-mix(in oklab, var(--cas-texte) 95%, var(--cas-fond));
+  }
+  .cas-types[data-teinte='modernisation'] { --cas-fond: var(--color-cas-modernisation); --cas-texte: var(--color-texte); }
+
+  /* ONGLETS */
+  .cas-onglet {
+    border-color: var(--cas-filet);
+    /* Fond PLEIN (couleur de la section, sans transparence) : les onglets
+       passent par-dessus l'illustration et doivent rester lisibles. */
+    background-color: var(--cas-fond);
+    color: var(--cas-texte);
+    outline-color: var(--cas-texte);
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+  }
+  .cas-onglet:hover { background-color: var(--cas-survol); }
+  .cas-onglet[aria-selected='true'] {
+    border-color: var(--cas-texte);
+    background-color: var(--cas-texte);
+    color: var(--cas-fond);
+  }
+
+  /* BOUTON */
+  .cas-bouton {
+    background-color: var(--cas-texte);
+    color: var(--cas-fond);
+    outline-color: var(--cas-texte);
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+  .cas-bouton:hover {
+    background-color: var(--cas-plein-survol);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .cas-panneau { outline-color: var(--cas-texte); }
+
+  /* PANNEAUX SUPERPOSÉS (avec JavaScript, data-actif) : les 6 panneaux
+     occupent la MÊME case de la grille ; seul l'actif est visible. La case
+     prend la hauteur du plus haut : la section ne change plus de hauteur
+     d'un onglet à l'autre (comme le texte de la Méthode).
+     APPARITION : l'actif arrive en fondu avec une légère montée (0,4 s) ;
+     l'ancien disparaît d'un coup (pas de chevauchement de deux textes). */
+  .cas-bloc[data-actif] { display: grid; }
+  .cas-bloc[data-actif] .cas-onglets { grid-row: 1; grid-column: 1; }
+  .cas-bloc[data-actif] .cas-panneau { grid-row: 2; grid-column: 1; }
+  .cas-panneau { transition: opacity 0.4s ease-out, translate 0.4s ease-out; }
+  .cas-panneau[data-inactif] {
+    visibility: hidden;
+    opacity: 0;
+    translate: 0 0.75rem;
+    transition: none;
+  }
+
+  /* SOUS 1024px, AVEC JAVASCRIPT (16 octobre 2026) : l'illustration passe
+     AU-DESSUS des onglets. Elle est dans chaque panneau : la grille du
+     bloc a 3 rangées (illustration, onglets, texte) ; chaque panneau
+     couvre les 3 (subgrid) et place son illustration en rangée 1 et son
+     texte en rangée 3 ; les onglets occupent la rangée 2, au-dessus des
+     panneaux (z-index : sinon le panneau actif, qui vient après eux,
+     intercepterait les clics). La rangée 1 prend la hauteur de la plus
+     haute illustration : la section ne change pas de hauteur d'un onglet
+     à l'autre ; chaque dessin est posé en bas de sa rangée, contre les
+     onglets. Écarts : 32px. */
+  @media (width < 64rem) {
+    .cas-bloc[data-actif] { row-gap: 2rem; }
+    .cas-bloc[data-actif] .cas-onglets { grid-row: 2; z-index: 1; }
+    .cas-bloc[data-actif] .cas-panneau {
+      grid-row: 1 / span 3;
+      grid-template-rows: subgrid;
+      row-gap: normal;
+      margin-top: 0;
+    }
+    .cas-bloc[data-actif] .cas-image { grid-row: 1; align-self: end; }
+    .cas-bloc[data-actif] .cas-texte { grid-row: 3; align-self: start; }
+  }
+
+  /* À PARTIR DE 1024px (15 octobre 2026, débordement vertical façon
+     alan.com)
+     Grille : texte | onglets (15rem) | espace libre. Les deux colonnes
+     latérales restent ÉGALES : les onglets sont au CENTRE EXACT de la
+     page. La 3e colonne n'a plus de contenu dans la grille : elle réserve
+     la place de l'illustration.
+     L'ILLUSTRATION est une COUCHE en position absolue (voir .cas-image) :
+     hors flux, elle ne pèse pas sur la hauteur de la section, qui ne
+     dépend plus que du texte et des onglets (stable : panneaux
+     superposés).
+     La section coupe ce qui dépasse (classe lg:overflow-clip). « clip »
+     plutôt que « hidden » : même rendu, mais la section ne devient pas
+     une zone défilable (avec hidden, un focus clavier ou un
+     scrollIntoView aurait pu la faire glisser horizontalement de 58px).
+     Sans JavaScript : pas d'onglets ; chaque panneau sur 2 colonnes
+     égales (texte, illustration), les 6 les uns sous les autres. */
+  @media (width >= 64rem) {
+    .cas-bloc:not([data-actif]) .cas-panneau {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+    }
+    .cas-bloc[data-actif] {
+      grid-template-columns: minmax(0, 1fr) 15rem minmax(0, 1fr);
+      column-gap: 2.5rem;
+      align-items: center;
+    }
+    /* z-index : les onglets passent AU-DESSUS des panneaux, qui couvrent
+       les 3 colonnes et viennent après eux dans la page : sans lui, ils
+       intercepteraient les clics. Fond plein (.cas-onglet). */
+    .cas-bloc[data-actif] .cas-onglets { grid-row: 1; grid-column: 2; z-index: 1; }
+    .cas-bloc[data-actif] .cas-panneau {
+      grid-row: 1;
+      grid-column: 1 / -1;
+      align-self: stretch; /* toute la hauteur de la rangée commune */
+      grid-template-columns: subgrid;
+      column-gap: 2.5rem;
+      align-items: center;
+      /* Référence de la couche illustration : même boîte que le bloc de
+         contenu (texte + onglets). */
+      position: relative;
+    }
+    .cas-bloc[data-actif] .cas-texte { grid-column: 1; }
+    /* ILLUSTRATION (couche absolue)
+       - HAUTEUR : 140 % du bloc de contenu (rangée texte + onglets),
+         centrée verticalement dessus : elle dépasse de 20 % en haut et
+         20 % en bas.
+       - HORIZONTALEMENT (15 octobre 2026) : CENTRÉE dans l'espace libre
+         entre le bord droit des onglets et le bord droit de l'écran. La
+         couche couvre exactement cet espace (de 50 % + 7,5rem, bord droit
+         des onglets, jusqu'au bord de l'écran : --marge-ecran, même calcul
+         que deborde-droite, global.css) et y centre le dessin : même
+         distance à gauche (onglets) et à droite (écran).
+       - TAILLE : celle d'avant (140 %), sauf si le dessin est trop large
+         pour tenir centré avec au moins --cas-respiration (2,5rem, l'écart
+         entre texte et onglets) de chaque côté : il est alors RÉDUIT, et
+         non décalé (la couche est un conteneur de requête : 100cqw = sa
+         largeur hors padding ; --cas-ratio = largeur ÷ hauteur, posé sur le cadre). Il
+         ne touche donc jamais les onglets, ni le bord de l'écran. */
+    .cas-bloc[data-actif] .cas-image {
+      --marge-ecran: max(var(--spacing-gouttiere), calc((100vw - var(--container-site)) / 2 + var(--spacing-gouttiere)));
+      --cas-respiration: 2.5rem;
+      position: absolute;
+      top: -20%;
+      height: 140%;
+      left: calc(50% + 7.5rem);
+      right: calc(-1 * var(--marge-ecran));
+      padding-inline: var(--cas-respiration);
+      container-type: size;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cas-bloc[data-actif] .cas-cadre {
+      height: min(100cqh, 100cqw / var(--cas-ratio, 1));
+      width: auto;
+      flex: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cas-types,
+    .cas-onglet,
+    .cas-bouton,
+    .cas-panneau { transition: none; }
+  }
+</style>

@@ -1,0 +1,262 @@
+---
+// =========================================================================
+// COMPOSANT « FONCTIONNEMENT » (src/components/CommentCaMarche.astro)
+// -------------------------------------------------------------------------
+// Bandeau placé juste après le Hero (14 octobre 2026), à la place de
+// l'ancien bandeau des 8 solutions (les raccourcis sont désormais dans le
+// Hero, sous le schéma). Titre « Comment ça se passe ? » jusqu'à la
+// correction du 14 octobre 2026, « Fonctionnement » depuis.
+//
+// CONTENU : un titre, 4 étapes numérotées (textes fournis le 14 octobre
+// 2026) et deux illustrations de personnages (il n'y avait aucun humain
+// sur le site) :
+// - contact.png  : une femme âgée au téléphone, dans son fauteuil (le
+//                  premier contact) ;
+// - chantier.png : deux artisans posant de l'isolation (les travaux).
+// Les PNG ont un fond TRANSPARENT : ni cadre, ni arrondi, ni ombre ; les
+// personnages se posent directement sur le fond de la section. Fichiers
+// dans src/assets/illustrations/, retrouvés par src/data/illustrations.ts
+// (emplacement vide tant qu'un fichier manque), optimisés en WebP par
+// <Image>. La vidéo prévue au départ est ABANDONNÉE.
+//
+// FOND BRUME (#ccdce8, bleu ardoise pâle), depuis la correction du
+// 14 octobre 2026 (argile avant, refusée). Les dominantes des
+// illustrations sont le bleu nuit, le crème et l'orange :
+// - le bleu nuit (fauteuil, camionnette, toit) est un cousin foncé de la
+//   brume : il s'y détache nettement, sans heurt ;
+// - le crème (pull, isolant, murs) est plus clair que la brume : il
+//   ressort en clair au lieu de se fondre (il disparaîtrait sur un fond
+//   crème ou argile) ;
+// - l'orange (pot, tuiles, pantalon) est la couleur opposée du bleu : il
+//   vibre sur la brume.
+// La brume tranche avec les fonds blancs du Hero et de la Méthode
+// (1,40:1, le plus fort écart des fonds pâles de la charte). Texte :
+// 11,7:1 ; texte-doux : 5,1:1.
+//
+// DISPOSITION :
+// - à partir de 1024px (lg:) : TROIS colonnes, 25 % / 50 % / 25 %
+//   (élargissement des étapes du 14 octobre 2026 ; avant, 30 / 40 / 30,
+//   et les textes se cassaient sur trop de lignes) : contact.png à gauche,
+//   le titre et les 4 étapes au centre, chantier.png à droite. Les
+//   illustrations sont centrées verticalement sur le bloc des étapes
+//   (rangée 2).
+// - DÉBORDEMENT (à partir de 1024px) : chaque illustration s'élargit
+//   au-delà de sa colonne, vers l'extérieur, jusqu'au bord de l'écran et
+//   un peu au-delà, où elle est coupée (même principe que deborde-gauche
+//   et deborde-droite de global.css, voir le <style> en bas). La part
+//   coupée est limitée à ce que le dessin peut perdre :
+//   - contact.png : 12 % de sa largeur, à gauche (quelques feuilles de
+//     la plante ; le fauteuil commence à 16 %) ;
+//   - chantier.png : 6 %, à droite (le bord de la maison, déjà coupée ;
+//     l'artisan de droite s'arrête à 91 %).
+//   Largeur plafonnée (32rem et 44rem) : sur les très grands écrans, la
+//   marge extérieure est énorme (355px à 1920px) et les dessins
+//   dépasseraient de loin la hauteur des étapes ; ils ne touchent alors
+//   plus le bord de l'écran.
+// - en dessous de 1024px (depuis le 14 octobre 2026 ; avant, les deux
+//   illustrations étaient côte à côte, trop petites) : UNE colonne, dans
+//   l'ordre du parcours : titre, contact.png (on appelle), les 4 étapes,
+//   chantier.png (les travaux démarrent).
+//   - TAILLE RÉDUITE et CENTRÉE, sans débordement (correction du
+//     14 octobre 2026 : en pleine largeur, la femme occupait presque tout
+//     l'écran du téléphone). Hauteur visée : environ la moitié de la
+//     largeur de l'écran, comme lorsqu'elles étaient côte à côte.
+//     Largeurs : contact.png 45vw (168 × 188px à 375px), chantier.png
+//     54vw (203 × 172px à 375px) ; plafonnées à 17rem et 20rem sur
+//     tablette, pour rester nettement plus petites que le bloc des
+//     étapes. La même règle vaut de 768 à 1023px (avant : 448 et 576px de
+//     large, collées aux bords).
+//
+// CADRAGE : les PNG (1200 × 1200) ont de larges marges transparentes
+// autour du dessin (37 % de la largeur pour contact.png). Sans recadrage,
+// les personnages paraissent bien plus petits que leur colonne. Chaque
+// image est donc placée dans un cadre aux proportions de la ZONE DESSINÉE
+// (mesurée dans le fichier le 14 octobre 2026, tableau `cadrages`), et
+// agrandie pour que cette zone remplisse le cadre ; les marges
+// transparentes débordent et sont coupées (overflow-hidden). Les fichiers
+// ne sont pas modifiés. ⚠️ Si un PNG est remplacé, remesurer sa zone
+// dessinée (première et dernière ligne ou colonne non transparente).
+// - chantier.png est COUPÉ au bord droit du dessin (la maison continue
+//   hors de l'image). À partir de 1024px, l'image va jusqu'au bord de
+//   l'écran, où la coupe se confond avec lui. Son bord droit s'efface aussi
+//   en fondu sur ses 12 % derniers (mask-image), À TOUTES LES TAILLES :
+//   sous 1024px, l'image est centrée et la coupe tomberait au milieu de
+//   l'écran ; au-delà, utile quand la largeur est plafonnée.
+//
+// ANIMATION : titre (data-scene-titre) et illustrations (data-scene-image)
+// à l'arrivée de la section ; chaque étape (data-scene-etape) à SA propre
+// arrivée à l'écran, fondu et montée de 40px, 150 ms d'écart entre étapes
+// qui arrivent ensemble. Rejouée à chaque passage, après sortie complète
+// de l'écran ; rien ne bouge si « réduire les animations » est activé
+// (global.css et AnimationScenes.astro).
+// =========================================================================
+
+import { Image } from 'astro:assets';
+import { illustration } from '../data/illustrations';
+
+const contact = illustration('contact.png');
+const chantier = illustration('chantier.png');
+
+// Les 4 étapes (textes fournis le 14 octobre 2026, version raccourcie).
+const etapes = [
+  {
+    titre: 'Contactez-nous',
+    texte: 'Via le formulaire en ligne, décrivez votre projet, même succinctement.',
+  },
+  {
+    titre: "L'artisan Akelia le plus proche de chez vous vous contacte",
+    texte: 'Sous 24 heures, une entreprise du collectif implantée dans votre secteur vous rappelle. Vos coordonnées ne sortent jamais du réseau.',
+  },
+  {
+    titre: 'Chiffrage des travaux',
+    texte: 'Un artisan se déplace chez vous gratuitement et vous propose un devis détaillé : nature des travaux, aides estimées, reste à charge.',
+  },
+  {
+    titre: 'Les travaux démarrent',
+    texte: "Votre artisan réalise le chantier et reste votre interlocuteur ensuite, pour l'entretien comme pour le dépannage.",
+  },
+];
+
+// Zone dessinée de chaque PNG (pixels non transparents), en pixels du
+// fichier : x, y = coin haut gauche ; l, h = largeur et hauteur.
+const cadrages = {
+  contact: { x: 155, y: 134, l: 851, h: 951 },
+  chantier: { x: 46, y: 115, l: 1154, h: 981 },
+};
+type Cadrage = (typeof cadrages)[keyof typeof cadrages];
+// Cadre aux proportions de la zone dessinée.
+const styleCadre = (c: Cadrage) => `aspect-ratio: ${c.l} / ${c.h}`;
+// Image agrandie et décalée pour que la zone dessinée remplisse le cadre.
+const styleImage = (c: Cadrage) =>
+  `width: ${((1200 / c.l) * 100).toFixed(2)}%; max-width: none; left: ${((-c.x / c.l) * 100).toFixed(2)}%; top: ${((-c.y / c.h) * 100).toFixed(2)}%`;
+
+// Taille d'affichage des images (agrandies : environ 1,4 fois le cadre
+// pour contact.png, cadre de 32rem au plus), pour le choix de la bonne
+// résolution.
+const tailles = '(min-width: 1250px) 720px, (min-width: 1024px) 45vw, (min-width: 768px) 400px, 80vw';
+---
+
+<section data-scene aria-labelledby="fonctionnement-titre" class="overflow-x-clip bg-brume">
+  {/* GRILLE
+      - téléphone et tablette : 1 colonne ; titre, contact, étapes,
+        chantier, dans l'ordre du code.
+      - 1024px et plus : 3 colonnes (25 / 50 / 25) ; titre et étapes dans
+        la colonne centrale, illustrations sur la rangée des étapes,
+        centrées verticalement, débordant vers l'extérieur.
+      overflow-x-clip (sur la section) : la partie des illustrations qui
+      sort de l'écran est coupée, sans défilement horizontal.
+      Ordre dans le code (lecture et clavier) : titre, contact, étapes,
+      chantier. */}
+  <div class="mx-auto grid max-w-site grid-cols-1 px-gouttiere py-scene md:py-scene-large lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)] lg:gap-x-10">
+
+    {/* TITRE */}
+    <h2 id="fonctionnement-titre" data-scene-titre class="text-h2 text-balance text-texte lg:col-start-2 lg:row-start-1">
+      Fonctionnement
+    </h2>
+
+    {/* ILLUSTRATION 1 : CONTACT (à gauche)
+        Sous 1024px : 45vw de large (17rem au plus), centrée ;
+        débordement vers la gauche au-delà (classe deborde-contact). */}
+    <div data-scene-image class="deborde-contact mx-auto mt-8 w-[45vw] max-w-[17rem] md:mt-10 lg:col-start-1 lg:row-start-2 lg:mt-10 lg:mr-0 lg:max-w-none lg:self-center">
+      {contact ? (
+        <div class="relative overflow-hidden" style={styleCadre(cadrages.contact)}>
+          <Image
+            src={contact}
+            alt="Une femme assise dans son fauteuil, souriante, en train de téléphoner."
+            widths={[400, 600, 800, 1200]}
+            sizes={tailles}
+            format="webp"
+            loading="lazy"
+            class="absolute h-auto"
+            style={styleImage(cadrages.contact)}
+          />
+        </div>
+      ) : (
+        <div class="bg-fond/50" style={styleCadre(cadrages.contact)} aria-hidden="true"></div>
+      )}
+    </div>
+
+    {/* LES 4 ÉTAPES
+        Pastilles numérotées : cercle blanc cerclé d'orange, chiffre bleu
+        nuit en gras. Un filet orange relie les pastilles. Chaque étape
+        apparaît à son arrivée à l'écran (data-scene-etape,
+        AnimationScenes.astro). */}
+    <ol class="mt-10 md:mt-12 lg:col-start-2 lg:row-start-2 lg:mt-10">
+      {etapes.map((etape, index) => (
+        <li data-scene-etape class="relative flex gap-5 pb-8 last:pb-0">
+          {/* Ligne entre deux pastilles (pas après la dernière) */}
+          {index < etapes.length - 1 && (
+            <span aria-hidden="true" class="absolute top-12 bottom-2 left-5 w-0.5 -translate-x-1/2 bg-action-500/60"></span>
+          )}
+          <span aria-hidden="true" class="flex size-10 shrink-0 items-center justify-center rounded-pilule border-2 border-action-500 bg-fond text-h4 font-bold text-marque-900">
+            {index + 1}
+          </span>
+          <div class="pt-1.5">
+            <h3 class="text-h4 font-bold text-texte">
+              <span class="sr-only">Étape {index + 1} : </span>{etape.titre}
+            </h3>
+            <p class="mt-2 text-corps text-texte-doux">{etape.texte}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    {/* ILLUSTRATION 2 : CHANTIER (à droite)
+        Sous 1024px : 54vw de large (20rem au plus), centrée (la largeur
+        doit être donnée : le cadre, dont l'image est en position
+        absolue, retomberait sinon à 0px) ;
+        débordement vers la droite au-delà (classe deborde-chantier) et
+        fondu du bord droit (voir l'en-tête). */}
+    <div data-scene-image class="deborde-chantier mx-auto mt-10 w-[54vw] max-w-[20rem] md:mt-12 lg:col-start-3 lg:row-start-2 lg:mt-10 lg:ml-0 lg:max-w-none lg:self-center">
+      {chantier ? (
+        <div class="relative overflow-hidden [mask-image:linear-gradient(to_right,#000_88%,transparent)]" style={styleCadre(cadrages.chantier)}>
+          <Image
+            src={chantier}
+            alt="Deux artisans posant des panneaux d'isolation sur la façade d'une maison, leur camionnette garée à côté."
+            widths={[400, 600, 800, 1200]}
+            sizes={tailles}
+            format="webp"
+            loading="lazy"
+            class="absolute h-auto"
+            style={styleImage(cadrages.chantier)}
+          />
+        </div>
+      ) : (
+        <div class="bg-fond/50" style={styleCadre(cadrages.chantier)} aria-hidden="true"></div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* =======================================================================
+     DÉBORDEMENT DES ILLUSTRATIONS (à partir de 1024px)
+     Même principe que deborde-gauche / deborde-droite (global.css) :
+     --marge-ecran est la distance entre le bord du contenu et le bord de
+     l'écran ; --visible, la largeur de la colonne plus cette marge (ce qui
+     reste à l'écran). L'image est plus large que --visible : la différence
+     sort de l'écran et est coupée (overflow-x-clip sur la section).
+     - contact : --visible / 0,88 → 12 % hors de l'écran, à gauche ;
+       plafond 32rem.
+     - chantier : --visible / 0,94 → 6 % hors de l'écran, à droite ;
+       plafond 44rem.
+     Les pourcentages (100 %) se rapportent à la colonne de la grille.
+  ======================================================================= */
+  @media (width >= 64rem) {
+    .deborde-contact,
+    .deborde-chantier {
+      --marge-ecran: max(var(--spacing-gouttiere), calc((100vw - var(--container-site)) / 2 + var(--spacing-gouttiere)));
+      --visible: calc(100% + var(--marge-ecran));
+    }
+    .deborde-contact {
+      --largeur: min(calc(var(--visible) / 0.88), 32rem);
+      width: var(--largeur);
+      margin-left: calc(100% - var(--largeur));
+    }
+    .deborde-chantier {
+      --largeur: min(calc(var(--visible) / 0.94), 44rem);
+      width: var(--largeur);
+      margin-right: 0;
+    }
+  }
+</style>

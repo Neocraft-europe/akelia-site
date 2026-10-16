@@ -1,0 +1,128 @@
+---
+// =========================================================================
+// ANIMATION D'ENTRÉE DES SECTIONS (src/components/AnimationScenes.astro)
+// -------------------------------------------------------------------------
+// Refonte « alan.com » de la page d'accueil (octobre 2026). À placer UNE
+// fois, en tête de la page (avant le Hero) : le script s'exécute avant le
+// premier affichage, donc rien ne clignote.
+//
+// Chaque <section data-scene> joue son animation quand elle devient
+// visible : titre, puis image, puis étiquettes (aucune au 16 octobre
+// 2026) (CSS dans global.css,
+// « ANIMATION D'ENTRÉE DES SECTIONS »).
+// - Déclenchement : 25 % de la section visible, OU la section occupe 25 %
+//   de la hauteur de l'écran (sur téléphone, une section plus haute que
+//   l'écran ne peut jamais être visible à 25 %).
+// - L'animation SE REJOUE à chaque passage, mais SEULEMENT si la section
+//   a COMPLÈTEMENT quitté l'écran entre-temps (aucun clignotement quand on
+//   défile au bord d'une section).
+// - Sans IntersectionObserver, ou « réduire les animations » activé : le
+//   script ne fait rien et tout reste visible, immobile.
+//
+// ÉTAPES (data-scene-etape, section « Fonctionnement », 14 octobre 2026) :
+// elles ont leur PROPRE déclenchement. Avec celui de la section (25 %
+// visible), les 4 étapes étaient encore toutes sous le bas de l'écran au
+// moment de l'animation (mesuré : première étape à 907px pour un écran de
+// 900px) : elle se jouait hors de la vue. Désormais :
+// - chaque étape démarre quand 30 % d'elle est visible dans les 90 %
+//   supérieurs de l'écran ;
+// - les étapes qui arrivent ENSEMBLE (même rappel de l'observateur)
+//   partent avec 150 ms d'écart (attribut style --decalage) ; celles qui
+//   arrivent ensuite, au fil du défilement, partent tout de suite ;
+// - toutes sont remises à zéro quand leur section a COMPLÈTEMENT quitté
+//   l'écran, et se rejouent au passage suivant.
+//
+// DÉCLENCHEMENT À L'ENTRÉE (data-declenchement="entree", 16 octobre
+// 2026) : l'étape démarre dès que son HAUT entre dans l'écran (seuil 0,
+// sans marge). Utilisé par le bandeau du Collectif : avec le réglage
+// ci-dessus (30 % visible dans les 90 % supérieurs), il ne partait à 375px
+// qu'avec 100px de ses 117px déjà à l'écran (mesuré), donc trop tard.
+// =========================================================================
+---
+
+<script is:inline>
+  (function () {
+    if (!('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Autorise le CSS à cacher les éléments en attente d'animation.
+    document.documentElement.setAttribute('data-scenes', '');
+
+    // Seuils fins (0 à 25 %, par pas de 1 %) : sur une section très haute,
+    // le rappel arrive assez souvent pour mesurer la hauteur visible.
+    var seuils = [];
+    for (var i = 0; i <= 25; i++) seuils.push(i / 100);
+
+    function demarrer() {
+      var scenes = document.querySelectorAll('[data-scene]');
+      Array.prototype.forEach.call(scenes, function (scene) {
+        // arme : vrai au départ, puis seulement après une sortie complète.
+        var arme = true;
+        new IntersectionObserver(function (entrees) {
+          var e = entrees[entrees.length - 1];
+          if (!e.isIntersecting) {
+            // Entièrement hors de l'écran : remise à zéro, sans effet
+            // visible, et réarmement.
+            scene.removeAttribute('data-etat');
+            arme = true;
+            return;
+          }
+          var visible = e.intersectionRatio >= 0.25 || e.intersectionRect.height >= 0.25 * window.innerHeight;
+          if (visible && arme) {
+            arme = false;
+            scene.setAttribute('data-etat', 'anime');
+          }
+        }, { threshold: seuils }).observe(scene);
+      });
+    }
+
+    // ÉTAPES : déclenchement individuel (voir l'en-tête).
+    function demarrerEtapes() {
+      var etapes = Array.prototype.slice.call(document.querySelectorAll('[data-scene-etape]'));
+      if (!etapes.length) return;
+      function rappel(entrees) {
+        var rang = 0;
+        entrees
+          .filter(function (e) { return e.isIntersecting && !e.target.hasAttribute('data-visible'); })
+          .sort(function (a, b) { return etapes.indexOf(a.target) - etapes.indexOf(b.target); })
+          .forEach(function (e) {
+            e.target.style.setProperty('--decalage', (rang++ * 150) + 'ms');
+            e.target.setAttribute('data-visible', '');
+          });
+      }
+      var observateur = new IntersectionObserver(rappel, { threshold: 0.3, rootMargin: '0px 0px -10% 0px' });
+      // data-declenchement="entree" : dès que le HAUT de l'élément entre
+      // dans l'écran (voir l'en-tête).
+      var observateurEntree = new IntersectionObserver(rappel, { threshold: 0 });
+      etapes.forEach(function (etape) {
+        (etape.getAttribute('data-declenchement') === 'entree' ? observateurEntree : observateur).observe(etape);
+      });
+
+      // Remise à zéro quand la section a entièrement quitté l'écran.
+      var sections = [];
+      etapes.forEach(function (etape) {
+        var section = etape.closest('[data-scene]');
+        if (section && sections.indexOf(section) < 0) sections.push(section);
+      });
+      sections.forEach(function (section) {
+        new IntersectionObserver(function (entrees) {
+          if (entrees[entrees.length - 1].isIntersecting) return;
+          Array.prototype.forEach.call(section.querySelectorAll('[data-scene-etape]'), function (etape) {
+            etape.removeAttribute('data-visible');
+          });
+        }).observe(section);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', demarrerEtapes);
+    } else {
+      demarrerEtapes();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', demarrer);
+    } else {
+      demarrer();
+    }
+  })();
+</script>

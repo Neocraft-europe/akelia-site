@@ -41,23 +41,23 @@ const services = [
 >
   <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
     <header class="max-w-2xl">
-      <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Nos Services</h1>
-      <p class="mt-3 text-lg text-slate-600">
+      <h1 class="text-3xl font-bold tracking-tight text-texte sm:text-4xl">Nos Services</h1>
+      <p class="mt-3 text-lg text-texte-doux">
         Des solutions techniques fiables et garanties pour optimiser le confort et le rendement de votre habitat.
       </p>
     </header>
 
     <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
       {services.map((service) => (
-        <section id={service.id} class="rounded-lg border border-slate-200 p-6 bg-white shadow-sm flex flex-col justify-between">
+        <section id={service.id} class="rounded-bloc border border-creme-fonce p-6 bg-fond shadow-sm flex flex-col justify-between">
           <div>
-            <h2 class="text-xl font-bold text-slate-900">{service.title}</h2>
-            <p class="mt-2 text-slate-600">{service.desc}</p>
+            <h2 class="text-xl font-bold text-texte">{service.title}</h2>
+            <p class="mt-2 text-texte-doux">{service.desc}</p>
           </div>
           <div class="mt-6">
             <a
               href="/devis"
-              class="inline-block rounded bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100"
+              class="inline-block rounded-bloc bg-vert-50 px-3 py-2 text-sm font-semibold text-vert-600 hover:bg-creme-fonce"
             >
               Demander un devis pour ce service →
             </a>

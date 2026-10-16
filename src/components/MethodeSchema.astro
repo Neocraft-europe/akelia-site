@@ -1,0 +1,391 @@
+---
+// =========================================================================
+// COMPOSANT SCHÉMA ÉVOLUTIF DE LA MÉTHODE (src/components/MethodeSchema.astro)
+// -------------------------------------------------------------------------
+// Utilisé par MethodeEtapes.astro, dans la colonne de droite de la section
+// Méthode. Un SEUL dessin SVG : la MÊME maison, vue en coupe, dans 4 états,
+// un par étape de la méthode. L'état affiché est donné par l'attribut
+// data-etape (1 à 4) de la <figure>, piloté par le script des onglets
+// (MethodeEtapes.astro).
+//
+// LES ÉLÉMENTS S'ACCUMULENT : chaque étape AJOUTE ses éléments à ceux des
+// étapes précédentes (on construit, on ne recommence pas). Seule exception :
+// les zones de déperdition et la caméra thermique de l'étape 1, qui
+// disparaissent dès l'étape 2 (l'isolation supprime les déperditions ; la
+// caméra est un outil de diagnostic, inutile une fois l'audit fait). Les
+// cotes, elles, restent sur les 4 états.
+//   État 1, audit           : cotes ; caméra thermique et zones de
+//                             déperdition (étape 1 seulement)
+//   État 2, isoler, ventiler : isolant (combles et murs), VMC et gaines
+//   État 3, produire        : panneaux photovoltaïques, soleil et rayons
+//   État 4, s'équiper       : pompe à chaleur (unité extérieure, radiateur),
+//                             thermostat, borne de recharge
+//
+// COULEURS : chaque élément ajouté prend la couleur FONCÉE de son étape,
+// la même que le filet et la pastille de l'onglet (src/data/methode.ts,
+// variables --color-…-fonce de global.css). Les surfaces (isolant,
+// panneaux) sont remplies de la teinte CLAIRE de l'étape, celle du fond de
+// l'onglet actif. La maison elle-même reste en bleu nuit.
+//
+// STYLE : plan technique au trait, comme SchemaMaison.astro (schéma du
+// hero) : trait d'environ 2px pour la structure, 1.5px pour les
+// équipements, 1px pour les cotes et rappels à l'écran ; hachures à 45°
+// pour les isolants ; annotations en italique (masquées sur téléphone,
+// où elles seraient trop petites).
+//
+// MÉCANISME : chaque élément ajouté est dans un <g class="couche"> portant
+// data-des="N" (visible à partir de l'étape N). Les zones de déperdition
+// et la caméra thermique portent data-perte (visibles à l'étape 1
+// seulement). Le CSS ci-dessous masque ce qui ne doit pas se voir, en fondu de 0,4s. Quand une couche
+// apparaît, le script lui ajoute data-trace pendant 0,4s : ses traits se
+// dessinent rapidement (pathLength="1" sur les tracés concernés).
+// SANS JAVASCRIPT : pas de data-etape, le schéma reste à l'état 4.
+// « Réduire les animations » : changement instantané.
+// =========================================================================
+
+import { etapesMethode } from '../data/methode';
+
+// Couleurs de chaque étape (index 0 = étape 1).
+const c = etapesMethode.map((e) => `--fonce: ${e.fonce}; --teinte: ${e.teinte};`);
+
+// Pan droit du toit : repère local (x le long du pan, y perpendiculaire,
+// négatif vers l'extérieur). Pente de 3/4 : cosinus 0,8, sinus 0,6.
+const pan = (lx: number, ly: number) => [380 + lx * 0.8 - ly * 0.6, 121 + lx * 0.6 + ly * 0.8].map((v) => +v.toFixed(1));
+const pt = (lx: number, ly: number) => pan(lx, ly).join(' ');
+
+// 3 modules photovoltaïques posés sur le pan droit, 4 unités au-dessus
+// de la couverture, 12 d'épaisseur ; 4 cellules par module.
+const modules = [30, 84, 138].map((x0) => {
+  const x1 = x0 + 50;
+  return {
+    cadre: `M${pt(x0, -4)}L${pt(x1, -4)}L${pt(x1, -16)}L${pt(x0, -16)}Z`,
+    cellules: [12.5, 25, 37.5].map((d) => `M${pt(x0 + d, -4)}L${pt(x0 + d, -16)}`).join(''),
+    pieds: `M${pt(x0 + 8, 0)}L${pt(x0 + 8, -4)}M${pt(x1 - 8, 0)}L${pt(x1 - 8, -4)}`,
+  };
+});
+// Rayons du soleil vers le milieu de chaque module (arrêtés avant).
+const soleil = [700, 70];
+const rayons = [55, 109, 163].map((lx) => {
+  const [x, y] = pan(lx, -26);
+  const dx = x - soleil[0], dy = y - soleil[1];
+  const l = Math.hypot(dx, dy);
+  const d0 = 34;
+  return `M${(soleil[0] + (dx / l) * d0).toFixed(1)} ${(soleil[1] + (dy / l) * d0).toFixed(1)}L${x} ${y}`;
+});
+// Rayons courts autour du soleil (8 directions).
+const eclat = Array.from({ length: 8 }, (_, i) => {
+  const a = (i * Math.PI) / 4;
+  const p = (r: number) => `${(soleil[0] + Math.cos(a) * r).toFixed(1)} ${(soleil[1] + Math.sin(a) * r).toFixed(1)}`;
+  return `M${p(27)}L${p(36)}`;
+}).join('');
+
+// Hachures du terrain : petits traits obliques sous la ligne de sol.
+const terrain = Array.from({ length: 46 }, (_, i) => `M${40 + i * 16} 440l-8 10`).join('');
+---
+
+<figure class="methode-schema" data-methode-schema data-descriptions={JSON.stringify(etapesMethode.map((e) => e.schema))}>
+  <svg viewBox="0 0 800 500" class="h-auto w-full" role="img" aria-labelledby="methode-schema-titre methode-schema-desc">
+    <title id="methode-schema-titre">Schéma : la même maison, étape par étape</title>
+    {/* Sans JavaScript, le schéma est à l'état 4 : description de l'étape 4. */}
+    <desc id="methode-schema-desc" data-methode-schema-desc>{etapesMethode[3].schema}</desc>
+
+    <defs>
+      {/* Hachures à 45° (plan de coupe) et pointes de flèche. Un motif ou
+          un marqueur ne prend pas la couleur de l'élément qui l'utilise :
+          il y en a donc un par couleur d'étape. */}
+      <pattern id="ms-hachure-perte" patternUnits="userSpaceOnUse" width="11" height="11" patternTransform="rotate(-45)">
+        <line x1="0" y1="0" x2="0" y2="11" class="ms-hachure-trait" style={c[0]} />
+      </pattern>
+      <pattern id="ms-hachure-isolant" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="7" class="ms-hachure-trait" style={c[1]} />
+      </pattern>
+      {[0, 1].map((i) => (
+        <marker id={`ms-fleche-${i + 1}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M1 1 9 5 1 9" class="ms-fleche" style={c[i]} />
+        </marker>
+      ))}
+    </defs>
+
+    {/* =====================================================================
+        LA MAISON (toujours visible, bleu nuit)
+        Coupe verticale : terrain, fondations, murs, planchers, toit à deux
+        pans avec débords. Les sections coupées sont remplies de blanc.
+    ====================================================================== */}
+    <g class="ms-maison">
+      <path class="ms-sol" pathLength="1" d="M30 440H770" />
+      <path class="ms-terrain" pathLength="1" d={terrain} />
+      {/* Murs (avec fondation) et semelles */}
+      <path class="ms-section" pathLength="1" d="M240 250H254V462H240Z" />
+      <path class="ms-section" pathLength="1" d="M506 250H520V462H506Z" />
+      <path class="ms-section" pathLength="1" d="M230 462H264V474H230Z" />
+      <path class="ms-section" pathLength="1" d="M496 462H530V474H496Z" />
+      {/* Dalle basse, plancher de l'étage, plancher des combles */}
+      <path class="ms-section" pathLength="1" d="M254 430H506V440H254Z" />
+      <path class="ms-section" pathLength="1" d="M254 335H506V345H254Z" />
+      <path class="ms-section" pathLength="1" d="M240 240H520V250H240Z" />
+      {/* Toit à deux pans, en coupe, avec débords */}
+      <path class="ms-section" pathLength="1" d="M210 248.5L380 121L550 248.5V262.5L380 135L210 262.5Z" />
+    </g>
+
+    {/* =====================================================================
+        ÉTAT 1 — AUDIT (couleur de l'étape 1)
+    ====================================================================== */}
+    {/* Outils et constats du diagnostic : visibles à l'étape 1 SEULEMENT.
+        Zones de déperdition (hachures légères sur le toit et sur la face
+        extérieure des murs, flèches ondulées de chaleur qui s'échappe) et
+        caméra thermique avec sa visée. Une fois l'audit fait, ils n'ont
+        plus lieu d'être sur le schéma : ils disparaissent dès l'étape 2. */}
+    <g class="couche" data-perte style={`${c[0]} --ordre: 0;`}>
+      <path class="ms-perte" d="M210 248.5L380 121L550 248.5V234.5L380 107L210 234.5Z" />
+      <path class="ms-perte" d="M226 250.5L240 250V440H226Z" />
+      <path class="ms-perte" d="M520 250L534 250.5V440H520Z" />
+      <path class="ms-onde" pathLength="1" d="M292 170q-6-8 0-14t0-14l-8-10" marker-end="url(#ms-fleche-1)" />
+      <path class="ms-onde" pathLength="1" d="M468 170q6-8 0-14t0-14l8-10" marker-end="url(#ms-fleche-1)" />
+      <path class="ms-onde" pathLength="1" d="M222 385q-6 6-12 0t-12 0" marker-end="url(#ms-fleche-1)" />
+      <path class="ms-onde" pathLength="1" d="M538 300q6 6 12 0t12 0l12 0" marker-end="url(#ms-fleche-1)" />
+      <text class="ms-note detail" x="150" y="98">déperditions</text>
+      {/* Caméra thermique sur trépied, qui vise le mur gauche */}
+      <path class="ms-trait tr" pathLength="1" d="M105 370L80 440M105 370L130 440M105 370V440" />
+      <rect class="ms-trait ms-plein tr" pathLength="1" x="76" y="336" width="48" height="32" rx="4" />
+      <rect class="ms-trait ms-plein tr" pathLength="1" x="124" y="342" width="12" height="20" rx="2" />
+      <rect class="ms-trait tr" pathLength="1" x="84" y="343" width="22" height="16" rx="1.5" />
+      <path class="ms-visee" d="M138 350L224 282M138 354L224 420" />
+      <text class="ms-note detail" x="40" y="478">caméra thermique</text>
+    </g>
+
+    {/* Cotes : éléments de plan technique, gardés sur les 4 états. */}
+    <g class="couche" data-des="1" style={`${c[0]} --ordre: 0;`}>
+      {/* Cotes : largeur de la maison, hauteur des murs, hauteur du toit */}
+      <path class="ms-rappel" d="M240 478V496M520 478V496M184 240H236M200 121H372" />
+      <path class="ms-cote" d="M240 488H520" />
+      <path class="ms-cote" d="M190 440V240" />
+      <path class="ms-cote" d="M190 240V121" />
+    </g>
+
+    {/* =====================================================================
+        ÉTAT 2 — ISOLER ET VENTILER (couleur de l'étape 2)
+    ====================================================================== */}
+    <g class="couche" data-des="2" style={`${c[1]} --ordre: 1;`}>
+      {/* Isolant continu « en L » : combles, puis murs par l'extérieur,
+          jusque sous le débord du toit. Teinte claire + hachures foncées. */}
+      <path class="ms-isolant" d="M240 240L266.7 220H493.3L520 240Z" />
+      <path class="ms-isolant" d="M226 250.5L240 240V440H226Z" />
+      <path class="ms-isolant" d="M520 240L534 250.5V440H520Z" />
+      <path class="ms-hachures" d="M240 240L266.7 220H493.3L520 240ZM226 250.5L240 240V440H226ZM520 240L534 250.5V440H520Z" />
+      <path class="ms-trait tr" pathLength="1" d="M240 240L266.7 220H493.3L520 240M226 440V250.5L240 240M534 440V250.5L520 240" />
+      {/* VMC : caisson dans les combles, sortie en toiture, gaines vers
+          une bouche à l'étage et une au rez-de-chaussée, flux d'air. */}
+      <rect class="ms-trait ms-plein tr" pathLength="1" x="300" y="194" width="48" height="22" rx="3" />
+      <circle class="ms-trait tr" pathLength="1" cx="324" cy="205" r="6" />
+      <path class="ms-trait tr" pathLength="1" d="M324 194V154M312 154H336M316 147H332" />
+      <path class="ms-trait ms-gaine" d="M348 208H430V250M300 208H290V345" />
+      <path class="ms-trait ms-plein tr" pathLength="1" d="M421 250H439V256H421Z" />
+      <path class="ms-trait ms-plein tr" pathLength="1" d="M281 345H299V351H281Z" />
+      <path class="ms-trait tr" pathLength="1" d="M430 288V264" marker-end="url(#ms-fleche-2)" />
+      <path class="ms-trait tr" pathLength="1" d="M290 378V362" marker-end="url(#ms-fleche-2)" />
+      <text class="ms-note detail" x="358" y="190">VMC</text>
+      <text class="ms-note detail" x="548" y="300">isolant</text>
+    </g>
+
+    {/* =====================================================================
+        ÉTAT 3 — PRODUIRE (couleur de l'étape 3)
+    ====================================================================== */}
+    <g class="couche" data-des="3" style={`${c[2]} --ordre: 2;`}>
+      {modules.map((m) => (
+        <>
+          <path class="ms-trait ms-module tr" pathLength="1" d={m.cadre} />
+          <path class="ms-trait ms-fin" d={m.cellules} />
+          <path class="ms-trait" d={m.pieds} />
+        </>
+      ))}
+      <circle class="ms-trait ms-module tr" pathLength="1" cx={soleil[0]} cy={soleil[1]} r="22" />
+      <path class="ms-trait" d={eclat} />
+      {rayons.map((d) => <path class="ms-rayon" d={d} />)}
+      <text class="ms-note detail" x="565" y="252">panneaux solaires</text>
+    </g>
+
+    {/* =====================================================================
+        ÉTAT 4 — S'ÉQUIPER (couleur de l'étape 4)
+    ====================================================================== */}
+    <g class="couche" data-des="4" style={`${c[3]} --ordre: 3;`}>
+      {/* Pompe à chaleur : unité extérieure face au lecteur (ventilateur,
+          grille, plots), liaisons à travers le mur, radiateur intérieur. */}
+      <rect class="ms-trait ms-plein tr" pathLength="1" x="580" y="378" width="82" height="52" rx="4" />
+      <circle class="ms-trait tr" pathLength="1" cx="607" cy="404" r="18" />
+      <circle class="ms-trait" cx="607" cy="404" r="3" />
+      <path class="ms-trait" d="M637 392H652M637 400H652M637 408H652M637 416H652M592 430V440M650 430V440" />
+      <path class="ms-trait tr" pathLength="1" d="M580 400H490M580 410H490" />
+      <rect class="ms-trait ms-plein tr" pathLength="1" x="436" y="384" width="54" height="38" rx="3" />
+      <path class="ms-trait" d="M445 388V418M454 388V418M463 388V418M472 388V418M481 388V418M442 422V430M484 422V430" />
+      {/* Thermostat sur le mur gauche du séjour, et ses ondes */}
+      <rect class="ms-trait ms-plein tr" pathLength="1" x="256" y="384" width="18" height="24" rx="3" />
+      <circle class="ms-trait" cx="265" cy="396" r="4.5" />
+      <path class="ms-trait" d="M280 390a8 8 0 0 1 0 12M285 386a14 14 0 0 1 0 20" />
+      {/* Borne de recharge sur pied, avec éclair, écran et câble */}
+      <rect class="ms-trait ms-plein tr" pathLength="1" x="700" y="356" width="28" height="76" rx="5" />
+      <path class="ms-trait" d="M694 432H734V440H694Z" />
+      <rect class="ms-trait" x="706" y="364" width="16" height="10" rx="1.5" />
+      <path class="ms-trait tr" pathLength="1" d="M716 382L709 396H716L711 408" />
+      <path class="ms-trait tr" pathLength="1" d="M728 400C750 400 756 424 744 432" />
+      <text class="ms-note detail" x="694" y="346">borne</text>
+      <text class="ms-note detail" x="560" y="474">pompe à chaleur</text>
+      <text class="ms-note detail" x="420" y="374">radiateur</text>
+      <text class="ms-note detail" x="282" y="424">thermostat</text>
+    </g>
+  </svg>
+</figure>
+
+{/* ANIMATION D'ENTRÉE, rejouée à chaque retour de la section à l'écran
+    (même mécanique que SchemaMaison.astro et Methode.astro). Déclenchement :
+    30 % de la section visible, ou la section occupe 30 % de la hauteur de
+    l'écran (téléphone). Réarmement seulement après une sortie COMPLÈTE de
+    l'écran : un petit défilement au bord ne relance rien.
+    data-entree : « attente » (dessin caché) → « anime » (tracé, puis
+    apparition des éléments) → « fini » au bout de 2 s, pour que les
+    animations d'entrée ne gênent pas celles du changement d'étape.
+    Sans IntersectionObserver ou avec « réduire les animations » : rien
+    n'est caché, rien ne bouge. */}
+<script is:inline>
+  (function () {
+    var schema = document.currentScript.previousElementSibling;
+    if (!schema || !('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var section = schema.closest('section') || schema;
+    var arme = true;
+    var minuterie = null;
+    schema.setAttribute('data-entree', 'attente');
+    new IntersectionObserver(function (entrees) {
+      var e = entrees[entrees.length - 1];
+      if (!e.isIntersecting) {
+        clearTimeout(minuterie);
+        schema.setAttribute('data-entree', 'attente');
+        arme = true;
+        return;
+      }
+      var visible = e.intersectionRatio >= 0.3 || e.intersectionRect.height >= 0.3 * window.innerHeight;
+      if (visible && arme) {
+        arme = false;
+        schema.setAttribute('data-entree', 'attente');
+        void schema.getBoundingClientRect(); // applique l'état initial avant de relancer
+        schema.setAttribute('data-entree', 'anime');
+        clearTimeout(minuterie);
+        minuterie = setTimeout(function () { schema.setAttribute('data-entree', 'fini'); }, 2000);
+      }
+    }, { threshold: [0, 0.1, 0.2, 0.3] }).observe(section);
+  })();
+</script>
+
+<style>
+  /* =======================================================================
+     ÉPAISSEURS DE TRAIT (mêmes valeurs à l'écran que SchemaMaison.astro)
+     Le dessin fait 800 unités de large. Téléphone : environ 335px
+     (échelle 0,42) ; à partir de 768px : environ 600 à 700px (0,75 à 0,87).
+  ======================================================================= */
+  .methode-schema {
+    --t-structure: 4.8;
+    --t-equip: 3.6;
+    --t-fin: 2.4;
+  }
+  @media (width >= 48rem) {
+    .methode-schema { --t-structure: 2.4; --t-equip: 1.8; --t-fin: 1.2; }
+  }
+
+  /* --- Maison (bleu nuit) ----------------------------------------------- */
+  .ms-maison path {
+    fill: none;
+    stroke: var(--color-nuit-900);
+    stroke-width: var(--t-structure);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .ms-maison .ms-section { fill: var(--color-fond); }
+  .ms-maison .ms-terrain { stroke: var(--color-neutre-500); stroke-width: var(--t-fin); }
+  
+  /* --- Éléments ajoutés : couleur de l'étape (--fonce, --teinte) -------- */
+  .ms-trait {
+    fill: none;
+    stroke: var(--fonce);
+    stroke-width: var(--t-equip);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .ms-plein { fill: var(--color-fond); }
+  .ms-module { fill: var(--teinte); }
+  .ms-fin { stroke-width: var(--t-fin); }
+  .ms-gaine { stroke-dasharray: 7 5; }
+  /* Isolant : teinte claire, puis hachures foncées par-dessus. */
+  .ms-isolant { fill: var(--teinte); stroke: none; }
+  .ms-hachures { fill: url(#ms-hachure-isolant); stroke: none; }
+  .ms-hachure-trait { stroke: var(--fonce); stroke-width: calc(var(--t-fin) * 0.8); }
+  /* Déperditions : hachures larges et légères. */
+  .ms-perte { fill: url(#ms-hachure-perte); stroke: none; opacity: 0.8; }
+  .ms-onde { fill: none; stroke: var(--fonce); stroke-width: var(--t-equip); stroke-linecap: round; }
+  .ms-cote, .ms-rappel, .ms-visee, .ms-rayon {
+    fill: none;
+    stroke: var(--fonce);
+    stroke-width: var(--t-fin);
+  }
+  .ms-cote { marker-start: url(#ms-fleche-1); marker-end: url(#ms-fleche-1); }
+  .ms-visee, .ms-rayon { stroke-dasharray: 5 5; }
+  .ms-fleche { fill: none; stroke: var(--fonce); stroke-width: 1.5; }
+  .ms-note {
+    fill: var(--fonce);
+    font-family: var(--font-base);
+    font-size: 22px;
+    font-style: italic;
+  }
+  @media (width < 48rem) {
+    .methode-schema .detail { display: none; }
+  }
+
+  /* =======================================================================
+     ÉTATS (data-etape sur la <figure>, posé par le script des onglets)
+     Sans data-etape (sans JavaScript) : état 4, déperditions masquées.
+  ======================================================================= */
+  .couche { transition: opacity 0.4s ease; }
+  .couche[data-perte] { opacity: 0; }
+  .methode-schema[data-etape='1'] .couche[data-perte] { opacity: 1; }
+  .methode-schema[data-etape='1'] .couche:is([data-des='2'], [data-des='3'], [data-des='4']),
+  .methode-schema[data-etape='2'] .couche:is([data-des='3'], [data-des='4']),
+  .methode-schema[data-etape='3'] .couche[data-des='4'] {
+    opacity: 0;
+  }
+
+  /* Tracé rapide des couches qui apparaissent (0,4 s) */
+  .methode-schema .couche[data-trace] :is(.tr, .ms-onde) {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: ms-trace 0.4s ease-out forwards;
+  }
+  @keyframes ms-trace { to { stroke-dashoffset: 0; } }
+
+
+  /* =======================================================================
+     ANIMATION D'ENTRÉE (data-entree, posé par le script ci-dessus)
+     1. La maison se dessine en 1,2 s, comme un crayon (pathLength="1").
+     2. Puis les éléments de l'étape active apparaissent en fondu (0,3 s),
+        couche par couche (--ordre : 0 à 3, 120 ms d'écart).
+     Le fondu agit sur les ENFANTS des couches : l'opacité des couches
+     elles-mêmes reste réservée au changement d'étape.
+  ======================================================================= */
+  .methode-schema[data-entree='attente'] .ms-maison path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .methode-schema[data-entree='attente'] .couche > * { opacity: 0; }
+  .methode-schema[data-entree='anime'] .ms-maison path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: ms-trace 1.2s ease-in-out forwards;
+  }
+  .methode-schema[data-entree='anime'] .couche > * {
+    opacity: 0;
+    animation: ms-apparition 0.3s ease-out forwards;
+    animation-delay: calc(1.2s + var(--ordre) * 120ms);
+  }
+  @keyframes ms-apparition { to { opacity: 1; } }
+
+  /* Réduire les animations : changement instantané */
+  @media (prefers-reduced-motion: reduce) {
+    .couche { transition: none; }
+    .couche[data-trace] :is(.tr, .ms-onde) { animation: none; stroke-dasharray: none; }
+    .methode-schema .ms-maison path, .methode-schema .couche > * { animation: none !important; stroke-dasharray: none !important; opacity: 1 !important; }
+  }
+</style>

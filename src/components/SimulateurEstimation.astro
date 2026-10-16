@@ -19,9 +19,10 @@
 
 const cleWeb3Forms = 'YOUR_ACCESS_KEY_HERE';
 
-// Champs du formulaire : grands (56px), cadre noir (bordures de la charte).
+// Champs du formulaire : grands (56px), filet gris foncé de 1px (texte-doux,
+// 7:1 : le champ reste bien repérable) ; 2px rouges en cas d'erreur.
 const classesChamp =
-  'mt-2 block min-h-14 w-full rounded-carte border-2 border-bordure bg-fond px-4 text-corps text-texte focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marque-900 aria-invalid:border-alerte-700';
+  'mt-2 block min-h-14 w-full rounded-bloc border border-texte-doux bg-fond px-4 text-corps text-texte focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900 aria-invalid:border-2 aria-invalid:border-alerte-700';
 const classesEtiquette = 'block text-corps font-semibold text-texte';
 // Message d'erreur d'un champ : rouge foncé, gras ; vide, il ne prend pas de place.
 const classesErreurChamp = 'mt-1 text-corps font-semibold text-alerte-700 empty:mt-0';
@@ -39,13 +40,13 @@ const classesErreurChamp = 'mt-1 text-corps font-semibold text-alerte-700 empty:
   <button
     type="button"
     data-estimation-revenir
-    class="inline-flex min-h-11 items-center gap-2 rounded-bouton px-1 font-semibold text-marque-900 underline underline-offset-4 hover:bg-secondaire-50 focus-visible:outline-2 focus-visible:outline-marque-900"
+    class="inline-flex min-h-11 items-center gap-2 rounded-bloc px-1 font-semibold text-nuit-900 underline underline-offset-4 hover:bg-creme focus-visible:outline-2 focus-visible:outline-nuit-900"
   >
     <span aria-hidden="true">←</span> Revenir à mes résultats
   </button>
 
   {/* Le titre reçoit le focus à l'ouverture du panneau (tabindex="-1"). */}
-  <h3 id="estimation-titre" tabindex="-1" class="mt-4 text-h3 text-texte focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-marque-900">
+  <h3 id="estimation-titre" tabindex="-1" class="mt-4 text-h3 text-texte focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-nuit-900">
     Obtenir une estimation précise de vos aides
   </h3>
   <p class="mt-3 text-corps text-texte">
@@ -81,7 +82,7 @@ const classesErreurChamp = 'mt-1 text-corps font-semibold text-alerte-700 empty:
     {/* Bouton orange, texte noir : l'action principale. */}
     <button
       type="submit"
-      class="mt-6 flex min-h-14 w-full items-center justify-center rounded-bouton bg-action-500 px-8 text-h4 font-semibold text-texte shadow-legere hover:bg-action-600 disabled:cursor-wait disabled:opacity-80 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-marque-900"
+      class="mt-6 flex min-h-14 w-full items-center justify-center rounded-bloc bg-action-500 px-8 text-h4 font-semibold text-texte shadow-legere hover:bg-action-600 disabled:cursor-wait disabled:opacity-80 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-nuit-900"
     >
       Recevoir mon estimation
     </button>
@@ -93,7 +94,7 @@ const classesErreurChamp = 'mt-1 text-corps font-semibold text-alerte-700 empty:
 
   {/* MENTION OBLIGATOIRE : sous le formulaire, en texte courant (1.125rem),
       jamais en petits caractères. */}
-  <p class="mt-6 border-t-2 border-bordure-douce pt-4 text-corps text-texte">
+  <p class="mt-6 border-t border-creme-fonce pt-4 text-corps text-texte">
     Vos coordonnées servent uniquement à vous recontacter au sujet de votre projet. Elles ne sont ni revendues ni utilisées à d'autres fins. Vous pouvez demander leur suppression à tout moment.
   </p>
 </section>

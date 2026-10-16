@@ -2,228 +2,138 @@
 // =========================================================================
 // COMPOSANT COLLECTIF (src/components/Collectif.astro)
 // -------------------------------------------------------------------------
-// Section de la page d'accueil placée après le simulateur d'aides (fond
-// bleu nuit) et avant les articles. Elle présente le collectif Akelia :
-// un réseau national d'artisans locaux indépendants, et ses 5 engagements.
+// Section de la page d'accueil placée après le simulateur d'aides et avant
+// les articles. Elle présente le collectif Akelia : un réseau national
+// d'artisans locaux indépendants, et ses 5 engagements.
 //
-// FOND BLANC, pour trancher avec le bleu nuit du simulateur. Le trait noir
-// de 2px en bas du simulateur (border-b-2) marque déjà la séparation en
-// haut ; cette section porte le même trait noir EN BAS, pour la séparer de
-// la section des articles, blanche elle aussi.
+// Refonte « alan.com » (octobre 2026) :
+// - FOND BLEU NUIT (nuit-900) pleine largeur, texte blanc.
+// - En-tête centré : surtitre « Le collectif » en orange, titre <h2>
+//   (text-titre, 20 caractères par ligne au plus), la phrase choc.
+//   Les deux paragraphes d'introduction ont été supprimés.
+//   Phrase réécrite le 16 octobre 2026 ; elle finit par « Ce qui vous
+//   garantit : » et appelle la liste, collée juste dessous (mt-4).
+// - Les 5 engagements : leurs TITRES COURTS seulement, sur une ligne,
+//   séparés par des points médians, à partir de 1280px. En dessous, les
+//   titres passent à la ligne, sans point médian. Les textes détaillés ont été supprimés (recopiés
+//   dans inventaire-charte.md).
+// - Bouton orange « Trouver un artisan près de chez moi » (→ /devis).
+// - BANDEAU ILLUSTRÉ (collectif.png ; absent : rien) sous le texte, sur
+//   toute la largeur de la section, légèrement débordant (15 octobre
+//   2026). Il remplace la carte de France (carte.png, jamais livrée) et
+//   ses étiquettes flottantes.
+// - Animations d'entrée : en-tête et bouton, puis bandeau (voir
+//   AnimationScenes.astro et global.css).
 //
-// DEUX BLOCS :
-//   1. Introduction : titre <h2> et 3 paragraphes.
-//      - Téléphone et tablette : empilés.
-//      - À partir de 992px (lg:) : titre à gauche (5 colonnes sur 12),
-//        paragraphes à droite (7 colonnes) : le titre reste court et
-//        massif, le texte garde des lignes confortables.
-//      - Le 3e paragraphe (« Pas d'intermédiaire… ») est la phrase choc :
-//        en semi-gras, noir, avec une barre orange à gauche.
-//   2. Les 5 engagements : intertitre <h3>, puis une LISTE en « fiche
-//      technique » (une ligne par engagement, filets entre les lignes,
-//      trait noir en haut et en bas), et non 5 cartes : la page en a déjà
-//      ailleurs (méthode, articles). Chaque ligne est dans
-//      CollectifEngagement.astro : icône | titre en gras | texte. Les
-//      titres sont alignés dans une même colonne à partir de 768px :
-//      en ne lisant qu'eux, on comprend l'essentiel.
-//
-// ANIMATION (même principe que la section Méthode, voir Methode.astro) :
-// les 5 engagements apparaissent en FONDU, l'un après l'autre (80ms
-// d'écart), quand la liste arrive à l'écran. L'animation SE REJOUE à
-// chaque passage, mais seulement si la liste a COMPLÈTEMENT quitté
-// l'écran entre-temps (pas de clignotement au bord). Aucune boucle.
-// - Sans JavaScript ou sans IntersectionObserver : tout est visible.
-// - « Réduire les animations » activé : le script ne fait rien et le CSS
-//   force l'état final.
-// L'attribut est propre à cette section (data-collectif-apparition) pour
-// ne pas interférer avec le script de la section Méthode, qui cherche
-// data-apparition.
-//
-// Pour modifier un engagement : éditer le tableau `engagements` ci-dessous.
-// Les espaces avant « : » sont insécables ( ) pour ne jamais laisser
-// le signe seul en début de ligne.
+// Les espaces avant « : » sont insécables ( ).
 // =========================================================================
 
-import CollectifEngagement from './CollectifEngagement.astro';
+import { Image } from 'astro:assets';
+import { illustration, zoneDessinee, styleCadre, styleRecadrage } from '../data/illustrations';
 
-// -------------------------------------------------------------------------
-// LES 5 ENGAGEMENTS, dans l'ordre d'affichage (textes fournis, mot pour mot).
-// icone : tracés SVG au trait (grille 24 × 24), même style que la Méthode.
-// -------------------------------------------------------------------------
+// Les 5 engagements (titres courts), dans l'ordre de la demande :
+// interlocuteur, proximité, RGE, devis, suivi.
 const engagements = [
-  {
-    titre: 'Un interlocuteur unique, responsable de votre chantier.',
-    texte: "Vous traitez directement avec l'artisan qui réalise vos travaux. Sur un projet qui mobilise plusieurs corps de métier, un accompagnateur du collectif coordonne l'ensemble. Dans les deux cas, une seule personne connaît votre dossier et s'engage à vos côtés.",
-    // Une personne (tête et épaules) : l'interlocuteur unique.
-    icone: `
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4.5 21c0-4.1 3.4-7.5 7.5-7.5s7.5 3.4 7.5 7.5" />
-    `,
-  },
-  {
-    titre: 'Un artisan proche de chez vous.',
-    texte: "Des entreprises implantées localement, à moins de 30 minutes de votre domicile, pour privilégier la proximité, faciliter les échanges et vous apporter une réponse rapide lorsque vous en avez besoin.",
-    // Repère de carte : la proximité géographique.
-    icone: `
-      <path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21Z" />
-      <circle cx="12" cy="9.5" r="2.5" />
-    `,
-  },
-  {
-    titre: "Un suivi qui ne s'arrête pas à la fin du chantier.",
-    texte: "Votre installation est réalisée, puis entretenue par la même entreprise. Et si une panne survient, vous savez qui contacter\u00a0: votre artisan reste votre interlocuteur pour le dépannage.",
-    // Clé à molette : l'entretien et le dépannage.
-    icone: `
-      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9Z" />
-    `,
-  },
-  {
-    titre: 'Un devis clair, détaillé et sans surprise.',
-    texte: "Nature des travaux, montant des aides estimées et reste à charge\u00a0: vous disposez d'une vision précise du coût de votre projet avant de vous engager. Tout est expliqué, tout est écrit.",
-    // Document à lignes, coin plié : le devis écrit.
-    icone: `
-      <path d="M6 3h8l4 4v14H6Z" />
-      <path d="M14 3v4h4" />
-      <path d="M9 12h6M9 16h6" />
-    `,
-  },
-  {
-    titre: 'Des professionnels assurés et certifiés RGE.',
-    texte: "Chaque entreprise du réseau dispose de sa propre assurance décennale et de la qualification RGE requise pour les travaux concernés, afin de vous apporter des garanties concrètes et de faciliter l'accès aux aides auxquelles vous pouvez prétendre.",
-    // Bouclier coché : l'assurance et la certification.
-    icone: `
-      <path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6Z" />
-      <path d="m8.75 12 2.25 2.25 4.25-4.5" />
-    `,
-  },
+  'Un interlocuteur unique',
+  'À moins de 30 minutes',
+  'Assurés et certifiés RGE',
+  'Un devis sans surprise',
+  'Un suivi après le chantier',
 ];
+
+// Bandeau illustré (collectif.png), recadré automatiquement sur sa zone
+// dessinée. Fichier absent : rien n'est affiché. Il remplace la carte de
+// France (carte.png), jamais livrée, et ses deux étiquettes flottantes
+// (15 octobre 2026).
+const bandeau = illustration('collectif.png');
+const zoneBandeau = await zoneDessinee('collectif.png');
 ---
 
-<section aria-labelledby="collectif-titre" class="border-b-2 border-bordure bg-fond">
-  {/* Conteneur standard du site : 1250px max, gouttières de 20px,
-      40px de marge verticale sur téléphone, 80px à partir de 768px
-      (comme les autres sections de l'accueil). */}
-  <div class="mx-auto max-w-site px-gouttiere py-bloc md:py-section">
+<section data-scene aria-labelledby="collectif-titre" class={`overflow-x-clip bg-nuit-900 text-texte-inverse ${bandeau && zoneBandeau ? 'pb-scene md:pb-scene-large' : ''}`}>
+  <div class={`relative z-10 mx-auto max-w-site px-gouttiere pt-scene md:pt-scene-large ${bandeau && zoneBandeau ? '' : 'pb-scene md:pb-scene-large'}`}>
 
-    {/* ===== BLOC 1 : INTRODUCTION =====
-        Grille de 12 colonnes à partir de 992px : titre sur 5, texte sur 7.
-        En dessous : une seule colonne, titre puis texte. */}
-    <div class="grid gap-6 lg:grid-cols-12 lg:gap-bloc">
-      {/* TITRE DE SECTION : taille h2 de la charte (2.5rem). */}
-      <h2 id="collectif-titre" class="text-h2 text-texte lg:col-span-5">
+    {/* EN-TÊTE CENTRÉ */}
+    <div data-scene-titre class="text-center">
+      {/* SURTITRE en orange : 6,3:1 sur le bleu nuit. */}
+      <p class="surtitre text-action-500">Le collectif</p>
+      <h2 id="collectif-titre" class="mx-auto mt-4 max-w-[20ch] text-titre text-balance">
         La force d'un réseau national, le sérieux d'un artisan local.
       </h2>
+      {/* PHRASE CHOC : semi-gras. */}
+      <p class="mx-auto mt-6 max-w-[50ch] text-h4">
+        Ici, pas d'intermédiaire, de sous-traitance ou de franchise. Vous travaillez directement avec l'artisan local de notre collectif le plus proche de chez vous. Ce qui vous garantit&nbsp;:
+      </p>
 
-      {/* TEXTE D'INTRODUCTION : 3 paragraphes, 1.125rem, noir.
-          space-y-5 : 20px entre les paragraphes. */}
-      <div class="space-y-5 lg:col-span-7">
-        <p class="text-corps text-texte">
-          Avec Akelia, vous bénéficiez du meilleur des deux mondes&nbsp;: la force d'un collectif national et l'engagement d'une entreprise artisanale proche de chez vous.
-        </p>
-        <p class="text-corps text-texte">
-          Derrière la marque Akelia, des entreprises artisanales indépendantes unissent leur savoir-faire et leurs exigences pour vous offrir un accompagnement fiable, de votre premier contact jusqu'à l'entretien de vos installations.
-        </p>
-        {/* PHRASE CHOC : semi-gras, barre orange de 6px à gauche (même
-            motif que les citations de la section « Vous pilotez… »).
-            L'orange est décoratif (1,94:1) : le texte, lui, reste noir. */}
-        <p class="border-l-[6px] border-action-500 pl-4 text-corps font-semibold text-texte">
-          Pas d'intermédiaire, pas de prestataire anonyme. Un interlocuteur identifié, des engagements clairs et un suivi dans la durée.
-        </p>
-      </div>
+      {/* LES 5 ENGAGEMENTS : liste <ul>. À partir de 1280px, sur UNE
+          ligne, séparés par des points médians orange (décoratifs,
+          aria-hidden : les lecteurs d'écran annoncent une liste de 5
+          éléments). En dessous, la ligne ne tient pas : les titres passent
+          à la ligne, centrés, SANS point médian (sinon une ligne
+          commencerait par « · »). Chaque titre reste entier
+          (whitespace-nowrap). */}
+      <h3 id="collectif-engagements" class="sr-only">Nos 5 engagements</h3>
+      <ul aria-labelledby="collectif-engagements" class="mt-4 flex flex-wrap justify-center gap-x-8 gap-y-2 text-corps font-semibold xl:gap-x-0">
+        {engagements.map((engagement, index) => (
+          <li class="whitespace-nowrap">
+            {index > 0 && <span aria-hidden="true" class="mx-3 hidden text-action-500 xl:inline">·</span>}{engagement}
+          </li>
+        ))}
+      </ul>
+
+      {/* BOUTON (15 octobre 2026) : seul appel à l'action de la section,
+          la dernière avant les articles. Orange principal, 48px de haut au
+          moins. Contour de focus BLANC (le bleu nuit serait invisible sur
+          ce fond). */}
+      <a
+        href="/devis"
+        class="mt-10 inline-flex min-h-12 items-center justify-center rounded-bloc bg-action-500 px-6 py-3 text-corps font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-texte-inverse"
+      >
+        Trouver un artisan près de chez moi
+      </a>
     </div>
 
-    {/* ===== BLOC 2 : LES 5 ENGAGEMENTS ===== */}
-    {/* INTERTITRE : taille h3 (1.5rem), gras pour bien annoncer la liste.
-        mt-bloc (40px) sur téléphone, 64px (mt-16) à partir de 768px :
-        un vrai changement de partie après l'introduction. */}
-    <h3 class="mt-bloc text-h3 font-bold text-texte md:mt-16">
-      Avec Akelia, vos travaux en toute confiance
-    </h3>
-
-    {/* LISTE DES ENGAGEMENTS
-        - <ul> : 5 engagements équivalents, sans ordre de priorité (les
-          lecteurs d'écran annoncent « liste de 5 éléments »).
-        - Trait noir de 2px en haut et en bas (border-y-2 border-bordure),
-          comme un tableau technique ; filets gris entre les lignes (dans
-          CollectifEngagement.astro).
-        - data-collectif-apparition : animation d'entrée (script et CSS
-          ci-dessous). */}
-    <ul data-collectif-apparition class="mt-6 border-y-2 border-bordure">
-      {engagements.map((engagement, index) => (
-        <CollectifEngagement engagement={engagement} rang={index} />
-      ))}
-    </ul>
   </div>
+
+  {/* BANDEAU ILLUSTRÉ (collectif.png, 3D, 1800 × 595, fond transparent),
+      15 octobre 2026. HORS du conteneur : il occupe TOUTE LA LARGEUR de
+      la section, à toutes les largeurs d'écran (ce n'est pas une colonne).
+      - Aucun cadre, aucun arrondi, aucune ombre, aucun fond : il se pose
+        sur le bleu nuit.
+      - Recadré sur sa zone dessinée (src/data/illustrations.ts) : les
+        bandes vides du haut et du bas du fichier (69 et 60px) disparaissent.
+      - Léger débordement : 120 % de la largeur sur téléphone (dessin plus
+        grand ; 10 % coupés de chaque côté, des arbres et un bout de caisse
+        à gauche, le bord de la porte de la camionnette à droite), 106 % à
+        partir de 768px. La section porte overflow-x-clip : aucun
+        défilement horizontal.
+      - Animation : fondu et montée, à SON arrivée à l'écran (data-scene-
+        etape : déclenchement propre, sinon il s'animait hors de la vue,
+        sous le bas de l'écran). Depuis le 16 octobre 2026, il part dès
+        que SON HAUT entre dans l'écran (data-declenchement="entree") :
+        avant, à 375px, il était presque entier à l'écran au départ. Retard de 100 ms (global.css,
+        « bandeau-collectif ») : part après le titre s'ils arrivent ensemble.
+      - Remonté sous le bouton (16 octobre 2026) : à partir de 768px,
+        marge négative de 7,1vw (= 121/1800 × 106vw) : le bas du bouton
+        tombe dans le creux des collines, juste au-dessus de la casquette
+        de la femme à l'échelle, à toutes les largeurs. Sous 768px, le
+        bouton couvre presque tout l'écran : le dessin l'affleure (4px).
+        Le texte porte relative z-10 : le bouton reste au-dessus du dessin.
+      - Fichier manquant : AUCUN emplacement ; la section se termine après
+        le bouton. */}
+  {bandeau && zoneBandeau && (
+    <div class="-mx-[10%] mt-1 w-[120%] md:-mx-[3%] md:-mt-[7.1vw] md:w-[106%]">
+      <div data-scene-etape data-declenchement="entree" class="bandeau-collectif relative w-full overflow-hidden" style={styleCadre(zoneBandeau)}>
+        <Image
+          src={bandeau}
+          alt="Une équipe d'artisans au travail devant leur atelier : l'un charge des panneaux d'isolant dans une camionnette, un autre porte une échelle, un troisième trie des matériaux au sol."
+          widths={[480, 800, 1200, 1600, 1800]}
+          sizes="(min-width: 768px) 106vw, 120vw"
+          format="webp"
+          loading="lazy"
+          class="absolute h-auto"
+          style={styleRecadrage(zoneBandeau)}
+        />
+      </div>
+    </div>
+  )}
 </section>
-
-{/* SCRIPT D'ANIMATION (copie adaptée de celui de Methode.astro)
-    Écrit juste après la liste pour s'exécuter avant le premier affichage
-    de la section (pas de clignotement : les engagements sont cachés avant
-    d'avoir été vus).
-    Déclenchement : 30 % de la liste visible, OU la liste occupe 30 % de la
-    hauteur de l'écran (sur téléphone, la liste est plus haute que l'écran
-    et ne peut jamais être visible à 30 %).
-    Réarmement : quand la liste a entièrement quitté l'écran, elle repasse
-    en « attente » (invisible, mais hors écran donc sans effet visible), et
-    l'animation se rejoue au passage suivant. */}
-<script is:inline>
-  (function () {
-    // Navigateur trop ancien : on ne cache rien, tout reste visible.
-    if (!('IntersectionObserver' in window)) return;
-    // « Réduire les animations » : on ne fait rien (tout reste visible).
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var listes = document.querySelectorAll('[data-collectif-apparition]');
-    Array.prototype.forEach.call(listes, function (liste) {
-      liste.setAttribute('data-etat', 'attente');
-      // arme : vrai au départ, puis seulement après une sortie complète.
-      var arme = true;
-      var observateur = new IntersectionObserver(function (entrees) {
-        var e = entrees[entrees.length - 1];
-        if (!e.isIntersecting) {
-          // Sortie complète de l'écran : remise à zéro et réarmement.
-          liste.setAttribute('data-etat', 'attente');
-          arme = true;
-          return;
-        }
-        var visible = e.intersectionRatio >= 0.3 || e.intersectionRect.height >= 0.3 * window.innerHeight;
-        if (visible && arme) {
-          arme = false;
-          liste.setAttribute('data-etat', 'attente');
-          void liste.offsetWidth; // applique l'état initial avant de relancer
-          liste.setAttribute('data-etat', 'anime');
-        }
-      }, { threshold: [0, 0.1, 0.2, 0.3] });
-      observateur.observe(liste);
-    });
-  })();
-</script>
-
-{/* STYLES DE L'ANIMATION
-    Globaux (is:global) car ils visent les lignes rendues par le
-    sous-composant CollectifEngagement.astro. Les durées et délais ne sont
-    pas des couleurs ni des tailles de la charte : ils restent ici, comme
-    dans Methode.astro. */}
-<style is:global>
-  /* En attente : engagements invisibles (la place est gardée, rien ne
-     bouge dans la page). */
-  [data-collectif-apparition][data-etat='attente'] .collectif-apparition { opacity: 0; }
-
-  /* Animation : fondu seul de 0,4 s, 80 ms d'écart entre deux engagements
-     (--rang : 0 à 4 ; le dernier commence à 320 ms, tout est visible à
-     720 ms). */
-  [data-collectif-apparition][data-etat='anime'] .collectif-apparition {
-    opacity: 0;
-    animation: collectif-apparition 0.4s ease-out forwards;
-    animation-delay: calc(var(--rang) * 80ms);
-  }
-
-  @keyframes collectif-apparition { to { opacity: 1; } }
-
-  /* Réduire les animations : tout à l'état final, sans aucun mouvement. */
-  @media (prefers-reduced-motion: reduce) {
-    [data-collectif-apparition] .collectif-apparition {
-      animation: none !important;
-      opacity: 1 !important;
-    }
-  }
-</style>

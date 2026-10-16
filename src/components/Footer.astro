@@ -1,27 +1,143 @@
 ---
 // =========================================================================
 // COMPOSANT FOOTER (src/components/Footer.astro)
-// Objectif : Pied de page minimaliste, sémantique et conforme aux exigences légales
+// -------------------------------------------------------------------------
+// Pied de page de tout le site (refonte du 16 octobre 2026). Fond crème.
+//
+// Mise en page : 4 colonnes à partir de 1024px (Akelia + bouton devis,
+// Navigation, Nous contacter + Nous retrouver, Informations légales),
+// 2 colonnes de 640 à 1023px, empilées en dessous. Puis une ligne du bas :
+// copyright et « Site réalisé par Neocraft », discret.
+//
+// Public senior : chaque lien fait 44px de haut au moins (min-h-11), en
+// taille de texte normale (pas de petit texte pour les liens).
+//
+// ⚠️ PAGES ET INFORMATIONS EN ATTENTE (voir inventaire-charte.md) :
+// - /entreprise (Rejoindre le collectif), /qui-sommes-nous et
+//   /politique-confidentialite n'existent pas encore (liens en 404).
+// - TELEPHONE, EMAIL et MEDIATEUR : à fournir. Tant qu'ils valent null,
+//   la ligne affiche « à venir » (sans lien).
+//
+// Les espaces avant « : » sont insécables.
 // =========================================================================
 
 const currentYear = new Date().getFullYear();
+
+// À FOURNIR. Téléphone : affichage et numéro pour le lien tel:
+// (ex. { affichage: '05 00 00 00 00', lien: '+33500000000' }).
+const TELEPHONE: { affichage: string; lien: string } | null = null;
+const EMAIL: string | null = null;
+// Médiateur de la consommation (obligatoire pour la vente aux
+// particuliers) : nom et adresse du site du médiateur retenu.
+const MEDIATEUR: { nom: string; url: string } | null = null;
+
+const navigation = [
+  { libelle: 'Services', href: '/services' },
+  { libelle: 'Aides rénovation', href: '/aides-renovation' },
+  { libelle: 'Blog', href: '/blog' },
+  { libelle: 'Qui sommes-nous', href: '/qui-sommes-nous' },
+  { libelle: 'Rejoindre le collectif', href: '/entreprise' },
+];
+
+const legal = [
+  { libelle: 'Mentions légales', href: '/mentions-legales' },
+  { libelle: 'Politique de confidentialité', href: '/politique-confidentialite' },
+];
+
+// Classes communes : lien de 44px de haut au moins, contour de focus.
+const lien = 'inline-flex min-h-11 items-center rounded-bloc text-base text-texte underline-offset-4 hover:text-vert-600 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900';
+const titreColonne = 'text-base font-bold text-nuit-900';
 ---
 
-<footer class="border-t border-slate-200 bg-slate-50">
-  <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-    <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
-      <div class="flex items-center gap-2">
-        <span class="text-lg font-bold text-emerald-600">AKELIA</span>
-        <span class="text-xs text-slate-500">© {currentYear} Akelia. Tous droits réservés.</span>
+<footer class="bg-creme">
+  <div class="mx-auto max-w-site px-gouttiere pt-12 pb-8 md:pt-16">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1.3fr] lg:gap-8">
+
+      {/* COLONNE 1 : marque et bouton devis */}
+      <div>
+        <a href="/" aria-label="Akelia, retour à l'accueil" class="inline-flex min-h-11 items-center rounded-bloc text-h3 font-bold text-nuit-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900">
+          Akelia
+        </a>
+        <p class="mt-2 max-w-[32ch] text-base text-texte-doux">
+          Le collectif d'artisans locaux de la rénovation énergétique.
+        </p>
+        <a
+          href="/devis"
+          class="mt-6 inline-flex min-h-12 items-center justify-center rounded-bloc bg-action-500 px-6 py-3 text-base font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900"
+        >
+          Obtenir un devis
+        </a>
       </div>
 
-      <nav class="flex flex-wrap items-center gap-6 text-sm text-slate-600">
-        <a href="/services" class="hover:text-emerald-600 transition-colors">Services</a>
-        <a href="/aides-renovation" class="hover:text-emerald-600 transition-colors">Aides</a>
-        <a href="/blog" class="hover:text-emerald-600 transition-colors">Blog</a>
-        <a href="/qui-sommes-nous" class="hover:text-emerald-600 transition-colors">L'équipe</a>
-        <a href="/mentions-legales" class="hover:text-emerald-600 transition-colors">Mentions légales</a>
+      {/* COLONNE 2 : navigation */}
+      <nav aria-labelledby="pied-navigation">
+        <h2 id="pied-navigation" class={titreColonne}>Navigation</h2>
+        <ul class="mt-2">
+          {navigation.map(({ libelle, href }) => (
+            <li><a href={href} class={lien}>{libelle}</a></li>
+          ))}
+        </ul>
       </nav>
+
+      {/* COLONNE 3 : coordonnées et réseaux sociaux */}
+      <div>
+        <h2 class={titreColonne}>Nous contacter</h2>
+        <ul class="mt-2">
+          <li>
+            {TELEPHONE
+              ? <a href={`tel:${TELEPHONE.lien}`} class={lien}>Téléphone&nbsp;: {TELEPHONE.affichage}</a>
+              : <span class="inline-flex min-h-11 items-center text-base text-texte-doux">Téléphone&nbsp;: à venir</span>}
+          </li>
+          <li>
+            {EMAIL
+              ? <a href={`mailto:${EMAIL}`} class={`${lien} break-all`}>{EMAIL}</a>
+              : <span class="inline-flex min-h-11 items-center text-base text-texte-doux">E-mail&nbsp;: à venir</span>}
+          </li>
+        </ul>
+
+        <h2 class={`mt-6 ${titreColonne}`}>Nous retrouver</h2>
+        <ul class="mt-2 flex gap-2">
+          <li>
+            {/* YouTube : zone cliquable de 48px (44px au moins demandés). */}
+            <a
+              href="https://www.youtube.com/@Akelia-NC"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Akelia sur YouTube (s'ouvre dans un nouvel onglet)"
+              class="inline-flex size-12 items-center justify-center rounded-bloc text-nuit-900 hover:bg-creme-fonce hover:text-[#ff0000] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900"
+            >
+              <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {/* COLONNE 4 : informations légales */}
+      <div>
+        <h2 class={titreColonne}>Informations légales</h2>
+        <ul class="mt-2">
+          {legal.map(({ libelle, href }) => (
+            <li><a href={href} class={lien}>{libelle}</a></li>
+          ))}
+          <li>
+            {/* MÉDIATION DE LA CONSOMMATION : médiateur à fournir. */}
+            {MEDIATEUR
+              ? <a href={MEDIATEUR.url} target="_blank" rel="noopener noreferrer" class={lien}>Médiation&nbsp;: {MEDIATEUR.nom}<span class="sr-only"> (s'ouvre dans un nouvel onglet)</span></a>
+              : <span class="inline-flex min-h-11 items-center text-base text-texte-doux">Médiation de la consommation&nbsp;: à venir</span>}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    {/* LIGNE DU BAS : copyright, créateur du site (discret). */}
+    <div class="mt-10 flex flex-col gap-2 border-t border-creme-fonce pt-6 text-petit text-texte-doux sm:flex-row sm:items-center sm:justify-between">
+      <p>© {currentYear} Akelia. Tous droits réservés.</p>
+      <p>
+        Site réalisé par{' '}
+        <a href="https://ncraft.fr/" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center rounded-bloc underline underline-offset-4 hover:text-nuit-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900">Neocraft<span class="sr-only"> (s'ouvre dans un nouvel onglet)</span></a>
+      </p>
     </div>
   </div>
 </footer>

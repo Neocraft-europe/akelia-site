@@ -1,102 +1,109 @@
 ---
 // =========================================================================
-// COMPOSANT MÉTHODE : LES DEUX FAÇONS DE TRAVAILLER
-// (src/components/MethodeFacons.astro)
+// COMPOSANT : LES DEUX FAÇONS DE TRAVAILLER (src/components/MethodeFacons.astro)
 // -------------------------------------------------------------------------
-// Bloc 2 de la section « Méthode » de l'accueil (appelé par Methode.astro).
-// Fond blanc (le bleu pâle a été retiré à l'étape 23 : autour d'un bloc
-// blanc et d'un bloc bleu nuit, il affaiblissait l'opposition). Traits
-// noirs en haut et en bas de la section. Le bloc blanc intérieur reste
-// distinct du fond grâce au cadre noir de 2px de l'ensemble.
+// Section « Deux façons de faire » de l'accueil, placée après la Méthode et
+// avant les Cas types (appelée par Methode.astro). Section INDÉPENDANTE.
 //
-// VERSION STATIQUE (étape 22, remplace l'écran partagé de l'étape 20) :
-// tout est visible en permanence, aucune interaction cachée.
-// - Deux blocs qui SE TOUCHENT et forment un seul ensemble (un cadre noir,
-//   coins arrondis à l'extérieur seulement) :
-//     bloc 1 : fond blanc, texte noir ;
-//     bloc 2 : fond bleu nuit (marque-900), texte blanc.
-//   L'opposition se fait UNIQUEMENT par les fonds. Même marge, mêmes
-//   tailles de texte, même taille de bouton : aucun n'est recommandé.
-// - Téléphone : empilés. À partir de 768px (md:) : côte à côte, à hauteur
-//   égale (50/50).
-// - Chaque bloc : citation (titre entre guillemets, l'élément le plus
-//   visible), texte, puis un BOUTON adapté à son fond, poussé en bas du
-//   bloc (flex + mt-auto) : à partir de 768px, les deux boutons sont
-//   toujours alignés, même si un texte change de longueur.
+// Refonte du 13 octobre 2026 (« plus courte, plus légère, moins de texte ») :
+// - FOND CRÈME FONCÉ (creme-fonce, #ece7dd). L'argile est abandonnée. Le
+//   crème simple (#f7f4ee) a été écarté : trop proche du blanc de la
+//   Méthode (écart OKLab 3,3). creme-fonce : 7,2 avec le blanc (Méthode,
+//   avant), 5,7 avec le brume (Cas types, après).
+// - DEUX COLONNES à partir de 1024px : l'illustration travaux.png à gauche
+//   (45 %), le titre et les deux options à droite (55 %). En dessous :
+//   titre, illustration, puis les deux options empilées.
+// - ILLUSTRATION : dessin au trait sur fond transparent, posé directement
+//   sur le fond de la section (aucun cadre, arrondi ni ombre).
+// - OPTIONS : à égalité (plus de bloc bleu nuit, plus de cartes), séparées
+//   par un trait horizontal fin. La CITATION est l'élément dominant
+//   (text-h3, barre orange à gauche) ; puis une phrase courte et un LIEN
+//   souligné (plus de bouton).
+// - ANIMATION (data-apparition="facons", script dans Methode.astro, rejouée
+//   après sortie complète de l'écran) : illustration, citation 1, citation
+//   2, en fondu avec une légère montée, à 200 ms d'écart, comme un
+//   dialogue. Le titre suit l'animation commune (data-scene).
 //
-// ANIMATION D'ENTRÉE (rejouée à chaque retour à l'écran, voir
-// Methode.astro) : les deux blocs apparaissent en fondu, à 80ms d'écart.
-//
-// Pour modifier un bloc : éditer le tableau `facons` ci-dessous. Les
-// guillemets « » font partie du titre (voulus) ; les espaces qui les
-// suivent ou les précèdent, et celle avant « : », sont insécables
-// ( ) pour ne jamais laisser un signe seul en début ou fin de ligne.
+// Textes fournis le 13 octobre 2026, repris tels quels. Pour modifier une
+// option : tableau `facons` ci-dessous. Les espaces avant « : » et à
+// l'intérieur des guillemets « » sont insécables.
 // =========================================================================
+
+import { Image } from 'astro:assets';
+import { illustration } from '../data/illustrations';
+
+const image = illustration('travaux.png');
 
 const facons = [
   {
     titre: '« Je veux rénover, mais je ne sais pas par où commencer »',
-    texte: "Un architecte ou un spécialiste du collectif prend tout en charge : l'audit, l'ordre des travaux, la coordination des artisans, le suivi du chantier. Un seul interlocuteur, du début à la fin.",
-    bouton: 'Demander un accompagnement',
-    lien: '/devis',
-    // Bloc clair : fond blanc, texte noir.
-    classesBloc: 'bg-fond text-texte',
-    // Bouton bleu nuit, texte blanc (13,18:1) ; contour de focus bleu nuit
-    // décalé de 2px, sur le fond blanc.
-    classesBouton: 'bg-marque-900 text-texte-inverse hover:shadow-elevee focus-visible:outline-marque-900',
+    texte: 'Un spécialiste du collectif coordonne tout, du premier rendez-vous à la fin du chantier.',
+    lien: 'Demander un accompagnement',
+    href: '/devis',
   },
   {
     titre: '« Je sais ce que je veux, il me faut le bon artisan »',
-    // « En direct », comme dans le hero : Akelia n'est pas une plateforme
-    // de mise en relation.
-    texte: "Vous avez déjà votre idée\u00a0: isoler les combles, changer les fenêtres, remplacer la chaudière. Vous travaillez en direct avec l'artisan Akelia de votre secteur, sans intermédiaire ni centre d'appel. Il vient chez vous, il chiffre, il réalise.",
-    bouton: 'Voir nos solutions',
-    lien: '/services',
-    // Bloc sombre : fond bleu nuit, texte blanc.
-    classesBloc: 'bg-marque-900 text-texte-inverse',
-    // Bouton orange, texte noir (10,82:1) : ressort nettement sur le bleu
-    // nuit (6,79:1). Contour de focus blanc, sur le fond bleu nuit.
-    classesBouton: 'bg-action-500 text-texte hover:bg-action-600 focus-visible:outline-texte-inverse',
+    texte: 'Vous travaillez en direct avec l’artisan Akelia de votre secteur. Il vient chez vous, il chiffre, il réalise.',
+    lien: 'Voir nos solutions',
+    href: '/services',
   },
 ];
 ---
 
-<section aria-labelledby="facons-titre" class="border-y-2 border-bordure bg-fond">
-  <div class="mx-auto max-w-site px-gouttiere py-bloc md:py-section">
+<section data-scene aria-labelledby="facons-titre" class="overflow-x-clip bg-creme-fonce">
+  {/* Marges verticales RÉDUITES (48px, puis 64px à partir de 768px, au
+      lieu de 72 et 120px pour les autres sections) : section volontairement
+      courte et légère. */}
+  <div class="mx-auto max-w-site px-gouttiere py-12 md:py-16">
+    {/* GRILLE. À partir de 1024px : illustration en colonne 1 (sur les deux
+        rangées), titre puis options en colonne 2. En dessous : une seule
+        colonne, dans l'ordre du code (titre, illustration, options).
+        data-apparition="facons" : animation, voir Methode.astro. */}
+    <div data-apparition="facons" class="grid items-center gap-x-16 gap-y-8 md:gap-y-10 lg:grid-cols-[minmax(0,45fr)_minmax(0,55fr)] lg:grid-rows-[auto_auto] lg:gap-y-6">
 
-    <h2 id="facons-titre" class="text-h2 text-texte">Vous pilotez, ou on pilote&nbsp;?</h2>
+      <h2 id="facons-titre" data-scene-titre class="text-center text-titre text-balance text-texte lg:col-start-2 lg:row-start-1 lg:self-end lg:text-left">Deux façons de faire</h2>
 
-    {/* L'ENSEMBLE : un seul cadre noir de 2px, coins arrondis à l'extérieur
-        (overflow-hidden) ; les deux blocs se touchent.
-        - Liste <ul> : deux options équivalentes, sans ordre de préférence.
-        - md:grid-cols-2 : côte à côte, même largeur, même hauteur.
-        data-apparition="facons" : animation d'entrée, voir Methode.astro. */}
-    <ul data-apparition="facons" class="mt-bloc grid overflow-hidden rounded-carte border-2 border-bordure md:grid-cols-2">
-      {facons.map((facon, index) => (
-        <li class={`methode-apparition flex flex-col px-6 py-8 md:p-7 lg:p-10 ${facon.classesBloc}`} style={`--rang: ${index}`}>
-          {/* CITATION : l'élément le plus visible (gras, 1.5rem, 1.875rem à
-              partir de 992px), barre orange de 6px à gauche. Pas
-              d'italique (moins lisible pour un public senior). */}
-          <h3 class="border-l-[6px] border-action-500 pl-4 text-h3 font-bold lg:text-[1.875rem] lg:leading-tight">{facon.titre}</h3>
-          {/* mb-6 : écart minimum de 24px entre le texte et le bouton. */}
-          <p class="mt-4 mb-6 text-corps">{facon.texte}</p>
-          {/* BOUTON : 48px de haut (44px minimum), texte 1.125rem gras ;
-              pleine largeur sur petit téléphone, largeur du texte au-delà
-              (sm:self-start). ALIGNEMENT (étape 24) : le bloc est une
-              colonne flex et le bouton a mt-auto. Il est donc poussé en bas
-              du bloc, et comme les deux blocs ont la même hauteur (grille),
-              les deux boutons sont toujours sur la même ligne, quelle que
-              soit la longueur des textes. md:px-4 et md:p-7 sur le bloc :
-              « Demander un accompagnement » tient sur une ligne dès 768px,
-              pour que les deux boutons aient aussi la même hauteur. */}
-          <a
-            href={facon.lien}
-            class={`mt-auto flex min-h-12 w-full items-center justify-center gap-2 rounded-bouton px-5 py-2 text-center text-corps leading-snug font-semibold shadow-legere focus-visible:outline-4 focus-visible:outline-offset-2 sm:w-auto sm:self-start md:px-4 lg:px-5 ${facon.classesBouton}`}
-          >
-            {facon.bouton} <span aria-hidden="true">→</span>
-          </a>
-        </li>
-      ))}
-    </ul>
+      {/* ILLUSTRATION : aucun cadre, arrondi ni ombre. Le PNG a de larges
+          marges transparentes autour du dessin (environ 15 % de chaque
+          côté) : il est agrandi de 20 % (scale, propriété distincte du
+          transform de l'animation) ; le surplus, transparent, est coupé
+          par overflow-x-clip sur la section. Fichier absent : emplacement
+          vide de même proportion (2752 × 1536). */}
+      <div class="methode-apparition lg:col-start-1 lg:row-span-2 lg:row-start-1" style="--rang: 0">
+        {image ? (
+          <Image
+            src={image}
+            alt="Maison en cours de rénovation, avec échafaudage, matériaux d'isolation et panneaux solaires prêts à être posés."
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 1024px) 45vw, 100vw"
+            format="webp"
+            loading="lazy"
+            class="h-auto w-full scale-[1.2]"
+          />
+        ) : (
+          <div class="aspect-[2752/1536] w-full" />
+        )}
+      </div>
+
+      {/* LES DEUX OPTIONS, à égalité : liste sans ordre de préférence,
+          séparées par un trait fin (divide-y). */}
+      <ul class="divide-y divide-texte/20 lg:col-start-2 lg:row-start-2 lg:self-start">
+        {facons.map((facon, index) => (
+          <li class="methode-apparition py-6 first:pt-0 last:pb-0" style={`--rang: ${index + 1}`}>
+            {/* CITATION : l'élément dominant. Barre orange de 6px à gauche. */}
+            <h3 class="border-l-[6px] border-action-500 pl-4 text-h3 text-texte">{facon.titre}</h3>
+            <p class="mt-3 pl-[22px] text-corps text-texte">{facon.texte}</p>
+            {/* LIEN souligné (orange, 2px ; 4px au survol), texte foncé.
+                44px de haut au minimum pour le doigt. */}
+            <a
+              href={facon.href}
+              class="mt-1 ml-[22px] inline-flex min-h-11 items-center gap-2 text-corps font-semibold text-texte underline decoration-action-500 decoration-2 underline-offset-[6px] hover:decoration-4 focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-nuit-900"
+            >
+              {facon.lien} <span aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   </div>
 </section>

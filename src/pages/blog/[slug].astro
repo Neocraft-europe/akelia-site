@@ -21,16 +21,16 @@ const { Content } = await render(post);
   image={post.data.coverImage.src}
   type="article"
 >
-  <article class="py-12 md:py-20 bg-white">
+  <article class="py-12 md:py-20 bg-fond">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
       <header class="mb-10 text-center">
-        <a href="/blog" class="inline-flex items-center text-sm font-semibold text-emerald-600 hover:text-emerald-700 mb-6">
+        <a href="/blog" class="inline-flex items-center text-sm font-semibold text-vert-600 hover:text-nuit-900 mb-6">
           &larr; Retour aux articles
         </a>
-        <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">
+        <h1 class="text-3xl sm:text-4xl font-bold text-texte leading-tight">
           {post.data.title}
         </h1>
-        <div class="mt-4 flex items-center justify-center gap-4 text-sm text-slate-500">
+        <div class="mt-4 flex items-center justify-center gap-4 text-sm text-texte-doux">
           <time datetime={post.data.pubDate.toISOString()}>
             {post.data.pubDate.toLocaleDateString('fr-FR', {
               year: 'numeric',
@@ -40,7 +40,7 @@ const { Content } = await render(post);
           </time>
           {post.data.category && (
             <span>•</span>
-            <span class="font-semibold text-emerald-600">{post.data.category}</span>
+            <span class="font-semibold text-vert-600">{post.data.category}</span>
           )}
         </div>
       </header>
@@ -52,10 +52,10 @@ const { Content } = await render(post);
         width={1200}
         height={675}
         format="webp"
-        class="w-full h-80 object-cover rounded-2xl mb-10 shadow-sm"
+        class="w-full h-80 object-cover rounded-bloc mb-10 shadow-sm"
       />
 
-      <div class="prose prose-slate max-w-none prose-headings:font-bold prose-a:text-emerald-600 hover:prose-a:text-emerald-700">
+      <div class="prose max-w-none prose-headings:font-bold prose-a:text-vert-600 hover:prose-a:text-nuit-900">
         <Content />
       </div>
     </div>

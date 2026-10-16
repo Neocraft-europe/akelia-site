@@ -44,8 +44,8 @@ import {
 const STYLE_VERDICT: Record<Verdict, { libelle: string; classes: string }> = {
   oui: { libelle: 'Oui', classes: 'border-succes-600 bg-succes-50' },
   'sous-conditions': { libelle: 'Sous conditions', classes: 'border-action-500 bg-action-50' },
-  'a-verifier': { libelle: 'À vérifier', classes: 'border-secondaire-500 bg-secondaire-50' },
-  non: { libelle: 'Non', classes: 'border-neutre-400 bg-neutre-50' },
+  'a-verifier': { libelle: 'À vérifier', classes: 'border-nuit-700 bg-creme' },
+  non: { libelle: 'Non', classes: 'border-creme-fonce bg-creme' },
 };
 
 /** Ordre de préférence quand plusieurs travaux sont cochés. */
@@ -152,14 +152,14 @@ interface Ligne {
  */
 function ligneDepliable(ligne: Ligne) {
   const style = STYLE_VERDICT[ligne.verdict];
-  const li = el('li', `rounded-petit border-2 ${style.classes}`);
+  const li = el('li', `rounded-bloc border-2 ${style.classes}`);
   const details = el('details', 'group');
   details.setAttribute('name', NOM_GROUPE_LIGNES);
   details.dataset.ligneAide = '';
 
   const resume = el(
     'summary',
-    'grid min-h-12 cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-3 px-3 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marque-900 [&::-webkit-details-marker]:hidden',
+    'grid min-h-12 cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-3 px-3 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900 [&::-webkit-details-marker]:hidden',
   );
   resume.append(el('span', 'text-base leading-snug font-semibold text-texte', ligne.nom));
   const droite = el('span', 'flex flex-col items-end text-right leading-tight');
@@ -175,7 +175,7 @@ function ligneDepliable(ligne: Ligne) {
   fleche.setAttribute('stroke', 'currentColor');
   fleche.setAttribute('stroke-width', '2.5');
   fleche.setAttribute('aria-hidden', 'true');
-  fleche.setAttribute('class', 'size-5 shrink-0 text-marque-900 transition-transform group-open:rotate-180 motion-reduce:transition-none');
+  fleche.setAttribute('class', 'size-5 shrink-0 text-nuit-900 transition-transform group-open:rotate-180 motion-reduce:transition-none');
   const trait = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   trait.setAttribute('d', 'M6 9l6 6 6-6');
   trait.setAttribute('stroke-linecap', 'round');
@@ -184,7 +184,7 @@ function ligneDepliable(ligne: Ligne) {
   resume.append(fleche);
   details.append(resume);
 
-  const contenu = el('div', 'space-y-2 border-t border-bordure-douce px-3 py-3');
+  const contenu = el('div', 'space-y-2 border-t border-creme-fonce px-3 py-3');
   ligne.explications.forEach((texte) => contenu.append(el('p', 'text-base text-texte', texte)));
   if (ligne.conditions?.length) {
     const liste = el('ul', 'list-disc space-y-1 pl-5 text-base text-texte');
@@ -240,7 +240,7 @@ function lignesLocales(departement: Departement): Ligne[] {
 
 /** Titre de groupe de lignes (h4). */
 function titreGroupe(texte: string, id: string) {
-  const titre = el('h4', 'mt-5 mb-2 text-base font-bold tracking-wide text-marque-900 uppercase', texte);
+  const titre = el('h4', 'mt-5 mb-2 text-base font-bold tracking-wide text-nuit-900 uppercase', texte);
   titre.id = id;
   return titre;
 }
@@ -258,14 +258,14 @@ export function construireResultat(statut: Statut, travaux: Travaux[], departeme
   // --- En-tête : titre et « Recommencer »
   const entete = el('div', 'flex flex-wrap items-center justify-between gap-x-4 gap-y-1');
   entete.append(el('h3', 'text-h3 text-texte', 'Votre résultat'));
-  const recommencer = el('button', 'min-h-11 rounded-bouton px-3 font-semibold text-marque-900 underline underline-offset-4 hover:bg-secondaire-50 focus-visible:outline-2 focus-visible:outline-marque-900', 'Recommencer');
+  const recommencer = el('button', 'min-h-11 rounded-bloc px-3 font-semibold text-nuit-900 underline underline-offset-4 hover:bg-creme focus-visible:outline-2 focus-visible:outline-nuit-900', 'Recommencer');
   recommencer.type = 'button';
   recommencer.dataset.simulateurRecommencer = '';
   entete.append(recommencer);
   fragment.append(entete);
 
   // --- 1. Mention, EN PREMIER (aucun lien vers un service externe)
-  fragment.append(el('p', 'mt-3 rounded-petit border-2 border-bordure p-3 text-base font-semibold text-texte', mentionObligatoire));
+  fragment.append(el('p', 'mt-3 rounded-bloc bg-creme p-3 text-base font-semibold text-texte', mentionObligatoire));
 
   // --- 2. BOUTON UNIQUE vers le formulaire de contact, juste sous la
   //        mention et AVANT la liste, pour être vu sans défiler. Taille
@@ -273,7 +273,7 @@ export function construireResultat(statut: Statut, travaux: Travaux[], departeme
   //        largeur. Il ne s'ajoute pas en dessous : il remplace le résultat
   //        par le formulaire, dans le même bloc (voir simulateur-etapes.ts,
   //        attribut data-simulateur-contact).
-  const contact = el('button', 'mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-bouton bg-action-500 px-5 py-2 text-corps font-semibold text-texte shadow-legere hover:bg-action-600 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-marque-900', 'Obtenir vos aides réelles');
+  const contact = el('button', 'mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-bloc bg-action-500 px-5 py-2 text-corps font-semibold text-texte shadow-legere hover:bg-action-600 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-nuit-900', 'Obtenir vos aides réelles');
   contact.type = 'button';
   contact.dataset.simulateurContact = '';
   const flecheContact = el('span', '', '→');

@@ -2,20 +2,51 @@
 // =========================================================================
 // COMPOSANT HERO (src/components/Hero.astro)
 // -------------------------------------------------------------------------
-// Grand bandeau d'ouverture de la page d'accueil : titre principal (h1),
-// sous-titre, bouton « Obtenir un devis » et 8 raccourcis vers les solutions.
+// Grand bandeau d'ouverture de la page d'accueil : surtitre du collectif,
+// titre principal (h1), sous-titre, bouton « Obtenir un devis », lien
+// « Estimer mes aides », puis le schéma de la maison et, juste dessous,
+// 9 raccourcis vers les solutions.
 //
-// Direction visuelle « technique et clair » :
-// - Deux blocs nettement séparés :
-//     1. le message (fond blanc avec un fin quadrillage façon plan technique) ;
-//     2. les raccourcis (bandeau bleu nuit, tuiles blanches très contrastées).
-// - Aucune photo : uniquement du texte, des aplats et des icônes au trait.
+// Refonte d'octobre 2026 :
+// - FOND BLANC pur (plus de crème ni de quadrillage façon papier
+//   millimétré, jugés ternes à l'arrivée sur la page).
+// - UN SEUL bouton (devis), et un simple lien souligné vers le simulateur.
+// - Grand écran (1280px et plus) : deux colonnes ÉGALES, le texte à
+//   gauche ; le schéma ET les raccourcis à droite.
+// - En dessous de 1280px : texte, bouton et lien, PUIS le schéma, PUIS
+//   les raccourcis.
 // - 100 % Tailwind, uniquement les couleurs de la charte (global.css).
-// - Mobile d'abord : les classes sans préfixe visent le téléphone, md: la
-//   tablette (768px et plus), lg: et xl: l'ordinateur (992px et 1280px).
 //
-// Pour modifier un raccourci (libellé, lien ou icône) : éditer le tableau
-// `raccourcis` ci-dessous.
+// Modifications du 14 octobre 2026 :
+// - ÉTIQUETTE : la mention « Collectif d'artisans locaux — en direct, sans
+//   sous-traitance. », seul différenciateur d'Akelia, passe AU-DESSUS du
+//   titre, dans une ÉTIQUETTE DISCRÈTE (révisée le 14 octobre 2026,
+//   inspirée d'akelia.fr) : fond orange très pâle action-50, texte orange
+//   foncé action-800 en graisse 600 (4,88:1), coins arrondis. Sous 768px :
+//   90 % de la largeur du conteneur (le décalage de 10 % avec le titre est
+//   voulu), texte aligné à gauche ; à partir de 768px : largeur ajustée au
+//   contenu (correction du 14 octobre 2026). Versions
+//   écartées : badge vert plein vert-600 (pleine largeur sur téléphone, il
+//   écrasait le titre et se lisait comme un titre), texte orange foncé sur
+//   blanc, orange plein action-500 (même couleur que le bouton), texte
+//   action-600 sur action-50 (2,77:1, contraste insuffisant).
+// - RACCOURCIS : le bandeau pleine largeur sous le Hero est SUPPRIMÉ. Les
+//   raccourcis sont DANS le Hero, sous le schéma, dans la même colonne,
+//   sous le titre « Par où voulez-vous commencer ? ». Ils remplacent la
+//   légende numérotée du schéma (supprimée).
+// - 9e raccourci « Rénovation globale », en premier, sur fond bleu nuit
+//   (l'offre complète) ; pleine largeur sur téléphone et tablette.
+// - ALLUMAGE : survoler à la souris ou atteindre au clavier un raccourci
+//   allume en orange le ou les équipements correspondants sur le schéma
+//   (attribut data-allume de SchemaMaison.astro, posé par le script en bas
+//   de ce fichier). « Rénovation globale » allume tout.
+// - TACTILE (corrigé le 14 octobre 2026) : un seul toucher ouvre la page,
+//   comme n'importe quel lien. L'ancien « premier toucher = allumage,
+//   second = ouverture » faisait croire que le lien ne marchait pas. Aucune
+//   phrase d'aide sur écran tactile.
+//
+// Pour modifier un raccourci (libellé, lien, icône ou équipements
+// allumés) : éditer le tableau `raccourcis` ci-dessous.
 // Le schéma de la maison est dans son propre composant : SchemaMaison.astro.
 // =========================================================================
 
@@ -23,99 +54,122 @@ import SchemaMaison from './SchemaMaison.astro';
 
 // -------------------------------------------------------------------------
 // RACCOURCIS VERS LES SOLUTIONS
-// - libelle : texte affiché sous l'icône.
-// - href    : page de destination (certaines pages sont encore à créer,
-//             voir inventaire-charte.md).
-// - icone   : dessin SVG au trait, sur une grille de 24 × 24. Seuls les
-//             tracés sont décrits ici : la couleur, l'épaisseur du trait et
-//             la taille sont réglées une seule fois, plus bas, sur la balise
-//             <svg>.
+// - libelle     : texte affiché à droite de l'icône.
+// - href        : page de destination (certaines pages sont encore à créer,
+//                 voir inventaire-charte.md).
+// - equipements : identifiants des équipements de SchemaMaison.astro à
+//                 allumer (séparés par des espaces), ou « tout ».
+// - global      : vrai pour « Rénovation globale » seulement (mise en avant).
+// - icone       : dessin SVG au trait, sur une grille de 24 × 24. Seuls les
+//                 tracés sont décrits ici : la couleur, l'épaisseur du trait
+//                 et la taille sont réglées une seule fois, plus bas, sur la
+//                 balise <svg>.
+// La ventilation n'a pas de raccourci (pas de page dédiée) : elle ne
+// s'allume qu'avec « Rénovation globale ».
+// STYLE DES ICÔNES (redessinées en octobre 2026) : trait fin et régulier
+// (1.5), formes simples et géométriques, angles arrondis (rectangles à
+// coins arrondis, extrémités et jonctions rondes), même échelle optique
+// (chaque icône occupe environ 18 × 18 au centre de la grille). Même
+// vocabulaire : un bloc arrondi pour chaque appareil, des traits courts
+// pour les détails.
 // -------------------------------------------------------------------------
 const raccourcis = [
   {
+    libelle: 'Rénovation globale',
+    href: '/solutions/renovation-energetique-globale',
+    equipements: 'tout',
+    global: true,
+    // Maison et coche : tout est fait.
+    icone: `
+      <path d="M3.5 10.5 12 4l8.5 6.5V20H3.5Z" />
+      <path d="m8.5 14 2.5 2.5 4.5-5" />
+    `,
+  },
+  {
     libelle: 'Isolation',
     href: '/solutions/isolation-thermique-par-l-exterieur-ite',
-    // Maison à double paroi : le trait intérieur figure l'enveloppe
-    // isolante qui double le toit et les murs.
+    equipements: 'isolation-combles isolation-murs',
+    // Maison à double paroi : le trait intérieur figure l'enveloppe isolante.
     icone: `
-      <path d="M2 11.5 12 3.5l10 8" />
-      <path d="M4.5 9.5V21h15V9.5" />
-      <path d="M7.5 11.5 12 8l4.5 3.5V18h-9Z" />
+      <path d="M3.5 10.5 12 4l8.5 6.5V20H3.5Z" />
+      <path d="M7 12.2 12 8.5l5 3.7V20" />
+      <path d="M7 12.2V20" />
     `,
   },
   {
     libelle: 'Fenêtres et volets',
     href: '/solutions/menuiseries-fenetres-volets',
-    // Fenêtre à deux battants encadrée de deux volets.
+    equipements: 'menuiseries',
+    // Fenêtre à quatre carreaux et son appui.
     icone: `
-      <rect x="8" y="3" width="8" height="16" rx="1" />
-      <path d="M12 3v16M8 11h8" />
-      <path d="M2.5 3h3v16h-3zM18.5 3h3v16h-3z" />
-      <path d="M2 21h20" />
+      <rect x="5" y="3.5" width="14" height="15" rx="1.5" />
+      <path d="M12 3.5v15M5 11h14M3.5 20.5h17" />
     `,
   },
   {
     libelle: 'Pompe à chaleur',
     href: '/solutions/pompe-a-chaleur-air-eau',
-    // Unité extérieure : ventilateur à gauche, grille d'aération à droite.
+    equipements: 'pompe-a-chaleur',
+    // Unité extérieure : ventilateur rond à gauche, grille à droite, plots.
     icone: `
-      <rect x="2" y="5" width="20" height="13" rx="2" />
-      <circle cx="9" cy="11.5" r="4" />
-      <path d="M9 7.5v8M5 11.5h8" />
-      <path d="M16 9h3M16 11.5h3M16 14h3" />
-      <path d="M5 18v2M19 18v2" />
+      <rect x="2.5" y="5" width="19" height="12.5" rx="2" />
+      <circle cx="9" cy="11.25" r="3.75" />
+      <circle cx="9" cy="11.25" r="0.75" />
+      <path d="M16 9h2.5M16 11.25h2.5M16 13.5h2.5M6 17.5V20M18 17.5V20" />
     `,
   },
   {
     libelle: 'Climatisation réversible',
     href: '/solutions/climatisation-reversible-pac-air-air',
-    // Unité murale qui souffle de l'air (trois flèches vers le bas).
+    equipements: 'climatisation',
+    // Unité murale et trois souffles d'air.
     icone: `
-      <rect x="2" y="4" width="20" height="8" rx="2" />
-      <path d="M5 9h14" />
-      <path d="M7 15v4M12 15v6M17 15v4" />
-      <path d="m5.5 17.5 1.5 1.5 1.5-1.5M10.5 19.5 12 21l1.5-1.5M15.5 17.5 17 19l1.5-1.5" />
+      <rect x="2.5" y="4.5" width="19" height="8" rx="2" />
+      <path d="M6.5 9.5h11" />
+      <path d="M8 15.5v4M12 15.5v5M16 15.5v4" />
     `,
   },
   {
     libelle: 'Chaudière biomasse',
     href: '/solutions/chaudiere-biomasse-bois-ou-pellets',
-    // Flamme posée sur une bûche.
+    equipements: 'chaudiere-biomasse',
+    // Chaudière (bloc arrondi) avec une flamme dans le foyer.
     icone: `
-      <path d="M12 2.5c.5 3 3.5 4.5 3.5 8a3.5 3.5 0 0 1-7 0c0-1.5.7-2.5 1.5-3.5.3 1.2 1 1.8 1.8 1.8C11.5 7 11 4.5 12 2.5Z" />
-      <path d="M4 19.5 20 16M4 16l16 3.5" />
+      <rect x="5" y="3" width="14" height="18" rx="2" />
+      <path d="M8.5 7h7" />
+      <path d="M12 18a2.75 2.75 0 0 1-2.75-2.75c0-1.7 1.5-2.6 2.75-4.5 1.25 1.9 2.75 2.8 2.75 4.5A2.75 2.75 0 0 1 12 18Z" />
     `,
   },
   {
     libelle: 'Chauffe-eau',
     href: '/solutions/chauffe-eau-thermodynamique',
-    // Ballon d'eau chaude (cylindre) avec une goutte, et ses deux tuyaux.
+    equipements: 'chauffe-eau',
+    // Ballon d'eau chaude (gélule) et une goutte.
     icone: `
-      <path d="M6 5a6 2 0 0 1 12 0v13a6 2 0 0 1-12 0Z" />
-      <path d="M12 9c1.5 2 2.5 3.2 2.5 4.5a2.5 2.5 0 0 1-5 0c0-1.3 1-2.5 2.5-4.5Z" />
-      <path d="M9 22v-2M15 22v-2" />
+      <rect x="7" y="3" width="10" height="18" rx="5" />
+      <path d="M12 9.5c1.3 1.6 2 2.6 2 3.6a2 2 0 0 1-4 0c0-1 .7-2 2-3.6Z" />
     `,
   },
   {
     libelle: 'Panneaux photovoltaïques',
     href: '/solutions/panneaux-photovoltaiques',
-    // Panneau solaire incliné et quadrillé, sur son pied.
+    equipements: 'panneaux-photovoltaiques',
+    // Panneau quadrillé sur son pied.
     icone: `
-      <path d="M5 4h16l-2 10H3Z" />
-      <path d="M4 9h16M10.3 4l-2 10M15.7 4l-2 10" />
-      <path d="M11 14v5M7 20h8" />
+      <rect x="3" y="4" width="18" height="11.5" rx="1.5" />
+      <path d="M3 9.75h18M9 4v11.5M15 4v11.5M12 15.5V20M8.5 20h7" />
     `,
   },
   {
     libelle: 'Borne de recharge',
     href: '/solutions/borne-de-recharge',
-    // Borne avec écran et éclair, câble qui sort sur le côté.
+    equipements: 'borne-de-recharge',
+    // Borne arrondie avec un éclair, câble qui remonte vers la prise.
     icone: `
-      <rect x="4" y="3" width="10" height="18" rx="2" />
-      <path d="M6.5 6h5v3h-5z" />
-      <path d="m10 12-2 3h3l-2 3" />
-      <path d="M14 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0v-5" />
-      <path d="M2 21h14" />
+      <rect x="3.5" y="3" width="10" height="18" rx="2" />
+      <path d="M9.5 7 7.5 11h3l-2 4" />
+      <path d="M13.5 12h1.5a1.5 1.5 0 0 1 1.5 1.5v3a1.75 1.75 0 0 0 3.5 0V9" />
+      <path d="M18.5 9h3M19 5.5V9M21 5.5V9" />
     `,
   },
 ];
@@ -124,146 +178,228 @@ const raccourcis = [
 {/* =========================================================================
     SECTION HERO
     aria-labelledby relie la section à son titre pour les lecteurs d'écran.
-
-    ORDRE DES BLOCS (dans le code comme à l'écran, sous 1280px) :
-      1. le message (titre, sous-titre, bouton) ;
-      2. les raccourcis vers les solutions (pages de vente : ils doivent
-         rester visibles sans défiler) ;
-      3. le schéma de la maison.
-    À partir de 1280px (xl:), le schéma remonte à DROITE du message :
-    la section devient une grille, et le message et le schéma occupent la
-    même case (xl:col-start-1 xl:row-start-1), le schéma étant aligné sur
-    la colonne de droite. Les raccourcis passent alors sur la 2e ligne.
-    L'ordre au clavier reste : message → raccourcis → schéma.
+    Ordre dans le code comme à l'écran (et au clavier) : message, schéma,
+    raccourcis. À partir de 1280px (xl:), message à gauche ; schéma et
+    raccourcis à droite.
+    Marges verticales : 40px en haut et 48px en bas sur téléphone (le
+    titre reste visible dès l'arrivée), 120px à partir de 768px, 64px à
+    partir de 1280px (les raccourcis sous le schéma allongent la colonne
+    de droite : avec 120px, leur dernière rangée passait sous le bas d'un
+    écran de 900px de haut).
 ========================================================================== */}
-<section aria-labelledby="hero-titre" class="grid border-b-2 border-bordure">
+<section aria-labelledby="hero-titre" class="bg-fond" data-hero>
+  <div class="mx-auto max-w-site px-gouttiere pt-bloc pb-12 md:py-scene-large xl:grid xl:py-16 xl:grid-cols-2 xl:items-center xl:gap-12">
 
-  {/* -----------------------------------------------------------------------
-      BLOC 1 : LE MESSAGE
-      Fond blanc avec un fin quadrillage (lignes neutre-100 tous les 2rem),
-      rappel discret d'un plan technique. Il est purement décoratif et assez
-      pâle pour ne pas gêner la lecture.
-  ------------------------------------------------------------------------ */}
-  <div class="bg-fond bg-[linear-gradient(to_right,var(--color-neutre-100)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-neutre-100)_1px,transparent_1px)] bg-size-[2rem_2rem] xl:col-start-1 xl:row-start-1 xl:flex xl:items-center">
-    {/* Marges verticales resserrées sur téléphone (pt-4 = 16px en haut,
-        pb-6 = 24px en bas) pour que le bouton et la 1re rangée de raccourcis
-        restent visibles sans défiler. À partir de 768px (md:) : inchangé. */}
-    <div class="mx-auto w-full max-w-site px-gouttiere pt-4 pb-6 md:py-section">
+    {/* COLONNE TEXTE */}
+    <div>
+      {/* ÉTIQUETTE DU COLLECTIF, AVANT le titre (révisée le 14 octobre
+          2026) : une étiquette, pas une bannière. Fond orange très pâle
+          action-50, texte orange foncé action-800 (#9a5a00, réservé à ce
+          texte : 4,88:1 sur action-50, alors qu'action-600 n'y faisait que
+          2,77:1), graisse 600. Largeur (corrigée le 14 octobre 2026) :
+          sous 768px, w-[90%] du conteneur (ni pleine largeur, ni ajustée
+          au texte : les 10 % manquants créent un décalage VOULU avec le
+          titre), texte aligné à gauche ; à partir de 768px, inline-block,
+          la largeur épouse le texte. Coins arrondis rounded-lg
+          (pas une pilule : sur téléphone le texte passe sur deux lignes).
+          Texte de 14px sur téléphone, 16px à partir de 768px ; padding
+          modéré. « sans sous-traitance. » reste groupé (whitespace-nowrap) :
+          il ne se coupe pas au trait d'union. Aucune autre coupure imposée
+          (15 octobre 2026 : le <br> qui forçait un retour après le tiret
+          sur téléphone est supprimé) : la phrase passe à la ligne là où la
+          place manque. */}
+      <p class="mb-4 block w-[90%] rounded-lg bg-action-50 text-left px-3 py-1 text-[0.875rem] leading-snug font-semibold text-action-800 md:mb-6 md:inline-block md:w-auto md:px-3.5 md:py-1.5 md:text-base">
+        Collectif d'artisans locaux — en direct, <span class="whitespace-nowrap">sans sous-traitance.</span>
+      </p>
 
-      {/* À partir de 1280px : le message occupe les 7/12 de gauche ; les
-          5/12 de droite restent vides ici, car le schéma (bloc 3) vient s'y
-          superposer. */}
-      <div class="xl:grid xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] xl:gap-bloc">
+      {/* TITRE PRINCIPAL (9 mots) : text-display, la plus grande taille de
+          la charte : clamp(2.8rem, 6vw, 5rem), interligne 1.05, graisse
+          900. text-balance : lignes équilibrées, pas de mot isolé. */}
+      <h1 id="hero-titre" class="text-display text-balance text-texte">
+        Une maison qui consomme moins, et qui vaut plus.
+      </h1>
 
-        {/* COLONNE TEXTE : titre, sous-titre et bouton */}
-        <div>
-          {/* Barre orange décorative : repère visuel au-dessus du titre */}
-          <span aria-hidden="true" class="mb-3 block h-1.5 w-16 bg-action-500 md:mb-6 md:h-2"></span>
+      {/* SOUS-TITRE : text-chapeau, clamp(1.2rem, 1.8vw, 1.5rem), graisse
+          normale, texte-doux (7,1:1 sur le blanc). */}
+      <p class="mt-5 max-w-[40ch] text-chapeau text-texte-doux md:mt-6">
+        Construire, rénover et équiper votre logement pour réduire votre consommation d'énergie et vos factures.
+      </p>
 
-          {/* TITRE PRINCIPAL (17 mots)
-              - text-display : la plus grande taille de la charte (3.5rem,
-                réduite à 1.75rem sur téléphone, voir global.css).
-              - max-w-[24ch] : limite chaque ligne à environ 24 caractères,
-                pour que l'œil lise le titre par blocs courts (5 lignes sur
-                ordinateur au lieu d'une seule ligne interminable).
-              - text-balance : le navigateur équilibre la longueur des
-                lignes, pour éviter un mot isolé sur la dernière ligne. */}
-          <h1 id="hero-titre" class="max-w-[24ch] text-display text-balance text-texte">
-            Construire, rénover et équiper votre logement pour réduire votre consommation d'énergie et vos factures
-          </h1>
-
-          <div class="mt-3 md:mt-8">
-            {/* SOUS-TITRE : taille h4 (1.25rem) mais graisse normale, gris
-                foncé neutre-700 (contraste élevé sur fond blanc). */}
-            <p class="max-w-[45ch] text-h4 font-normal text-neutre-700">
-              Avec un artisan local du collectif Akelia, en direct et sans sous-traitance.
-            </p>
-  
-            {/* BOUTON PRINCIPAL
-                - min-h-14 : 56px de haut, très confortable au doigt.
-                - Texte noir sur orange : l'orange est trop clair pour porter
-                  du texte blanc lisible.
-                - Pleine largeur sur téléphone, largeur du texte au-delà. */}
-            <a
-              href="/devis"
-              class="mt-4 flex min-h-14 w-full items-center justify-center gap-3 rounded-bouton bg-action-500 px-8 text-h4 font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-marque-900 md:mt-6 md:inline-flex md:w-auto"
-            >
-              Obtenir un devis
-              {/* Flèche décorative */}
-              <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </a>
-          </div>
-        </div>
+      {/* BOUTON ET LIEN
+          - Bouton : 56px de haut, texte noir sur orange (l'orange est trop
+            clair pour du texte blanc). Pleine largeur sur téléphone.
+          - Lien « Estimer mes aides » : simple texte souligné, nettement
+            moins visible que le bouton. Ancre vers le titre du simulateur.
+            44px de haut minimum pour le doigt. */}
+      <div class="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-8">
+        <a
+          href="/devis"
+          class="flex min-h-14 items-center justify-center gap-3 rounded-bloc bg-action-500 px-8 text-h4 font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-nuit-900"
+        >
+          Obtenir un devis
+          {/* Flèche décorative */}
+          <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </a>
+        <a
+          href="#simulateur-titre"
+          class="inline-flex min-h-11 items-center justify-center text-corps text-texte underline decoration-1 underline-offset-4 hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900 sm:justify-start"
+        >
+          Estimer mes aides
+        </a>
       </div>
+
+      {/* PHRASE SUR LES AIDES (16 octobre 2026) : discrète mais visible,
+          sous les deux appels à l'action. Taille du texte courant, graisse
+          600, rouge corail (--color-corail, 4,70:1 sur le blanc du Hero).
+          Montant insécable. Même montant que le titre du simulateur
+          (32 000 €, non confirmé par une source officielle, voir
+          inventaire-charte.md). */}
+      <p class="mt-4 text-corps font-semibold text-corail">
+        Recevez plus de <span class="whitespace-nowrap">32&nbsp;000&nbsp;€</span> d'aides pour réaliser votre projet.
+      </p>
     </div>
-  </div>
 
-  {/* -----------------------------------------------------------------------
-      BLOC 2 : LES RACCOURCIS VERS LES SOLUTIONS
-      Bandeau bleu nuit (marque-900) : la séparation avec le bloc du message
-      est immédiate, et les tuiles blanches ressortent fortement.
-      Grille : 2 colonnes sur téléphone, 4 sur tablette (md:) et sur petit
-      ordinateur (4 × 2), 8 en une ligne à partir de 1280px (xl:).
-  ------------------------------------------------------------------------ */}
-  <nav aria-label="Accès rapide à nos solutions" class="bg-marque-900">
-    <ul class="mx-auto grid max-w-site grid-cols-2 gap-3 px-gouttiere py-4 md:grid-cols-4 md:gap-4 md:py-bloc xl:grid-cols-8">
-      {raccourcis.map((raccourci) => (
-        <li>
-          {/* TUILE : le lien couvre toute la tuile (icône + libellé).
-              - Hauteur : 80px minimum sur téléphone (min-h-20), 128px à partir
-                de 768px (md:min-h-32). Dans les deux cas, bien au-delà des
-                44px minimum. Une tuile dont le libellé tient sur 2 lignes
-                grandit un peu sur téléphone (environ 90px).
-              - Sur téléphone, icône et marges intérieures plus petites pour
-                tenir dans ces 80px ; inchangées à partir de 768px.
-              - Survol : fond crème action-50 et cadre orange épais.
-              - xl:px-2 : en 8 colonnes, marge intérieure réduite pour que
-                « photovoltaïques » tienne sur une ligne sans être coupé.
-              - Focus clavier : contour orange épais, décalé de la tuile. */}
-          <a
-            href={raccourci.href}
-            class="group flex h-full min-h-20 flex-col items-center justify-center gap-1 rounded-carte bg-fond px-3 py-2 text-center md:min-h-32 md:gap-3 md:p-4 xl:px-2 ring-action-500 transition-colors hover:bg-action-50 hover:ring-4 focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-action-500 motion-reduce:transition-none"
-          >
-            {/* Icône au trait : couleur de la marque, épaisseur 1.75 */}
-            <svg
-              class="size-8 text-marque-900 md:size-10"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <Fragment set:html={raccourci.icone} />
-            </svg>
-            {/* Libellé : semi-gras, texte noir */}
-            <span class="text-base leading-tight font-semibold text-texte md:leading-normal">
-              {raccourci.libelle}
-            </span>
-          </a>
-        </li>
-      ))}
-    </ul>
-  </nav>
+    {/* COLONNE DE DROITE : SCHÉMA PUIS RACCOURCIS
+        - Sous 1280px : sous le bouton ; 48px au-dessus sur téléphone, 64px
+          à partir de 768px.
+        - À partir de 1280px : colonne de droite (la moitié). */}
+    <div class="mt-12 md:mt-16 xl:mt-0">
+      <SchemaMaison />
 
-  {/* -----------------------------------------------------------------------
-      BLOC 3 : LE SCHÉMA DE LA MAISON (SchemaMaison.astro)
-      - Sous 1280px : après les raccourcis, sur le même fond quadrillé que le
-        message. Largeur limitée à 42rem sur tablette (md:max-w-2xl).
-      - À partir de 1280px : superposé au bloc 1, dans la colonne de droite
-        (5/12), centré verticalement. Il n'a alors plus de fond propre (le
-        quadrillage du bloc 1 passe dessous). pointer-events-none sur le
-        conteneur, puis auto sur le schéma : le texte et le bouton du bloc 1
-        restent cliquables partout ailleurs.
-  ------------------------------------------------------------------------ */}
-  <div class="bg-fond bg-[linear-gradient(to_right,var(--color-neutre-100)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-neutre-100)_1px,transparent_1px)] bg-size-[2rem_2rem] xl:pointer-events-none xl:col-start-1 xl:row-start-1 xl:bg-transparent xl:bg-none">
-    <div class="mx-auto w-full max-w-site px-gouttiere py-6 md:py-bloc xl:grid xl:h-full xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] xl:items-center xl:gap-bloc xl:py-section">
-      <div class="md:max-w-2xl xl:pointer-events-auto xl:col-start-2 xl:max-w-none">
-        <SchemaMaison />
-      </div>
+      {/* -------------------------------------------------------------------
+          RACCOURCIS VERS LES SOLUTIONS (sous le schéma, 14 octobre 2026)
+          Grille : 2 colonnes sur téléphone, 4 de 768 à 1279px (le schéma
+          occupe toute la largeur), 3 à partir de 1280px (demi-colonne
+          d'environ 590px) : 3 × 3, sans case vide.
+          « Rénovation globale » : pleine largeur sur téléphone et tablette
+          (la grille reste ainsi pleine : 1 + 4 × 2 et 1 + 2 × 4) ; une case
+          comme les autres en 3 colonnes (une case plus large y laisserait
+          un trou), mais toujours sur fond bleu nuit.
+          auto-rows-fr : TOUTES les rangées prennent la hauteur de la plus
+          haute, donc les 9 raccourcis ont la même hauteur (correction du
+          14 octobre 2026 ; avant, ceux dont le libellé tenait sur une ligne
+          étaient plus bas).
+      -------------------------------------------------------------------- */}
+      <nav aria-labelledby="raccourcis-titre" class="mt-6 md:mt-8">
+        <h2 id="raccourcis-titre" class="text-h4 font-bold text-texte">Par où voulez-vous commencer&nbsp;?</h2>
+        {/* Phrase d'aide : à la souris seulement. Sur écran tactile
+            (pointer-coarse), AUCUNE phrase : un toucher ouvre la page,
+            il n'y a rien à expliquer (14 octobre 2026). */}
+        <p class="mt-1 text-petit text-texte-doux pointer-coarse:hidden">
+          Survolez une solution pour la voir sur le schéma.
+        </p>
+        <ul class="mt-4 grid auto-rows-fr grid-cols-2 gap-2 md:grid-cols-4 md:gap-3 xl:grid-cols-3">
+          {raccourcis.map((raccourci) => (
+            <li class={raccourci.global ? 'col-span-2 md:col-span-4 xl:col-span-1' : undefined}>
+              {/* RACCOURCI : icône à gauche, libellé à droite.
+                  - 48px de haut minimum (min-h-12), au-delà des 44px demandés.
+                  - Fond clair brume à 45 % (bleu ardoise très pâle, cousin
+                    des icônes bleu nuit), filet brume, coins arrondis :
+                    se détache nettement du blanc du Hero.
+                  - « Rénovation globale » : fond bleu nuit, texte blanc,
+                    icône orange, avec la mention « L'offre complète ».
+                  - Survol ou focus clavier : fond
+                    orange pâle et anneau orange, comme l'équipement qui
+                    s'allume sur le schéma. Le raccourci global garde son
+                    fond bleu nuit, éclairci (nuit-700).
+                  - Focus clavier : contour bleu nuit en plus (l'orange
+                    n'atteint que 2,4:1 sur le blanc).
+                  - Téléphone : icône de 20px et marges resserrées, pour que
+                    « photovoltaïques » tienne entier dès 375px ; 24px et
+                    marges normales à partir de 768px.
+                  - hyphens-auto : coupe proprement un mot trop long pour
+                    la case (« photovoltaïques » sous 375px) ; sans effet
+                    quand le mot tient. */}
+              <a
+                href={raccourci.href}
+                data-equipements={raccourci.equipements}
+                class:list={[
+                  'flex h-full min-h-12 items-center gap-2 rounded-bloc px-2.5 py-2 md:gap-2.5 md:px-3 text-base leading-tight font-semibold ring-action-500 hover:ring-2 focus-visible:ring-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-nuit-900',
+                  raccourci.global
+                    ? 'bg-nuit-900 text-texte-inverse hover:bg-nuit-700'
+                    : 'border border-brume bg-brume/45 text-texte hover:bg-action-50 focus-visible:bg-action-50',
+                ]}
+              >
+                {/* Icône au trait, épaisseur 1.5 : bleu nuit, ou orange sur le
+                    raccourci global. */}
+                <svg
+                  class:list={['size-5 shrink-0 md:size-6', raccourci.global ? 'text-action-500' : 'text-nuit-900']}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <Fragment set:html={raccourci.icone} />
+                </svg>
+                <span class="min-w-0 hyphens-auto">
+                  {raccourci.libelle}
+                  {raccourci.global && <span class="block text-petit font-normal">L'offre complète</span>}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   </div>
 </section>
+
+{/* =========================================================================
+    SCRIPT D'ALLUMAGE DU SCHÉMA
+    Écrit juste après la section (document.currentScript.previousElementSibling).
+    Pose sur le schéma (data-schema) l'attribut data-allume avec la valeur
+    data-equipements du raccourci concerné.
+    - Souris : survol (pointerenter / pointerleave).
+    - Clavier : focus / blur.
+    - Tactile : RIEN de particulier (14 octobre 2026). Le toucher n'est pas
+      intercepté : le premier toucher ouvre la page, comme tout lien. Le
+      survol simulé par le doigt est ignoré (pointerType « touch »).
+    - Priorité si les deux à la fois : survol, puis focus.
+    Sans JavaScript : les liens fonctionnent normalement ; le schéma reste
+    au repos (rien en orange, pompe à chaleur, climatisation et biomasse
+    masquées).
+========================================================================== */}
+<script is:inline>
+  (function () {
+    var hero = document.currentScript.previousElementSibling;
+    if (!hero) return;
+    var schema = hero.querySelector('[data-schema]');
+    var liens = Array.prototype.slice.call(hero.querySelectorAll('[data-equipements]'));
+    if (!schema || !liens.length) return;
+
+    var survole = null; // raccourci sous la souris
+    var focalise = null; // raccourci qui a le focus
+
+    function mettreAJour() {
+      var actif = survole || focalise;
+      if (actif) schema.setAttribute('data-allume', actif.getAttribute('data-equipements'));
+      else schema.removeAttribute('data-allume');
+    }
+
+    liens.forEach(function (lien) {
+      lien.addEventListener('pointerenter', function (e) {
+        if (e.pointerType === 'touch') return;
+        survole = lien;
+        mettreAJour();
+      });
+      lien.addEventListener('pointerleave', function () {
+        if (survole === lien) { survole = null; mettreAJour(); }
+      });
+      lien.addEventListener('focus', function () { focalise = lien; mettreAJour(); });
+      lien.addEventListener('blur', function () {
+        if (focalise === lien) { focalise = null; mettreAJour(); }
+      });
+    });
+
+    // Retour arrière depuis la page ouverte (cache de navigation) : état de repos.
+    window.addEventListener('pageshow', function () {
+      survole = focalise = null;
+      mettreAJour();
+    });
+  })();
+</script>

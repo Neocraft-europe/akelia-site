@@ -36,7 +36,12 @@ const resolvedImageURL = new URL(image, Astro.site || 'https://akelia.fr').href;
     {/* Encodage et compatibilité navigateur */}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {/* Favicon (16 octobre 2026) : carré orange, losange bleu nuit.
+        favicon.ico (32px) pour les navigateurs sans SVG, déclaré AVANT le
+        SVG que les navigateurs récents préfèrent ; PNG 180px pour Apple. */}
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="generator" content={Astro.generator} />
 
     {/* Balises SEO Primaires */}

@@ -5,8 +5,11 @@
 // =========================================================================
 
 import Layout from '../layouts/Layout.astro';
+import AnimationScenes from '../components/AnimationScenes.astro';
 import Hero from '../components/Hero.astro';
+import CommentCaMarche from '../components/CommentCaMarche.astro';
 import Methode from '../components/Methode.astro';
+import CasTypes from '../components/CasTypes.astro';
 import SimulateurAides from '../components/SimulateurAides.astro';
 import Collectif from '../components/Collectif.astro';
 import ArticleList from '../components/ArticleList.astro';
@@ -16,28 +19,60 @@ import ArticleList from '../components/ArticleList.astro';
   title="Akelia - Expert Rénovation Énergétique & Solutions Durables"
   description="Accélérez votre transition écologique avec Akelia. Pompes à chaleur, isolation, panneaux solaires et bornes de recharge pour particuliers et professionnels."
 >
-  {/* Section d'ouverture : titre, sous-titre, bouton devis et raccourcis vers les solutions */}
+  {/* UNE COULEUR PLEINE LARGEUR PAR SECTION (refonte « alan.com »,
+      octobre 2026) : deux sections voisines n'ont jamais la même.
+      Couleurs : voir global.css.
+        1. Hero (message, schéma et 9 raccourcis) : blanc (crème jusqu'en
+           octobre 2026)
+        2. « Fonctionnement » (4 étapes, 2 illustrations) : brume, depuis
+           le 14 octobre 2026 (argile, refusée, le premier jour). Il
+           remplace le bandeau des 8 solutions, dont les raccourcis sont
+           passés dans le Hero.
+        3. Méthode (4 étapes) : blanc
+        4. « Deux façons de faire » : crème foncé (creme-fonce)
+        5. Cas types : une couleur par onglet (--color-cas-…), bleu nuit
+           profond pour le premier, « Bâti ancien » (violet, puis prune,
+           avant)
+        6. Simulateur d'aides : blanc (lichen, puis lagon, jusqu'au
+           15 octobre 2026)
+        7. Collectif : bleu nuit
+        8. Articles : blanc depuis le 16 octobre 2026 (bruyère avant),
+           cartes blanches détachées par un filet crème foncé
+      Pied de page : crème.
+      Sur les fonds teintés, les blocs intérieurs sont blancs. */}
+
+  {/* Animation d'entrée des sections (data-scene), avant tout le reste */}
+  <AnimationScenes />
+
+  {/* Section d'ouverture : surtitre, titre, sous-titre, bouton devis, schéma et raccourcis vers les solutions */}
   <Hero />
+
+  {/* Section 1 bis : « Fonctionnement », 4 étapes et 2 illustrations. Fond brume. */}
+  <CommentCaMarche />
 
   {/* Section 2 : la méthode en 4 étapes, puis les deux façons de travailler avec nous */}
   <Methode />
 
+  {/* Section 3 : les 5 cas types, en onglets (un seul panneau affiché à la fois) */}
+  <CasTypes />
+
   {/* Section 4 : simulateur d'éligibilité aux aides (3 questions, résultat immédiat, aucune donnée envoyée) */}
   <SimulateurAides />
 
-  {/* Section 5 : le collectif (réseau national d'artisans locaux) et ses 5 engagements. Fond blanc. */}
+  {/* Section 5 : le collectif (réseau national d'artisans locaux) et ses 5 engagements. Fond bleu nuit. */}
   <Collectif />
 
-  {/* Derniers articles du blog */}
-  <section class="py-16">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-8 flex items-center justify-between">
-        <div>
-          <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Actualités & Conseils</h2>
-          <p class="mt-1 text-sm text-slate-500">Nos derniers guides pour réduire votre empreinte énergétique.</p>
+  {/* Section 6 : derniers articles du blog. Fond blanc (bruyère jusqu'au 16 octobre 2026), cartes blanches à filet crème foncé. */}
+  <section data-scene aria-labelledby="articles-titre" class="bg-fond">
+    <div class="mx-auto max-w-site px-gouttiere py-scene md:py-scene-large">
+      <div class="mb-bloc flex flex-wrap items-end justify-between gap-4">
+        <div data-scene-titre>
+          <p class="surtitre">Le blog</p>
+          <h2 id="articles-titre" class="mt-3 text-h2 text-texte">Actualités et conseils</h2>
+          <p class="mt-4 text-corps text-texte-doux">Nos derniers guides pour réduire votre consommation d'énergie.</p>
         </div>
-        <a href="/blog" class="text-sm font-semibold text-emerald-600 hover:underline">
-          Tous les articles →
+        <a href="/blog" class="inline-flex min-h-11 items-center font-semibold text-vert-600 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900">
+          Tous les articles <span aria-hidden="true">&nbsp;→</span>
         </a>
       </div>
       <ArticleList />

@@ -1,67 +1,137 @@
 ---
 // =========================================================================
-// COMPOSANT : UNE ÉTAPE DE LA MÉTHODE (src/components/MethodeEtape.astro)
+// COMPOSANT : UN ONGLET DE LA MÉTHODE (src/components/MethodeEtape.astro)
 // -------------------------------------------------------------------------
-// Affiche UNE étape de la liste ordonnée de MethodeEtapes.astro : une carte
-// dont l'en-tête porte le NUMÉRO en très grand (l'élément visuel dominant),
-// puis l'icône, le titre et le texte. Doit être placé directement dans la
-// balise <ol> de MethodeEtapes (la ligne de liaison est dans cette <ol>).
+// Un onglet de la colonne de gauche de la section Méthode
+// (MethodeEtapes.astro). Doit être placé directement dans l'élément
+// role="tablist".
+//
+// Refonte du 13 octobre 2026 (schéma évolutif). L'onglet est un BOUTON,
+// et doit se voir comme tel (public senior) :
+// - à gauche, une PASTILLE numérotée, posée sur la ligne verticale qui
+//   relie les 4 étapes ;
+// - à droite, une CARTE : icône, titre, sous-texte, et un CHEVRON dans un
+//   rond (→ vers le schéma ; ↓ sur téléphone et tablette, où le schéma est
+//   en dessous). Ombre portée, coins arrondis, curseur « main ».
+// - Survol : anneau épais de la couleur de l'étape, ombre plus marquée,
+//   léger décalage vers la droite, chevron en couleur.
+// - Inactif : fond blanc ; la couleur de l'étape n'apparaît que dans le
+//   FILET LATÉRAL (6px) et le contour de la pastille.
+// - Actif : fond plein de la teinte claire de l'étape, pastille pleine.
+// - Étapes déjà franchies (avant l'étape active) : pastille pleine, et le
+//   segment de ligne qui descend vers l'étape suivante est rempli (0,4s).
+//
+// COULEURS : variables --teinte (fond actif), --fonce (filet, pastille,
+// segment) et --fonce-suivant (bas du segment, dégradé vers l'étape
+// suivante), posées dans l'attribut style. Ce sont les mêmes couleurs que
+// les éléments que l'étape ajoute au schéma (MethodeSchema.astro).
 //
 // Props :
-// - etape  : { titre, texte, icone } (voir le tableau dans MethodeEtapes.astro)
-// - numero : rang de l'étape (1, 2, 3…)
-// - total  : nombre total d'étapes (pour « Étape 2 sur 4 »)
-//
-// ANIMATION : classe methode-apparition + variable --rang (0, 1, 2, 3) :
-// voir Methode.astro.
+// - etape   : une entrée de src/data/methode.ts
+// - index   : rang (0 à 3)
+// - suivant : couleur foncée de l'étape suivante (absente pour la dernière)
 // =========================================================================
 
+import type { EtapeMethode } from '../data/methode';
+
 interface Props {
-  etape: { titre: string; texte: string; icone: string };
-  numero: number;
-  total: number;
+  etape: EtapeMethode;
+  index: number;
+  suivant?: string;
 }
 
-const { etape, numero, total } = Astro.props;
+const { etape, index, suivant } = Astro.props;
+const style = `--teinte: ${etape.teinte}; --fonce: ${etape.fonce}; --fonce-suivant: ${suivant ?? etape.fonce}; --rang: ${index};`;
 ---
 
-  {/* relative : la carte passe AU-DESSUS de la ligne de liaison, qui n'est
-      donc visible que dans l'espace entre deux cartes. */}
-  <li class="methode-apparition relative" style={`--rang: ${numero - 1}`}>
+<button
+  type="button"
+  role="tab"
+  id={`methode-onglet-${etape.id}`}
+  aria-controls={`methode-panneau-${etape.id}`}
+  aria-selected={index === 0 ? 'true' : 'false'}
+  tabindex={index === 0 ? 0 : -1}
+  data-methode-onglet
+  data-dernier={suivant ? undefined : ''}
+  class="methode-onglet methode-apparition group relative flex w-full cursor-pointer items-start gap-3 text-left focus-visible:outline-none md:gap-4"
+  style={style}
+>
+  {/* PASTILLE NUMÉROTÉE (le rang est aussi lu dans le titre du panneau) */}
+  <span aria-hidden="true" class="pastille relative z-10 mt-5 flex size-11 shrink-0 items-center justify-center rounded-full border-[3px] border-(--fonce) bg-fond text-h4 leading-none font-black text-texte tabular-nums transition-colors duration-300 md:size-12 motion-reduce:transition-none">
+    {index + 1}
+  </span>
 
-    {/* CARTE DE L'ÉTAPE : cadre noir (bordures noires de la charte).
-        Marge intérieure de 16px sur téléphone, 20px au-delà. */}
-    <div class="h-full rounded-carte border-2 border-bordure bg-fond p-4 md:p-5">
+  {/* CARTE CLIQUABLE */}
+  <span class="carte flex min-h-[5.5rem] flex-1 items-center gap-3 rounded-bloc border-l-[6px] border-(--fonce) bg-fond py-3 pr-3 pl-4 shadow-carte transition-[background-color,box-shadow,translate] duration-200 group-hover:translate-x-1 group-hover:shadow-elevee group-hover:ring-[3px] group-hover:ring-(--fonce) group-focus-visible:outline-[3px] group-focus-visible:outline-offset-[3px] group-focus-visible:outline-nuit-900 group-aria-selected:bg-(--teinte) motion-reduce:transition-none md:gap-4 md:pl-5">
+    {/* ICÔNE au trait (style des raccourcis du Hero), bleu nuit */}
+    <svg
+      class="size-9 shrink-0 text-nuit-900 md:size-11"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <Fragment set:html={etape.icone} />
+    </svg>
+    <span class="flex-1">
+      <span class="block text-[1.25rem] leading-tight font-bold text-texte">{etape.titre}</span>
+      <span class="mt-1 block text-corps leading-snug text-texte-doux group-aria-selected:text-texte">{etape.sousTexte}</span>
+    </span>
+    {/* CHEVRON dans un rond : → à partir de 1024px (le schéma est à
+        droite), ↓ en dessous (le schéma est plus bas). */}
+    <span aria-hidden="true" class="chevron flex size-9 shrink-0 items-center justify-center rounded-full bg-creme text-nuit-900 transition-colors duration-200 group-hover:bg-(--fonce) group-hover:text-texte-inverse group-aria-selected:bg-nuit-900 group-aria-selected:text-texte-inverse motion-reduce:transition-none">
+      <svg class="size-5 rotate-90 lg:rotate-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m9 5 7 7-7 7" />
+      </svg>
+    </span>
+  </span>
+</button>
 
-      {/* EN-TÊTE (l'ordre change avec la largeur) :
-          - moins de 1280px (étapes empilées, cartes larges) : [numéro]
-            [« Étape X sur 4 » au-dessus du titre] [icône] sur une seule
-            ligne, pour ne pas allonger la section. « Étape X sur 4 » est
-            masqué sur téléphone, où le grand numéro suffit ;
-          - xl: (4 colonnes étroites) : [numéro] … [icône], puis
-            « Étape X sur 4 » et le titre en dessous (xl:order-*,
-            xl:basis-full).
-          NUMÉRO : orange (action-500), gras, 4.5rem (72px) sur téléphone,
-          6rem (96px) à partir de 768px, 7rem (112px) à partir de 1280px.
-          Contour bleu nuit (paint-order : le contour est dessiné SOUS le
-          remplissage, il ne mange pas le chiffre ; 2px visibles) : l'orange
-          seul sur blanc est trop pâle (1,9:1) pour un public senior.
-          aria-hidden : le rang est déjà annoncé par la liste <ol> et par
-          « Étape X sur 4 ». */}
-      <div class="flex items-center gap-x-3 md:gap-x-5 xl:flex-wrap xl:items-start">
-        <span aria-hidden="true" class="shrink-0 text-[4.5rem] leading-none font-bold text-action-500 tabular-nums [paint-order:stroke_fill] [-webkit-text-stroke:4px_var(--color-marque-900)] md:text-[6rem] xl:text-[7rem]">
-          {numero}
-        </span>
-        <div class="min-w-0 flex-1 xl:order-2 xl:mt-3 xl:basis-full">
-          <p class="hidden text-petit font-semibold tracking-wide text-neutre-700 uppercase md:block">
-            Étape {numero} sur {total}
-          </p>
-          <h3 class="text-h4 text-texte md:mt-1">{etape.titre}</h3>
-        </div>
-        <svg class="size-10 shrink-0 self-start text-marque-900 md:size-12 xl:order-1 xl:ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <Fragment set:html={etape.icone} />
-        </svg>
-      </div>
-      <p class="mt-3 text-corps text-texte">{etape.texte}</p>
-    </div>
-  </li>
+<style>
+  /* =======================================================================
+     LIGNE VERTICALE ENTRE LES PASTILLES
+     Chaque onglet (sauf le dernier) dessine le segment qui descend de sa
+     pastille jusqu'à celle de l'onglet suivant :
+       ::before → rail gris (toujours visible)
+       ::after  → remplissage coloré, quand l'étape est franchie
+     Géométrie : la pastille est à 20px du haut (mt-5), 44px de diamètre
+     (48px à partir de 768px) ; les onglets sont espacés de 12px (gap-3
+     dans MethodeEtapes.astro). Le segment part du bas de la pastille et
+     s'arrête en haut de la suivante : hauteur = hauteur de l'onglet
+     − diamètre + écart.
+  ======================================================================= */
+  .methode-onglet { --diametre: 2.75rem; --ecart: 0.75rem; }
+  @media (width >= 48rem) { .methode-onglet { --diametre: 3rem; } }
+  .methode-onglet:not([data-dernier])::before,
+  .methode-onglet:not([data-dernier])::after {
+    content: '';
+    position: absolute;
+    left: calc(var(--diametre) / 2 - 2px);
+    top: calc(1.25rem + var(--diametre));
+    width: 4px;
+    height: calc(100% - var(--diametre) + var(--ecart));
+    border-radius: 2px;
+  }
+  .methode-onglet::before { background: var(--color-creme-fonce); }
+  .methode-onglet::after {
+    background: linear-gradient(var(--fonce), var(--fonce-suivant));
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.4s ease;
+  }
+  .methode-onglet[data-franchi]::after { transform: scaleY(1); }
+
+  /* Pastille pleine : étape active et étapes franchies */
+  .methode-onglet:is([aria-selected='true'], [data-franchi]) .pastille {
+    background: var(--fonce);
+    color: var(--color-texte-inverse);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .methode-onglet::after { transition: none; }
+    .methode-onglet .carte { translate: none !important; }
+  }
+</style>

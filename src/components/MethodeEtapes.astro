@@ -1,115 +1,399 @@
 ---
 // =========================================================================
-// COMPOSANT MÉTHODE : LES 4 ÉTAPES (src/components/MethodeEtapes.astro)
+// COMPOSANT MÉTHODE : LES 4 ÉTAPES ET LE SCHÉMA ÉVOLUTIF
+// (src/components/MethodeEtapes.astro)
 // -------------------------------------------------------------------------
-// Bloc 1 de la section « Méthode » de l'accueil (appelé par Methode.astro).
-// Fond blanc. Présente la méthode Akelia en 4 étapes ORDONNÉES.
+// Section « Méthode » de l'accueil (appelée par Methode.astro), juste après
+// le Hero et le bandeau « Comment ça se passe ? » (fond argile, depuis le
+// 14 octobre 2026 ; avant, le bandeau des solutions du Hero).
 //
-// L'ordre est le message : tout est fait pour qu'on lise une SÉQUENCE et
-// non une liste d'options.
-// - Balise <ol> (liste numérotée) : les lecteurs d'écran annoncent
-//   « liste de 4 éléments » et le rang de chaque étape.
-// - NUMÉROS en très grand, en orange, dans l'en-tête de chaque carte :
-//   c'est l'élément visuel dominant, lisible même en défilant vite.
-// - Une LIGNE DE LIAISON bleu nuit relie les cartes (visible dans l'espace
-//   entre deux cartes, à la hauteur des numéros) :
-//     téléphone et tablette (moins de 1280px) → étapes empilées, ligne
-//                 verticale, lecture de haut en bas ;
-//     grand écran (xl:, 1280px et plus) → étapes en ligne, ligne horizontale,
-//                 lecture de gauche à droite.
-// - Mention « Étape X sur 4 » au-dessus de chaque titre (à partir de 768px).
-// - ANIMATION (rejouée à chaque retour à l'écran, voir Methode.astro) : les étapes apparaissent
-//   l'une après l'autre (120ms d'écart) pendant que la ligne se trace.
+// Refonte du 13 octobre 2026 (schéma évolutif) :
+// - Fond BLANC. Séparateur discret en haut (ombre intérieure douce) : le
+//   bandeau clair qui précède et cette section ne se confondent pas.
+// - Titre centré (text-titre) et introduction (textes fournis).
+// - DEUX COLONNES à partir de 1024px :
+//     gauche (35 %) : les 4 ÉTAPES empilées, en onglets (MethodeEtape.astro),
+//       reliées par une ligne verticale qui se remplit jusqu'à l'étape active ;
+//     droite (65 %) : le SCHÉMA de la maison (MethodeSchema.astro), qui
+//       change avec l'étape active, et EN DESSOUS le texte détaillé de
+//       l'étape active.
+//   En dessous de 1024px : tout s'empile (étapes, schéma, texte).
+// - Une phrase d'aide au-dessus des étapes indique qu'elles se cliquent
+//   (« Cliquez… » à la souris, « Touchez… » au doigt).
 //
-// Pour modifier une étape : éditer le tableau `etapes` ci-dessous.
-// L'affichage d'une étape (numéro, carte) est dans MethodeEtape.astro.
+// ACCESSIBILITÉ : modèle « onglets » du W3C (role tablist / tab / tabpanel),
+// orientation verticale. Flèches haut et bas (gauche et droite aussi),
+// Début et Fin ; un seul onglet dans l'ordre de tabulation (l'actif).
+// L'étape 1 est active au chargement.
+//
+// AVANCEMENT AUTOMATIQUE AU DÉFILEMENT (14 octobre 2026) : en descendant
+// dans la section, l'étape active passe de 1 à 2, 3, puis 4, exactement
+// comme si on cliquait (schéma, ligne et texte suivent). En remontant, elle
+// redescend de 4 à 1.
+// - LE DÉFILEMENT N'EST JAMAIS TOUCHÉ : écouteur « passive » (il ne peut
+//   pas l'empêcher), aucun preventDefault, aucune position fixe, aucun
+//   défilement provoqué, aucun focus déplacé. La page descend normalement ;
+//   seule l'étape active change.
+// - SEUILS (corrigés le 14 octobre 2026, voir plus bas « Seuils
+//   actuels ») : l'ancien découpage en 4 tranches égales déclenchait
+//   l'étape 4 quand le schéma sortait déjà de l'écran, et l'étape 2 avant
+//   que le schéma soit entier (l'étape 1 n'était jamais vue en entier à
+//   1280 × 900).
+// - TRAVERSÉE : calée sur le SCHÉMA (et non sur toute la section) : un
+//   changement d'étape n'a d'intérêt que si on voit le schéma changer.
+//   Elle commence quand la MOITIÉ du schéma est entrée par le bas de
+//   l'écran, et finit quand la moitié a disparu SOUS L'EN-TÊTE COLLANT
+//   (#site-header, 122px de haut à 1280px, 73px sur téléphone, qui masque
+//   le haut de l'écran) : elle dure la hauteur visible de l'écran (778px à
+//   1280 × 900).
+//   Calcul : progression = (hauteur d'écran − h/2 − haut du schéma) ÷
+//   (hauteur d'écran − bas de l'en-tête), où h est la hauteur du schéma
+//   et « haut du schéma » sa position dans l'écran.
+// - SEUILS ACTUELS : ils sont placés dans la FENÊTRE où le schéma est
+//   ENTIÈREMENT visible (de « bas du schéma au bas de l'écran » à « haut
+//   du schéma sous l'en-tête »), sur ses deux premiers tiers : étape 2 à
+//   15 % de la fenêtre, 3 à 40 %, 4 à 65 %. Les quatre étapes sont donc
+//   vues avec le schéma entier, et l'étape 4 reste affichée sur le dernier
+//   tiers. Fenêtre à 1280 × 900 : 312px de défilement (78px pour les
+//   étapes 2 et 3) ; à 375 × 667 : 385px (96px). Si la fenêtre fait moins
+//   de 30 % de la traversée (écran bas), elle est élargie autour du
+//   milieu : le schéma n'est alors plus entier à chaque changement.
+// - PISTE COLLANTE (15 octobre 2026) : les étapes défilaient trop vite
+//   (le schéma n'est entier que pendant 312px de défilement à 1280 × 900,
+//   et ajouter de la marge seule n'y change rien). La section est donc
+//   allongée d'environ 30 % (élément vide [data-methode-piste], sous les
+//   colonnes) et, pendant ce surplus de défilement, les colonnes restent
+//   COLLÉES à l'écran (position: sticky), centrées sous l'en-tête :
+//   le schéma, entier, se construit étape par étape, puis la section
+//   reprend son défilement normal. Rien n'est bloqué : la page descend
+//   toujours au rythme de la molette ou du doigt.
+//   - À partir de 1024px : les DEUX colonnes collent (même hauteur, pour
+//     partir ensemble) : étapes à gauche, schéma et texte à droite.
+//   - Sous 1024px : seule la colonne schéma + texte colle (les étapes,
+//     au-dessus, sont déjà sorties de l'écran).
+//   - Seulement si ce qui colle tient à l'écran (sous l'en-tête, avec 16px
+//     de marge en haut et en bas) ; sinon (écran bas, ex. 1280 × 720) :
+//     ni piste, ni collage, comportement d'avant.
+//   - Rien de tout cela si « réduire les animations » est activé (pas
+//     d'avancement automatique, donc rien à montrer).
+//   La fenêtre où le schéma est entier s'allonge de la longueur de la
+//   piste : 312 + 395 = 707px à 1280 × 900 (au lieu de 312px).
+//   SEUILS (16 octobre 2026) : étape 2 à 20 % de cette fenêtre, 3 à 50 %,
+//   4 à 72 % (avant : 20, 45 et 70 % ; et encore avant : 15, 40 et 65 %).
+//   L'étape 2 (« Isoler et ventiler ») a ainsi la plus longue tranche
+//   (30 %, contre 22 % pour l'étape 3) : elle sautait avant qu'on ait vu
+//   le schéma. L'étape 4 se déclenche toujours schéma entier, et reste
+//   affichée sur les 28 % restants.
+// - ZONE MORTE : un seuil n'est franchi que 2 % de la traversée au-delà
+//   (24px à 1280 × 900 avec la piste, 4 % avant le 14 octobre 2026), dans
+//   un sens comme dans l'autre ; arrêté pile sur un seuil, l'étape ne
+//   clignote pas.
+// - CLIC (ou flèches du clavier) sur une étape : l'avancement automatique
+//   est SUSPENDU jusqu'à ce que la section ait COMPLÈTEMENT quitté l'écran.
+//   Il reprend au passage suivant.
+// - « Réduire les animations » activé : aucun avancement automatique ;
+//   l'étape 1 reste affichée et seuls les clics changent l'étape.
+// - Sans JavaScript : rien ne change (voir ci-dessous).
+//
+// SANS JAVASCRIPT : la colonne des onglets reste masquée, la section est sur
+// une colonne : le schéma (état 4, tout est construit), puis les 4 étapes
+// et leurs textes les uns sous les autres.
+//
+// ANIMATIONS : titre (data-scene, AnimationScenes.astro) ; onglets l'un
+// après l'autre à l'arrivée (data-apparition, Methode.astro) ; changement
+// d'étape : fondu et tracé rapide de 0,4s sur le schéma. Tout est
+// instantané si « réduire les animations » est activé.
+//
+// Textes, couleurs et icônes des étapes : src/data/methode.ts.
 // =========================================================================
 
 import MethodeEtape from './MethodeEtape.astro';
-
-// -------------------------------------------------------------------------
-// LES 4 ÉTAPES, dans l'ordre d'affichage.
-// icone : tracés SVG au trait (grille 24 × 24), même style que le Hero.
-// -------------------------------------------------------------------------
-const etapes = [
-  {
-    titre: 'Étudier la situation',
-    texte: 'Analyser les qualités et les faiblesses de votre habitat pour établir un plan précis, adapté à votre logement et à votre budget.',
-    // Loupe posée sur une petite maison : l'audit du logement.
-    icone: `
-      <circle cx="10" cy="10" r="7" />
-      <path d="m15 15 6 6" />
-      <path d="M6.5 10.5 10 7.5l3.5 3" />
-      <path d="M7.5 9.8V13h5V9.8" />
-    `,
-  },
-  {
-    titre: 'Isoler et ventiler',
-    texte: "C'est l'étape la plus importante : moins votre maison perd de chaleur, moins elle a besoin d'énergie. Et une fois le logement rendu étanche, il lui faut une ventilation efficace pour éviter l'humidité.",
-    // Maison à double paroi (l'isolant) traversée par un courant d'air.
-    icone: `
-      <path d="M2 11.5 12 3.5l10 8" />
-      <path d="M4.5 9.5V21h15V9.5" />
-      <path d="M7.5 11.5 12 8l4.5 3.5V18h-9Z" />
-      <path d="M9.5 13.5c1-.7 2-.7 3 0s2 .7 3 0M9.5 16c1-.7 2-.7 3 0s2 .7 3 0" />
-    `,
-  },
-  {
-    titre: "Produire de l'énergie",
-    texte: "Identifier ce que votre logement peut produire — ensoleillement, surface de toiture, orientation — avant de choisir vos équipements.",
-    // Soleil au-dessus d'un panneau solaire.
-    icone: `
-      <circle cx="6" cy="6" r="2.5" />
-      <path d="M6 1.5v1M6 9.5v1M1.5 6h1M9.5 6h1M2.8 2.8l.7.7M8.5 8.5l.7.7M2.8 9.2l.7-.7M8.5 3.5l.7-.7" />
-      <path d="M10 12h12l-1.5 7.5H8.5Z" />
-      <path d="M9.3 15.75h12M16 12l-.75 7.5" />
-    `,
-  },
-  {
-    titre: "S'équiper",
-    texte: 'Une fois le bien isolé et la production connue, choisir le système adapté : chauffage, thermostat, borne de recharge, batterie, domotique.',
-    // Thermostat mural à molette : le pilotage des équipements.
-    icone: `
-      <rect x="3" y="3" width="18" height="18" rx="4" />
-      <circle cx="12" cy="12" r="5" />
-      <path d="M12 7v3" />
-      <path d="M6 6.5h.01M18 6.5h.01M6 17.5h.01M18 17.5h.01" />
-    `,
-  },
-];
+import MethodeSchema from './MethodeSchema.astro';
+import { etapesMethode } from '../data/methode';
 ---
 
-<section aria-labelledby="methode-titre" class="bg-fond">
-  <div class="mx-auto max-w-site px-gouttiere py-bloc md:py-section">
+<section data-scene aria-labelledby="methode-titre" class="bg-fond shadow-[inset_0_14px_14px_-14px_#1d2b3640]">
+  <div class="mx-auto max-w-site px-gouttiere py-scene md:py-scene-large">
 
-    {/* EN-TÊTE DU BLOC : titre et phrase d'introduction, sur toute la
-        largeur du conteneur (limite de 60 caractères retirée à l'étape 20,
-        à la demande). */}
-    <h2 id="methode-titre" class="text-h2 text-texte">Votre logement autonome</h2>
-    <p class="mt-4 text-corps text-neutre-700">
-      Changer sa chaudière avant d'isoler, c'est payer une pompe à chaleur trop grosse pour rien. L'ordre compte autant que les travaux.
-    </p>
+    {/* EN-TÊTE CENTRÉ */}
+    <div data-scene-titre class="text-center">
+      <h2 id="methode-titre" class="mx-auto max-w-[24ch] text-titre text-balance text-texte">Le secret d'une rénovation rentable&nbsp;: faire les choses dans l'ordre.</h2>
+      <p class="mx-auto mt-6 max-w-[52ch] text-h4 font-normal text-texte-doux">
+        Changer sa chaudière avant d'isoler, c'est acheter une pompe à chaleur trop puissante pour rien. Découvrez les 4 étapes incontournables pour investir au bon endroit.
+      </p>
+    </div>
 
-    {/* LISTE ORDONNÉE DES ÉTAPES
-        - téléphone et tablette (moins de 1280px) : une colonne, gap-6 (24px)
-          puis gap-8 (32px) à partir de 768px ;
-        - grand écran (xl:, 1280px et plus) : 4 colonnes côte à côte,
-          gap-bloc (40px). En dessous de 1280px, les colonnes seraient trop
-          étroites (environ 20 caractères par ligne) pour un public senior.
-        data-apparition="etapes" : animation, voir Methode.astro. */}
-    {/* LIGNE DE LIAISON (pseudo-élément « before: » de la liste, donc
-        jamais lue ni comptée comme une étape) : elle passe DERRIÈRE les
-        cartes et n'est visible qu'entre deux cartes, au niveau des numéros.
-        - moins de 1280px : verticale (4px), au milieu du numéro (36px du
-          bord sur téléphone, 46px à partir de 768px) ;
-        - xl: : horizontale (4px), à mi-hauteur du numéro (76px du haut).
-        Ses extrémités s'arrêtent 48px avant les bords de la liste
-        (inset-y-12, xl:inset-x-12), donc toujours cachées derrière la
-        première et la dernière carte. */}
-    <ol data-apparition="etapes" class="relative mt-bloc grid gap-6 before:pointer-events-none before:absolute before:inset-y-12 before:left-9 before:w-1 before:bg-marque-900 md:gap-8 md:before:left-[46px] xl:grid-cols-4 xl:gap-bloc xl:before:inset-x-12 xl:before:top-[76px] xl:before:bottom-auto xl:before:h-1 xl:before:w-auto">
-      {etapes.map((etape, index) => (
-        <MethodeEtape etape={etape} numero={index + 1} total={etapes.length} />
-      ))}
-    </ol>
+    {/* DEUX COLONNES (à partir de 1024px, et seulement avec JavaScript :
+        data-actif est posé par le script). */}
+    <div data-methode class="mt-12 grid items-start gap-10 md:mt-16 lg:data-actif:grid-cols-[minmax(0,35fr)_minmax(0,65fr)] lg:data-actif:gap-12 xl:data-actif:gap-16">
+
+      {/* COLONNE DE GAUCHE : phrase d'aide et onglets. Masquée sans JS. */}
+      <div data-methode-gauche hidden>
+        <p class="mb-5 flex items-start gap-2 text-corps font-semibold text-texte">
+          <svg class="mt-0.5 size-6 shrink-0 text-nuit-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 11V4.5a1.5 1.5 0 0 1 3 0V10m0-1a1.5 1.5 0 0 1 3 0v1.5m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1.2a5 5 0 0 1-3.9-1.9L4.6 15.4a1.6 1.6 0 0 1 2.4-2.1L9 15" />
+          </svg>
+          <span class="pointer-coarse:hidden">Cliquez sur une étape&nbsp;: le schéma change.</span>
+          <span class="hidden pointer-coarse:inline">Touchez une étape&nbsp;: le schéma change.</span>
+        </p>
+        {/* data-apparition="etapes" : apparition des onglets l'un après
+            l'autre (Methode.astro). gap-3 : écart de 12px, repris par la
+            ligne verticale (MethodeEtape.astro). */}
+        <div role="tablist" aria-label="Les 4 étapes de la méthode" aria-orientation="vertical" data-apparition="etapes" class="flex flex-col gap-3">
+          {etapesMethode.map((etape, index) => (
+            <MethodeEtape etape={etape} index={index} suivant={etapesMethode[index + 1]?.fonce} />
+          ))}
+        </div>
+      </div>
+
+      {/* COLONNE DE DROITE : schéma, puis texte de l'étape active */}
+      <div data-methode-droite>
+        <MethodeSchema />
+
+        {/* PANNEAUX : un par étape. Fond de la teinte claire de l'étape,
+            filet latéral de sa couleur foncée (comme l'onglet actif). Avec
+            JavaScript, les 4 panneaux sont SUPERPOSÉS dans la même case et
+            seul l'actif est visible : la hauteur de la section ne change
+            pas d'une étape à l'autre (pas de saut de la page). Sans
+            JavaScript, les 4 se suivent. */}
+        <div class="methode-panneaux mt-6 flex flex-col gap-4 md:mt-8">
+          {etapesMethode.map((etape, index) => (
+            <div
+              role="tabpanel"
+              id={`methode-panneau-${etape.id}`}
+              aria-labelledby={`methode-onglet-${etape.id}`}
+              tabindex="0"
+              data-methode-panneau
+              class="rounded-bloc border-l-[6px] border-(--fonce) bg-(--teinte) px-5 py-5 focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-nuit-900 md:px-8 md:py-6"
+              style={`--teinte: ${etape.teinte}; --fonce: ${etape.fonce};`}
+            >
+              <p class="text-petit font-bold tracking-[0.1em] text-texte uppercase">Étape {index + 1} sur 4</p>
+              <h3 class="mt-1 text-[1.5rem] leading-tight font-black text-texte md:text-[1.75rem]">{etape.titre}</h3>
+              <p class="mt-3 max-w-[60ch] text-corps text-texte">{etape.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* PISTE (15 octobre 2026) : espace vide, sur toute la largeur, qui
+          allonge la section d'environ 30 % pendant que les colonnes
+          restent collées à l'écran (voir « PISTE COLLANTE » dans l'en-tête
+          du fichier). Hauteur et affichage réglés par le script ; masquée
+          sans JavaScript et quand les colonnes ne tiennent pas à l'écran. */}
+      <div data-methode-piste hidden aria-hidden="true" class="col-span-full"></div>
+    </div>
   </div>
 </section>
+
+{/* SCRIPT DES ONGLETS
+    Écrit juste après la section pour s'exécuter avant le premier affichage
+    (pas de clignotement). Sans JavaScript, rien de tout cela ne se
+    produit : tout reste visible, schéma à l'état 4. */}
+<script is:inline>
+  (function () {
+    var bloc = document.querySelector('[data-methode]');
+    if (!bloc) return;
+    var gauche = bloc.querySelector('[data-methode-gauche]');
+    var onglets = Array.prototype.slice.call(bloc.querySelectorAll('[data-methode-onglet]'));
+    var panneaux = Array.prototype.slice.call(bloc.querySelectorAll('[data-methode-panneau]'));
+    var schema = bloc.querySelector('[data-methode-schema]');
+    var desc = bloc.querySelector('[data-methode-schema-desc]');
+    var couches = Array.prototype.slice.call(bloc.querySelectorAll('.couche[data-des]'));
+    var descriptions = JSON.parse(schema.getAttribute('data-descriptions'));
+    var reduit = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var actuel = -1;
+    var minuterie = null;
+
+    // Active l'étape n° i (0 à 3).
+    function activer(i, focus) {
+      onglets.forEach(function (onglet, j) {
+        var actif = i === j;
+        onglet.setAttribute('aria-selected', actif ? 'true' : 'false');
+        onglet.tabIndex = actif ? 0 : -1;
+        // Étapes franchies : pastille pleine et segment de ligne rempli.
+        if (j < i) onglet.setAttribute('data-franchi', '');
+        else onglet.removeAttribute('data-franchi');
+        // Panneau inactif : masqué (visibility: hidden, donc aussi pour
+        // les lecteurs d'écran) mais il garde sa place dans la pile.
+        if (actif) panneaux[j].removeAttribute('data-inactif');
+        else panneaux[j].setAttribute('data-inactif', '');
+      });
+
+      // Schéma : les couches qui APPARAISSENT (étape supérieure) se
+      // dessinent en 0,4 s (data-trace, voir MethodeSchema.astro).
+      couches.forEach(function (c) { c.removeAttribute('data-trace'); });
+      if (actuel >= 0 && i > actuel && !reduit.matches) {
+        void schema.getBoundingClientRect(); // relance l'animation
+        couches.forEach(function (c) {
+          var n = Number(c.getAttribute('data-des'));
+          if (n > actuel + 1 && n <= i + 1) c.setAttribute('data-trace', '');
+        });
+        clearTimeout(minuterie);
+        minuterie = setTimeout(function () {
+          couches.forEach(function (c) { c.removeAttribute('data-trace'); });
+        }, 450);
+      }
+      schema.setAttribute('data-etape', String(i + 1));
+      desc.textContent = descriptions[i];
+      actuel = i;
+
+      if (focus) onglets[i].focus();
+    }
+
+    gauche.hidden = false;
+    bloc.setAttribute('data-actif', '');
+    activer(0, false);
+
+    // AVANCEMENT AUTOMATIQUE AU DÉFILEMENT (voir l'en-tête du fichier).
+    var section = bloc.closest('section');
+    var suspendu = false; // vrai après un clic, jusqu'à la sortie complète
+    var ZONE_MORTE = 0.02; // fraction de la traversée
+    // Seuils, en fraction de la FENÊTRE DE VISIBILITÉ COMPLÈTE du schéma
+    // (voir l'en-tête du fichier) : étape 2 à 20 %, 3 à 50 %, 4 à 72 %.
+    var SEUILS = [0.2, 0.5, 0.72];
+    var FENETRE_MIN = 0.3; // largeur minimale de la fenêtre, en fraction de la traversée
+    var demande = 0; // requestAnimationFrame en attente
+
+    var entete = document.getElementById('site-header');
+    var gaucheCol = gauche;
+    var droite = bloc.querySelector('[data-methode-droite]');
+    var piste = bloc.querySelector('[data-methode-piste]');
+    var large = window.matchMedia('(min-width: 64rem)');
+    var ALLONGEMENT = 0.3; // la piste allonge la section de 30 %
+    var MARGE = 16; // marge minimale au-dessus et au-dessous de ce qui colle
+    // Mesures de la mise en page (voir configurer()) :
+    // e : haut de la colonne de droite, depuis le haut de la grille ;
+    // o : haut du schéma, depuis le haut de la colonne de droite ;
+    // P : longueur de la piste, en px de défilement (0 sans collage).
+    var mise = { e: 0, o: 0, P: 0 };
+
+    function basEntete() {
+      return entete ? Math.max(0, entete.getBoundingClientRect().bottom) : 0;
+    }
+
+    // PISTE COLLANTE (voir l'en-tête du fichier). Rappelée au
+    // redimensionnement et quand polices et images sont chargées.
+    function configurer() {
+      var colonnes = [gaucheCol, droite];
+      piste.hidden = true;
+      piste.style.height = '';
+      colonnes.forEach(function (c) { c.style.position = ''; c.style.top = ''; c.style.alignSelf = ''; });
+      var haut = bloc.getBoundingClientRect().top;
+      var d = droite.getBoundingClientRect();
+      mise = { e: d.top - haut, o: schema.getBoundingClientRect().top - d.top, P: 0 };
+      if (reduit.matches) return;
+
+      var visible = window.innerHeight - basEntete();
+      var colles = large.matches ? colonnes : [droite];
+      var hauteur = Math.max.apply(null, colles.map(function (c) { return c.getBoundingClientRect().height; }));
+      if (hauteur + 2 * MARGE > visible) return; // ne tient pas : pas de collage
+
+      var ecart = parseFloat(getComputedStyle(bloc).rowGap) || 0;
+      piste.style.height = Math.max(0, Math.round(ALLONGEMENT * section.offsetHeight) - ecart) + 'px';
+      piste.hidden = false;
+      var top = Math.round(basEntete() + (visible - hauteur) / 2) + 'px';
+      colles.forEach(function (c) {
+        c.style.position = 'sticky';
+        c.style.top = top;
+        // Même hauteur pour les deux colonnes : elles décollent ensemble.
+        if (large.matches) c.style.alignSelf = 'stretch';
+      });
+      mise.P = Math.max(0, bloc.getBoundingClientRect().height - mise.e - hauteur);
+    }
+
+    function progression() {
+      var h = schema.getBoundingClientRect().height;
+      var ecran = window.innerHeight;
+      // Hauteur réellement visible : sous l'en-tête collant, plus la piste
+      // (le schéma reste entier pendant toute sa longueur).
+      var visible = ecran - basEntete();
+      var traversee = visible + mise.P;
+      // Position de défilement, mesurée sur la grille (qui, elle, ne colle
+      // pas) : la traversée commence quand la moitié du schéma est entrée
+      // par le bas de l'écran, et finit quand la moitié a disparu sous
+      // l'en-tête, après la piste.
+      var u = -(bloc.getBoundingClientRect().top + mise.e);
+      var depart = mise.o + h / 2 - ecran;
+      // Fenêtre où le schéma est entièrement visible (de « bas du schéma
+      // au bas de l'écran » à « haut du schéma sous l'en-tête »). Élargie
+      // autour du milieu si elle est trop étroite (écran bas, schéma
+      // presque aussi haut que lui).
+      var debut = Math.min(h / 2 / traversee, 0.5 - FENETRE_MIN / 2);
+      var fin = Math.max(1 - h / 2 / traversee, 0.5 + FENETRE_MIN / 2);
+      return { p: (u - depart) / traversee, debut: debut, fin: fin };
+    }
+
+    function suivreDefilement() {
+      demande = 0;
+      if (suspendu || reduit.matches) return;
+      var m = progression();
+      var p = m.p;
+      var seuil = function (k) { return m.debut + SEUILS[k] * (m.fin - m.debut); };
+      var cible = actuel;
+      // On ne franchit un seuil que de ZONE_MORTE au-delà, dans un sens
+      // comme dans l'autre.
+      while (cible < 3 && p >= seuil(cible) + ZONE_MORTE) cible++;
+      while (cible > 0 && p <= seuil(cible - 1) - ZONE_MORTE) cible--;
+      if (cible !== actuel) activer(cible, false);
+    }
+
+    function auDefilement() {
+      if (!demande) demande = window.requestAnimationFrame(suivreDefilement);
+    }
+
+    var reglage = 0;
+    function reconfigurer() {
+      if (reglage) return;
+      reglage = window.requestAnimationFrame(function () { reglage = 0; configurer(); auDefilement(); });
+    }
+    configurer();
+    window.addEventListener('resize', reconfigurer, { passive: true });
+    window.addEventListener('load', reconfigurer);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(reconfigurer);
+    if (reduit.addEventListener) reduit.addEventListener('change', reconfigurer);
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entrees) {
+        var e = entrees[entrees.length - 1];
+        if (e.isIntersecting) {
+          window.addEventListener('scroll', auDefilement, { passive: true });
+          window.addEventListener('resize', auDefilement, { passive: true });
+          auDefilement();
+        } else {
+          // Section entièrement hors de l'écran : on arrête d'écouter et
+          // l'avancement automatique reprend au prochain passage.
+          window.removeEventListener('scroll', auDefilement);
+          window.removeEventListener('resize', auDefilement);
+          suspendu = false;
+        }
+      }).observe(section);
+    }
+
+    onglets.forEach(function (onglet, i) {
+      onglet.addEventListener('click', function () { suspendu = true; activer(i, true); });
+      onglet.addEventListener('keydown', function (e) {
+        var n = onglets.length;
+        var cible = null;
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') cible = (i + 1) % n;
+        else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') cible = (i - 1 + n) % n;
+        else if (e.key === 'Home') cible = 0;
+        else if (e.key === 'End') cible = n - 1;
+        if (cible === null) return;
+        e.preventDefault();
+        suspendu = true; // choix au clavier : même règle qu'un clic
+        activer(cible, true);
+      });
+    });
+  })();
+</script>
+
+<style>
+  /* Avec JavaScript : panneaux superposés dans une seule case de grille ;
+     la case prend la hauteur du plus long. Fondu de 0,3 s à l'arrivée. */
+  [data-methode][data-actif] .methode-panneaux { display: grid; }
+  [data-methode][data-actif] .methode-panneaux > * { grid-area: 1 / 1; transition: opacity 0.3s ease-out; }
+  [data-methode][data-actif] [data-methode-panneau][data-inactif] { visibility: hidden; opacity: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    [data-methode][data-actif] .methode-panneaux > * { transition: none; }
+  }
+</style>

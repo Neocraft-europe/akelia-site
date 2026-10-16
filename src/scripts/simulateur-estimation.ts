@@ -31,7 +31,7 @@ const MESSAGES = {
 };
 
 // Styles des messages de retour (couleurs de la charte, texte lisible).
-const CLASSES_RETOUR = 'rounded-carte border-2 p-4 text-corps font-semibold text-texte';
+const CLASSES_RETOUR = 'rounded-bloc border-2 p-4 text-corps font-semibold text-texte';
 const CLASSES_SUCCES = `${CLASSES_RETOUR} border-succes-600 bg-succes-50`;
 const CLASSES_ECHEC = `${CLASSES_RETOUR} border-alerte-700 bg-alerte-50`;
 

@@ -1,5 +1,7 @@
 # Inventaire de la charte graphique — ancien site Webflow Akelia
 
+> **Dernière tâche (14 octobre 2026) : refonte de la section Cas types** (violet, 6 onglets, deux paragraphes et un bouton par onglet, illustrations agrandies ; section en fin de fichier, questions 160 à 165 ; ⚠️ `neuf.png` manquant, question 161). Plus tôt le même jour : badge pleine largeur et illustrations réduites sur téléphone (questions 157 à 159), avancement automatique des étapes de la Méthode au défilement (questions 152 à 156), badge compact et illustrations en pleine largeur sur téléphone (questions 148 à 151 ; ⚠️ section « Fonctionnement » à 1 795px de haut sur téléphone, question 149), badge vert, textes raccourcis, étapes élargies, animation réparée (questions 144 à 147), étiquette pâle et agrandissement des illustrations (questions 141 à 143), corrections de « Fonctionnement » (questions 135 à 140), puis raccourcis du Hero sous le schéma et création du bandeau (questions 123 à 134).
+>
 > Statut : **étape 25 terminée** : nouvelle **section « Collectif »** sur l'accueil (après le simulateur, avant les articles), fond blanc, 5 engagements en liste « fiche technique », apparition en fondu échelonnée. Captures dans `captures/etape-25/`. ⚠️ Hauteur à 375px : 2 391px, soit 2,94 écrans d'iPhone X (812px) mais **3,58 écrans d'iPhone SE (667px)** : pistes de réduction à la question 47 (non appliquées). **Étape 24** : texte du bloc 2 allongé, blocs de même hauteur et **boutons alignés** (flex + `mt-auto`) à partir de 768px. Captures dans `captures/etape-24/`. **Étape 23** : phrase du bloc 2 reformulée (« Vous travaillez en direct avec l'artisan Akelia de votre secteur. »), fond de la section « Vous pilotez… » passé en blanc. **Étape 22** : bloc « Vous pilotez, ou on pilote ? » revenu à une **version statique** : deux blocs qui se touchent (blanc / bleu nuit), tout visible, un bouton dans chacun (« Demander un accompagnement » → `/devis`, « Voir nos solutions » → `/services`). Captures dans `captures/etape-22/`. ⚠️ Enchaînement serré avec la section des aides sur téléphone (question 43, toujours ouverte). **Étape 21** : l'animation d'apparition de la section Méthode (étapes et écran partagé) se rejoue à chaque retour à l'écran, après une sortie complète ; le schéma du hero reste à animation unique. **Étape 20** : Bloc « Vous pilotez, ou on pilote ? » transformé en **écran partagé interactif** : panneau gauche blanc, panneau droit bleu nuit, « ou » à cheval sur la séparation ; le panneau survolé, touché ou atteint au clavier passe à 65 %. Introduction de la méthode sur toute la largeur. Captures dans `captures/etape-20/`. ⚠️ À arbitrer : enchaînement serré avec la section des aides sur téléphone (question 43). **Origine de chaque texte (fourni par vous ou rédigé par Claude) : voir le tableau « Origine des textes » juste en dessous.** **Les textes exacts de toutes les phrases du simulateur sont dans la section suivante (« Textes du simulateur d'aides et de la section Méthode : version en vigueur »)**, réécrite à chaque modification. ⚠️ Toujours bloquant : la clé Web3Forms (question 20).
 
 ## Textes du simulateur d'aides et de la section Méthode : version en vigueur
@@ -20,7 +22,7 @@ Les textes **que vous n'avez pas fournis** (rédigés par Claude) sont à valide
 | D. Phrases des aides (`aides.ts`) | — | **Tout** : noms courts, natures, conditions, phrases par statut, par travaux, région, département, outre-mer (rédigées à partir des sources officielles, étapes 12 à 16) |
 | E. Formulaire de contact | Titre, texte d'introduction, bouton « Recevoir mon estimation », mention sur les coordonnées | « ← Revenir à mes résultats », étiquettes, erreurs, « Envoi en cours… », message de succès ; les messages d'échec sont repris de `/devis` |
 | F. Sans JavaScript | — | La phrase entière |
-| G. Section Méthode | Titre « Votre logement autonome » et textes des 4 étapes (étape 7) ; introduction (étape 19) ; titre du bloc (étape 19), citations (étape 18), textes et boutons des 2 blocs (étapes 22 à 24) | « Étape X sur 4 » (ajout de l'étape 7) |
+| G. Section Méthode | Titre, introduction, titres, sous-textes et détails des 4 étapes (13 octobre 2026) ; « Deux façons de faire » : tout (13 octobre 2026) | « Étape X sur 4 », phrase d'aide « Cliquez / Touchez une étape : le schéma change. », annotations et descriptions du schéma |
 | H. Section Collectif | Tout (étape 25) | — |
 
 ### A. Colonne de gauche (texte fourni à l'étape 17, sur fond bleu nuit)
@@ -228,20 +230,24 @@ Phrases de la ligne « Région » :
 
 ### G. Section Méthode (page d'accueil, juste après le hero)
 
-*Bloc 1 : les 4 étapes* (`MethodeEtapes.astro`)
-- Titre (h2) : « Votre logement autonome »
-- Introduction *(fournie à l'étape 19)* : « Changer sa chaudière avant d'isoler, c'est payer une pompe à chaleur trop grosse pour rien. L'ordre compte autant que les travaux. »
-- Au-dessus de chaque titre, à partir de 768px : « Étape 1 sur 4 » … « Étape 4 sur 4 » *(rédigé par Claude)*
-- 1 · « Étudier la situation » — « Analyser les qualités et les faiblesses de votre habitat pour établir un plan précis, adapté à votre logement et à votre budget. »
-- 2 · « Isoler et ventiler » — « C'est l'étape la plus importante : moins votre maison perd de chaleur, moins elle a besoin d'énergie. Et une fois le logement rendu étanche, il lui faut une ventilation efficace pour éviter l'humidité. »
-- 3 · « Produire de l'énergie » — « Identifier ce que votre logement peut produire — ensoleillement, surface de toiture, orientation — avant de choisir vos équipements. »
-- 4 · « S'équiper » — « Une fois le bien isolé et la production connue, choisir le système adapté : chauffage, thermostat, borne de recharge, batterie, domotique. »
+*Bloc 1 : les 4 étapes et le schéma évolutif* (`MethodeEtapes.astro`, `src/data/methode.ts` ; **textes fournis le 13 octobre 2026**, repris mot pour mot)
+- Titre (h2) : « Le secret d'une rénovation rentable : faire les choses dans l'ordre. »
+- Introduction : « Changer sa chaudière avant d'isoler, c'est acheter une pompe à chaleur trop puissante pour rien. Découvrez les 4 étapes incontournables pour investir au bon endroit. »
+- Phrase d'aide au-dessus des onglets *(rédigée par Claude, à valider)* : « Cliquez sur une étape : le schéma change. » (à la souris) ou « Touchez une étape : le schéma change. » (au doigt)
+- Au-dessus du titre de chaque panneau : « Étape 1 sur 4 » … « Étape 4 sur 4 » *(rédigé par Claude)*
+- 1 · « Audit de la situation » — sous-texte « Comprendre avant d'agir » — détail : « Analyser les qualités et les faiblesses de votre habitat pour établir un plan précis, adapté à votre logement et à votre budget. »
+- 2 · « Isoler et ventiler » — sous-texte « Réduire les besoins » — détail : « C'est l'étape la plus importante : moins votre maison perd de chaleur, moins elle a besoin d'énergie. Et une fois le logement rendu étanche, il lui faut une ventilation efficace pour éviter l'humidité. »
+- 3 · « Produire de l'énergie » — sous-texte « Ce que votre toit peut donner » — détail : « Identifier ce que votre logement peut produire — ensoleillement, surface de toiture, orientation — avant de choisir vos équipements. »
+- 4 · « S'équiper » — sous-texte « Le bon matériel, bien dimensionné » — détail : « Une fois le bien isolé et la production connue, choisir le système adapté : chauffage, thermostat, borne de recharge, batterie, domotique. »
+- Annotations du schéma *(rédigées par Claude)* : « déperditions », « caméra thermique », « VMC », « isolant », « panneaux solaires », « pompe à chaleur », « radiateur », « thermostat », « borne ».
+- Descriptions du schéma pour les lecteurs d'écran *(rédigées par Claude, une par état, dans `src/data/methode.ts`, champ `schema`)*.
 
-*Bloc 2 : deux blocs côte à côte* (`MethodeFacons.astro`, version statique de l'étape 22 ; tout est fourni : citations à l'étape 18, titre à l'étape 19, textes et boutons à l'étape 22)
-- Titre (h2) : « Vous pilotez, ou on pilote ? »
-- Bloc 1 (fond blanc), titre en citation : « « Je veux rénover, mais je ne sais pas par où commencer » » — texte : « Un architecte ou un spécialiste du collectif prend tout en charge : l'audit, l'ordre des travaux, la coordination des artisans, le suivi du chantier. Un seul interlocuteur, du début à la fin. » — bouton : « Demander un accompagnement → » (vers `/devis`)
-- Bloc 2 (fond bleu nuit), titre en citation : « « Je sais ce que je veux, il me faut le bon artisan » » — texte *(fourni à l'étape 24)* : « Vous avez déjà votre idée : isoler les combles, changer les fenêtres, remplacer la chaudière. Vous travaillez en direct avec l'artisan Akelia de votre secteur, sans intermédiaire ni centre d'appel. Il vient chez vous, il chiffre, il réalise. » — bouton : « Voir nos solutions → » (vers `/services`)
-- La flèche « → » des boutons est décorative (non lue par les lecteurs d'écran), comme sur le bouton du hero.
+*Section « Deux façons de faire »* (`MethodeFacons.astro`, refonte du 13 octobre 2026 ; **tout est fourni** ce jour-là, repris tel quel ; les anciens textes longs sont supprimés)
+- Titre (h2) : « Deux façons de faire » (remplace « Vous pilotez, ou on pilote ? »)
+- Option 1, citation : « « Je veux rénover, mais je ne sais pas par où commencer » » — texte : « Un spécialiste du collectif coordonne tout, du premier rendez-vous à la fin du chantier. » — lien : « Demander un accompagnement → » (vers `/devis`)
+- Option 2, citation : « « Je sais ce que je veux, il me faut le bon artisan » » — texte : « Vous travaillez en direct avec l'artisan Akelia de votre secteur. Il vient chez vous, il chiffre, il réalise. » — lien : « Voir nos solutions → » (vers `/services`)
+- Texte alternatif de l'illustration : « Maison en cours de rénovation, avec échafaudage, matériaux d'isolation et panneaux solaires prêts à être posés. »
+- La flèche « → » des liens est décorative (non lue par les lecteurs d'écran).
 
 ### H. Section Collectif (page d'accueil, après le simulateur, avant les articles)
 
@@ -2049,30 +2055,402 @@ Les 8 raccourcis du hero pointent tous vers des URLs déjà listées ci-dessous.
 
 ### Questions en attente de réponse
 
-47. **⚠️ Section Collectif haute sur téléphone** : 2 391px à 375px, soit 2,94 écrans d'iPhone X (812px), mais **3,58 écrans d'iPhone SE (667px)**. Pistes de réduction (**aucune appliquée**), avec le gain estimé :
+*Questions 51 à 67 : refonte visuelle de la page d'accueil (12 octobre 2026), détail dans la section « Refonte visuelle de la page d'accueil » en fin de fichier.*
+
+*Questions 68 à 80 : refonte « alan.com » de la page d'accueil (12 octobre 2026), détail dans la section « Refonte « alan.com » de la page d'accueil » en fin de fichier.*
+
+*Questions 81 à 84 : ajout de 4 couleurs de fond (12 octobre 2026), détail dans la section « Ajout de 4 couleurs de fond à la charte » en fin de fichier.*
+
+*Questions 85 à 89 : refonte du Hero (12 octobre 2026), détail dans la section « Refonte du Hero » en fin de fichier.*
+
+*Questions 90 à 94 : corrections du Hero (12 octobre 2026), détail dans la section « Corrections du Hero » en fin de fichier.*
+
+*Questions 95 à 102 : refonte de la section Méthode avec schéma évolutif (13 octobre 2026), détail dans la section « Refonte de la section Méthode : schéma évolutif » en fin de fichier. La question 98 est réglée ; la question 103 s'ajoute (correction de la caméra thermique).*
+
+95. **⚠️ Couleurs des étapes : une version FONCÉE de chaque teinte a été ajoutée à la charte.** Les teintes claires (bruyère, argile, lichen, brume) sont invisibles en trait fin sur fond blanc (contraste 1,3:1 à 1,4:1) : un filet latéral ou un tracé de schéma dans ces teintes ne se verrait pas. Règle appliquée : la teinte CLAIRE colore le fond de l'onglet actif, le fond du panneau de texte et les surfaces du schéma (isolant, panneaux solaires, soleil) ; la teinte FONCÉE, de la même famille, colore le filet latéral, la pastille numérotée et tous les traits du schéma. Nouvelles variables : `bruyere-fonce` #765580, `argile-fonce` #a04e2c, `lichen-fonce` #58682a, `brume-fonce` #36648a (5,8:1 à 6,3:1 sur blanc). D'accord avec ce principe ?
+96. *(Mise à jour le 13 octobre 2026 : la section suivante n'est plus sur fond argile, l'inconvénient signalé ci-dessous a disparu.)* **Attribution des couleurs aux étapes** : 1 Audit = bruyère (mauve), 2 Isoler = argile (terre cuite, chaleur), 3 Produire = lichen (vert-jaune), 4 S'équiper = brume (bleu). Inconvénient : la section suivante « Vous pilotez… » est sur fond argile, la même famille que l'étape 2. Une autre répartition ?
+97. **Schéma en coupe 2D, et non en perspective comme celui du hero.** La consigne demandait « le même style » que `SchemaMaison.astro` : mêmes épaisseurs de trait, bleu nuit, hachures à 45°, annotations en italique, cotes sans chiffres. Mais la maison est dessinée en coupe verticale de face, et non en perspective : c'est la seule vue où l'isolant des combles ET celui des murs, la VMC et ses gaines se lisent clairement. Conséquence : les panneaux solaires sont vus par la tranche, sur le pan droit du toit (3 modules quadrillés, remplis de la teinte lichen). Faut-il une vue en perspective, comme le hero ?
+98. *(Réglée le 13 octobre 2026 : la caméra thermique et sa visée n'apparaissent plus qu'à l'état 1 ; les cotes restent sur les 4 états. Voir « Correction : caméra thermique ».)*
+99. **Sur téléphone, le schéma est petit** (335 × 209px) et ses annotations sont masquées (environ 9px, illisibles). Après avoir touché une étape, le schéma est **sous les 4 onglets** : il peut être hors de l'écran, et l'utilisateur ne voit pas le changement. Options : faire défiler doucement jusqu'au schéma après chaque toucher (sur téléphone uniquement), ou laisser tel quel. Je n'ai rien fait automatiquement : un défilement non demandé peut désorienter. Votre choix ?
+100. **Phrase d'aide ajoutée au-dessus des étapes** (« Cliquez sur une étape : le schéma change. », « Touchez… » sur écran tactile). Ce n'était pas demandé, mais c'est l'indice le plus franc pour un public senior, en plus du curseur, du chevron, de l'ombre et du survol. La garder ? Texte à valider.
+101. **Hauteur fixe du panneau de texte.** Les 4 textes n'ont pas la même longueur : sans précaution, la page sautait de 31px (1280px) à 63px (375px) à chaque changement d'étape. Les 4 panneaux sont maintenant superposés et la case prend la hauteur du plus long. Conséquence visible : sur téléphone, sous les textes courts (étapes 1, 3, 4), le panneau garde un vide d'environ 2 lignes. D'accord ?
+102. **Le Hero n'a pas été modifié** : le séparateur demandé entre le bandeau et la Méthode est une ombre intérieure douce en haut de la section Méthode (dégradé bleu nuit à 25 %, 14px). Pas de trait : la charte interdit les bordures noires depuis octobre 2026. Plus marqué ?
+103. **Maison décentrée à partir de l'état 2.** Sans la caméra, la gauche du schéma est vide dès l'état 2, alors que la droite porte le soleil, la pompe à chaleur et la borne. La maison paraît décalée vers la gauche (capture `captures/methode-camera/1280-schema-etat-2.png`). Je n'ai pas déplacé la maison : elle doit rester au même endroit dans les 4 états pour qu'on voie la construction. Si le déséquilibre gêne, une piste serait de déplacer la borne ou la pompe à chaleur à gauche de la maison. À faire ?
+
+*Questions 104 à 107 : animation d'entrée du schéma de la Méthode et refonte de « Deux façons de faire » (13 octobre 2026), détail dans la section du même nom en fin de fichier.*
+
+104. **Fond crème FONCÉ (#ece7dd), et non crème.** Le crème (#f7f4ee) est trop proche du blanc de la Méthode, juste avant : écart OKLab de 3,3, celui qui rendait la page uniforme avant l'ajout des 4 teintes. Le crème foncé, déjà dans la charte (`creme-fonce`), s'écarte de 7,2 du blanc et de 5,7 du brume des Cas types, dans la fourchette des autres sections voisines (5,5 à 10). Texte 13,3:1. Le garder ?
+105. **⚠️ Marges verticales réduites pour cette section seulement** : 48px, puis 64px à partir de 768px, au lieu de 72 et 120px partout ailleurs. Sans cela, la section mesurait 808px à 1280px, **plus que l'ancienne (777px)** : les marges de 2 × 120px pesaient plus que le texte supprimé. C'est une exception au rythme vertical de la page d'accueil. D'accord ?
+106. **Illustration agrandie de 20 %.** `travaux.png` (2752 × 1536) a un fond transparent et de larges marges vides autour du dessin (environ 15 % de chaque côté). Affiché tel quel, le dessin paraissait petit. Il est agrandi de 20 % ; le surplus transparent est coupé, sans débordement de la page. Le dessin occupe ainsi environ 520px de large à 1280px. Mieux : recadrer le fichier lui-même au plus près du dessin.
+107. **Titre placé au-dessus des options**, dans la colonne de droite, à partir de 1024px. Sur téléphone, il est centré en haut de la section, au-dessus de l'illustration. La demande ne précisait pas sa place. D'accord ?
+
+*Questions 108 à 113 : refonte de la section Cas types (13 octobre 2026), détail dans la section « Refonte de la section Cas types » en fin de fichier.*
+
+108. *(Réglée le 13 octobre 2026 : les 3 cas manquants ont été fournis, et les 2 premiers étoffés.)* **⚠️ DEMANDE REÇUE COUPÉE : merci de renvoyer la suite.** Le message s'arrête après « MAISON », au début du 3e cas. Manquent :
+    - titres, contraintes et solutions de **Maison moderne**, **Appartement** et **Changement d'équipement** ;
+    - peut-être d'autres consignes : étiquettes, illustrations, vérifications demandées…
+    En attendant, ces 3 cas affichent des **textes provisoires rédigés par Claude** à partir des anciens textes (marqués `provisoire: true` dans `src/data/cas-types.ts`, recopiés plus bas dans la section « Refonte de la section Cas types »). À remplacer dès réception.
+109. *(Réglée le 13 octobre 2026 : étiquettes supprimées.)* **⚠️ Les étiquettes flottantes chiffrées posent le même problème que l'encart « gain » supprimé.** Vous avez retiré « Ce que vous y gagnez » parce qu'un gain est impossible à chiffrer honnêtement. Or plusieurs étiquettes sur les illustrations sont des promesses chiffrées de même nature : « Facture ÷ 4 », « PAC ÷ 2 vs gaz », « 85 % autoconsommé », « 6 kWc ». Je les ai **gardées**, puisque la partie reçue de la demande n'en parlait pas (voir aussi la question 68). Les retirer, ou les remplacer par des faits non chiffrés (« Isolation perspirante », « Travaux sans AG ») ?
+110. *(Sans objet : fond prune, bloc dérivé du fond.)* **Bloc de contenu en nuit-700, et non blanc.** Un grand bloc blanc aurait dilué la rupture sombre demandée. Le nuit-700 se distingue du fond par sa teinte (1,33:1 entre les deux fonds, comme les cartes du bandeau du Collectif) ; les deux encarts, en nuit-900, se détachent à leur tour du bloc. Le préférez-vous blanc ?
+111. *(Réglée : nouvelles illustrations PNG transparentes.)* **Illustrations à fond crème sur fond bleu nuit.** Les 5 images (`pierre.jpg`, etc.) ont un fond crème clair : sur le bleu nuit, chacune forme un grand rectangle clair coupé par le bord gauche de l'écran (capture `captures/cas-types/1280-onglet-1.png`). Le contraste est fort, et l'effet de « fenêtre » n'est pas désagréable. Mais des illustrations sur fond transparent ou sombre s'intégreraient mieux. Les faire refaire ?
+112. *(Sans objet : les Cas types sont en prune.)* **Deux sections bleu nuit sur la page.** Les Cas types et le Collectif sont maintenant tous deux en bleu nuit, séparés par le simulateur d'aides (lichen). Ils ne sont pas voisins, la règle « deux sections voisines n'ont jamais la même couleur » est donc respectée. Mais la page a deux grandes masses sombres rapprochées. À surveiller sur la page entière.
+113. *(Sans objet depuis le 14 octobre 2026 : les encarts des Cas types sont supprimés, `vert-clair` n'est plus utilisé.)* **Nouvelle couleur `vert-clair` (#8fd1b0)** pour le libellé et le filet de « Ce qu'on fait à la place » : les verts existants (vert-400, vert-600) sont trop sombres sur le bleu nuit. 8,2:1 sur nuit-900. D'accord ?
+
+*Question 114 : état des lieux des illustrations (13 octobre 2026), détail dans la section du même nom en fin de fichier.*
+
+114. *(Réglée le 13 octobre 2026 : références des cas types passées en `.png`, carte du Collectif masquée en attendant `carte.png`. Reste ouverte : l'image de partage `/images/og-default.jpg`, voir la question 117.)*
+
+*Questions 115 à 117 : correction des références aux illustrations (13 octobre 2026), détail dans la section du même nom en fin de fichier.*
+
+115. *(Réglée le 13 octobre 2026 : fond transparent utilisé, sur fond prune ; voir la question 120.)* **⚠️ Les nouveaux dessins ne tiennent sur le bleu nuit que grâce à un fond crème « accidentel ».** Le cadre de l'image a un fond crème foncé (#ece7dd), prévu à l'origine pour un emplacement vide. Il passe derrière les PNG transparents (78 à 87 % de pixels transparents) et sert aujourd'hui de « feuille » au dessin. Simulations faites (captures, sans modifier le code) :
+    - **sans ce fond** (`simulation-sans-fond-cas-1.png`, `-4.png`) : le dessin ne disparaît pas, car ses traits ont un halo blanc et ses surfaces sont remplies de blanc. Il s'affiche « en négatif », avec des taches blanches floues (toit et pied de la maison en pierre). Lisible, mais sale. **Déconseillé** ;
+    - **dessin inversé** par filtre CSS (`simulation-inverse-cas-1.png`) : les remplissages blancs deviennent des taches noires. **À écarter** ;
+    - **fond clair assumé** (état actuel) : propre et lisible. C'est la solution que je recommande, à condition de l'assumer comme choix de dessin (une « feuille » claire posée sur le bleu nuit, coupée par le bord gauche de l'écran) et de choisir sa teinte : crème foncé, crème ou blanc ?
+    - Solution de fond, si l'on veut des dessins directement sur le bleu nuit : faire **produire des versions « négatives »** (traits clairs, sans remplissage blanc, sur fond transparent).
+    Aucune de ces solutions n'est appliquée. Votre choix ?
+116. *(Réglée : l'image garde ses proportions, rien n'est rogné.)* **⚠️ 43 % de chaque dessin est rogné.** Le cadre de l'image fait 688 × 672px (presque carré, 42rem de haut à partir de 950px), alors que les dessins sont en paysage (2752 × 1536). Avec `object-cover`, seuls 57 % de leur largeur sont visibles. Exemple : la maison en pierre perd son appentis à gauche et le portail à droite. Les anciennes images étaient composées pour ce cadrage serré ; ces plans d'architecte, non. Proposition, non appliquée : donner au cadre les proportions du dessin (capture `simulation-proportions-cas-1.png`). Le dessin est alors entier, mais paraît plus petit, et la section raccourcit (gain non mesuré). À appliquer ?
+117. **Image de partage manquante** (signalée, non corrigée, comme demandé). `src/layouts/Layout.astro`, ligne 24, utilise `/images/og-default.jpg` par défaut. Ce fichier n'existe pas (pas de dossier `public/images/`). Les aperçus de lien (réseaux sociaux, messageries) n'ont donc pas d'image. À déposer : `public/images/og-default.jpg`, 1200 × 630px de préférence.
+
+*Questions 118 à 122 : corrections de la section Cas types (13 octobre 2026), détail dans la section du même nom en fin de fichier.*
+
+118. *(Réglée le 14 octobre 2026 : prune jugé trop terne, remplacé par le violet ; voir la question 160.)* **Fond PRUNE (#3d2c40), à valider.** Teintes essayées sur le vrai rendu (captures `captures/cas-types-fond/essai-…`) : prune, moka (#3e3229), brique (#6b3424), aubergine (#5e4462). La prune l'emporte :
+    - famille de la bruyère, déjà dans la charte ;
+    - texte blanc à 12,9:1 ;
+    - les touches orange des dessins restent visibles (sur la brique, elles disparaissent) ;
+    - nettement distincte du bleu nuit du Collectif, du blanc, du crème foncé et du lichen ;
+    - ni bleu nuit, ni vert sapin.
+    Le moka est la 2e option, plus chaude.
+119. **⚠️ Phrases ajoutées aux deux premiers cas : à valider.** Vous avez demandé de développer « dans le même esprit » les textes validés. J'ai gardé vos deux phrases et ajouté deux phrases par encart (le texte exact est plus bas, dans la section « Corrections de la section Cas types »). Points de fond à vérifier par un professionnel :
+    - « Avant la première réglementation thermique, en 1974, les murs… étaient souvent montés sans aucun isolant » ;
+    - l'avis de l'architecte des Bâtiments de France sur menuiseries, enduits et toiture (vrai en abords de monument historique et en site patrimonial remarquable) ;
+    - les isolants cités (fibre de bois, chanvre et chaux, liège).
+120. **⚠️ Lisibilité des dessins sur fond foncé : elle ne vient PAS de l'encre.** Mesure : l'encre des dessins (gris-bleu foncé) contraste à 1,35:1 seulement avec la prune (de 1,0:1 à 1,7:1 pour toutes les teintes foncées essayées). L'encre seule serait donc invisible, quelle que soit la teinte. Les dessins restent lisibles grâce à leurs **halos et remplissages blancs** : ils apparaissent en traits clairs, comme à la craie. Défauts visibles :
+    - taches blanches floues par endroits (toit de la maison en pierre, toit de la maison à toit plat, reflet en bas de l'appartement) ;
+    - les cotes les plus fines s'effacent.
+    Pour un rendu net, il faudrait des versions **dessinées pour fond sombre** : traits clairs, sans remplissage ni halo. Les commander ?
+121. *(Mise à jour le 14 octobre 2026 : l'écart est réduit à 38px à 1280px, de 1 192 à 1 230px, et à 106px à 375px, de 1 470 à 1 576px.)* **⚠️ La hauteur de la section change d'un onglet à l'autre.** Les textes étoffés sont plus longs que l'illustration réduite : la section fait de 1 364 à 1 458px à 1280px, et de 1 710 à 1 899px à 375px. La page « saute » donc de 94px (189px sur téléphone) au changement d'onglet. Avant, la grande image fixait la hauteur. Correction possible, non appliquée car non demandée : superposer les 5 panneaux, comme pour la Méthode, la hauteur devenant celle du plus long. À faire ?
+122. **⚠️ Le dessin du 3e cas ne correspond plus à son libellé.** `moderne.png` montre une maison contemporaine à toit plat, avec panneaux solaires, pompe à chaleur et borne : précisément le type RT 2012 / RE 2020 que vous avez écarté. Pour « Années 1995 à 2012 », il faudrait un pavillon à toit en pente, typique de cette période. Le texte alternatif décrit honnêtement le dessin actuel. Faire refaire le dessin ?
+
+*Questions 123 à 134 : raccourcis du Hero sous le schéma et bandeau « Comment ça se passe ? » (14 octobre 2026), détail dans la section du même nom en fin de fichier.*
+
+123. *(Réglée le 14 octobre 2026 : la mention devient un badge orange à texte bleu nuit.)* **Couleur du surtitre : orange FONCÉ (action-600), pas action-500.** Vous avez demandé action-500 « ou une couleur qui la détache franchement ». Mesure sur le blanc :
+    - action-500 (#f0920f) : **2,4:1**. C'est illisible, sous le minimum d'accessibilité (3:1 pour un texte de cette taille en gras) ;
+    - **action-600 (#d17f08) : 3,1:1**, retenu. C'est le minimum, sans marge ;
+    - argile-fonce (#a04e2c, terre cuite) : 5,8:1. Plus sûr pour un public senior, mais moins « orange ».
+    Garder action-600, ou passer à argile-fonce ?
+124. **« Rénovation globale » n'est pas plus large sur grand écran.** En 3 colonnes, une case de 2 ou 3 colonnes de large laisse un trou en bas de la grille (8 raccourcis restants : 3 + 3 + 2). Elle est donc :
+    - sur grand écran : une case comme les autres, mais sur fond bleu nuit, avec la mention « L'offre complète » (grille 3 × 3 pleine) ;
+    - sur téléphone et tablette : sur toute la largeur.
+    Ça vous convient ?
+125. **La ventilation n'a pas de raccourci.** Aucune des 9 pages demandées ne la concerne. Elle ne s'allume donc qu'avec « Rénovation globale ». Faut-il ajouter un 10e raccourci « Ventilation » ? Il faudrait alors revoir la grille : 10 cases ne tombent juste ni en 2, ni en 3 colonnes sans la case large.
+126. **Écart dans la consigne 1.5 :** « les cinq autres équipements » en cite **sept** (isolation des combles, isolation des murs, menuiseries, ventilation, photovoltaïque, chauffe-eau, borne). Les sept restent visibles en permanence. À confirmer.
+127. **Numéros des repères supprimés.** Sans la légende, les numéros 1 à 8 ne renvoyaient plus à rien. Les cercles numérotés sont devenus des **pastilles orange pleines** au bout des traits de rappel : l'aspect « plan annoté » reste, sans numéro orphelin. Sinon, on peut supprimer pastilles et traits de rappel. Votre préférence ?
+128. **⚠️ Textes rédigés par Claude, à valider :**
+    - la phrase d'aide sous « Par où voulez-vous commencer ? » : « Survolez une solution pour la voir sur le schéma. » (souris) / « Touchez une solution pour la voir sur le schéma, touchez-la à nouveau pour ouvrir sa page. » (écran tactile). Sans elle, un premier toucher qui n'ouvre rien ressemble à un lien cassé ;
+    - la mention « L'offre complète » sous « Rénovation globale » ;
+    - la nouvelle description du schéma pour les lecteurs d'écran (balise `<desc>`).
+129. *(Réglée le 14 octobre 2026 : argile refusée, remplacée par la brume ; voir la question 137.)* **Fond du bandeau « Comment ça se passe ? » : argile** (#f1dace, rose terre cuite pâle). Justification dans la section en fin de fichier. L'autre candidat sérieux est la **brume** (#ccdce8, bleu ardoise pâle) : un peu plus contrastée avec le blanc (1,40:1 contre 1,34:1), mais froide. Valider l'argile ?
+130. *(Sans objet depuis le 14 octobre 2026 : la vidéo est abandonnée au profit de deux illustrations.)* **La vidéo n'existe pas.** Aucun fichier dans `public/videos/` (le dossier n'existe pas). Un **emplacement vide** (cadre blanc translucide, 4:3) est affiché à la place. Il faut fournir 3 fichiers :
+    - `comment-ca-marche.webm` ;
+    - `comment-ca-marche.mp4` ;
+    - `comment-ca-marche.jpg` : l'image fixe, affichée avant le chargement et si « réduire les animations » est activé. Ce nom n'était pas dans la demande, je l'ai choisi.
+    Format conseillé : **4:3 (1440 × 1080)**, muette, en boucle, quelques secondes, quelques centaines de Ko si possible. Qui la produit ?
+    En attendant, faut-il **masquer le cadre vide** et laisser les étapes seules en pleine largeur ? Le cadre vide fait inachevé.
+131. *(Sans objet depuis le 14 octobre 2026 : le double toucher est supprimé, un seul toucher ouvre la page.)* **⚠️ Double toucher : risque pour les lecteurs d'écran sur mobile.** VoiceOver (iPhone) et TalkBack (Android) activent un lien par un double-tap, que le site peut prendre pour un toucher du doigt. Leurs utilisateurs devraient alors activer deux fois chaque raccourci. **Non testable ici : à vérifier sur un vrai téléphone, lecteur d'écran allumé.** Si c'est gênant, deux solutions :
+    - réserver le double toucher aux tablettes ;
+    - ouvrir le lien dès le premier toucher sur téléphone.
+132. **Les 9 pages de destination n'existent pas encore** (aucun dossier `src/pages/solutions/` : erreur 404). C'était déjà le cas des 8 anciens raccourcis. La nouvelle page `/solutions/renovation-energetique-globale` s'ajoute à la liste.
+133. **Hauteurs sur téléphone (375px)** :
+    - Hero : **1 254px**, soit 1,5 écran d'iPhone X. Les raccourcis commencent à 937px, donc **sous la ligne de flottaison**. Avant : 1 029px pour le Hero seul, et 1 453px avec l'ancien bandeau ;
+    - bandeau « Comment ça se passe ? » : **1 195px**.
+    Acceptable ?
+134. *(Sans objet depuis le 14 octobre 2026 : le nouveau texte de l'étape 1 ne parle plus d'appel.)* **Étape 1 : « Un formulaire en ligne ou un appel »**, mais le site n'affiche **aucun numéro de téléphone** (aucun lien `tel:`). Faut-il en ajouter un, ici ou dans l'en-tête ? Ou retirer « ou un appel » ?
+
+*Questions 135 à 140 : corrections de la section « Fonctionnement » et du badge du Hero (14 octobre 2026), détail dans la section du même nom en fin de fichier.*
+
+135. **Raccourcis de même hauteur : sur grand écran, ils font tous 78px.** Ils prennent la hauteur du plus haut, « Rénovation globale », qui tient sur 3 lignes : « Rénovation / globale / L'offre complète ». Sur téléphone et tablette, ils font tous 58px. Pour revenir à 58px sur grand écran, deux possibilités :
+    - masquer la mention « L'offre complète » à partir de 1280px ;
+    - mettre « Rénovation globale » sur toute la largeur. La grille aurait alors un trou (question 124).
+    Garder 78px ?
+136. **La maison de `chantier.png` est coupée au bord droit du dessin.** Elle continue hors de l'image : le fichier est opaque sur toute la hauteur de son bord droit. J'ai traité la coupe ainsi :
+    - sur téléphone et tablette, l'image va jusqu'au bord de l'écran : la coupe se confond avec lui ;
+    - à partir de 1024px, le bord droit s'efface en fondu sur ses 20 % derniers.
+    Coller l'image au bord de l'écran sur grand écran l'éloignerait des étapes, de 355px à 1920px de large. Si le fondu ne vous plaît pas : faire reprendre le dessin pour que la maison soit entière ?
+137. **Fond de la section : brume** (#ccdce8, bleu ardoise pâle). Justification dans la section en fin de fichier. À valider.
+138. **Illustrations petites sur téléphone** : 160 et 180px de large côte à côte. À cause des marges transparentes des PNG, la femme ne mesure qu'environ 115px de large. La variante « une illustration au-dessus des étapes, l'autre en dessous » les montre deux fois plus grandes, mais la section passe de 1 287 à **1 754px** de haut. Capture : `captures/fonctionnement/375-variante-dessus-dessous.png`. Garder le côte à côte ?
+139. **Taille du texte du badge : 18px** (1.125rem), contre 19,2px pour l'ancien surtitre. Avec le padding, le badge tient sur une ligne à 1280px (512px de large). En 19,2px, il frôlait la largeur de la colonne. Sur téléphone, il passe sur 2 lignes. D'accord ?
+140. **Nom du fichier** : le composant s'appelle toujours `CommentCaMarche.astro`, même si le titre est devenu « Fonctionnement ». Le renommer ?
+
+*Questions 141 à 143 : badge pâle et agrandissement des illustrations (14 octobre 2026), détail dans la section du même nom en fin de fichier.*
+
+141. *(Sans objet depuis le 14 octobre 2026 : nouvelle répartition 25 / 50 / 25 avec débordement ; voir la question 145.)* **Les deux consignes sur les illustrations se contredisent à 1280px.** J'ai appliqué la répartition 30 / 40 / 30 : chaque illustration fait **339px de large**. Mais à cette largeur, la hauteur ne peut pas approcher celle des étapes, à cause des proportions des dessins :
+    - femme au fauteuil : **379px de haut**, soit 54 % des 4 étapes (702px) ;
+    - artisans : **288px de haut**, soit 41 %, car le dessin est plus large que haut.
+    Pour atteindre environ 600px de haut, la femme devrait faire 540px de large, soit 45 % de la section, et empiéterait sur les étapes. Trois pistes, **non appliquées** :
+    - a) laisser les illustrations déborder de leur colonne vers les bords de l'écran. Peu de gain à 1280px : la marge extérieure ne fait que 35px ;
+    - b) raccourcir les étapes, avec des textes plus courts : la taille du texte courant est fixe, pour l'accessibilité ;
+    - c) passer à 35 / 30 / 35 : les étapes, plus étroites, deviendraient encore plus hautes.
+    Ma recommandation : garder 30 / 40 / 30. Les personnages sont déjà 1,4 fois plus grands qu'avant pour la femme, grâce au recadrage, et la section reste équilibrée (capture `1280-section.png`). Votre avis ?
+142. **⚠️ Aucune marge regagnée en bas du Hero à 1280px : la dernière rangée de raccourcis finit toujours à 889px.** Ce n'est pas l'étiquette qui fixe la hauteur du Hero sur grand écran, mais la **colonne de droite** (schéma et raccourcis), plus haute que la colonne de texte. L'étiquette pâle a d'ailleurs la même hauteur que l'orange : 51px, padding conservé comme demandé. Pistes pour regagner de la marge, **non appliquées** :
+    - a) ramener les raccourcis de 78 à 58px sur grand écran (question 135) : **−60px**, dernière rangée à 829px ;
+    - b) réduire l'espace entre le schéma et le titre « Par où voulez-vous commencer ? », 32px aujourd'hui : −16px ;
+    - c) supprimer la phrase d'aide « Survolez une solution… » : environ −25px.
+143. *(Réglée le 14 octobre 2026 : version compacte sur téléphone, voir la question 148.)* **Sur téléphone, l'étiquette fait 72px de haut, sur 2 lignes.** Pour la ramener à une ligne, il faudrait un texte d'environ 13px, trop petit. Garder ?
+
+*Questions 144 à 147 : badge vert, textes raccourcis, étapes élargies et illustrations débordantes (14 octobre 2026), détail dans la section du même nom en fin de fichier.*
+
+144. **Contraste du badge vert : 5,8:1** (crème #f7f4ee sur vert-600 #2a6b4f). C'est au-dessus du minimum pour un texte courant (4,5:1), mais en dessous du niveau renforcé (7:1). Le texte fait 18px en gras, juste sous le seuil du « grand texte » (18,66px en gras). Si vous voulez le niveau renforcé :
+    - texte blanc pur : 6,3:1, toujours sous 7:1 ;
+    - vert plus foncé : vert-800 (#1e5c45) donne 7,2:1 avec le crème (mesuré).
+    Garder vert-600 ?
+145. **Illustrations à 1280px : la femme fait 403px de haut, les artisans 287px**, pour un bloc d'étapes de **548px**. Les étapes, plus larges, sont devenues moins hautes : 548px contre 702px. La femme atteint ainsi 74 % de leur hauteur (54 % avant), les artisans 52 % (41 % avant). Le débordement ne fait gagner que peu de largeur à 1280px : la marge extérieure ne fait que 35px. Il compte vraiment à partir de 1440px, où la femme atteint 505px de haut. Agrandir encore les artisans couperait l'artisan de droite. Ça vous convient ?
+146. **Part coupée par le bord de l'écran** : 12 % de la largeur de `contact.png`, à gauche, soit les feuilles et une partie du pot de la plante ; 6 % de `chantier.png`, à droite, soit le bord de la maison, déjà coupé dans le dessin. Au-delà de 1920px, la largeur est plafonnée et les illustrations ne touchent plus le bord. Couper davantage la plante pour agrandir la femme ?
+147. *(Sans objet depuis le 14 octobre 2026 : nouvelle disposition mobile.)* **Sur téléphone, rien ne change pour les illustrations** : elles occupaient déjà toute la largeur de l'écran. La section passe de 1 293 à 1 202px de haut grâce aux textes raccourcis.
+
+*Questions 148 à 151 : badge compact et illustrations en pleine largeur sur téléphone (14 octobre 2026), détail dans la section du même nom en fin de fichier.*
+
+148. **Le badge ne tient pas sur une seule ligne à 375px, même en 14px.** Mesures :
+    - il faudrait **361px** de texte, pour **311px** disponibles une fois le padding retiré ;
+    - pour tenir, le texte devrait descendre à environ 12px, trop petit.
+    Solution appliquée : le texte est coupé **volontairement après le tiret**, sur téléphone seulement :
+    - ligne 1 : « Collectif d'artisans locaux — » ;
+    - ligne 2 : « en direct, sans sous-traitance. »
+    Le badge mesure maintenant **212 × 51px**, contre **335 × 70px** : il ne prend plus que 57 % de la largeur. Le titre commence 107px sous le haut du Hero (le badge précédent faisait 19px de plus). D'accord avec cette coupure ?
+149. *(Réglée le 14 octobre 2026 : illustrations réduites, section ramenée à 1 418px.)* **Hauteur de la section « Fonctionnement » à 375px : 1 795px**, contre 1 202px avec les illustrations côte à côte : **+593px**, soit **2,2 écrans d'iPhone X** (812px). Pistes de réduction, **non appliquées** :
+    - a) plafonner la femme à 80 % de la largeur (300px) : environ −85px. Elle reste deux fois plus grande qu'avant ;
+    - b) réduire l'espace au-dessus et au-dessous des illustrations (32 et 40px aujourd'hui) : environ −30px ;
+    - c) réduire la marge verticale de la section sur téléphone (72px en haut et en bas) : −24 à −48px ;
+    - d) plafonner aussi les artisans à 90 % de la largeur : environ −30px. Mais leur maison coupée ne toucherait plus le bord droit de l'écran.
+    Toutes ensemble : environ −170 à −195px, soit à peu près 1 600 à 1 625px. Ce sont des estimations, non mesurées.
+150. *(Sans objet depuis le 14 octobre 2026 : la tablette suit la nouvelle règle, voir la question 158.)* **Tablette (768 à 1023px) : la section mesure 1 887px à 768px.** La pleine largeur y aurait donné des dessins démesurés : 858px de haut pour la femme. J'ai donc plafonné les largeurs :
+    - femme : 448px de large (28rem), collée au bord gauche, 501px de haut ;
+    - artisans : 576px de large (36rem), collés au bord droit, 490px de haut.
+    Ce plafond n'était pas demandé. Le garder, ou le réduire encore ?
+151. *(Réglée le 14 octobre 2026 : plus aucun débordement sous 1024px.)* **Plus de débordement au-delà des bords sur téléphone** : chaque illustration va exactement d'un bord à l'autre de l'écran, sans être coupée. La femme est entière, plante comprise. Les artisans sont coupés seulement là où le dessin l'était déjà. Faut-il quand même les faire déborder, comme sur grand écran ?
+
+*Questions 152 à 156 : avancement automatique des étapes de la Méthode au défilement (14 octobre 2026), détail dans la section du même nom en fin de fichier.*
+
+152. **Tranches calées sur le SCHÉMA, pas sur toute la section.** La section mesure 1 316px à 1280px, mais le schéma n'en occupe que 466px, à 483px du haut. Découpée sur toute la section autour du centre de l'écran :
+    - l'étape 2 serait arrivée quand seul le haut du schéma était visible ;
+    - la fin de l'étape 4 se serait jouée schéma à moitié sorti.
+    Les 4 tranches couvrent donc la fenêtre où **au moins la moitié du schéma est visible**, sous l'en-tête collant. Valider ce choix ?
+153. *(Mise à jour le 14 octobre 2026 : seuils resserrés dans la fenêtre où le schéma est entier, 64 à 96px par étape à 1280 × 900, voir la question 173.)* **Rythme : environ 180 à 200px de défilement par étape** à 1280 × 900, soit un cran et demi de molette (un cran = 120px dans le navigateur de test). Sur téléphone : 180 à 200px aussi, soit un petit glissement du doigt. Plus lent, il faudrait que les changements se fassent avec un schéma en partie caché. Plus rapide, on sauterait des étapes. Le rythme vous convient-il ?
+154. **En arrivant par le bas de la section** (en remontant la page), l'étape 4 s'affiche directement, puis on redescend 3, 2, 1 en remontant. C'est la même règle dans les deux sens : l'étape dépend seulement de la position du schéma. D'accord ?
+155. **Cas limite au clavier.** Si un visiteur a mis le focus sur un onglet avec Tab, puis fait défiler la page à la souris, l'étape change mais le focus reste sur l'ancien onglet. Rien ne casse : Tab et les flèches repartent de l'onglet actif. Rappel, inchangé : quand le focus est SUR un onglet, les flèches haut et bas changent d'étape au lieu de faire défiler la page. C'est le modèle « onglets » du W3C, et cela compte comme un choix manuel qui suspend l'avancement. Acceptable ?
+156. **À tester sur de vrais appareils** : défilement au doigt sur iPhone et Android, et défilement « avec élan » (le doigt lâche, la page continue). En simulation, le glissé du doigt fonctionne : 285px parcourus pour un geste de 300px, sans aucun blocage. Mais l'élan des vrais téléphones ne se simule pas.
+
+*Questions 157 à 159 : badge pleine largeur et illustrations réduites sur téléphone (14 octobre 2026), détail dans la section du même nom en fin de fichier.*
+
+157. *(Sans objet depuis le 14 octobre 2026 : le badge n'est plus en pleine largeur, c'est une étiquette orange pâle alignée à gauche.)* **Badge pleine largeur : texte CENTRÉ.** Centré, il répond au bouton « Obtenir un devis » juste en dessous, centré lui aussi, et les deux lignes courtes s'équilibrent au milieu. Aligné à gauche, il laisserait un grand vide à droite de chaque ligne. Différence restante avec le bouton : les coins. Le badge garde ses 28px, ce qui en fait une pilule sur 51px de haut ; le bouton a des coins de 10px. Aligner les coins du badge sur ceux du bouton, sur téléphone ?
+158. **Tablette (768 à 1023px) : même réduction que sur téléphone.** Ce n'était pas explicitement demandé. Illustrations centrées, plafonnées à 272 × 304px (femme) et 320 × 272px (artisans), nettement plus petites que le bloc des étapes (728 × 485px). Section : 1 473px à 768px, contre 1 887px. D'accord ?
+159. **Le bord coupé de `chantier.png` est visible sur téléphone.** L'image est maintenant centrée : la coupe de la maison tombe au milieu de l'écran, et non plus au bord. Elle s'efface en fondu (12 % du bord droit), comme sur grand écran, mais le fondu reste perceptible. Voir le bas de `captures/mobile-v5/375-section.png`. Si ça gêne, le seul vrai remède est un dessin où la maison est entière (question 136).
+
+*Questions 160 à 165 : refonte de la section Cas types (violet, 6 onglets, deux paragraphes, boutons, illustrations agrandies, 14 octobre 2026), détail dans la section du même nom en fin de fichier.*
+
+160. **Fond violet #5a2d82, à valider.** Contrastes : voir la section en fin de fichier. Deux variantes calculées :
+    - **#4c2a85**, plus bleutée : texte blanc à 10,6:1 ;
+    - **#622e8f**, encore plus vive : texte blanc à 9,1:1. Mais l'onglet survolé descend à 6,0:1, et le bouton orange à 3,1:1 contre le bloc, juste au-dessus du minimum.
+    #5a2d82 est le compromis : franc, sans fragiliser aucun contraste.
+161. *(Remplacée le 14 octobre 2026 par la question 170 : l'illustration attendue s'appelle désormais `cas-neuf.png`, en 3D ; `moderne.png` n'est plus utilisé.)* **⚠️ `neuf.png` manque** (onglet « Construction de maison neuve »). Un emplacement vide de 573 × 430px s'affiche à sa place à 1280px, et de 335 × 251px à 375px. Son texte alternatif est à rédiger d'après le dessin. **Suggestion** : `moderne.png` montre une maison contemporaine à toit plat, avec panneaux solaires, pompe à chaleur et borne. C'est exactement une maison neuve, et cela réglerait aussi la question 122 (dessin qui ne correspond pas aux « Années 1995 à 2012 »). Il faudrait alors un nouveau dessin pour le 3e onglet, un pavillon à toit en pente. Utiliser `moderne.png` pour le neuf ?
+162. **⚠️ Bouton de l'onglet « Appartement » : libellé non fourni.** J'ai mis « Demander un audit de mon appartement », sur le modèle des autres. À valider ou remplacer.
+163. **Hauteur des illustrations par rapport au bloc de texte**, à 1280px (texte : 491 à 523px) :
+    - maison ancienne : 482px (92 %) ;
+    - chaufferie : 529px (101 %) ;
+    - pavillon : 406px (83 %) ;
+    - appartement : 417px (80 %) ;
+    - maison à toit plat : seulement **347px (66 %)**, car le dessin est très allongé (1,65 fois plus large que haut).
+    Pour l'agrandir encore, il faudrait que l'illustration déborde de sa colonne. Acceptable ?
+164. *(Sans objet depuis le 14 octobre 2026 : les dessins au trait ne sont plus utilisés dans les Cas types, voir les illustrations 3D. Le défaut équivalent des nouvelles images est la question 168.)* **Les halos blancs des dessins se voient davantage** (rappel de la question 120). Agrandis, les dessins montrent mieux leurs taches blanches floues, par exemple sur le toit de la maison ancienne (`captures/cas-types-violet/1280-onglet-1.png`). Des versions dessinées pour fond sombre restent la vraie solution.
+165. **Onglets en 3 × 2 à partir de 1024px** (non demandé). Sur une seule ligne libre, la 2e rangée ne contenait que « Changement d'équipement ». Désormais : 3 onglets de largeur égale par rangée. Sous 1024px : inchangé, ligne qui défile sur téléphone et retour à la ligne centré sur tablette. D'accord ?
+
+*Questions 166 et 167 : badge du Hero devenu une étiquette discrète orange pâle (14 octobre 2026), détail dans la section « Badge du Hero : étiquette discrète orange pâle à toutes les largeurs » en fin de fichier.*
+
+166. **Taille du badge à partir de 768px : 16px** (18px pour l'ancien badge vert). « Un peu plus grand » que les 14px du téléphone : est-ce que 16px convient, ou faut-il 17-18px ?
+167. **Pas de filet autour de l'étiquette.** Une version « orange pâle avec filet » avait été écartée plus tôt, jugée pas assez visible. Faut-il ajouter un filet fin `action-500` si l'étiquette paraît trop effacée ?
+
+*Questions 168 à 172 : illustrations 3D des Cas types (14 octobre 2026), détail dans la section « Illustrations 3D des Cas types » en fin de fichier.*
+
+168. **⚠️ `cas-annees70.png` : fond blanc résiduel dans l'échafaudage.** Le détourage n'a pas retiré le fond pris entre les montants et les croisillons : 2 à 3 zones blanches opaques, sous le plancher, à droite (bien visibles sur `captures/cas-types-3d/1280-onglet-2.png`). Je n'ai pas modifié le fichier. Deux options : (a) **refaire l'export** chez l'illustrateur (recommandé, propre) ; (b) je rends transparents ces pixels blancs dans une copie, par traitement automatique (risque d'attaquer le blanc des pulls et de la fenêtre, à contrôler). Laquelle ?
+169. **`cas-recent.png` : maison coupée net en haut et à gauche.** Le mur et le toit touchent le bord du fichier (coin haut gauche opaque). Ce n'est pas un rectangle blanc, mais sur le violet la maison s'arrête sur deux bords droits, comme découpée (`captures/cas-types-3d/1280-onglet-3.png`). Les deux autres images sont entières. L'accepter tel quel, ou demander un export avec la maison entière ?
+170. **Trois onglets sans illustration** (Appartement, Construction neuve, Changement d'équipement) : emplacements vides, comme demandé. Conséquence : **Appartement et Changement d'équipement perdent leur dessin au trait**, ils en avaient un jusqu'ici. Noms attendus : `cas-appartement.png`, `cas-neuf.png`, `cas-equipement.png`. Les textes alternatifs de ces trois onglets sont vides : à me fournir avec les images (ou je les rédige d'après les images).
+171. **Fichiers orphelins** : `appartement.png` et `technique.png` sont toujours dans `src/assets/illustrations/`, mais plus utilisés nulle part. ⚠️ `pierre.png`, `annees70.png` et `moderne.png` **n'existaient déjà plus** dans le dossier (et n'ont jamais été commités) : il n'y a rien à signaler les concernant. Supprimer `appartement.png` et `technique.png` ?
+172. **Deux styles d'illustration sur la page d'accueil.** Les Cas types passent en 3D, mais « Deux façons de faire » (`travaux.png`) et « Fonctionnement » (`contact.png`, `chantier.png`) gardent des dessins au trait. Faut-il prévoir des versions 3D de ces trois-là ?
+
+*Questions 173 à 176 : badge à 90 %, seuils de la Méthode, toucher unique sur les raccourcis du Hero (14 octobre 2026), détail dans la section « Badge à 90 %, seuils de la Méthode et raccourcis tactiles » en fin de fichier.*
+
+173. ✅ *Réglée le 15 octobre 2026 par la « piste collante » (voir la section « Badge sans coupure forcée et rythme de la Méthode »). Reste ouvert pour les écrans bas : question 186.* **⚠️ Étapes de la Méthode rapides sur ordinateur.** À 1280 × 900, le schéma (466px de haut) n'est entièrement visible que pendant **312px de défilement**. Pour que les 4 étapes y soient vues, chacune n'a que 64 à 96px, soit **moins d'un cran de molette** (environ 100 à 120px). Un cran peut donc faire passer deux étapes d'un coup, l'intermédiaire ne s'affichant qu'un instant. Sur téléphone, c'est plus confortable (96 à 172px). Il n'y a pas de seuil qui résolve les deux à la fois : soit des étapes plus espacées (le schéma sort de l'écran), soit un schéma entier (étapes rapprochées). Pour avoir les deux, il faudrait un **schéma « collant »** (il reste fixé à l'écran pendant que les étapes défilent), ce qui modifie la mise en page. À envisager ?
+174. **L'étape 2 arrive un peu PLUS TARD qu'avant**, contrairement à « décaler les quatre seuils vers le haut ». Avant, elle se déclenchait quand le bas du schéma était encore sous l'écran : l'étape 1 n'était donc **jamais** vue avec le schéma entier à 1280 × 900. Les étapes 3 et 4 arrivent bien plus tôt (l'étape 4 : haut du schéma à 92px sous l'en-tête, au lieu d'être déjà en partie caché). D'accord ?
+175. **Écran d'ordinateur bas (1280 × 720)** : le schéma n'est entier que pendant 132px. Les 4 changements ont bien lieu schéma entier, mais l'étape 1 n'est vue entière que 16px et l'étape 4, 28px. Acceptable ?
+176. ✅ *Réglée le 15 octobre 2026 : le `<br>` est supprimé, le texte coule librement.* **Coupure forcée du badge sur téléphone gardée** (après « locaux — »). Elle servait à éviter que le badge s'étire ; avec une largeur fixe de 90 %, elle ne sert plus qu'à la lecture (« Collectif d'artisans locaux » / « en direct, sans sous-traitance. »). La garder ou laisser le texte couler librement ?
+
+*Questions 177 à 199 (185 à 187 : badge et rythme de la Méthode ; 188 à 199 : Cas types ; 15 octobre 2026) : refonte complète des Cas types (14 octobre 2026, soir), détail dans la section « Refonte complète des Cas types : une couleur par onglet » en fin de fichier.*
+
+177. **⚠️ Bouton dérivé du fond, pas orange.** Le texte foncé sur l'orange ne fait que 6,87:1, sous les 7:1 demandés, et l'orange sur les fonds pâles ne se détache qu'à 2:1 environ. Le bouton reprend donc la couleur du texte (fond foncé sur les fonds pâles, blanc sur les fonds foncés). Conséquence : il a le même style que l'onglet actif. Garder ainsi, ou revenir à l'orange avec un texte noir (8,8:1) ?
+178. ✅ *Réglée le 15 octobre 2026 : les 6 illustrations sont livrées et affichées, les images de secours sont retirées du code, les textes alternatifs sont rédigés (voir la question 182).* ⚠️ Reste ouvert : **`aides.jpg` a disparu du dossier**, et le simulateur d'aides affiche donc un emplacement vide. Est-ce voulu ? Faut-il un nouveau fichier ? ✅ *Réglée le 15 octobre 2026 : `aides.jpg` est abandonnée, remplacée par le bandeau `bandeau-aides.png` ; l'emplacement vide est supprimé (voir « Simulateur d'aides : nouveaux textes et bandeau »).*
+179. ✅ *Réglée le 15 octobre 2026* : `appartement.png` est maintenant la nouvelle illustration 3D (artisan, fenêtre, caisson de ventilation). Son texte alternatif est réécrit.
+180. ✅ *Réglée le 15 octobre 2026* : contrastes mesurés. Deux survols étaient sous 7:1 sur le vert « Maison neuve » (onglet : 6,18:1 ; bouton : 5,81:1). Ils sont corrigés (voir la section « Suite et fin de la refonte des Cas types »).
+181. **Capture à 1280px de l'onglet 2** : l'illustration affichée n'est pas `cas-annees70.png`. Un fichier semble avoir été ajouté ou modifié pendant le travail : à confirmer. ✅ *Confirmé le 15 octobre 2026* : les nouveaux fichiers ont été déposés à 19 h 33, deux minutes après ces captures (19 h 31).
+182. **Textes alternatifs des 6 illustrations rédigés par moi**, d'après les fichiers (`src/data/cas-types.ts`). Ils décrivent ce qu'on voit, sans interpréter. À relire. Exemple : « Un artisan agenouillé raccorde les tuyaux en cuivre d'une pompe à chaleur extérieure avec une clé, ses caisses à outils posées au sol. »
+183. **Survol différent sur les fonds foncés** (Bâti ancien, Maison neuve). Pour rester au-dessus de 7:1, le survol d'un onglet inactif y ASSOMBRIT le fond, au lieu de l'éclaircir. Le bouton survolé ne se grise que de 5 %, et il se souligne, sur tous les fonds, pour que le survol reste visible. Cela convient-il ?
+184. ✅ *Réglée le 15 octobre 2026 : panneaux superposés, hauteur identique pour les 6 onglets (voir « Cas types : onglets centrés, superposés à l'illustration »).* **Hauteur de la section à 1280px : de 1 096 à 1 323px selon l'onglet.** Les illustrations n'ont pas le même rapport hauteur/largeur, et leur largeur est fixe : la section « saute » donc de 227px au changement d'onglet. La page sous la section bouge. Faut-il fixer une hauteur commune (la plus grande, 1 323px), au prix d'un vide sous les illustrations les plus basses ?
+185. **Badge : un tiret peut se retrouver en début de ligne.** Les espaces autour de « — » sont des espaces ordinaires, comme demandé. Aux largeurs testées (320, 360, 375 et 414px), la coupure tombe après « — » ou après « direct, », jamais avant le tiret. Mais sur un écran d'une autre largeur, ou avec une police plus grande, la ligne pourrait commencer par « — ». En typographie française, on lie d'ordinaire le tiret au mot qui le précède par une espace insécable. En ajouter une entre « locaux » et « — » ?
+186. **Méthode sur écran bas (1280 × 720, 1024 × 600…)** : les colonnes (713px de haut à 1280px) ne tiennent pas dans les 598px visibles sous l'en-tête. Il n'y a donc ni piste ni collage, et la section garde sa hauteur d'avant (1 316px). Les seuils sont plus espacés (20, 45 et 70 % au lieu de 15, 40 et 65 %), mais l'écart entre deux étapes reste de 44px, car la fenêtre où le schéma est entier ne fait que 132px. Faut-il réduire le schéma sur ces écrans pour que le collage puisse s'y appliquer ?
+187. **Méthode sur téléphone : pendant le collage, les étapes (au-dessus du schéma) sont hors de l'écran.** On voit le schéma se construire, avec « Étape n sur 4 » et le texte de l'étape, mais pas la liste des 4 étapes. Faire coller aussi la liste en version compacte (4 pastilles numérotées) ?
+188. ✅ *Réglée le 15 octobre 2026 : plafond supprimé, dessin calé à gauche sous les onglets (voir « Cas types : illustration adossée aux onglets »).* **⚠️ Cas types à 1280px : plafond de hauteur et chevauchement incompatibles.** Avec un dessin plafonné à 120 % du texte le plus haut, soit 437px de haut, les dessins ne font que 350 à 490px de large. Calés à droite et coupés par le bord de l'écran, ils ne remontent pas jusque sous les onglets : il reste 110 à 250px de vide entre les deux. Pour qu'ils passent sous les onglets ET soient coupés par le bord, il faudrait environ 600px de large, donc 600 à 750px de haut, soit 1,7 à 2 fois le texte. À 1024px, le chevauchement se fait bien, car le texte, plus étroit, est plus haut. Que privilégier ? (a) garder le plafond de 120 %, sans chevauchement à 1280px (état actuel) ; (b) relever le plafond, par exemple à 160 %, pour un chevauchement partiel ; (c) faire passer le dessin sous les onglets sans qu'il atteigne le bord de l'écran.
+189. **Cas types sur téléphone : vide sous les panneaux les plus courts.** Avec la hauteur figée (1 356px à 375px, celle de l'onglet « Années 50 à 90 »), les panneaux plus courts laissent 18 à 37px de vide en bas de la section (contenus mesurés : 782 à 819px). C'est faible, et c'est le prix de la hauteur stable : pas d'action proposée.
+190. **Demande reçue tronquée.** Le message s'arrêtait sur « Si après le calage à gauche l'illustration n'atteint plus le… ». J'en ai déduit que l'illustration devait atteindre le bord droit de l'écran, et c'est le cas : elle y est coupée de 24px. Si la fin de la phrase disait autre chose, merci de me la renvoyer.
+191. ✅ *Réglée le 15 octobre 2026 : plafond de 120 % rétabli, section revenue à 889px (voir « Cas types : plafond de hauteur rétabli »).* **Cas types à 1280px : la section remonte à 1 213px**, contre 889px avec le plafond de 120 %. La hauteur est celle du dessin le plus haut, « Années 50 à 90 », qui fait 709px. Elle est stable d'un onglet à l'autre, mais les dessins moins hauts (513px pour « Années 1995 à 2012 ») laissent une bande vide au-dessus et au-dessous. Acceptable, ou faut-il plafonner la hauteur, par exemple à 600px, quitte à rétrécir un peu « Années 50 à 90 » ?
+192. *Remplacée le 15 octobre 2026 par la question 193 (mise en page simplifiée).* **Cas types à 1024px : le rapport de 1,2 n'est tenu que pour « Années 50 à 90 ».** Au plafond (538px de haut), les 5 autres dessins, plus larges, dépasseraient le bord de l'écran de 46 à 106px, au lieu de 24px au maximum. Leur largeur est donc limitée à leur case, et leur hauteur réduite d'autant : rapport de 0,89 à 1,06 avec le texte le plus haut (398 à 474px de haut). Ils atteignent alors le bord de l'écran, coupés de 24px. J'ai fait passer la limite de 24px avant le rapport de 1,2. Si c'est le rapport qui doit primer, il suffit d'enlever la limite, mais les dessins seront alors coupés jusqu'à 106px.
+193. *Sans objet depuis le 15 octobre 2026 (illustration en couche absolue).* **Cas types à 1024px : illustrations plus petites.** La colonne de droite ne fait plus que 332px de large, car les 3 colonnes sont désormais séparées par 2 × 40px. Les dessins y sont limités en largeur : 297 à 412px de haut, soit 0,71 à 0,99 fois le texte le plus haut, au lieu de 1,2. À 1280px, le plafond de 1,2 est atteint pour les 6 dessins. Pour les agrandir à 1024px, on pourrait réduire les écarts à 1,5rem, ou la colonne d'onglets à 13rem. À faire ?
+194. *Sans objet depuis le 15 octobre 2026 (hauteur désormais à 140 % du bloc de contenu).* **Taille du dessin à 1280px : 399px de haut, contre 437px avant.** La règle est inchangée (120 % du texte le plus haut). Mais la colonne de texte, un peu plus large (445px de texte au lieu de 425px), rend le texte le plus haut moins haut : 333px au lieu de 364px. Si c'est la taille de 437px qui comptait, on peut passer le plafond à 130 %, ou rétrécir la colonne de texte. À arbitrer.
+195. **⚠️ Cas types : l'illustration n'est PAS coupée par les bords haut et bas de la section.** À 140 % du bloc texte + onglets (386px à 1280px), elle fait 540px de haut et dépasse de 77px au-dessus et au-dessous du bloc, comme demandé. Mais les bords de la section sont plus loin : au-dessus du bloc, il y a le titre, le sous-titre et la marge haute (383px) ; au-dessous, la marge basse (120px). Résultat : le dessin finit **306px sous le haut de la section** et **43px au-dessus de son bas**. Rien n'est coupé, ni en haut ni en bas ; seuls les dessins larges sont coupés à droite par le bord de l'écran. Pour qu'il soit coupé en bas comme chez Alan : (a) réduire la marge basse de la section à environ 40px à partir de 1024px ; (b) passer à environ 170 % ; (c) caler le dessin en bas du bloc plutôt qu'au centre. Pour le haut, il faudrait un dessin d'environ 1 000px qui passerait derrière le titre : déconseillé. Que choisir ?
+196. **Cas types à 1024px : le haut du dessin frôle le sous-titre.** Le dessin commence à 280px, et la 2e ligne du sous-titre (« toute faite. ») se termine vers 300px, mais plus à gauche. Sur la capture `1024-onglet-5.png`, la casquette arrive juste à droite de « méthode », sans le toucher. À 1280px, l'écart est d'environ 20px. À surveiller si le sous-titre s'allonge.
+197. *Remplacée le 15 octobre 2026 par la question 199 (illustration centrée).* **Cas types : dessins larges réduits en hauteur.** Calé à droite, sans toucher les onglets, le dessin dispose de 480px de large à 1280px, et de 352px à 1024px, plus 24px qui dépassent du bord de l'écran. Les dessins plus larges que cette place, à 140 % de hauteur, sont réduits pour ne pas passer sous les onglets.
+    - À 1280px : 4 dessins sur 6 font 452 à 515px de haut au lieu de 540px. Seuls « Années 50 à 90 » et « Maison neuve » gardent les 140 %.
+    - À 1024px : tous font 337 à 466px de haut au lieu de 583px.
+    Pour les garder plus grands, il faudrait accepter qu'ils dépassent davantage du bord de l'écran (par exemple 80px), ou rétrécir la colonne d'onglets. À arbitrer.
+198. **Autres « maison » de la section.** Je n'ai modifié que « le reste de la maison » → « le reste du logement » (onglet Modernisation, qui vaut aussi pour un appartement). J'ai laissé « Votre maison a du cachet » (Bâti ancien), « ces maisons peu ou pas isolées » (Années 50 à 90), « une maison très économe » et « Construction de maison neuve » (Maison neuve). Ce sont bien des maisons. Mais un appartement des années 50 à 90 pourrait aussi se reconnaître dans l'onglet 2 : faut-il écrire « ces logements peu ou pas isolés » ?
+199. **⚠️ Cas types centrés : les dessins sont nettement plus petits, surtout à 1024px.** Pour tenir centrés avec 40px de chaque côté, les dessins ne peuvent pas dépasser 440px de large à 1280px, et 312px à 1024px. Seul « Années 50 à 90 », étroit, garde sa taille de 140 % (540px de haut à 1280px).
+    - À 1280px : les 5 autres font 394 à 469px de haut au lieu de 540px (de −13 à −27 %).
+    - À 1024px : tous font 280 à 387px de haut au lieu de 583px (jusqu'à −52 %). Ce n'est plus « légèrement ».
+    Pistes :
+    - (a) réduire la respiration à 1,5rem de chaque côté : +32px de large ;
+    - (b) réduire la colonne d'onglets de 15rem à 13rem : +16px de large ;
+    - (c) à 1024px seulement, rétrécir la colonne de texte ;
+    - (d) accepter la taille actuelle.
+    Que choisir ?
+200. *Mise à jour le 15 octobre 2026 (textes raccourcis) : le titre dit désormais « Augmentez la valeur de votre bien de plus de 32 000 € ». Ce n'est plus un montant d'AIDES, mais un gain de VALEUR du bien. Or le résultat du simulateur affiche « MaPrimeRénov' rénovation d'ampleur : jusqu'à 32 000 € », un plafond d'aide. Le visiteur risque de confondre les deux. Quelle source chiffre la plus-value à 32 000 € ?* **⚠️ Montant du simulateur passé de 30 000 à 32 000 € : chiffre NON CONFIRMÉ par une source officielle.** Le titre affiche désormais « plus de 32 000 € » (demande du 15 octobre 2026). Aucune source (ANAH, service-public.fr, barèmes MaPrimeRénov' 2026) n'a été vérifiée pour ce montant. Le montant maximal calculé par le simulateur (`src/data/aides.ts`) n'a PAS été modifié et peut ne pas correspondre au titre. Quelle source confirme 32 000 € ? Faut-il aligner `src/data/aides.ts` ?
+201. *Sans objet depuis le 15 octobre 2026 (phrase supprimée par les textes raccourcis).* **« l'État finance cette transformation »** (nouveau paragraphe) : comme pour l'ancienne question 34, les primes CEE sont versées par les fournisseurs d'énergie et les aides locales par les collectivités, pas par l'État. Texte appliqué mot pour mot. Le garder ou nuancer (« les pouvoirs publics », « ces aides financent… ») ?
+202. *Mise à jour le 15 octobre 2026 : voir la question 206 pour le nouveau texte.* **« Votre maison vaut plus qu'avant sans que vous ayez à rembourser » / « se transforment directement en plus-value immobilière »** : affirmations fortes, non sourcées (la plus-value dépend du marché et du DPE). Risque de promesse jugée trompeuse ? Texte appliqué tel quel.
+203. ✅ *Réglée le 15 octobre 2026 : le fichier est déposé (1500 × 496) et s'affiche (captures `captures/simulateur-lagon/`).* **`bandeau-aides.png` pas encore déposé** au moment du travail (15 octobre 2026) : le rendu avec l'image n'a pas pu être vérifié (recadrage, taille, contraste sur le fond lichen). À recapturer après dépôt.
+204. *Sans objet depuis le 15 octobre 2026 (au soir) : fond passé en blanc, voir la question 211.* **Fond « lagon » (#bce8ea, turquoise pâle) à valider** pour le Simulateur d'aides, à la place du lichen. Pourquoi lui, et les autres teintes testées : voir la section « Simulateur d'aides : textes raccourcis, équilibre et fond lagon ». Il est un peu plus vif que les autres fonds clairs de la page. Si vous le trouvez trop vif, je propose une version plus douce, #c5e6e3 (écart avec la brume : 3,0 au lieu de 3,5). Valider ou demander l'autre teinte ?
+205. **Colonne de gauche « collante »** (à partir de 1024px, sur un écran d'au moins 800px de haut) : pendant le défilement du résultat, le texte et le bandeau restent à l'écran. Contrepartie : en haut de la section, sur un écran large, le titre de gauche peut se retrouver jusqu'à 40px plus bas que « Estimez vos aides » à droite. Le garder ? L'autre possibilité était de placer le bandeau à cheval sur les deux colonnes, en bas de la section : je ne l'ai pas retenue, car le bandeau perdrait son lien avec le texte et le résultat (930px) le repousserait loin du titre.
+206. **« sans sortir d'argent de votre poche (jusqu'à 90 % du prix des travaux) »** : les deux affirmations se contredisent en partie. Si les aides couvrent au plus 90 %, il reste au moins 10 % à payer, et l'avance des travaux avant le versement des aides n'est pas évoquée. Le taux de 90 % n'est pas vérifié non plus (les plafonds de MaPrimeRénov' rénovation d'ampleur dépendent des revenus et changent chaque année). Texte appliqué mot pour mot. Le garder ou nuancer (« presque sans sortir d'argent ») ?
+207. **Bande claire sous les personnages de `collectif.png` : OUI, elle se remarque** sur le bleu nuit. C'est une tache blanc cassé irrégulière, au sol, sous la camionnette (la plus visible, environ 330 × 40px à 1280px), devant l'atelier et sous l'artisan accroupi. Sur ce fond sombre, elle se lit comme une flaque de lumière plutôt que comme un sol. Le code ne peut pas la retirer proprement (elle est au milieu du dessin, pas en bord d'image). Solutions : (a) faire retoucher le PNG en supprimant le sol clair (ou en le passant en ombre sombre semi-transparente) ; (b) la garder telle quelle. Captures : `captures/collectif-bandeau/1280-collectif.png`, `375-collectif.png`. Quel choix ?
+208. **L'atelier et la camionnette sont bleu nuit, comme le fond.** Ils restent lisibles (leur bleu est un peu plus clair et leurs reliefs sont éclairés), mais leurs contours se fondent en partie dans la section, surtout le toit de l'atelier et l'arrière de la camionnette. Acceptable, ou faut-il une version de l'illustration avec des bâtiments plus clairs ?
+209. **Bandeau petit sur téléphone** : à 375px, il fait 117px de haut (120 % de la largeur, 10 % coupés de chaque côté), et les personnages ne font qu'environ 40px. Le grossir davantage obligerait à couper l'atelier et la camionnette. Le garder ainsi, ou l'agrandir (par exemple 150 % : 146px de haut, atelier et camionnette coupés en partie) ?
+210. **Carte de France du Collectif supprimée du code** (`carte.png`, jamais livrée, et ses deux étiquettes « 30 min de chez vous » et « Artisans certifiés RGE ») : le bandeau prend sa place sous le texte. Confirmer que la carte est abandonnée. Si elle revient, où la placer par rapport au bandeau ?
+211. **Section Simulateur d'aides en blanc : la question 204 (fond lagon) est sans objet.** Une conséquence : la section blanche est désormais encadrée de deux sections sombres (Cas types, Collectif) : la rupture est nette et le simulateur ressort bien. Mais la page compte maintenant deux sections blanches (Méthode et Simulateur), séparées par trois autres sections : aucun problème de voisinage. À valider à l'œil.
+212. **Collectif à 1280px : le bandeau remonté frôle la ligne des engagements.** Pour placer le bouton dans le creux des collines, le haut du dessin (sapins de gauche, toit de l'atelier, haut de la camionnette) monte jusqu'à environ 15px sous la ligne « Un interlocuteur unique · … » ; il ne la recouvre pas (la boîte du bandeau commence 5px au-dessus du bas de la liste, mais cette bande est transparente). Le toit de l'atelier et la camionnette arrivent aussi plus haut que le bas du bouton, de part et d'autre de celui-ci. Acceptable à l'œil (`captures/collectif-remonte/1280-collectif.png`), ou faut-il ajouter 16 à 24px entre la liste et le bouton pour aérer ?
+213. **Phrase du Hero « Recevez plus de 32 000 € d'aides » : montant ET formulation à confirmer.** (a) Le montant n'est toujours confirmé par aucune source officielle (question 200). (b) Le Hero dit « **plus de** 32 000 € d'aides », alors que le résultat du simulateur affiche « MaPrimeRénov' rénovation d'ampleur : **jusqu'à** 32 000 € », un plafond ; et le titre de la section aides parle de 32 000 € de **valeur** du bien, pas d'aides. Trois sens pour le même chiffre sur la page. Le visiteur qui obtient moins au simulateur peut se sentir trompé. Garder « plus de », passer à « jusqu'à », ou changer de chiffre ?
+214. **Articles (blanc) → pied de page (crème #f7f4ee) : la limite est faible.** Contraste blanc / crème : 1,07:1. La bande crème se voit sur un écran bien réglé (capture `captures/corrections-accueil/1280-transition-articles-pied.png`), mais elle peut disparaître sur un écran clair ou en plein soleil. Solutions : (a) garder ainsi ; (b) passer le pied de page en crème foncé (#ece7dd, plus marqué) ; (c) ajouter un filet crème foncé en haut du pied de page. Lequel ?
+215. **Cas types sur téléphone : vide au-dessus de l'illustration selon l'onglet.** Pour que la section ne change pas de hauteur d'un onglet à l'autre, la place réservée à l'illustration est celle de la plus haute (415px à 375px, onglet « Années 50-90 »). Les autres dessins sont posés en bas de cette place, contre les onglets : il reste jusqu'à environ 115px de vide sous le sous-titre (72px avec « Bâti ancien »). Acceptable, ou préférez-vous une hauteur qui varie selon l'onglet (la page bouge alors quand on change d'onglet) ?
+216. **Pied de page : coordonnées et médiateur à fournir.** Il faut (a) le numéro de téléphone, (b) l'adresse e-mail de contact, (c) le médiateur de la consommation retenu (nom et adresse de son site). Ce dernier est obligatoire pour vendre à des particuliers (Code de la consommation, art. L612-1). En attendant, le pied de page affiche « Téléphone : à venir », « E-mail : à venir » et « Médiation de la consommation : à venir », sans lien. Il suffit de remplir les constantes `TELEPHONE`, `EMAIL` et `MEDIATEUR` en tête de `src/components/Footer.astro`. Les mentions « à venir » peuvent-elles rester visibles d'ici là, ou faut-il masquer ces lignes ?
+217. **Pied de page : trois liens mènent à des pages inexistantes (404).** `/qui-sommes-nous` (Qui sommes-nous), `/entreprise` (Rejoindre le collectif) et `/politique-confidentialite` (Politique de confidentialité). La politique de confidentialité est **obligatoire** (RGPD), puisque les formulaires de devis et d'estimation collectent des données personnelles. Il faut la rédiger : responsable du traitement, finalités, base légale, durées de conservation, destinataires (artisans du collectif), droits des personnes et contact. Qui fournit le texte ?
+218. **Pied de page : phrase sous le logo à valider.** J'ai écrit : « Le collectif d'artisans locaux de la rénovation énergétique. » Elle n'était pas demandée et reprend le vocabulaire de la section Collectif. La garder, la changer, ou la supprimer ?
+219. **Menu : « Construction neuve » mène à une page inexistante (404).** Le lien `/solutions/construction-neuve` est en place dans le menu ordinateur et dans le tiroir mobile, mais la page n'existe pas encore. Qui fournit le contenu, et quand ?
+220. **Menu à 1280px : une 6e entrée ne tiendrait plus en 1280px tout juste.** Il reste 114px libres à droite de « Construction neuve ». Une entrée courte de plus (« Maison autonome », environ 140px) ne tiendrait pas. Si une autre entrée doit s'ajouter, il faudra choisir : afficher le menu ordinateur seulement à partir de 1440px, ou raccourcir « Chauffage, climatisation et eau chaude » (315px de large à lui seul) en « Chauffage et eau chaude ». Rien à décider tant qu'il n'y a pas de 6e entrée.
+221. **Code mort de l'accueil : quelles suppressions valider ?** Liste complète dans « Vérification et nettoyage de la page d'accueil », point 1. Rien n'a été supprimé. Répondre par élément (ou « tout »).
+222. **SEO : quel title et quelle meta description pour l'accueil ?** Trois propositions de chaque, dans « Vérification et nettoyage », point 4a. Aucune n'utilise le montant de 32 000 € (non confirmé, question 213).
+223. **Image de partage absente.** Toutes les pages pointent vers `/images/og-default.jpg`, qui n'existe pas (le dossier `public/images/` n'existe pas). Un partage sur Facebook, LinkedIn ou WhatsApp s'affiche donc sans image. Il faut une image de 1 200 × 630px (JPG, moins de 300 Ko). La faire à partir d'une illustration existante (`collectif.png` par exemple) avec le logo, ou en fournir une ?
+224. **Données structurées schema.org absentes.** Aucun balisage JSON-LD sur le site. Pour une entreprise locale, je propose un bloc `Organization` dès maintenant (nom, URL, logo, YouTube dans `sameAs`), puis `LocalBusiness` (ou `HomeAndConstructionBusiness`) quand l'adresse, le téléphone (question 216) et la zone d'intervention seront connus. Valider l'ajout, et préciser : y a-t-il une adresse postale du collectif à publier ?
+225. **Contrastes sous 7:1 sur du texte de taille courante.** Liste dans « Vérification et nettoyage », point 3. Le plus gênant : **les paragraphes de « Fonctionnement »** (texte-doux sur brume, **5,07:1**), qui sont du vrai texte courant. Les autres sont des boutons, des surtitres, un badge ou le pied de page (entre 4,70 et 6,87:1). Tous dépassent 4,5:1 (niveau AA). Lesquels faut-il remonter à 7:1 ?
+226. **Deux zones cliquables sous 44px.** (a) Le lien « Lire la suite → » des cartes d'articles : 85 × **22px**. (b) Le lien « Blog » du pied de page : **30** × 44px (assez haut, trop étroit). Correction proposée : (a) `min-h-11 inline-flex items-center` ; (b) une largeur minimale de 44px (`min-w-11`) sur les liens du pied de page. Cela touche l'affichage : à valider.
+227. **Captures non commitées.** Le commit « Page d'accueil terminée » ne contient PAS les nouveaux dossiers de `captures/` (78 Mo de PNG, utiles seulement pour la vérification). Ils restent sur le disque, non suivis. Faut-il les ajouter à `.gitignore`, les commiter quand même, ou les supprimer ? (12 captures plus anciennes sont déjà dans le dépôt.)
+228. **URL du site non déclarée.** `astro.config.mjs` n'a pas d'option `site`. La balise canonique et les URL de partage utilisent donc l'adresse de secours écrite dans le layout : `https://akelia.fr`. Est-ce bien le domaine définitif ? Si oui, je propose de le déclarer dans `astro.config.mjs` (`site: 'https://akelia.fr'`), ce qui permettra aussi un plan du site (sitemap).
+229. **Tailles de texte et couleurs hors jetons sur l'accueil.** Valeurs entre crochets : `text-[1.5rem]` et `text-[1.75rem]` (titres des étapes de la Méthode), `text-[1.25rem]` (MethodeEtape), `text-[0.875rem]` (badge du Hero), `text-[clamp(1.5rem,2.5vw,2rem)]` (titres des panneaux Cas types). La taille Tailwind par défaut `text-base` (16px) est aussi utilisée dans Header, Footer, Hero et SimulateurQuestions. Couleurs : `hover:text-[#ff0000]` (rouge YouTube, pied de page) et deux ombres en `#1d2b3640` (bleu nuit à 25 %, MethodeEtapes et SimulateurQuestions). Faut-il créer des jetons (`--text-etape`, `--text-badge`, `--color-youtube`, `--shadow-interieure`…) et remplacer ces valeurs ? Le rendu ne changerait pas.
+
+
+
+
+
+
+
+
+
+90. **⚠️ Maison retournée « pignon sur rue » pour corriger la coupe.** Le défaut du mur gauche venait du principe même du dessin, pas d'un tracé :
+    - dans l'ancienne version, le faîtage était parallèle à la façade ;
+    - la coupe dans le plan de la façade ne traversait donc jamais le rampant du toit ;
+    - le mur coupé s'arrêtait à l'égout, avec rien au-dessus : il « flottait ».
+
+    En tournant la maison, pignon face au lecteur, la même coupe traverse le mur, les planchers, l'isolant et le rampant. On obtient une vraie coupe de bâtiment, isolation en L continue. C'est un changement de l'orientation du dessin, que vous aviez demandé de ne pas changer à l'étape précédente : à valider. Les 8 repères, les cotes, les hachures et « R ≥ 7 » sont gardés.
+91. **Grand écran : deux colonnes égales** (le texte occupait 5/12). Avec le titre agrandi (77px à 1280px), une colonne de 5/12 donnait 5 lignes de titre ; en demi-colonne, il en fait 4. Conséquence : le schéma mesure **581 × 344px** à 1280px, contre 678 × 402px à l'étape précédente, mais toujours plus que l'original (environ 490 × 280px). Sa légende revient à 2 colonnes à partir de 1280px : en 4 colonnes, « photovoltaïques » se coupait sur 3 lignes. Préférez-vous un titre sur 5 lignes et un schéma plus grand ?
+92. **Bandeau des solutions sur fond brume** (#ccdce8). Le bleu ardoise pâle s'accorde avec les icônes bleu nuit. La même teinte est utilisée plus bas par les Cas types, sans être voisine. Crème, ou une autre teinte, plutôt ?
+93. **Contour de focus des tuiles passé en bleu nuit** (il était orange). Sur le fond clair, l'orange n'atteignait que 1,7:1, sous le minimum de 3:1 pour un indicateur de focus. Le bleu nuit fait 10,3:1. Le survol garde l'anneau orange.
+94. **Petits changements dans le schéma**, liés à la nouvelle orientation :
+    - le radiateur de la pompe à chaleur est maintenant à l'étage, contre le mur gauche ;
+    - la fenêtre du rez-de-chaussée sur le mur latéral est supprimée : elle était juste derrière l'unité extérieure.
+
+    D'accord ?
+
+85. **⚠️ Les 8 raccourcis ne sont plus visibles sans défiler**, ni sur téléphone ni sur ordinateur. C'était une exigence des premières étapes : ce sont des pages de vente.
+    - **Sur téléphone**, c'est la conséquence directe du nouvel ordre demandé (le schéma passe avant) : le bandeau commence à 1 075px du haut de la page, environ 1,3 écran plus bas.
+    - **Sur ordinateur (1280 × 800)**, le bandeau commence à 872px, juste sous le pli. Ce sont les 120px de marge haute et basse qui le repoussent. Avec 64px, il dépasserait d'environ 40px en bas de l'écran.
+
+    Garder tel quel (choix appliqué), ou réduire les marges du Hero sur ordinateur ?
+86. **Barre orange au-dessus du titre : supprimée.** Raison : le nouveau titre est court et se suffit. Sur fond blanc, le seul orange du bloc est alors le bouton « Obtenir un devis », qui capte toute l'attention. La barre faisait un deuxième point orange qui lui faisait concurrence, et rappelait le gabarit précédent. La remettre ?
+87. *(Sans objet depuis les corrections du Hero : le titre a maintenant une taille fluide, clamp(2.8rem, 6vw, 5rem).)* **Taille du titre sur téléphone relevée** : le jeton `text-display` passe de 1.75rem à **2.5rem** sous 768px (il n'est utilisé que par le Hero). L'ancienne réduction avait été faite pour le titre de 17 mots ; le nouveau titre de 9 mots tient sur 3 lignes à 375px. Sur ordinateur, la taille ne change pas (3.5rem). D'accord ?
+88. **Schéma redessiné : à valider.** Le principe est gardé (plan au trait, coupe, 8 repères, cotes sans chiffres, hachures, « R ≥ 7 »). Le dessin est entièrement refait, avec une vraie perspective et des équipements détaillés (détail dans la section « Refonte du Hero »). Des éléments à retirer ou à ajouter ? Par exemple, la voiture est maintenant dessinée en entier, et la maison a gagné une porte, une gouttière et des tuiles.
+89. *(Mise à jour par les corrections du Hero : 4 colonnes de 768 à 1279px, 2 à partir de 1280px, voir la question 91.)* **Légende du schéma sur 4 colonnes** à partir de 768px (2 avant), pour suivre le schéma plus large sans allonger le Hero. Les libellés ne changent pas. Sur ordinateur, « Panneaux photovoltaïques » tient sur 2 lignes. D'accord ?
+
+81. **Les 4 teintes retenues vous conviennent-elles ?** Argile #f1dace, brume #ccdce8, lichen #e0e6d0, bruyère #e4d8e6. Captures : `captures/couleurs/1280-page-entiere.png`. Si l'une paraît trop marquée ou trop pâle, je peux la régler sans perdre le contraste de 7:1 : la marge est large (11,6:1 au minimum).
+82. **`vert-800` (#1e5c45) n'est plus utilisé.** Ce vert foncé avait été ajouté pour les Cas types à la refonte « alan.com ». Les Cas types sont maintenant sur fond brume, comme demandé (« une nouvelle teinte claire »). Je l'ai gardé dans `global.css`, puisque la consigne était de ne rien retirer. Le supprimer ?
+83. **Liens et surtitres en vert-600 sur les nouveaux fonds** : 4,52:1 (brume) à 4,95:1 (lichen). C'est conforme au minimum AA de 4,5:1 pour un texte courant, mais juste. Concerné aujourd'hui : « Le blog » et « Tous les articles » sur bruyère (4,61:1). Le montant « plus de 30 000 € » sur lichen (4,95:1) est un très grand texte : sans risque. Faut-il viser plus large pour un public senior, avec un vert plus foncé réservé au texte ?
+84. *(Sans objet depuis le 13 octobre 2026 : la section, devenue « Deux façons de faire », a ses propres marges réduites et un fond crème foncé.)* **Bloc « Vous pilotez… » détaché de la Méthode.** Il avait une marge du haut réduite, car il prolongeait la Méthode sur le même fond. Sur son propre fond argile, c'est une section à part : il a maintenant les marges complètes (72px, puis 120px), et la Méthode aussi. La page gagne environ 130px à 1280px. D'accord ?
+
+68. **⚠️ Chiffres des étiquettes flottantes à faire valider avant la mise en ligne.** Ils ont été posés tels que fournis, mais ce sont des **promesses chiffrées** affichées en gros sur l'accueil. Un chiffre non justifiable relève des pratiques commerciales trompeuses. Points précis :
+    - « **Facture ÷ 4** » (années 50 à 90) et « **PAC ÷ 2 vs gaz** » (équipement) : sur quelle base ? Ce n'est vrai que dans certains cas. Un « jusqu'à » serait plus sûr.
+    - « **6 kWc** » et « **85 % autoconsommé** » (années 2000) : le texte du panneau ne parle pas de photovoltaïque. Ce sont des chiffres d'un cas particulier, présentés comme une généralité.
+    - « **15 ans d'installation** » (équipement) : le sens est ambigu (durée de vie de l'appareil ? ancienneté de l'artisan ? garantie ?).
+    - « **Murs de 60 cm** » (pierre) : l'ancienne phrase de situation (supprimée) disait 50 cm. Plus de contradiction visible, mais à confirmer.
+    - « **Travaux sans AG** » (appartement) : **risque de contresens**. Changer ses fenêtres ou toucher à la façade demande souvent l'accord de l'assemblée générale. L'ancien encart (supprimé) le disait. Proposition : « Travaux privatifs sans AG ».
+69. **⚠️ Deux sections dépassent 3 paragraphes** (comptage demandé). Je n'ai coupé que ce que la demande listait :
+    - **Méthode** : l'introduction, les 4 phrases d'étapes (des éléments de liste, pas des paragraphes), puis le bloc « Vous pilotez, ou on pilote ? » avec **2 paragraphes longs** (37 et 45 mots). Ce bloc n'était pas cité dans la demande. Faut-il réduire chaque bloc à une phrase, ou le supprimer ?
+    - **Simulateur d'aides** : **4 paragraphes** dans la colonne de gauche (accroche, « L'État les verse… », « Et vous n'avez presque rien à faire. », « On monte votre dossier… »), en plus du simulateur. Proposition : garder l'accroche et « Et vous n'avez presque rien à faire. », supprimer les deux autres. Lesquels garder ?
+70. **⚠️ Image à 50 % de la hauteur de la section : atteint sur ordinateur, pas sur téléphone.** À 1280px : 51 % pour les Cas types, le Simulateur et le Collectif. À 375px : **24 %, 20 % et 24 %**. Pour atteindre 50 % sur téléphone, il faudrait des images d'environ 900px de haut, soit un cadrage vertical qui couperait la moitié des illustrations (elles sont au format 16/9). Hauteur appliquée sur téléphone : 75 % de la largeur de l'écran. Accepter, ou fournir des versions verticales des illustrations pour le téléphone ?
+71. **Sections sans grande image** : **Méthode** (aucune illustration fournie), **Hero** (le schéma SVG interactif, non modifié et pas en débord), **Articles** (vignettes des articles seulement). Faut-il une illustration pour la Méthode ?
+72. *(Mise à jour le 12 octobre 2026 : le Hero est refait. Sur téléphone, 40px en haut et 48px en bas, voir la question 85.)* **Hero sur téléphone : marges verticales gardées serrées** (16px et 24px au lieu des 72px demandés). Elles avaient été voulues pour que le bouton et les raccourcis restent visibles sans défiler. Avec 72px, le bouton descend d'environ 100px. Seul l'ordinateur passe à 120px. Appliquer 72px quand même ?
+73. **Pas d'étiquettes sur l'image des aides** : la demande n'en fournit pas pour cette image, et je n'invente pas de chiffres. Lesquelles mettre ?
+74. **Cas types : surtitre de période retiré** (« Avant 1948 », « 1950 – 1990 »…) pour s'en tenir aux deux encarts. **Le titre du panneau est gardé** : c'est un titre, pas un paragraphe, et il structure la page pour les lecteurs d'écran. Remettre la période, ou retirer aussi le titre ?
+75. **Méthode : icônes des étapes supprimées** (« rien d'autre » que le titre et le numéro). Les grands numéros passent en **orange** (2,38:1 sur blanc, décoratifs et masqués aux lecteurs d'écran : le rang est annoncé par la liste). Le filigrane crème foncé disparaissait presque sur le blanc. D'accord ?
+76. **Simulateur : colonne de gauche plus « collante »** (sticky). Avec l'image de 44rem, elle est plus haute que l'écran, et le maintien à l'écran n'avait plus d'effet. D'accord ?
+77. *(Sans objet depuis l'ajout des couleurs du 12 octobre 2026 : le bloc est redevenu blanc, sur fond argile.)* **Bloc « Je veux rénover… » passé en crème** (il était blanc). Sur le nouveau fond blanc de la Méthode, il aurait disparu. D'accord ?
+78. *(Sans objet depuis l'ajout des couleurs : le filet est revenu au vert-600, sur le bloc blanc du panneau.)* **Filet de l'encart vert « Ce que vous y gagnez » éclairci** (vert-400 au lieu de vert-600), car le vert-600 ne se voyait pas sur le vert foncé de la section. Le libellé orange « L'erreur qui coûte cher » reste à 2,77:1 (question 55, toujours ouverte).
+79. **Hero non animé** : il est déjà à l'écran au chargement. L'animer retarderait l'affichage du titre principal (mesure de vitesse LCP de Google). Le bandeau des 8 solutions n'est pas animé non plus. Les animer quand même ?
+80. **Collectif : les 5 engagements tiennent sur une ligne à partir de 1280px seulement.** En dessous, la ligne ne tient pas : les titres passent à la ligne, centrés, sans point médian (sinon des lignes commenceraient par « · »). D'accord ?
+
+51. **⚠️ Fichier `akelia-cas-types-v2.md` introuvable.** Je l'ai cherché dans le projet et sur toute la machine, sans résultat. Les textes des 5 cas types (période, titre, situation, piège, gain) sont donc des **brouillons rédigés par Claude, NON VALIDÉS**, rangés dans `src/data/cas-types.ts` pour être faciles à remplacer. Seuls les libellés des onglets viennent de la demande. Merci de déposer le fichier à la racine du projet (ou de coller les textes) : je reprendrai les versions courtes mot pour mot.
+52. *(Réglée le 12 octobre 2026 : les 7 illustrations sont branchées, voir « Illustrations de la page d'accueil branchées ».)* **⚠️ Les 7 illustrations sont absentes** (`src/assets/illustrations/` n'existait pas). Les emplacements sont vides, sur fond creme-fonce : 5 dans les cas types, 1 (la carte) dans le Collectif. Il suffit de déposer les fichiers avec les noms prévus (`pierre.jpg`, `annees70.jpg`, `moderne.jpg`, `technique.jpg`, `appartement.jpg`, `carte.jpg`) : ils seront pris en compte automatiquement et convertis en WebP, sans toucher au code.
+53. *(Réglée le 12 octobre 2026 : `aides.jpg` est sous l'accroche, dans la colonne de gauche du simulateur.)* **Où placer `aides.jpg` ?** La demande la liste, mais ne dit pas où la mettre, et le simulateur doit « garder sa mise en page actuelle ». Elle n'est donc placée nulle part. Faut-il la mettre dans la colonne de gauche du simulateur, sous l'accroche ?
+54. *(Sans objet depuis la refonte « alan.com » du 12 octobre 2026 : une couleur différente par section.)* **⚠️ Alternance des fonds contradictoire.** La demande veut que « chaque section se distingue de la précédente », mais fixe Méthode, Cas types et Simulateur en crème, à la suite. Avec le bloc « Vous pilotez, ou on pilote ? » (non cité, laissé dans la Méthode), cela donne **4 blocs crème d'affilée** (environ 2 950px à 1280px). Sur téléphone, le schéma de la maison (crème, en bas du hero) enchaîne en plus directement sur la Méthode (crème). J'ai appliqué la liste à la lettre. Proposition : passer les Cas types en **blanc**, ce qui crée une coupure nette entre Méthode et Simulateur. Il faudrait alors donner aux onglets inactifs et au panneau un fond crème au lieu du blanc. Laquelle choisir ?
+55. **⚠️ Contraste du libellé « L'erreur qui coûte cher »** : action-600 (#d17f08) sur action-50 (#fdf0e0) = **2,77:1**, sous le minimum de 4,5:1 pour un petit texte (public senior). Appliqué tel que demandé. Pistes : un orange plus foncé réservé au texte (par exemple #9a5a00, environ 5:1), ou un libellé en couleur texte avec seulement la bordure orange. Le libellé vert (5,59:1) est conforme.
+56. **Anciens jetons gardés pour `SchemaMaison.astro`.** Le schéma ne doit pas être modifié, mais il utilise `marque-900`, `neutre-500`, `rounded-petit` et `rounded-pilule`. Les supprimer aurait cassé son affichage. Je les ai donc gardés dans `global.css`, dans un bloc « réservé à SchemaMaison », à ne pas utiliser ailleurs. `marque-900` prend la valeur du nouveau bleu nuit (#1d2b36), `neutre-500` garde #818080, et les deux arrondis gardent 5px et 9999px. Cela vous va, ou faut-il plutôt adapter le schéma ?
+57. **Deux couleurs ajoutées hors de la liste fournie** : `nuit-filet` (#35495a, la couleur des filets du Collectif donnée dans la demande, transformée en jeton) et `texte-inverse` (#fff, gardé pour le texte blanc sur fond sombre). D'accord ?
+58. **Champs de formulaire** (code postal, prénom, e-mail, téléphone) : le cadre noir de 2px est remplacé par un filet de 1px en texte-doux (7:1), pour que le champ reste repérable (règle d'accessibilité : 3:1 minimum pour le contour d'un champ). En cas d'erreur, le cadre passe à 2px rouge. Les grandes cases de choix du simulateur gardent un cadre de 2px crème foncé, très pâle (1,23:1, à peu près comme avant). Une fois cochées, elles passent en vert (cadre vert-600, fond vert-50) au lieu du bleu nuit. Valider ?
+59. *(Sans objet depuis la refonte « alan.com » : seuls les 5 titres courts restent, sur une ligne.)* **Collectif : intertitre « Avec Akelia, vos travaux en toute confiance » retiré** de l'affichage, car la demande décrit la section sans lui. Il est remplacé par un titre « Nos 5 engagements » lu seulement par les lecteurs d'écran (pour garder la hiérarchie des titres). Les engagements suivent aussi le **nouvel ordre** de la demande : interlocuteur, 30 minutes, RGE, devis, suivi. Avant, le suivi venait en 3e et le RGE en 5e. Les textes sont inchangés. Remettre l'intertitre visible ?
+60. *(Sans objet depuis la refonte « alan.com » : Collectif à 1 006px à 375px.)* **Hauteur sur téléphone (375px)** : Collectif **2 632px** (contre 2 391px avant), soit 3,2 écrans d'iPhone X. La carte (format 4/3) et les titres plus grands ajoutent de la hauteur. Pistes : masquer la carte sur téléphone (environ −290px), ou réduire la marge entre l'introduction et les engagements.
+61. *(Sans objet depuis la refonte « alan.com » : le panneau n'a plus de bloc blanc ni de marge intérieure.)* **Marge intérieure du panneau des cas types** : 40px demandés. Appliqués à partir de 768px, mais **24px sur téléphone**, car 40px laissaient environ 255px de largeur de texte à 375px. D'accord ?
+62. **Montant « plus de 30 000 € » passé en vert** (vert-600, 5,77:1 sur le crème). L'orange sur le nouveau fond crème du simulateur ne serait lisible qu'à 2,17:1, et la palette réserve le vert aux chiffres. D'accord ?
+63. **Section des articles : textes retouchés** (initiative) : « Actualités & Conseils » devient « Actualités et conseils », « réduire votre empreinte énergétique » devient « réduire votre consommation d'énergie », et j'ai ajouté le surtitre « Le blog ». La catégorie s'affiche toujours sous sa forme technique (« systeme-de-chauffage »). Ce défaut existait déjà : faut-il un libellé lisible ?
+64. **Autres pages (devis, blog, article, mentions légales, services)** : je les ai converties mécaniquement à la nouvelle palette et à l'arrondi unique, pour qu'il ne reste aucune couleur slate ou emerald dans `src/`. Elles n'ont **pas** été redessinées (tailles de texte Tailwind par défaut, mise en page d'origine). Leur refonte est-elle prévue ?
+65. **Titres des 4 étapes** : la taille n'était pas précisée. J'ai mis 1.5rem en graisse 900, car à la taille h3 (jusqu'à 2.4rem), « Isoler et ventiler » ne tenait pas dans une colonne étroite. D'accord ?
+66. *(Réglée le 12 octobre 2026 : le Hero passe sur fond blanc, le quadrillage est supprimé.)* **Quadrillage du hero conservé** : le fond est crème et les lignes creme-fonce, tous les 2rem. Le garder, ou passer à un crème uni ?
+67. *(Réglée le 12 octobre 2026 : chaque illustration a maintenant un texte alternatif descriptif.)* **Illustrations décoratives** : celles des cas types ont un texte alternatif vide (l'onglet et le titre disent déjà de quel logement il s'agit). La carte de France a le texte alternatif « Carte de France des artisans du collectif Akelia », à ajuster selon ce qu'elle montre vraiment.
+
+47. *(Sans objet depuis la refonte visuelle du 12 octobre 2026 : section Collectif refaite, voir la question 60.)* **⚠️ Section Collectif haute sur téléphone** : 2 391px à 375px, soit 2,94 écrans d'iPhone X (812px), mais **3,58 écrans d'iPhone SE (667px)**. Pistes de réduction (**aucune appliquée**), avec le gain estimé :
     - (a) **Texte des engagements repliable** sur téléphone (le titre reste visible, le texte s'ouvre au toucher) : environ −1 000px. Gain maximal, mais une action en plus pour un public senior, et contraire au principe « tout visible » retenu à l'étape 22.
     - (b) **Espacement des lignes réduit** sur téléphone (24px → 16px en haut et en bas de chaque ligne, 12px → 8px entre titre et texte) : environ −100px, sans rien perdre en contenu.
     - (c) **Icônes masquées** sur téléphone, titre sur toute la largeur : environ −60 à −110px (les titres de 2 lignes passent souvent sur une ligne, comme « Un interlocuteur unique, responsable de votre chantier. »).
     - (d) **Titre h2 réduit** sur téléphone (2.5rem → 2rem, comme le h1 l'est déjà) : environ −40px ici, mais à décider pour tout le site, toutes les sections ayant le même h2.
     - (e) **Paragraphe 2 retiré ou raccourci** sur téléphone : environ −220px, mais c'est un changement de texte, à votre main.
     Recommandation : (b) + (c), environ −200px (≈ 2 190px, sous 3 écrans de 812px), sans toucher au texte ni ajouter d'interaction. Laquelle appliquer, ou garder tel quel ?
-48. **Deux traits noirs en bas de la section Collectif** : le trait de fin de liste et, 40 à 80px plus bas, le trait de fin de section (séparation avec les articles). Visible sur `1280-collectif.png`. Garder (choix appliqué : la liste reste un ensemble fermé), ou retirer le trait de fin de liste ?
-49. **Section des articles à migrer** vers la charte (déjà dans « Restant à faire ») : elle suit maintenant la section Collectif, blanche, et contraste par sa palette Tailwind par défaut. À traiter dans une prochaine étape ?
-50. **Paragraphe 3 mis en avant** (semi-gras, barre orange) : initiative de mise en page, non demandée. Le garder, ou le remettre au même style que les deux premiers ?
+48. *(Sans objet depuis la refonte visuelle du 12 octobre 2026 : tous les traits noirs sont supprimés.)* **Deux traits noirs en bas de la section Collectif** : le trait de fin de liste et, 40 à 80px plus bas, le trait de fin de section (séparation avec les articles). Visible sur `1280-collectif.png`. Garder (choix appliqué : la liste reste un ensemble fermé), ou retirer le trait de fin de liste ?
+49. *(Sans objet depuis la refonte visuelle du 12 octobre 2026 : section des articles migrée vers la nouvelle palette.)* **Section des articles à migrer** vers la charte (déjà dans « Restant à faire ») : elle suit maintenant la section Collectif, blanche, et contraste par sa palette Tailwind par défaut. À traiter dans une prochaine étape ?
+50. *(Sans objet depuis la refonte « alan.com » : la phrase choc est seule, centrée, sans barre.)* **Paragraphe 3 mis en avant** (semi-gras, barre orange) : initiative de mise en page, non demandée. Le garder, ou le remettre au même style que les deux premiers ?
 
-37. **Contour bleu nuit autour des grands numéros orange** : ajouté pour la lisibilité (orange seul sur blanc : 1,94:1, sous les 3:1 recommandés même pour un très grand texte). Les numéros sont décoratifs pour les lecteurs d'écran (le rang est annoncé par la liste et par « Étape X sur 4 »), mais un visiteur senior doit pouvoir les lire. Garder le contour (choix appliqué), ou orange pur ? Retirer le contour se fait en supprimant deux classes dans `MethodeEtape.astro`.
-38. **Section Méthode plus haute sur téléphone** : +192px à 375px (2 433px au total, environ 3 écrans). Acceptable ? Sinon, pistes : numéros à 3.5rem (56px) sur téléphone (environ −60px), ou icônes masquées sur téléphone (sans gain de hauteur, mais un en-tête plus aéré).
+37. *(Sans objet depuis la refonte visuelle du 12 octobre 2026 : les grands numéros orange sont remplacés par des numéros en filigrane.)* **Contour bleu nuit autour des grands numéros orange** : ajouté pour la lisibilité (orange seul sur blanc : 1,94:1, sous les 3:1 recommandés même pour un très grand texte). Les numéros sont décoratifs pour les lecteurs d'écran (le rang est annoncé par la liste et par « Étape X sur 4 »), mais un visiteur senior doit pouvoir les lire. Garder le contour (choix appliqué), ou orange pur ? Retirer le contour se fait en supprimant deux classes dans `MethodeEtape.astro`.
+38. *(Sans objet depuis la refonte visuelle du 12 octobre 2026 : la section Méthode est refaite, hauteurs remesurées.)* **Section Méthode plus haute sur téléphone** : +192px à 375px (2 433px au total, environ 3 écrans). Acceptable ? Sinon, pistes : numéros à 3.5rem (56px) sur téléphone (environ −60px), ou icônes masquées sur téléphone (sans gain de hauteur, mais un en-tête plus aéré).
 46. **Libellé « Demander un accompagnement » sur deux lignes** sur téléphone (depuis l'étape 24, il tient sur une ligne dès 768px) (bouton de 66px de haut, lisible). Accepter, ou raccourcir sur petit écran (par exemple « Être accompagné ») ?
-43. **⚠️ Enchaînement sur téléphone** (toujours valable à l'étape 23 ; la bande est maintenant blanche) : seulement 44px entre le bloc bleu nuit (en bas de la pile) et la section bleu nuit des aides. Pistes (a), (b), (c) détaillées aux étapes 20 et 22 ; recommandation : (b), marge basse doublée sur téléphone. Laquelle appliquer ?
+43. *(Sans objet depuis la refonte visuelle du 12 octobre 2026 : le simulateur est désormais sur fond crème, plus bleu nuit.)* **⚠️ Enchaînement sur téléphone** (toujours valable à l'étape 23 ; la bande est maintenant blanche) : seulement 44px entre le bloc bleu nuit (en bas de la pile) et la section bleu nuit des aides. Pistes (a), (b), (c) détaillées aux étapes 20 et 22 ; recommandation : (b), marge basse doublée sur téléphone. Laquelle appliquer ?
 44. *(Sans objet depuis l'étape 22 : l'écran partagé est abandonné.)*
 45. *(Sans objet depuis l'étape 22.)*
 41. *(Réglée à l'étape 20 : la demande fixe le panneau gauche en clair et le droit en bleu nuit.)* **Quelle carte en bleu nuit ?** Le fond sombre attire l'œil en premier. Il a été mis sur la carte 1 (« Je veux rénover… », accompagnement complet), qui est aussi la première lue. Un visiteur pourrait y voir l'offre « principale ». Garder (choix appliqué), ou mettre la carte 2 en bleu nuit ? Inverser aussi l'ordre éloignerait la carte sombre de la section des aides (voir l'étape 19).
 42. **Barre orange de la citation sur la carte blanche** : 1,94:1, décorative. La garder orange sur les deux cartes, comme demandé à l'étape 18 (choix appliqué), ou la passer en bleu nuit sur la carte blanche (13,18:1), au risque de casser la symétrie des deux citations ?
-39. **Titre « Votre logement autonome »** *(introduction remplacée à l'étape 19 ; seul le titre reste en question)* : il parle encore de la méthode, alors que l'introduction et le bloc suivant parlent maintenant au visiteur. Le reprendre, ou le garder ?
+39. *(Sans objet depuis la refonte visuelle du 12 octobre 2026 : titre remplacé par « Dans le désordre, vous payez deux fois. ».)* **Titre « Votre logement autonome »** *(introduction remplacée à l'étape 19 ; seul le titre reste en question)* : il parle encore de la méthode, alors que l'introduction et le bloc suivant parlent maintenant au visiteur. Le reprendre, ou le garder ?
 40. **Textes à valider** : le tableau « Origine des textes », en tête de fichier, liste ce que vous n'avez pas fourni (notamment toutes les phrases de `aides.ts`, les questions et les messages d'erreur du simulateur). Merci de les valider ou de fournir vos versions. Si votre rappel voulait dire autre chose, merci de préciser.
 
 33. **30 000 € ou 32 000 € ?** Le texte fourni dit « plus de 30 000 € », alors que le simulateur affiche « jusqu'à 32 000 € » pour MaPrimeRénov' rénovation d'ampleur. Ce n'est pas faux (32 000 est bien « plus de 30 000 »), mais le montant n'est plus relié à `aides.ts` : si le barème baisse sous 30 000 €, l'accroche ne suivra pas. Garder 30 000 € en dur (choix appliqué), ou revenir au montant lu dans les données ?
-34. **« L'État les verse »** : « les » n'a plus d'antécédent clair, puisque le mot « aides » a disparu du titre (le titre parle de « 30 000 € » qu'on « rapporte »). Un lecteur comprend, mais la phrase pourrait être « L'État verse ces aides pour isoler… ». Garder le texte tel quel (choix appliqué) ou ajuster ? À noter aussi : « l'État » ne verse pas les primes CEE (fournisseurs d'énergie) ni les aides régionales.
+34. *Sans objet depuis le 15 octobre 2026 (texte remplacé ; voir la question 201).* **« L'État les verse »** : « les » n'a plus d'antécédent clair, puisque le mot « aides » a disparu du titre (le titre parle de « 30 000 € » qu'on « rapporte »). Un lecteur comprend, mais la phrase pourrait être « L'État verse ces aides pour isoler… ». Garder le texte tel quel (choix appliqué) ou ajuster ? À noter aussi : « l'État » ne verse pas les primes CEE (fournisseurs d'énergie) ni les aides régionales.
 35. **Titre de gauche en `<p>`** : comme avant, la grande phrase est un paragraphe stylé, et le seul titre de section (`<h2>`) reste « Estimez vos aides ». Faut-il plutôt faire de l'accroche le `<h2>` de la section (meilleur pour le référencement et les lecteurs d'écran) ?
 36. **Consigne de vérification incomplète** : le message s'arrêtait à « Vérifie les contrastes sur ». Tous les couples de la section ont été vérifiés (voir l'étape 17). Un élément précis était-il visé ?
 
@@ -2256,3 +2634,3462 @@ Les 8 raccourcis du hero pointent tous vers des URLs déjà listées ci-dessous.
 - Résultat : Astro v7.3.4 tourne sur http://localhost:4321/. La page d'accueil répond (code 200) et les journaux ne montrent aucune erreur.
 - Commandes utiles : `npx astro dev status`, `npx astro dev logs`, `npx astro dev stop`.
 - Aucun problème rencontré, aucune décision à arbitrer.
+
+### Point de sauvegarde Git avant refonte visuelle (12 octobre 2026)
+
+- Commit créé : `0b3202d70448a4ad3f1099f6ebb0bf7e50483935` (court : `0b3202d`), intitulé « Avant refonte visuelle », sur la branche `main`.
+- Contenu : toutes les modifications non enregistrées (12 fichiers modifiés ou supprimés, dont `src/content/config.ts` remplacé par `src/content.config.ts`) et tous les fichiers non suivis (composants, styles, données, `package.json`, `Données webflow/` d'environ 54 Mo, `captures/`, `public/`, etc.). Aucun fichier sensible (`.env`, clés) n'a été détecté ; `node_modules/`, `dist/` et `.astro/` restent exclus par `.gitignore`.
+- Pour revenir à cet état : `git checkout 0b3202d -- .` (ou `git reset --hard 0b3202d` pour tout annuler).
+- Rien n'a été poussé vers un dépôt distant.
+- Arbitrage possible : le dossier `Données webflow/` (54 Mo) est désormais versionné ; à retirer du dépôt s'il ne doit pas y figurer.
+
+---
+
+## Refonte visuelle de la page d'accueil (12 octobre 2026)
+
+Point de départ : commit `0b3202d` « Avant refonte visuelle » (voir ci-dessus). Les questions ouvertes sont les n° 51 à 67 de « Questions en attente de réponse ». Les n° 37, 38, 39, 43, 47, 48 et 49 sont devenues sans objet.
+
+### 1. Nouvelle charte (`src/styles/global.css`)
+
+**Couleurs** : toutes les anciennes couleurs sont remplacées.
+
+| Jeton | Valeur | Rôle |
+|---|---|---|
+| `nuit-900` | #1d2b36 | fond sombre, texte fort |
+| `nuit-700` | #2b3f4e | fonds sombres secondaires, survol des boutons verts |
+| `nuit-filet` | #35495a | filets du Collectif (**ajouté**, question 57) |
+| `action-500` | #f0920f | orange : boutons et accents |
+| `action-600` | #d17f08 | survol, libellé de l'encart orange |
+| `action-50` | #fdf0e0 | fond de l'encart orange |
+| `vert-600` | #2a6b4f | surtitres, chiffres, icônes de la méthode |
+| `vert-400` | #4f9e7d | hachures, variantes (pas encore utilisé) |
+| `vert-50` | #e9f3ee | fond de l'encart vert |
+| `creme` | #f7f4ee | fond de section alternatif |
+| `creme-fonce` | #ece7dd | filets doux, chiffres en filigrane, emplacements d'image |
+| `fond` | #ffffff | |
+| `texte` | #16212a | |
+| `texte-doux` | #4c5a64 | texte secondaire |
+| `texte-inverse` | #fff | texte sur fond sombre (**gardé**, question 57) |
+| `succes-*`, `alerte-*` | inchangés | formulaires |
+
+- **Supprimés** : `marque-*`, `secondaire-*`, `neutre-*`, `bordure`, `bordure-douce`, `action-100`, `action-400`. Seule exception : `marque-900` et `neutre-500`, gardés pour `SchemaMaison.astro` uniquement (question 56).
+- **Arrondis** : une seule valeur, `--radius-bloc: 10px`. Les cercles utilisent `rounded-full`. `radius-petit` et `radius-pilule` restent définis pour le schéma seul (question 56).
+- **Typographie** : h2 = `clamp(2.1rem, 4.4vw, 3.4rem)`, interligne 1.08, graisse 900 ; h3 = `clamp(1.7rem, 3vw, 2.4rem)`, interligne 1.1, graisse 900. La graisse **900 est ajoutée** à l'import Google Fonts (sinon le navigateur l'aurait simulée).
+- **Surtitre** : nouvelle classe `surtitre` (0.85rem, graisse 700, lettres espacées de 0.14em, majuscules, vert-600). Une classe de couleur posée à côté l'emporte (ex. `surtitre text-action-500` dans le Collectif).
+- **Remplacement des anciens noms dans tout `src/`** (sauf le schéma) : `marque-900` → `nuit-900`, `secondaire-50/100` → `creme`, `neutre-700/500` → `texte-doux`, `neutre-50` → `creme`, `bordure-douce` → `creme-fonce`, `rounded-petit/bouton/carte/section` → `rounded-bloc`, `rounded-pilule` → `rounded-full`.
+- `src/pages/test-charte.astro` est mis à jour avec la nouvelle palette, l'arrondi unique, la graisse 900 et le surtitre.
+
+### 2. Alternance des fonds (appliquée à la lettre, voir la question 54)
+
+Hero (message et schéma) **crème**, avec le quadrillage gardé en creme-fonce · bandeau des 8 solutions **bleu nuit** · Méthode (4 étapes et « Vous pilotez, ou on pilote ? ») **crème** · Cas types **crème** · Simulateur **crème** · Collectif **bleu nuit** · Articles **blanc** · pied de page **crème**.
+
+### 3. Section Méthode (`MethodeEtapes.astro`, `MethodeEtape.astro`, `Methode.astro`, `MethodeFacons.astro`)
+
+Textes exacts :
+- Titre h2 : « Dans le désordre, vous payez deux fois. »
+- Introduction (toute la largeur, taille h4, texte-doux) : « Changer sa chaudière avant d'isoler, c'est acheter une pompe à chaleur trop grosse pour rien. L'ordre compte autant que les travaux. »
+- Titres des étapes : « Étudier », « Isoler et ventiler », « Produire », « S'équiper ». Les textes des étapes sont inchangés.
+
+Mise en page :
+- Grille de 4 colonnes à partir de 1000px, étapes empilées en dessous.
+- Chaque étape est un bloc blanc sans bordure, arrondi 10px.
+- Numéro de 8.5rem, graisse 900, creme-fonce, en haut à droite (décalé de −28px en haut et −12px à droite, coupé par le bord du bloc), derrière le contenu.
+- Icône vert-600 de 38px au-dessus du titre. Titre en 1.5rem, graisse 900 (question 65).
+- **Supprimés** : les pastilles et numéros orange cerclés, la ligne de liaison (et son animation), la mention « Étape X sur 4 ».
+- Animation d'apparition conservée : fondu et glissement, 120ms d'écart, rejouée à chaque retour à l'écran.
+- « Vous pilotez, ou on pilote ? » : fond crème, marge du haut réduite (32px, puis 48px) car il prolonge la section. Cadre noir et traits noirs supprimés. Les deux blocs (blanc, bleu nuit) se distinguent par leur fond.
+
+### 4. Section Cas types (nouveau : `src/components/CasTypes.astro`, `src/data/cas-types.ts`)
+
+Placée entre la Méthode et le Simulateur.
+
+Textes exacts fournis :
+- Titre h2 : « Chaque maison a son piège. »
+- Introduction : « Reconnaissez la vôtre : ce qu'il ne faut surtout pas faire, et ce que vous avez à y gagner. »
+- Onglets : Maison en pierre | Années 50 à 90 | Années 2000 | Équipement à changer | Appartement.
+- Libellés d'encart : « L'erreur qui coûte cher », « Ce que vous y gagnez ».
+
+**Textes PROVISOIRES rédigés par Claude** (fichier source introuvable, question 51) :
+
+| Onglet | Surtitre | Titre | Situation | L'erreur qui coûte cher | Ce que vous y gagnez |
+|---|---|---|---|---|---|
+| Maison en pierre | Avant 1948 | Des murs épais qui doivent respirer | Des murs en pierre de 50 cm : la maison reste fraîche l'été, mais les pièces sont longues à chauffer l'hiver. | Couvrir les murs d'un isolant étanche ou d'un enduit ciment : l'humidité reste prisonnière de la pierre, les murs se dégradent et la maison devient plus froide. | Des isolants qui laissent passer la vapeur d'eau, des combles traités, des fuites d'air colmatées : le confort revient sans abîmer le bâti. |
+| Années 50 à 90 | 1950 – 1990 | Le pavillon qui chauffe la rue | Peu ou pas d'isolant, des fenêtres souvent d'origine : une grande partie de la chaleur s'échappe par le toit, les murs et les vitres. | Changer d'abord la chaudière pour une pompe à chaleur : calculée pour une maison qui fuit, elle sera trop puissante, plus chère, et fonctionnera mal une fois la maison isolée. | Isoler d'abord, puis choisir un chauffage à la taille de la maison isolée : des factures nettement plus basses et un équipement plus petit, donc moins cher. |
+| Années 2000 | 2000 – 2012 | Isolée, mais pas tout à fait | La maison respecte les normes de son époque : isolation correcte, double vitrage. Mais le chauffage vieillit et consomme plus que prévu. | Croire qu'il n'y a plus rien à faire sur l'isolation, ou ajouter des équipements sans vérifier la ventilation : condensation et air intérieur dégradé. | Compléter l'isolation là où elle manque, puis passer à un chauffage et à une eau chaude plus sobres, bien dimensionnés. |
+| Équipement à changer | Chaudière ou chauffe-eau en fin de vie | La panne qui oblige à décider vite | Votre chaudière ou votre chauffe-eau lâche, ou va bientôt lâcher. Il faut une solution rapidement, souvent en plein hiver. | Remplacer dans l'urgence sans regarder l'isolation : un appareil calculé sur les besoins actuels sera surdimensionné dès les premiers travaux. | Un équipement choisi en tenant compte des travaux à venir : vous ne payez pas deux fois, et vous gardez l'accès aux aides. |
+| Appartement | En copropriété | Vous ne décidez pas seul | Les murs, la toiture et parfois le chauffage sont communs : une partie des travaux passe par l'assemblée générale de la copropriété. | Lancer des travaux chez vous sans savoir ce que la copropriété prévoit, ou sans l'accord nécessaire pour toucher aux fenêtres ou à la façade. | Agir dès maintenant sur ce qui vous appartient (fenêtres, ventilation, chauffage individuel, eau chaude) et préparer le reste avec le syndic. |
+
+Mise en page et fonctionnement :
+- **Onglets** :
+  - fond blanc, texte doux, arrondi 10px, padding 16px 24px, hauteur mesurée de 55px ;
+  - onglet actif en bleu nuit, texte blanc, soulignement orange de 3px (ombre intérieure en bas, qui suit l'arrondi) ;
+  - rangée défilable au doigt sur téléphone (926px de contenu pour 375px d'écran, barre de défilement masquée, accroche sur chaque onglet).
+- **Panneau** : un seul à la fois, bloc blanc.
+  - À partir de 950px : 2 colonnes, l'illustration à gauche sur toute la hauteur (object-fit: cover, arrondi 10px), le contenu à droite avec 40px de marge intérieure.
+  - Sous 950px : l'illustration au format 16/10 au-dessus, 24px de marge intérieure sur téléphone (question 61).
+  - Contenu : surtitre, h3, situation en 1.12rem texte-doux, encart orange (fond action-50, bordure gauche orange de 4px, libellé en petites majuscules action-600), encart vert (fond vert-50, bordure gauche vert-600 de 4px, libellé vert-600).
+  - Pas de lien « voir le détail ».
+- **Transition** : fondu et glissement de 0,3 s (`@starting-style`), supprimée si « réduire les animations » est activé.
+- **Accessibilité** : modèle d'onglets du W3C (tablist, tab, tabpanel, aria-selected). Les flèches, Début et Fin changent d'onglet, et seul l'onglet actif est dans l'ordre de tabulation.
+- **Sans JavaScript** : la rangée d'onglets est masquée et les 5 panneaux s'affichent les uns sous les autres.
+- Vérifié automatiquement : clic, flèche droite (avec retour au premier onglet après le dernier), affichage sans JavaScript.
+
+### 5. Section Collectif (`Collectif.astro`, `CollectifEngagement.astro`)
+
+- Fond bleu nuit, texte blanc. Plus aucun trait noir.
+- **En haut**, en 2 colonnes à partir de 950px :
+  - à gauche : surtitre « Le collectif » en orange, titre h2 « La force d'un réseau national, le sérieux d'un artisan local. », puis les 3 paragraphes d'introduction, inchangés (le 3e garde le semi-gras et la barre orange) ;
+  - à droite : emplacement de `carte.jpg` au format 4/3 (vide pour l'instant).
+- **Les 5 engagements** :
+  - liste numérotée en 1 colonne, 2 colonnes à partir de 800px, 3 à partir de 1150px ;
+  - chaque bloc a un filet `nuit-filet` en haut et en bas, avec 24px entre deux rangées ;
+  - numéro « 01 » à « 05 » en orange (petit, gras), titre en graisse 900, texte en blanc à 75 % (8,79:1) ;
+  - icônes supprimées.
+- Titres raccourcis : « Un interlocuteur unique », « À moins de 30 minutes », « Assurés et certifiés RGE », « Un devis sans surprise », « Un suivi après le chantier ». Les textes sont inchangés. L'ordre a changé et l'intertitre visible a été retiré (question 59).
+- L'animation d'apparition est conservée (fondu, 80ms d'écart).
+
+### 6. Simulateur d'aides (couleurs seulement : logique et mise en page inchangées)
+
+- Fond crème (au lieu du bleu nuit), sans trait noir.
+- Accroche en texte foncé, en graisse 900 à partir de 768px.
+- Montant en vert-600 (question 62).
+- Bloc du simulateur blanc avec ombre, sans cadre noir.
+- Barre de progression : fond creme-fonce, sans cadre.
+- Bouton « Retour » : fond crème (au lieu du cadre bleu nuit).
+- Cases de choix et champs : voir la question 58.
+- Encadré de la mention obligatoire du résultat : fond crème (au lieu du cadre noir).
+- Verdict « À vérifier » : bordure nuit-700 (au lieu du bleu ciel).
+
+### 7. Header, articles, pied de page, autres pages
+
+- **Header et méga-menu** : couleurs seulement (bleu nuit, crème au survol, texte-doux). Le trait noir de 2px sous le méga-menu est remplacé par un filet creme-fonce et une ombre.
+- **Articles** (accueil) :
+  - fond blanc, surtitre « Le blog », h2 « Actualités et conseils », phrase « Nos derniers guides pour réduire votre consommation d'énergie. », lien « Tous les articles → » en vert (question 63) ;
+  - cartes crème sans bordure, catégorie en surtitre, titres en graisse 900.
+- **Pied de page** : fond crème, plus de couleurs slate ni emerald.
+- **Pages devis, blog, article, mentions légales, services** : conversion mécanique des couleurs et des arrondis (question 64).
+- **Accident corrigé en cours de route** : le premier remplacement automatique a transformé `secondaire-500` en `creme0` (le motif `secondaire-50` était trouvé à l'intérieur de `secondaire-500`). Cela touchait un verdict du simulateur et `test-charte.astro`. Les deux sont corrigés et `test-charte.astro` a été restauré puis refait. Une recherche finale confirme qu'aucun nom cassé ne subsiste.
+
+### 8. Ce qui n'a pas changé
+
+- `SchemaMaison.astro` : **aucune modification** (vérifié avec `git diff`).
+- Le Header garde sa structure, ses scripts et son méga-menu.
+- La logique du simulateur (`src/scripts/`, `src/data/aides.ts`) est inchangée. Seules des chaînes de classes de couleur ont été modifiées dans `simulateur-aides.ts`.
+- Les animations d'apparition (Méthode, Collectif, schéma) et les transitions du simulateur sont conservées.
+
+### 9. Images
+
+- `src/assets/illustrations/` est **vide** : les 7 fichiers manquent (question 52).
+- `src/data/illustrations.ts` retrouve les fichiers automatiquement (`import.meta.glob`) dès qu'ils sont déposés.
+- Les images sont affichées avec `<Image>` d'Astro, en WebP, aux largeurs 480, 800 et 1200 px, avec chargement différé.
+- Tant qu'un fichier manque, l'emplacement est vide, sur fond creme-fonce.
+- `aides.jpg` n'est placée nulle part (question 53).
+
+### 10. Vérifications
+
+**Hauteur des sections** (mesurée avec Chromium, animations réduites) :
+
+| Section | 375px | 1280px |
+|---|---|---|
+| Hero (message, 8 solutions, schéma) | 1 216 | 880 |
+| Méthode : 4 étapes | 1 592 | 719 |
+| Méthode : « Vous pilotez, ou on pilote ? » | 1 064 | 596 |
+| Cas types (1er onglet, sans image) | 1 300 | 1 000 |
+| Simulateur (question 1) | 1 017 | 636 |
+| Collectif | 2 632 | 1 342 |
+| Articles | 790 | 831 |
+
+- Aucun défilement horizontal, ni à 375px ni à 1280px, et aucune erreur dans la console.
+- La hauteur des Cas types dépend de l'onglet affiché et changera avec les vrais textes et les images.
+- **Bordures noires de 2px** : il n'en reste aucune dans `src/`. Les seules bordures de 2px restantes sont colorées : l'orange des pastilles du schéma et du titre de groupe du méga-menu, les verdicts du simulateur (vert, orange, nuit-700, crème), les messages de succès et d'erreur, le rouge des champs en erreur, et le cadre crème foncé ou vert des cases de choix.
+- **Couleurs Tailwind par défaut** : aucune occurrence de `slate-*`, `emerald-*`, `gray-*`, `zinc-*`, `bg-white` ou `text-white` dans `src/` (le mot « slate » n'apparaît plus que dans le commentaire du Header qui les interdit).
+- **Build de production** (`astro build`) : réussi, sans erreur.
+
+**Contrastes calculés** :
+
+| Couple | Contraste | Remarque |
+|---|---|---|
+| Texte / bouton orange | 6,87:1 | |
+| Blanc / nuit-900 | 14,47:1 | |
+| Orange / nuit-900 | 6,08:1 | |
+| Texte-doux / crème | 6,48:1 | |
+| Texte-doux / blanc | 7,11:1 | |
+| Vert-600 / crème | 5,77:1 | |
+| Vert-600 / vert-50 | 5,59:1 | |
+| Blanc à 75 % / nuit-900 | 8,79:1 | |
+| **Action-600 / action-50** | **2,77:1** | **insuffisant**, question 55 |
+
+**Captures** (`captures/refonte-visuelle/`) :
+- 1280px : `1280-1-hero-titre.png` à `1280-7-articles-titre.png`, une par section ;
+- 375px : `375-methode-titre.png`, `375-facons-titre.png`, `375-cas-titre.png` (onglet « Années 50 à 90 » actif), `375-collectif-titre.png`, `375-articles-titre.png` et `375-page-entiere.png`.
+
+L'en-tête collant et la barre d'outils d'Astro sont masqués sur les captures.
+
+### 11. Fichiers
+
+- **Créés** : `src/components/CasTypes.astro`, `src/data/cas-types.ts`, `src/data/illustrations.ts`, `captures/refonte-visuelle/`.
+- **Modifiés** :
+  - `src/styles/global.css`, `src/pages/index.astro`, `src/pages/test-charte.astro` ;
+  - composants `Hero`, `Methode`, `MethodeEtapes`, `MethodeEtape`, `MethodeFacons`, `Collectif`, `CollectifEngagement`, `SimulateurAides`, `SimulateurQuestions`, `SimulateurEstimation`, `Header`, `ArticleList`, `Footer` ;
+  - scripts `simulateur-aides.ts` et `simulateur-estimation.ts` (le second n'a eu que le changement d'arrondi) ;
+  - pages `devis`, `blog/index`, `blog/[slug]`, `mentions-legales`, `services/index`.
+- **Rien n'est commité** : tout se compare au commit `0b3202d`.
+stop 
+## Illustrations de la page d'accueil branchées (12 octobre 2026)
+
+Tâche : brancher les 7 illustrations aux emplacements prévus, avec le composant `<Image>` d'Astro (WebP, plusieurs tailles), et un texte alternatif descriptif pour chacune. **Tâche interrompue à votre demande (« stop »), puis reprise et terminée dans la refonte « alan.com » ci-dessous** (vérifications et mesures comprises).
+
+**Fichiers déplacés.** Les images n'étaient pas dans `src/assets/illustrations/`, contrairement à ce qu'indiquait la demande. Elles étaient dans `src/assets/menu/illustrations/`, avec l'extension `.jpeg`, à côté d'un dossier vide `accueil/`. Je les ai déplacées dans `src/assets/illustrations/` et renommées en `.jpg`, les noms attendus par le code. Le dossier vide a été supprimé. Les 7 fichiers font 1600 × 893 (format 16/9), de 650 à 765 Ko chacun.
+
+**Placement** (identique à la demande) :
+
+| Fichier | Emplacement |
+|---|---|
+| `pierre.jpg` | Cas types, onglet « Maison en pierre » |
+| `annees70.jpg` | Cas types, onglet « Années 50 à 90 » |
+| `moderne.jpg` | Cas types, onglet « Années 2000 » |
+| `technique.jpg` | Cas types, onglet « Équipement à changer » |
+| `appartement.jpg` | Cas types, onglet « Appartement » |
+| `carte.jpg` | Collectif |
+| `aides.jpg` | Simulateur d'aides, colonne de gauche, sous l'accroche (la proposition de la question 53) |
+
+**Textes alternatifs** (les illustrations des cas types n'ont plus un alt vide) :
+
+| Image | Texte alternatif |
+|---|---|
+| pierre | Maison ancienne en pierre aux murs épais, toit de tuiles orange et petite dépendance accolée. |
+| annees70 | Pavillon des années 1970 avec garage, une partie du toit ouverte pour montrer l'isolant posé dans les combles. |
+| moderne | Maison des années 2000 équipée de panneaux solaires sur le toit, d'une pompe à chaleur en façade et d'une borne de recharge. |
+| technique | Chaufferie vue en coupe : l'ancienne chaudière, grisée, et le nouvel appareil de chauffage, en orange, raccordé au réseau de tuyaux. |
+| appartement | Appartement vu en coupe dans un immeuble : murs isolés par l'intérieur, gaines de ventilation au plafond et fenêtre en cours de remplacement. |
+| carte | Carte de France parsemée de maisons et de camionnettes d'artisans, reliées entre elles : le réseau Akelia couvre tout le territoire. |
+| aides | Une maison, des piles de pièces, un dossier de demande d'aides et une facture d'énergie qui baisse. |
+
+Les textes des cas types sont dans `src/data/cas-types.ts` (champ `alt`), les deux autres directement dans `Collectif.astro` et `SimulateurAides.astro`.
+
+**Carte de France** : le cadre 4/3 rognait les bords de l'image et coupait la Corse. Il est passé en 16/9 (depuis remplacé par l'image en débord, voir la refonte ci-dessous).
+
+**Poids** (mesuré après la refonte, sur le build de production) :
+- Fichiers d'origine : **4,97 Mo** de JPEG au total. Ils ne sont jamais envoyés au navigateur.
+- Astro produit 4 versions WebP par image (480, 800 et 1200px de large, plus une à la taille d'origine) : **871 Ko** sur le disque pour les 28 fichiers.
+- **Réellement téléchargé** en parcourant toute la page d'accueil (écran de densité 1, onglet des cas types par défaut) : **86 Ko d'illustrations à 1280px** (pierre 20 Ko, aides 26 Ko, carte 39 Ko) et **35 Ko à 375px** (10 à 13 Ko par image). Sur un téléphone à écran haute densité, le navigateur choisit des versions plus grandes, d'environ 25 à 60 Ko chacune.
+- Les 4 autres cas types ne se chargent qu'à l'ouverture de leur onglet (10 à 70 Ko chacun, selon l'écran).
+- Toutes les images sont en chargement différé (`loading="lazy"`) : aucune n'est téléchargée avant d'approcher de l'écran.
+- HTML de la page d'accueil : 101 321 octets avant, **99 948 octets** après la refonte (moins de texte, malgré le balisage des images).
+
+**Emplacements vides** : vérifiés dans le navigateur, à 1280px et à 375px. **Aucun emplacement d'image vide.** Les 7 images s'affichent. Les seules images non chargées sont celles des onglets fermés, ce qui est voulu.
+
+
+## Refonte « alan.com » de la page d'accueil (12 octobre 2026)
+
+Principe demandé : chaque section = une couleur de fond pleine largeur + 3 lignes de texte au plus + une grande image. **Les questions ouvertes sont les n° 68 à 80** de « Questions en attente de réponse ». Les questions 50, 52, 53, 54, 59, 60, 61 et 67 sont réglées ou sans objet.
+
+### 1. Couleurs de fond, une par section
+
+| # | Section | Fond | Vérifié dans le navigateur |
+|---|---|---|---|
+| 1 | Hero | crème #f7f4ee | oui (fond des blocs internes) |
+| 2 | Bandeau des 8 solutions | bleu nuit #1d2b36 | rgb(29, 43, 54) |
+| 3 | Méthode (4 étapes + « Vous pilotez… ») | blanc | rgb(255, 255, 255) |
+| 4 | Cas types | vert foncé #1e5c45, textes blancs | rgb(30, 92, 69) |
+| 5 | Simulateur d'aides | orange pâle #fdf0e0 | rgb(253, 240, 224) |
+| 6 | Collectif | bleu nuit #1d2b36 | rgb(29, 43, 54) |
+| 7 | Articles | blanc | rgb(255, 255, 255) |
+
+- **Aucune section n'a la même couleur que sa voisine** (vérifié à 1280px et à 375px). Les deux balises `<section>` de la Méthode (les étapes et « Vous pilotez… ») sont toutes deux blanches : elles forment une seule section visuelle.
+- Pied de page : crème, après les articles blancs.
+- Nouveau jeton `vert-800` (#1e5c45) dans `global.css`. Le crème, le bleu nuit et l'orange pâle (`action-50`) existaient déjà.
+
+### 2. Suppressions de texte
+
+- **Méthode** : les 4 paragraphes descriptifs sont remplacés par les phrases fournies, mot pour mot (« On regarde avant de proposer. », « L'étape qui change tout. », « Ce que votre toit peut donner. », « Le bon matériel, bien dimensionné. »). Les icônes au trait sont aussi supprimées (question 75). Les anciens textes restent dans l'historique git (commit `0b3202d`, `MethodeEtapes.astro`).
+- **Cas types** : phrase de situation et surtitre de période supprimés. Chaque encart est réduit à **une phrase**. Ces textes restent des brouillons non validés (question 51).
+- **Collectif** : les 2 paragraphes d'introduction et les textes des 5 engagements sont supprimés. Restent la phrase choc et les 5 titres courts, sur une ligne, séparés par des points médians (question 80). Le composant `CollectifEngagement.astro` n'avait plus d'usage : il est supprimé.
+
+**Textes supprimés, recopiés ici pour ne pas les perdre** (`cas-types.ts` n'a jamais été commité) :
+
+*Cas types (période · situation · piège · gain, avant réduction) :*
+- **Maison en pierre** · Avant 1948 · « Des murs en pierre de 50 cm : la maison reste fraîche l'été, mais les pièces sont longues à chauffer l'hiver. » · « Couvrir les murs d'un isolant étanche ou d'un enduit ciment : l'humidité reste prisonnière de la pierre, les murs se dégradent et la maison devient plus froide. » · « Des isolants qui laissent passer la vapeur d'eau, des combles traités, des fuites d'air colmatées : le confort revient sans abîmer le bâti. »
+- **Années 50 à 90** · 1950 – 1990 · « Peu ou pas d'isolant, des fenêtres souvent d'origine : une grande partie de la chaleur s'échappe par le toit, les murs et les vitres. » · « Changer d'abord la chaudière pour une pompe à chaleur : calculée pour une maison qui fuit, elle sera trop puissante, plus chère, et fonctionnera mal une fois la maison isolée. » · « Isoler d'abord, puis choisir un chauffage à la taille de la maison isolée : des factures nettement plus basses et un équipement plus petit, donc moins cher. »
+- **Années 2000** · 2000 – 2012 · « La maison respecte les normes de son époque : isolation correcte, double vitrage. Mais le chauffage vieillit et consomme plus que prévu. » · « Croire qu'il n'y a plus rien à faire sur l'isolation, ou ajouter des équipements sans vérifier la ventilation : condensation et air intérieur dégradé. » · « Compléter l'isolation là où elle manque, puis passer à un chauffage et à une eau chaude plus sobres, bien dimensionnés. »
+- **Équipement à changer** · Chaudière ou chauffe-eau en fin de vie · « Votre chaudière ou votre chauffe-eau lâche, ou va bientôt lâcher. Il faut une solution rapidement, souvent en plein hiver. » · « Remplacer dans l'urgence sans regarder l'isolation : un appareil calculé sur les besoins actuels sera surdimensionné dès les premiers travaux. » · « Un équipement choisi en tenant compte des travaux à venir : vous ne payez pas deux fois, et vous gardez l'accès aux aides. »
+- **Appartement** · En copropriété · « Les murs, la toiture et parfois le chauffage sont communs : une partie des travaux passe par l'assemblée générale de la copropriété. » · « Lancer des travaux chez vous sans savoir ce que la copropriété prévoit, ou sans l'accord nécessaire pour toucher aux fenêtres ou à la façade. » · « Agir dès maintenant sur ce qui vous appartient (fenêtres, ventilation, chauffage individuel, eau chaude) et préparer le reste avec le syndic. »
+
+*Nouvelles phrases des encarts (une phrase chacun, rédigées par Claude, à valider) :*
+
+| Cas | L'erreur qui coûte cher | Ce que vous y gagnez |
+|---|---|---|
+| Pierre | Un isolant étanche ou un enduit ciment emprisonne l'humidité dans la pierre. | Des isolants perspirants : le confort revient sans abîmer les murs. |
+| Années 50 à 90 | Installer une pompe à chaleur avant d'isoler, c'est la payer trop grosse. | Isoler d'abord, puis chauffer avec un appareil plus petit et moins cher. |
+| Années 2000 | Croire que l'isolation est terminée et oublier la ventilation. | Compléter l'isolation, puis passer à un chauffage plus sobre. |
+| Équipement | Remplacer dans l'urgence par un appareil trop gros une fois la maison isolée. | Un équipement choisi pour les travaux à venir : vous ne payez pas deux fois. |
+| Appartement | Lancer des travaux sans savoir ce que prévoit la copropriété. | Agir sur ce qui vous appartient, et préparer le reste avec le syndic. |
+
+*Collectif, introduction supprimée :* « Avec Akelia, vous bénéficiez du meilleur des deux mondes : la force d'un collectif national et l'engagement d'une entreprise artisanale proche de chez vous. » · « Derrière la marque Akelia, des entreprises artisanales indépendantes unissent leur savoir-faire et leurs exigences pour vous offrir un accompagnement fiable, de votre premier contact jusqu'à l'entretien de vos installations. »
+
+*Collectif, textes des 5 engagements supprimés :*
+1. Un interlocuteur unique : « Vous traitez directement avec l'artisan qui réalise vos travaux. Sur un projet qui mobilise plusieurs corps de métier, un accompagnateur du collectif coordonne l'ensemble. Dans les deux cas, une seule personne connaît votre dossier et s'engage à vos côtés. »
+2. À moins de 30 minutes : « Des entreprises implantées localement, à moins de 30 minutes de votre domicile, pour privilégier la proximité, faciliter les échanges et vous apporter une réponse rapide lorsque vous en avez besoin. »
+3. Assurés et certifiés RGE : « Chaque entreprise du réseau dispose de sa propre assurance décennale et de la qualification RGE requise pour les travaux concernés, afin de vous apporter des garanties concrètes et de faciliter l'accès aux aides auxquelles vous pouvez prétendre. »
+4. Un devis sans surprise : « Nature des travaux, montant des aides estimées et reste à charge : vous disposez d'une vision précise du coût de votre projet avant de vous engager. Tout est expliqué, tout est écrit. »
+5. Un suivi après le chantier : « Votre installation est réalisée, puis entretenue par la même entreprise. Et si une panne survient, vous savez qui contacter : votre artisan reste votre interlocuteur pour le dépannage. »
+
+### 3. Images en débord
+
+- Nouvelles classes `deborde-gauche` et `deborde-droite` dans `global.css`. L'image s'élargit jusqu'au bord de l'écran, puis 5rem au-delà : elle est **coupée par le bord de l'écran**, quelle que soit sa largeur. La section porte `overflow-x-clip`, qui coupe ce qui dépasse sans créer de défilement horizontal.
+- Plus d'arrondi, de cadre ni d'ombre sur les images.
+- **Cas types** : image à gauche, coupée par le bord gauche. 42rem de haut à partir de 950px.
+- **Simulateur** : image sous l'accroche, coupée par le bord gauche, 44rem de haut à partir de 1024px. Cadrage décalé à gauche pour garder la maison entière.
+- **Collectif** : carte au format 16/9 (rien n'est rogné), coupée par le bord droit.
+- Sur téléphone, les images font 75 % de la largeur de l'écran en hauteur (28rem au plus).
+- **Part de l'image dans la hauteur de la section** :
+
+| Section | 1280px | 375px |
+|---|---|---|
+| Cas types | 51 % | 24 % |
+| Simulateur | 51 % | 20 % |
+| Collectif | 51 % | 24 % |
+
+  Objectif de 50 % atteint sur ordinateur, pas sur téléphone (question 70).
+
+### 4. Étiquettes flottantes
+
+- Nouvelle classe `etiquette` dans `global.css` : pastille blanche, arrondi 10px, ombre douce, texte gras de 1rem.
+- 2 étiquettes par image : les 5 cas types (textes fournis, dans `cas-types.ts`, champ `etiquettes`) et la carte. Elles sont à cheval sur les bords de l'image, côté texte (le côté opposé au débord) : la 1re en haut, la 2e sur le bord du bas.
+- **Pas d'étiquettes sur l'image des aides** : aucune n'est fournie (question 73).
+- **Chiffres à faire valider** : question 68.
+
+### 5. Animations
+
+- Nouveau composant `src/components/AnimationScenes.astro`, placé en tête de la page. Les styles sont dans `global.css` (« ANIMATION D'ENTRÉE DES SECTIONS »).
+- Sur chaque `<section data-scene>` :
+  - le titre (`data-scene-titre`) : fondu + montée de 20px, 0,5 s ;
+  - l'image (`data-scene-image`) : fondu + montée de 30px, 0,5 s, 150 ms après ;
+  - les étiquettes (`data-scene-etiquette`) : rebond, en dernier (à 550 ms), 100 ms d'écart entre elles.
+- Déclenchement à 25 % de la section visible, ou quand la section occupe 25 % de la hauteur de l'écran (pour les sections plus hautes que l'écran du téléphone).
+- **Se rejoue** à chaque passage, **seulement** si la section a complètement quitté l'écran entre-temps.
+- **Réduire les animations** : le script ne fait rien et le CSS force l'état final. Rien n'est caché, rien ne bouge.
+- Sans JavaScript, ou dans un navigateur sans IntersectionObserver : rien n'est caché.
+- Sections animées : Méthode (les deux blocs), Cas types, Simulateur, Collectif, Articles. Le Hero et le bandeau ne le sont pas (question 79).
+- L'apparition des étapes et des deux blocs « Vous pilotez… » (script de `Methode.astro`) est conservée. Celle des engagements du Collectif est supprimée avec eux.
+- Changement d'onglet dans les Cas types : le panneau garde son fondu, et ses étiquettes rebondissent à nouveau.
+
+### 6. Espace
+
+- Nouveaux jetons `--spacing-scene` (72px) et `--spacing-scene-large` (120px), appliqués avec `py-scene md:py-scene-large` à toutes les sections, sauf exceptions :
+  - la Méthode a moins d'espace entre ses deux blocs, qui forment une seule section (72px en haut des étapes, 72px en bas de « Vous pilotez… », puis 120px à partir de 768px) ;
+  - le Hero passe à 120px sur ordinateur, mais garde 16px et 24px sur téléphone (question 72) ;
+  - le bandeau des solutions n'est pas modifié.
+
+### 7. Titres
+
+- Nouveau jeton `text-titre` : `clamp(2.4rem, 5vw, 3.8rem)`, graisse 900, interligne 1.05.
+- Appliqué, centré, avec `max-w-[20ch]` (20 caractères par ligne au plus) et `text-balance`, aux titres de la Méthode (les deux blocs), des Cas types et du Collectif. Les introductions sous ces titres sont aussi centrées.
+
+### 8. Vérifications
+
+- **Build de production** (`astro build`) : réussi, sans erreur. `astro check` n'a pas été lancé : il demande d'installer `@astrojs/check` et `typescript`, ce que je n'ai pas fait sans votre accord.
+- **Navigateur** (Chromium sans interface, piloté directement, sur le build de production) :
+  - aucun défilement horizontal, ni à 1280px ni à 375px ;
+  - aucun emplacement d'image vide ;
+  - animations : avant d'entrer à l'écran, le titre des Cas types est à opacité 0. Chaque section passe en « anime » à son arrivée. Après retour en haut de page, les sections sorties de l'écran sont remises à zéro, celles encore visibles ne le sont pas ;
+  - réduire les animations : 25 éléments animables, 0 invisible.
+- **Paragraphes par section** (balises `<p>` visibles, hors titres et hors texte réservé aux lecteurs d'écran) :
+
+| Section | Paragraphes de texte | Détail | Statut |
+|---|---|---|---|
+| Hero | 1 | sous-titre | OK |
+| Bandeau | 0 | libellés des tuiles | OK |
+| Méthode | 1 + 4 phrases d'étape + 2 | introduction, 4 phrases de liste, 2 paragraphes longs dans « Vous pilotez… » | **dépasse**, question 69 |
+| Cas types | 3 | introduction + 2 encarts d'une phrase (plus les libellés d'encart et les 2 étiquettes) | OK |
+| Simulateur | 4 | colonne de gauche (plus les textes du simulateur) | **dépasse**, question 69 |
+| Collectif | 1 | phrase choc (plus le surtitre, la ligne des engagements et les 2 étiquettes) | OK |
+| Articles | 1 | introduction (plus le surtitre et les extraits des articles) | OK |
+
+- **Hauteurs** : à 1280px, Méthode 677 + 705, Cas types 1 310, Simulateur 1 389, Collectif 1 419, Articles 911 (page de 7 411px). À 375px, Méthode 1 231 + 1 104, Cas types 1 193, Simulateur 1 403, Collectif **1 006** (contre 2 632 avant), Articles 854 (page de 8 255px).
+- **Contrastes calculés** : blanc sur vert-800 7,86:1 ; blanc à 85 % sur vert-800 6,22:1 ; texte sur orange pâle 14,56:1 ; texte-doux sur orange pâle 6,34:1 ; vert-600 (montant) sur orange pâle 5,65:1 ; grands numéros orange sur blanc 2,38:1 (décoratifs, question 75). Le contour de focus des onglets et des panneaux passe au **blanc** sur le vert.
+- **Captures** (`captures/refonte-alan/`) :
+  - pleines pages : `1280-page-entiere.png` et `375-page-entiere.png` ;
+  - une capture par section : `1280-section-1.png` à `1280-section-8.png` et `375-section-1.png` à `375-section-8.png` (1 Hero, 2 bandeau, 3 étapes, 4 « Vous pilotez… », 5 Cas types, 6 Simulateur, 7 Collectif, 8 Articles) ;
+  - `mesures.json` : toutes les mesures brutes.
+
+  Elles sont prises avec « réduire les animations » activé (tout est visible d'un coup) et l'en-tête collant remis dans le flux.
+
+### 9. Fichiers
+
+- **Créés** : `src/components/AnimationScenes.astro`, `captures/refonte-alan/`.
+- **Déplacés** : les 7 illustrations, de `src/assets/menu/illustrations/*.jpeg` vers `src/assets/illustrations/*.jpg`.
+- **Supprimé** : `src/components/CollectifEngagement.astro`.
+- **Modifiés** : `src/styles/global.css`, `src/pages/index.astro`, `src/data/cas-types.ts`, et les composants `Hero`, `Methode`, `MethodeEtapes`, `MethodeEtape`, `MethodeFacons`, `CasTypes`, `SimulateurAides` et `Collectif`.
+- **Rien n'est commité.**
+- Le serveur de développement tourne en arrière-plan (`astro dev`, http://localhost:4321). Pour l'arrêter : `astro dev stop`.
+
+
+## Ajout de 4 couleurs de fond à la charte (12 octobre 2026)
+
+Demande : 4 teintes claires et douces pour les fonds de section pleine largeur, pour que la page ne soit plus uniformément crème. Contraintes : s'accorder avec l'orange et le bleu nuit, être nettement différentes entre elles, offrir au moins 7:1 avec le texte #16212a, sans vert sapin ni orange vif. **Rien d'existant n'a été modifié** dans la charte (orange, bleu nuit, crème, neutres). Questions ouvertes : n° 81 à 84. Les questions 77 et 78 sont sans objet.
+
+### 1. Les 4 teintes retenues (`src/styles/global.css`, bloc `@theme`, « FONDS DE SECTION CLAIRS »)
+
+| Nom (classe) | Code | Description | Section |
+|---|---|---|---|
+| `argile` (`bg-argile`) | **#f1dace** | rose terre cuite pâle, chaud | « Vous pilotez, ou on pilote ? » |
+| `brume` (`bg-brume`) | **#ccdce8** | bleu ardoise pâle, froid, cousin du bleu nuit | Cas types |
+| `lichen` (`bg-lichen`) | **#e0e6d0** | vert-gris pâle tirant sur le jaune (aucun rapport avec le vert sapin) | Simulateur d'aides |
+| `bruyere` (`bg-bruyere`) | **#e4d8e6** | mauve grisé pâle | Articles |
+
+**Méthode de choix** : les teintes ont été calculées dans l'espace OKLCH. Clarté de 0,885 à 0,915, saturation faible (0,024 à 0,030, donc douce), et teintes réparties autour du cercle : chaud, froid, vert-jaune, mauve. Chaque section se distingue ainsi de ses voisines par la teinte, pas seulement par la clarté.
+
+**Contrastes calculés** (WCAG) :
+
+| Fond | Texte #16212a | Texte-doux #4c5a64 | Bleu nuit | Vert-600 | Orange #f0920f | Blanc |
+|---|---|---|---|---|---|---|
+| argile #f1dace | **12,19:1** | 5,30:1 | 10,79:1 | 4,72:1 | 1,77:1 | 1,34:1 |
+| brume #ccdce8 | **11,65:1** | 5,07:1 | 10,32:1 | 4,52:1 | 1,70:1 | 1,40:1 |
+| lichen #e0e6d0 | **12,76:1** | 5,55:1 | 11,30:1 | 4,95:1 | 1,86:1 | 1,28:1 |
+| bruyère #e4d8e6 | **11,88:1** | 5,17:1 | 10,52:1 | 4,61:1 | 1,73:1 | 1,38:1 |
+
+- Le texte principal dépasse partout **7:1**, le minimum demandé. Le texte secondaire passe le minimum AA de 4,5:1.
+- L'orange n'est jamais utilisé en texte sur ces fonds : seulement en barres décoratives et en fonds de bouton, avec du texte foncé.
+- Le blanc des blocs intérieurs se détache par la clarté (1,28 à 1,40:1, à peu près comme le blanc sur le crème avant). Vérifié à l'œil sur les captures.
+
+**Écart de couleur entre sections voisines** (distance OKLab ×100 ; pour repère, crème contre blanc = 3,3, la différence que vous trouviez trop faible) :
+
+| Passage | Écart |
+|---|---|
+| Méthode (blanc) → Vous pilotez (argile) | 10,1 |
+| argile → Cas types (brume) | 5,7, de chaud à froid |
+| brume → Simulateur (lichen) | 5,5, de bleu à vert-jaune |
+| lichen → Collectif (bleu nuit) | 63,5 |
+| bleu nuit → Articles (bruyère) | 61,5 |
+| bruyère → pied de page (crème) | 7,7 |
+
+**Fond des illustrations** : elles ont toutes un fond crème d'environ #f7f1e8 (mesuré dans les fichiers). Les deux sections à grande image ont reçu des teintes qui s'en distinguent : brume à 8,3 d'écart, lichen à 5,1 (teinte nettement différente). L'argile, trop proche du crème des images (6,0, de teinte voisine), est sur la section sans image.
+
+### 2. Attribution aux sections
+
+| # | Section | Fond | Vérifié dans le navigateur |
+|---|---|---|---|
+| 1 | Hero | crème (inchangé) | fond des blocs internes |
+| 2 | Bandeau des 8 solutions | bleu nuit (inchangé) | rgb(29, 43, 54) |
+| 3 | Méthode | blanc | rgb(255, 255, 255) |
+| 4 | Vous pilotez, ou on pilote ? | argile | rgb(241, 218, 206) |
+| 5 | Cas types | brume | rgb(204, 220, 232) |
+| 6 | Simulateur d'aides | lichen | rgb(224, 230, 208) |
+| 7 | Collectif | bleu nuit (inchangé) | rgb(29, 43, 54) |
+| 8 | Articles | bruyère | rgb(228, 216, 230) |
+| — | Pied de page | crème (inchangé) | |
+
+**Aucune section n'a la même couleur que sa voisine**, à 1280px comme à 375px.
+
+### 3. Blocs intérieurs en blanc
+
+- **Vous pilotez…** : le bloc de gauche passe de crème à **blanc**. Le bloc bleu nuit ne change pas.
+- **Cas types** :
+  - le texte du panneau (titre et deux encarts) est maintenant dans un **bloc blanc**, arrondi 10px, avec 24px de marge intérieure sur téléphone et 40px à partir de 768px ;
+  - les onglets inactifs étaient déjà blancs ; l'onglet actif reste bleu nuit ;
+  - les textes repassent en foncé (ils étaient blancs sur le vert) ;
+  - le contour de focus repasse en bleu nuit ;
+  - le filet de l'encart vert repasse au vert-600, visible sur le blanc.
+- **Simulateur** : le bloc du formulaire était déjà blanc, avec une ombre.
+- **Articles** : les cartes passent de crème à **blanc**. `ArticleList.astro` n'est utilisé que sur l'accueil : aucune autre page n'est touchée.
+- **Les étiquettes flottantes** (blanches) restent posées sur les illustrations (crème), pas sur les fonds teintés.
+- **Rien ne se confond** (vérifié sur les captures) : blocs blancs sur argile, brume, lichen et bruyère ; illustrations crème sur brume et lichen ; onglets blancs sur brume.
+
+### 4. Autres changements
+
+- La Méthode et « Vous pilotez… » ont maintenant chacune leurs marges complètes, car ce sont deux sections de fonds différents (question 84).
+- `vert-800` n'est plus utilisé, mais il est gardé (question 82).
+
+### 5. Vérifications
+
+- **Build de production** (`astro build`) : réussi, sans erreur.
+- **Navigateur** (build de production, Chromium) : aucun défilement horizontal, aucun emplacement d'image vide, à 1280px et à 375px.
+- **Hauteurs** : page de 7 712px à 1280px et de 8 407px à 375px. Les images occupent toujours 51 % de leur section à 1280px.
+- **Captures** (`captures/couleurs/`) :
+  - pleines pages : `1280-page-entiere.png` (les bandes de couleur y sont nettement distinctes) et `375-page-entiere.png` ;
+  - une capture par section : `1280-section-1.png` à `1280-section-8.png` et `375-section-1.png` à `375-section-8.png` ;
+  - `mesures.json` : toutes les mesures brutes.
+
+### 6. Fichiers
+
+- **Modifiés** : `src/styles/global.css` (4 jetons ajoutés, commentaire de `vert-800`), `src/pages/index.astro`, `src/components/MethodeEtapes.astro`, `MethodeFacons.astro`, `Methode.astro`, `CasTypes.astro`, `SimulateurAides.astro` et `ArticleList.astro`.
+- **Rien n'est commité.**
+
+
+## Refonte du Hero (12 octobre 2026)
+
+Questions ouvertes : n° 85 à 89. La question 66 est réglée, la question 72 mise à jour.
+
+### 1. Fond
+
+- **Blanc pur** (`bg-fond`). Le fond crème et le quadrillage façon papier millimétré sont supprimés.
+- Vérifié dans le navigateur : fond rgb(255, 255, 255), aucune image de fond.
+- Enchaînement des fonds : Hero blanc → bandeau bleu nuit → Méthode blanche. Le bandeau sépare les deux blancs.
+
+### 2. Textes
+
+- **Titre (h1)** : « Une maison qui consomme moins, et qui vaut plus. » (`text-display`, `max-w-[16ch]`, lignes équilibrées). Sur 3 lignes à 1280px comme à 375px.
+- **Sous-titre** (l'ancien titre) : « Construire, rénover et équiper votre logement pour réduire votre consommation d'énergie et vos factures. » En taille h4, graisse normale, texte-doux (7,1:1 sur blanc).
+- **Mention** : « Collectif d'artisans locaux — en direct, sans sous-traitance. » Petite taille (0.9rem), texte-doux. « sans sous-traitance. » ne se coupe pas au trait d'union.
+- **Barre orange supprimée** (justification : question 86).
+- La taille du titre sur téléphone passe de 1.75rem à 2.5rem (question 87).
+
+### 3. Bouton et lien
+
+- **Un seul bouton** : « Obtenir un devis » → `/devis`, fond orange, 56px de haut. Pleine largeur sur téléphone.
+- **Lien** « Estimer mes aides » → `#simulateur-titre` :
+  - texte souligné, couleur du texte, taille normale, sans fond ni cadre : nettement moins visible que le bouton ;
+  - à droite du bouton à partir de 480px, dessous en dessous de 480px ;
+  - 44px de haut minimum pour le doigt.
+- **Ancre corrigée** : sans réglage, le titre « Estimez vos aides » arrivait sous l'en-tête collant, donc caché. L'en-tête mesure 73px jusqu'à 1279px et 122px à partir de 1280px (mesuré à 375, 768, 992, 1024, 1280 et 1440px). J'ai ajouté une marge de défilement (`scroll-mt-24`, puis `xl:scroll-mt-36`). Après un clic sur le lien, le titre s'affiche 23px sous l'en-tête (vérifié aux deux largeurs).
+
+### 4. Schéma de la maison (`SchemaMaison.astro`)
+
+**a) Agrandi.** À partir de 1280px, la colonne du schéma passe de 5/12 à **7/12** de la largeur : il mesure **678 × 402px** à 1280px, contre environ 490 × 280px avant, soit à peu près deux fois la surface. La légende passe sur 4 colonnes à partir de 768px (question 89).
+
+**b) Dessin refait.** Même principe (plan technique au trait, moitié gauche ouverte en coupe), exécution reprise :
+- **Perspective cohérente** : toutes les coordonnées viennent d'une seule projection oblique. La profondeur part en haut à droite. Les faces pleines (façade, pignon, toit, unités) sont remplies de blanc, ce qui masque les traits cachés.
+- **Maison plus réaliste** :
+  - proportions d'une maison à étage, toit à deux pans avec débords ;
+  - planche de rive, faîtière, gouttière et descente, soubassement, rangs de tuiles, porte d'entrée vitrée ;
+  - par la coupe : dalles d'étage et de combles en section, pignon gauche et chevrons du pan arrière vus de dessous, épaisseur du toit coupé.
+- **Équipements affinés** :
+  - fenêtres à double trait (dormant, deux ouvrants, vitrage, appui, linteau), dont une sur le pignon, en perspective ;
+  - 6 modules photovoltaïques avec leurs cellules ;
+  - caisson VMC posé sur l'isolant, avec gaines vers une bouche à l'étage et une au rez-de-chaussée, et rejet en toiture ;
+  - unité extérieure de pompe à chaleur en volume (grille du ventilateur, ailettes, plots, liaisons frigorifiques) et radiateur dans le séjour ;
+  - ballon d'eau chaude cerclé, avec thermostat et groupe de sécurité ;
+  - borne sur pied et voiture détaillée (vitres, roues, jantes, phares).
+- **Gardés** :
+  - les 8 repères numérotés et leurs identifiants (`isolation-combles`, etc.) ;
+  - le survol orange depuis la légende et la navigation au clavier dans la légende ;
+  - les cotes, sans chiffres ;
+  - les hachures d'isolation : combles, mur gauche et mur avant en coupe ;
+  - les annotations « R ≥ 7 » et « local technique », agrandies à environ 16px.
+- **Téléphone** : cotes et annotations masquées, repères agrandis, comme avant.
+- **Texte pour les lecteurs d'écran** : mis à jour pour décrire le nouveau dessin.
+- **Fabrication** : le dessin a été produit par un petit générateur Python (calcul des points), puis recopié dans le composant. On peut le retoucher à la main. L'ancien dessin reste dans git (commit `0b3202d`).
+- **Charte** : les jetons « réservés à SchemaMaison » de `global.css` sont gardés (le schéma les utilise toujours). Leurs commentaires ne disent plus « à ne pas modifier ».
+
+**c) Animation rejouée.**
+- Le tracé (1,2 s) puis l'apparition des équipements (fondu, 80 ms d'écart) **se rejouent chaque fois que le schéma revient à l'écran**.
+- Même règle que la Méthode : relance seulement si le schéma a **complètement** quitté l'écran entre-temps. Déclenchement à 30 % du schéma visible, ou quand il occupe 30 % de la hauteur de l'écran.
+- « Réduire les animations » : rien ne bouge, tout est affiché.
+- **Vérifié dans le navigateur**, aux deux largeurs :
+
+| Étape | Résultat |
+|---|---|
+| Au chargement | état « anime », animation `schema-trace` en cours |
+| Schéma encore en partie visible au bord de l'écran | reste « anime » : pas de relance |
+| Retour sans sortie complète | pas de relance |
+| Après une sortie complète | « attente » |
+| Au retour | « anime » ; le tracé repart de zéro (décalage 0,986, puis 0 à la fin) ; équipements visibles |
+
+### 5. Ordre sur téléphone (sous 1280px)
+
+Mesuré à 375px (position depuis le haut de la page) :
+
+| Élément | Position |
+|---|---|
+| Titre (avec sous-titre et mention) | 113px |
+| Bouton | 464px |
+| Lien | 532px |
+| Schéma | 624px |
+| Bandeau des 8 raccourcis | 1 075px |
+
+L'ordre au clavier est le même. Conséquence : les raccourcis ne sont plus visibles sans défiler (question 85).
+
+À partir de 1280px : texte à gauche, schéma à droite (centrés verticalement), bandeau dessous sur toute la largeur.
+
+### 6. Bandeau des 8 solutions
+
+Inchangé : fond bleu nuit, tuiles blanches, sous le Hero.
+
+### 7. Hauteurs du Hero
+
+| Largeur | Sans le bandeau | Bandeau | Avec le bandeau | Avant (avec le bandeau) |
+|---|---|---|---|---|
+| 1280px | 750px | 212px | 962px | 960px |
+| 375px | 1 002px | 424px | 1 426px | 1 216px |
+
+- Marges : 40px en haut et 48px en bas sur téléphone, 120px à partir de 768px.
+- Sur téléphone, le Hero gagne 210px : le schéma et sa légende sont maintenant dans le Hero, avant le bandeau.
+
+### 8. Vérifications
+
+- **Build de production** (`astro build`) : réussi, sans erreur.
+- **Aucun défilement horizontal** à 1280px ni à 375px. Un seul bouton orange dans le Hero.
+- **Captures** (`captures/hero/`) :
+  - `1280-premier-ecran.png` et `375-premier-ecran.png` : ce qu'on voit en arrivant, en-tête compris ;
+  - `1280-hero-complet.png` et `375-hero-complet.png` : le Hero entier, bandeau compris ;
+  - `1280-page-entiere.png` et `375-page-entiere.png` ;
+  - `mesures.json` : toutes les mesures brutes.
+
+  Les captures sont prises avec « réduire les animations » activé, donc le schéma est complet.
+
+### 9. Fichiers
+
+- **Modifiés** :
+  - `src/components/Hero.astro` : réécrit ;
+  - `src/components/SchemaMaison.astro` : dessin, script, styles et légende ;
+  - `src/components/SimulateurAides.astro` : marge de défilement de l'ancre ;
+  - `src/styles/global.css` : taille du display sur téléphone, commentaires ;
+  - `src/pages/index.astro` : commentaire des fonds.
+- **Rien n'est commité.**
+
+
+## Corrections du Hero (12 octobre 2026)
+
+Questions ouvertes : n° 90 à 94. Les questions 87 et 89 sont sans objet ou mises à jour.
+
+### 1. Taille des textes
+
+Deux jetons dans `src/styles/global.css` :
+- **`text-display`** (titre h1) : `clamp(2.8rem, 6vw, 5rem)`, interligne 1.05, graisse 900, comme demandé. Il n'a plus de réduction à part sur téléphone : le clamp s'en charge, et le bloc « réduction mobile » ne concerne plus que le h1 standard.
+- **`text-chapeau`** (nouveau, sous-titre) : `clamp(1.2rem, 1.8vw, 1.5rem)`, interligne 1.45.
+- **Mention du collectif** : inchangée, 0.9rem (14,4px), texte-doux.
+
+**Mesures** :
+
+| | 1280px | 375px |
+|---|---|---|
+| Titre | 76,8px, 4 lignes, 323px de haut | 44,8px, 4 lignes, 188px de haut |
+| Sous-titre | 23px, 3 lignes | 19,2px, 3 lignes |
+
+- **Aucun débordement** du titre ni de la page, aux deux largeurs. À 375px, « consomme » tient sur la ligne.
+- À 1280px, pour tenir en 4 lignes, le titre a pris la moitié de la largeur (question 91). En 5/12 (étape précédente), il faisait 5 lignes et 403px de haut.
+
+### 2. Schéma
+
+**b) Mur isolé à gauche : coupe refaite.** Le dessin est maintenant une vraie coupe de bâtiment (explication du choix : question 90).
+- La maison est **pignon sur rue** : le faîtage part dans la profondeur.
+- La moitié gauche est coupée verticalement dans le plan de la façade. La coupe montre, de bas en haut :
+  - la fondation sous le mur ;
+  - la dalle basse ;
+  - le mur : maçonnerie et isolant extérieur hachuré ;
+  - le plancher de l'étage ;
+  - la dalle des combles ;
+  - l'isolant des combles ;
+  - le rampant du toit, épaisseur et ligne de couverture, avec son débord.
+- **Le mur s'inscrit dans le volume** : l'isolant du mur monte du sol jusque sous le rampant. Le rampant repose sur le mur, et le débord de toit dépasse à l'extérieur.
+- **Raccord continu** : l'isolant des combles passe sur l'arase du mur et rejoint l'isolant du mur, sans interruption. Isolation en L, comme sur un vrai détail de coupe. Les repères 1 (partie horizontale) et 2 (partie verticale) désignent chacun leur moitié du L.
+- **Par la coupe**, on voit la face intérieure du mur gauche, le pignon du fond, les planchers, et le dessus de l'isolant des combles qui file vers le fond.
+- **Moitié droite intacte** : façade pignon (fenêtres, porte), mur latéral (fenêtre d'étage), pan droit du toit avec les 6 modules photovoltaïques, bandeau d'égout, gouttière, faîtière, rangs de tuiles sur les deux pans.
+
+**a) Pompe à chaleur redessinée.**
+- L'unité extérieure est maintenant **face au lecteur**, posée sur plots à droite de la maison. Son ventilateur est un vrai cercle, et non plus une ellipse déformée par la perspective, ce qui la rendait floue.
+- Bloc net : face avant, dessus et côté, aux mêmes épaisseurs de trait que le reste du schéma. Ventilateur circulaire avec moyeu et grille de protection (barreaux horizontaux), panneau à ailettes à droite, liaisons frigorifiques vers le mur.
+- Le radiateur est à l'étage (question 94).
+
+**Gardés** :
+- les 8 repères, leurs identifiants, le survol depuis la légende et la navigation au clavier ;
+- les cotes (sans chiffres) et les hachures d'isolation ;
+- « R ≥ 7 », posé sur l'isolant des combles, et « local technique » ;
+- l'animation de tracé, rejouée au retour à l'écran.
+
+Le texte pour les lecteurs d'écran (`<desc>`) est mis à jour.
+
+### 3. Bandeau des 8 solutions
+
+- **Fond clair** : brume (#ccdce8) au lieu du bleu nuit (question 92).
+- **Tuiles blanches** avec une ombre douce (`shadow-carte`).
+- **Contour de focus** en bleu nuit (question 93).
+- **Icônes redessinées** :
+  - trait de **1.5** (au lieu de 1.75), extrémités et jonctions rondes ;
+  - formes simples sur une grille de 24 × 24, même échelle optique (environ 18 × 18 au centre) ;
+  - même vocabulaire : un bloc à coins arrondis par appareil, des traits courts pour les détails.
+
+| Icône | Dessin |
+|---|---|
+| Isolation | maison à double paroi |
+| Fenêtres et volets | fenêtre à 4 carreaux et son appui |
+| Pompe à chaleur | unité arrondie avec ventilateur rond, grille et plots |
+| Climatisation réversible | unité murale et 3 souffles d'air |
+| Chaudière biomasse | bloc arrondi avec une flamme dans le foyer |
+| Chauffe-eau | ballon en gélule avec une goutte |
+| Panneaux photovoltaïques | panneau quadrillé sur pied |
+| Borne de recharge | borne arrondie avec éclair, câble et prise |
+
+### 4. Hauteurs du Hero
+
+| Largeur | Sans le bandeau | Avec le bandeau | Étape précédente (avec le bandeau) |
+|---|---|---|---|
+| 1280px | 808px | 1 020px | 962px |
+| 375px | 1 029px | 1 453px | 1 426px |
+
+### 5. Vérifications
+
+- **Build de production** (`astro build`) : réussi, sans erreur.
+- **Navigateur** (build de production, Chromium) : aucun débordement horizontal ; titre et sous-titre aux tailles demandées (mesurées) ; fond du bandeau rgb(204, 220, 232) ; ombre des tuiles présente ; trait des icônes à 1.5.
+- **Captures** (`captures/hero-corrections/`) :
+  - `1280-hero.png` et `375-hero.png` : le Hero entier, bandeau compris ;
+  - `gros-plan-schema.png` : le schéma en double résolution ;
+  - `gros-plan-mur-gauche.png` : la coupe du mur gauche, du sol au rampant ;
+  - `gros-plan-pompe-a-chaleur.png` : l'unité extérieure ;
+  - `1280-bandeau.png` et `375-bandeau.png` : le bandeau et les nouvelles icônes ;
+  - `mesures.json` : toutes les mesures brutes.
+
+### 6. Fichiers
+
+- **Modifiés** :
+  - `src/styles/global.css` : `text-display`, nouveau `text-chapeau`, commentaires ;
+  - `src/components/Hero.astro` : tailles de texte, colonnes, bandeau, icônes ;
+  - `src/components/SchemaMaison.astro` : dessin, description, légende ;
+  - `src/pages/index.astro` : commentaire des fonds.
+- **Rien n'est commité.**
+
+---
+
+## Refonte de la section Méthode : schéma évolutif (13 octobre 2026)
+
+Demande : refaire entièrement la section Méthode. Deux colonnes : les 4 étapes en onglets à gauche, un schéma de maison qui évolue à droite, le texte de l'étape active en dessous. **Les questions ouvertes sont les n° 95 à 102** de « Questions en attente de réponse ». Les textes exacts figurent dans la partie G de « Textes du simulateur d'aides et de la section Méthode ».
+
+### 1. Ce qui a été fait
+
+**Fond et séparateur**
+- Section sur fond **blanc**.
+- Séparateur avec le bandeau du Hero : **ombre intérieure douce** en haut de la section (bleu nuit à 25 %, 14px), sans trait (question 102).
+
+**En-tête**
+- Titre et introduction fournis, repris mot pour mot. Titre centré, `text-titre`, 24 caractères par ligne au plus : 3 lignes à 1280px, 5 lignes à 375px.
+
+**Structure**
+- **À partir de 1024px** : deux colonnes, **35 % / 65 %** (401px et 745px mesurés à 1280px).
+- **En dessous de 1024px** : tout s'empile. D'abord les 4 étapes, puis le schéma, puis le texte.
+- L'**étape 1** est active au chargement.
+
+**Les onglets (colonne de gauche)**
+- Chaque onglet montre : une **pastille numérotée**, une **icône**, le **titre**, le **sous-texte** et un **chevron dans un rond**. Pas de texte long.
+- **Ligne verticale** reliant les 4 pastilles. Chaque segment se remplit (0,4s) quand l'étape du dessous est atteinte. Le segment est en dégradé, de la couleur d'une étape à celle de la suivante.
+- **Indices de clic, volontairement francs** :
+  - curseur « main » (vérifié : `cursor: pointer`) ;
+  - chaque étape a l'aspect d'une **carte-bouton** : coins arrondis, ombre portée ;
+  - **chevron** dans un rond : → à côté du schéma (grand écran), ↓ quand le schéma est en dessous ;
+  - **survol marqué** : anneau épais de 3px dans la couleur de l'étape, ombre plus forte, décalage de 4px vers la droite, chevron qui se remplit de la couleur de l'étape (capture `1280-survol-etape-2.png`) ;
+  - **phrase d'aide** au-dessus des onglets, avec une icône de main : « Cliquez sur une étape : le schéma change. » (« Touchez… » sur écran tactile). Ajout non demandé (question 100).
+- **Inactif** : fond blanc. La couleur de l'étape n'apparaît que dans le **filet latéral** (6px) et le contour de la pastille.
+- **Actif** : **fond plein** de la teinte claire de l'étape, pastille pleine, chevron sur fond bleu nuit.
+- **Étapes franchies** (avant l'étape active) : pastille pleine.
+
+**Couleurs des étapes et lien avec le schéma** (questions 95 et 96)
+
+| Étape | Teinte claire (fond actif, surfaces du schéma) | Teinte foncée (filet, pastille, traits du schéma) |
+|---|---|---|
+| 1. Audit | bruyère #e4d8e6 | `bruyere-fonce` #765580 |
+| 2. Isoler et ventiler | argile #f1dace | `argile-fonce` #a04e2c |
+| 3. Produire | lichen #e0e6d0 | `lichen-fonce` #58682a |
+| 4. S'équiper | brume #ccdce8 | `brume-fonce` #36648a |
+
+- **Vérification automatique** : pour chaque étape, la couleur du filet de l'onglet et celle des traits du schéma ont été lues dans le navigateur. Elles sont **identiques**, pour les 4 étapes : rgb(118, 85, 128), rgb(160, 78, 44), rgb(88, 104, 42), rgb(54, 100, 138).
+- Le panneau de texte, sous le schéma, reprend aussi la teinte claire et le filet foncé de l'étape active.
+
+**Le schéma évolutif** (`src/components/MethodeSchema.astro`, nouveau fichier)
+- **Un seul SVG** en ligne : la **même maison**, vue en **coupe verticale** (question 97).
+  - Structure en bleu nuit : terrain, semelles, murs, dalle basse, plancher d'étage, plancher des combles, toit à deux pans avec débords.
+  - Mêmes épaisseurs qu'au hero : environ 2px pour la structure, 1,5px pour les équipements, 1px pour les cotes et rappels.
+- **Les éléments s'accumulent** d'un état à l'autre :
+  - **État 1, audit** : cotes (largeur, hauteur des murs, hauteur du toit), caméra thermique sur trépied avec sa visée (état 1 seulement), **zones de déperdition** (hachures légères sur le toit et les murs, flèches ondulées de chaleur qui s'échappe).
+  - **État 2, isoler et ventiler** : isolant continu en coupe, en L, des combles jusqu'au pied des murs. Il est rempli de la teinte argile et hachuré à 45°. S'ajoutent la VMC (caisson dans les combles, sortie en toiture), ses gaines en pointillé, une bouche à l'étage et une au rez-de-chaussée, avec des flèches de flux d'air. **Les zones de déperdition disparaissent.**
+  - **État 3, produire** : 3 modules photovoltaïques quadrillés sur le pan droit du toit, le soleil, 3 rayons en pointillé vers les modules.
+  - **État 4, s'équiper** : unité extérieure de pompe à chaleur (ventilateur, grille, plots), liaisons à travers le mur, radiateur au rez-de-chaussée, thermostat sur le mur du séjour (avec ses ondes), borne de recharge sur pied avec son câble.
+  - *(Corrigé le même jour : la caméra et sa visée n'apparaissent qu'à l'état 1, voir « Correction : caméra thermique ».)* Les cotes restent sur les 4 états.
+- **Annotations** en italique, dans la couleur de l'étape : « déperditions », « caméra thermique », « VMC », « isolant », « panneaux solaires », « pompe à chaleur », « radiateur », « thermostat », « borne ». Elles sont masquées sous 768px, comme au hero.
+- **Transition** :
+  - les éléments qui apparaissent : fondu de 0,4s, et leurs traits se dessinent en 0,4s (capture à mi-parcours : `1280-transition-1-vers-2.png`) ;
+  - les éléments qui disparaissent : fondu de 0,4s.
+  - Pas de personnage, pas d'animation en boucle.
+- **Lecteurs d'écran** : le schéma a un titre et une description, mise à jour à chaque étape (4 descriptions dans `src/data/methode.ts`).
+
+**Icônes des 4 étapes** (même style que le bandeau du Hero : grille de 24 × 24, trait 1,5, jonctions rondes, bleu nuit)
+
+| Étape | Dessin |
+|---|---|
+| Audit | maison, loupe posée dessus (avec un « + »), règle graduée en bas |
+| Isoler et ventiler | coupe de paroi en 3 couches (isolant en zigzag), flèche et volute de flux d'air |
+| Produire | soleil rayonnant et panneau incliné quadrillé |
+| S'équiper | unité de pompe à chaleur (ventilateur, grille, plots) et thermostat rond |
+
+**Comportement**
+- **Clic ou toucher** sur une étape : elle devient active, le schéma et le texte changent.
+- **Clavier** : modèle d'onglets du W3C, orientation verticale. Flèches haut et bas (gauche et droite aussi), Début et Fin. Un seul onglet dans l'ordre de tabulation. Vérifié : depuis l'étape 4, ↑ active l'étape 3 ; Début ramène à l'étape 1.
+- **Hauteur stable** : les 4 textes sont superposés, la section ne change pas de hauteur d'une étape à l'autre (question 101).
+- **Sans JavaScript** : les onglets sont masqués. La section passe sur une colonne : le schéma à l'**état 4**, puis les 4 étapes et leurs textes les uns sous les autres, chacun dans sa couleur (`1280-sans-js.png`, `375-sans-js.png`).
+- **« Réduire les animations »** : changement instantané, sans fondu ni tracé, ni glissement des cartes au survol.
+
+**« Vous pilotez, ou on pilote ? »**
+- Déjà une section indépendante sur fond argile : **non modifiée**, à traiter séparément comme demandé. Seuls les commentaires de `Methode.astro` le précisent.
+
+### 2. Mesures
+
+| Largeur | Hauteur de la section (avec JS) | Sans JS | Schéma |
+|---|---|---|---|
+| 1280px | **1 316px** | 2 237px | 745 × 466px |
+| 375px | **1 692px** | 1 836px | 335 × 209px |
+
+- La hauteur de l'ancienne section n'a pas été remesurée avant la refonte : pas de comparaison chiffrée.
+- Aucun débordement horizontal aux deux largeurs.
+- Aucune erreur dans la console.
+- Hauteur identique aux 4 étapes.
+
+### 3. Vérifications
+
+- **Build de production** (`astro build`) : réussi, sans erreur.
+- **Navigateur** (Chromium, build de production) : captures, mesures, clavier et couleurs. Les mesures brutes sont dans `captures/methode/mesures.json`.
+- **Clic compris au premier regard ?** Oui, à mon avis, par l'accumulation d'indices : aspect de carte-bouton avec ombre, chevron dans un rond, phrase d'aide avec une main, curseur, survol très marqué. L'onglet actif se distingue nettement des autres par son fond plein. Ce jugement reste à confirmer par un test avec une ou deux personnes du public visé.
+- **Captures** (`captures/methode/`) :
+  - `1280-schema-etat-1.png` à `1280-schema-etat-4.png` : les 4 états du schéma ;
+  - `1280-section-etape-1.png`, `1280-section-etape-4.png`, `375-section-etape-1.png`, `375-section-etape-4.png` : la section complète (pendant les captures, l'en-tête collant a été rendu statique pour ne pas recouvrir la section) ;
+  - `1280-survol-etape-2.png`, `375-survol-etape-2.png` : survol d'un onglet ;
+  - `1280-focus.png`, `375-focus.png` : focus clavier ;
+  - `1280-transition-1-vers-2.png` : transition à mi-parcours ;
+  - `1280-sans-js.png`, `375-sans-js.png` : rendu sans JavaScript.
+
+### 4. Problèmes rencontrés et corrigés
+
+- **Teintes claires invisibles en trait** : d'où les 4 teintes foncées ajoutées à la charte (question 95).
+- **Motifs et pointes de flèche** : un motif de hachures ou une pointe de flèche SVG ne prend pas la couleur de l'élément qui l'utilise. Il y a donc un motif et une pointe par couleur d'étape.
+- **Chevauchement** : un escalier et une porte intérieurs, dessinés d'abord pour lire les deux niveaux, se superposaient au radiateur et au thermostat. Ils ont été retirés.
+- **Saut de page** à chaque changement d'étape, dû aux textes de longueurs différentes : corrigé par la superposition des panneaux (question 101).
+
+### 5. Fichiers
+
+- **Nouveaux** :
+  - `src/components/MethodeSchema.astro` : le schéma évolutif ;
+  - `src/data/methode.ts` : textes, couleurs, icônes et descriptions des 4 étapes.
+- **Réécrits** :
+  - `src/components/MethodeEtapes.astro` : la section, les onglets et leur script ;
+  - `src/components/MethodeEtape.astro` : un onglet, avec la ligne verticale.
+- **Modifiés** :
+  - `src/styles/global.css` : 4 couleurs `…-fonce` ;
+  - `src/components/Methode.astro` : commentaires seulement.
+- **Rien n'est commité.**
+
+---
+
+## Correction : caméra thermique (13 octobre 2026)
+
+Demande : la caméra thermique est un outil de diagnostic. Elle et sa visée n'apparaissent **que sur l'état 1** (Audit) et disparaissent dès l'état 2, en même temps que les zones de déperdition. La règle « les éléments s'accumulent » ne s'applique pas à elle. Les **cotes** restent sur les 4 états. Cela règle la question 98.
+
+### Ce qui a été fait
+
+- `src/components/MethodeSchema.astro` :
+  - la caméra (trépied, boîtier, objectif, écran), sa visée en pointillé et l'annotation « caméra thermique » sont passées dans le groupe des zones de déperdition (`data-perte`), visible à l'état 1 seulement ;
+  - les cotes restent seules dans leur groupe (`data-des="1"`), visible sur les 4 états ;
+  - mêmes transitions qu'avant : fondu de 0,4s à la disparition ; en revenant à l'étape 1, la caméra réapparaît en fondu ;
+  - commentaires mis à jour.
+- `src/data/methode.ts` : descriptions du schéma pour les lecteurs d'écran, ajustées pour rester exactes :
+  - état 2 : « La caméra thermique et les zones de déperdition ont disparu ; les cotes restent. » (au lieu de « Les zones de déperdition ont disparu. ») ;
+  - état 4 : « les cotes, l'isolation, la ventilation et les panneaux sont conservés. » (au lieu de « tout ce qui précède est conservé. »).
+- Sans JavaScript, le schéma reste à l'état 4 : sans caméra, avec les cotes.
+- Rien d'autre n'a changé.
+
+### Vérifications
+
+- **Build de production** : réussi, sans erreur.
+- **Contrôle automatique** (Chromium, build de production, 1280px) : opacité du groupe de la caméra, de la visée et des cotes, lue dans le navigateur à chaque état :
+
+| État | Caméra | Visée | Cotes |
+|---|---|---|---|
+| 1. Audit | visible | visible | visible |
+| 2. Isoler et ventiler | masquée | masquée | visible |
+| 3. Produire | masquée | masquée | visible |
+| 4. S'équiper | masquée | masquée | visible |
+| Retour à l'état 1 | visible | visible | visible |
+| Sans JavaScript (état 4) | masquée | — | visible |
+
+- **Captures** (`captures/methode-camera/`) : `1280-schema-etat-1.png` à `1280-schema-etat-4.png`. La caméra n'est visible que sur la première. Mesures brutes : `mesures.json`.
+- **Point d'attention** : la maison paraît décalée vers la gauche à partir de l'état 2 (question 103).
+
+### Fichiers
+
+- Modifiés : `src/components/MethodeSchema.astro`, `src/data/methode.ts`.
+- **Rien n'est commité.**
+
+---
+
+## Animation d'entrée du schéma de la Méthode et refonte de « Deux façons de faire » (13 octobre 2026)
+
+Deux demandes : animer le schéma de la Méthode à l'arrivée de la section ; refaire la section « Vous pilotez, ou on pilote ? », plus courte, plus légère, avec moins de texte. **Les questions ouvertes sont les n° 104 à 107** de « Questions en attente de réponse ». Les questions 84 et 96 sont mises à jour (sans objet ou inconvénient levé). Textes exacts : partie G de « Textes du simulateur d'aides et de la section Méthode ».
+
+### Partie 1 : animation d'entrée du schéma de la Méthode
+
+**Ce qui a été fait** (`src/components/MethodeSchema.astro`)
+- Même mécanique que `SchemaMaison.astro` (hero) et `Methode.astro`.
+- **Déclenchement** : 30 % de la section visible, ou la section occupe 30 % de la hauteur de l'écran (sur téléphone, la section est plus haute que l'écran).
+- **Déroulé** :
+  1. la maison (terrain, murs, planchers, toit) se dessine en 1,2s, comme un crayon ;
+  2. les éléments de l'étape active apparaissent ensuite en fondu de 0,3s, couche par couche (120ms d'écart).
+- **Rejeu** : à chaque retour de la section à l'écran, mais seulement après une sortie **complète** de l'écran. Un petit défilement au bord ne relance rien.
+- **Pas de conflit avec le changement d'étape** : 2s après l'entrée, le schéma passe à l'état « fini ». Le fondu et le tracé de 0,4s du changement d'étape fonctionnent comme avant.
+- **Réduire les animations, ou navigateur sans IntersectionObserver** : rien n'est caché, rien ne bouge.
+
+**Vérifications** (Chromium, build de production, 1280px ; valeurs de `data-entree` relevées dans le navigateur)
+
+| Moment | État |
+|---|---|
+| Au chargement, section hors écran | attente (dessin caché) |
+| 1er passage, 250ms après l'arrivée | anime (tracé en cours) |
+| 2,2s plus tard | fini |
+| Défilement de 600px puis retour, sans quitter la section | fini (**pas de rejeu**) |
+| Retour en haut de page (section entièrement sortie) | attente (réarmé) |
+| 2e passage, 250ms après l'arrivée | anime (**rejoué**) |
+| Clic sur l'étape 2 après l'entrée | tracé de 0,4s actif (`ms-trace`), puis éléments visibles |
+| « Réduire les animations » | aucun attribut : dessin affiché immédiatement |
+
+- Captures : `captures/deux-facons/schema-passage-1-a-250ms.png`, `schema-passage-1-fin.png`, `schema-passage-2-a-250ms.png` (maison en cours de tracé au 2e passage).
+
+### Partie 2 : « Deux façons de faire » (ex-« Vous pilotez, ou on pilote ? »)
+
+**Ce qui a été fait** (`src/components/MethodeFacons.astro`, réécrit)
+- **Titre** : « Deux façons de faire ».
+- **Structure** :
+  - à partir de 1024px : illustration à gauche (45 %), titre puis les deux options à droite (55 %) ;
+  - en dessous : titre centré, illustration, puis les deux options empilées (question 107).
+- **Illustration** :
+  - `travaux.png` était **déjà déposé** dans `src/assets/illustrations/` : il est affiché avec `<Image>` d'Astro, converti en WebP (480, 800 et 1200px de large) ;
+  - aucun cadre, arrondi ni ombre ;
+  - texte alternatif fourni, repris tel quel ;
+  - le fichier a un **fond transparent** (et non blanc) : le dessin se pose directement sur le fond de la section ;
+  - agrandi de 20 % pour compenser ses marges transparentes (question 106) ;
+  - si le fichier venait à manquer, un emplacement vide de même proportion le remplace.
+- **Options** :
+  - textes courts fournis, repris sans les rallonger ; les anciens textes longs sont supprimés ;
+  - la **citation domine** : `text-h3`, graisse 900, 38px à 1280px, 27px à 375px, avec la barre orange de 6px conservée à gauche ;
+  - **bloc bleu nuit et cartes supprimés** : les deux options sont à égalité, séparées par un trait horizontal fin (bleu nuit à 20 %) ;
+  - **liens soulignés** à la place des boutons : texte foncé semi-gras, soulignement orange de 2px (4px au survol), 44px de haut pour le doigt, contour de focus bleu nuit.
+- **Fond** : **crème foncé** (`creme-fonce`, #ece7dd) à la place de l'argile (question 104). Le commentaire de `argile` dans `global.css` est mis à jour : il ne sert plus de fond de section.
+- **Marges verticales réduites** à 48 et 64px (question 105).
+- **Animation** (mécanisme `data-apparition` de `Methode.astro`) :
+  - l'illustration, puis la citation 1, puis la citation 2 apparaissent en fondu avec une montée de 16px, en 0,5s, à **200ms d'écart**, comme un dialogue ;
+  - le titre suit l'animation commune des sections ;
+  - rejoué à chaque passage, après sortie complète de l'écran ;
+  - rien ne bouge si « réduire les animations » est activé.
+  - Capture à mi-parcours : `apres-1280-animation-350ms.png`.
+
+**Mesures** (Chromium, build de production)
+
+| Largeur | Avant | Après | Écart |
+|---|---|---|---|
+| 1280px | 777px | **680px** | −97px (−12 %) |
+| 375px | 1 144px | **935px** | −209px (−18 %) |
+
+- **Première version : 808px à 1280px, plus haute que l'ancienne.** Les marges de 2 × 120px pesaient plus que le texte supprimé, et le titre et les citations agrandies occupent de la place. D'où la réduction des marges et de l'écart entre les options. Gain final : nettement plus courte sur téléphone (−18 %), plus modérément à 1280px (−12 %).
+- Aucun débordement horizontal, aucune erreur dans la console. Illustration : 619 × 344px à 1280px (dessin agrandi compris), 402 × 224px à 375px.
+
+**Captures** (`captures/deux-facons/`) :
+- `avant-1280.png`, `avant-375.png` : l'ancienne version, capturée avant modification ;
+- `apres-1280.png`, `apres-375.png` : la nouvelle version ;
+- mesures brutes : `mesures.json`.
+
+### Fichiers
+
+- **Modifiés** :
+  - `src/components/MethodeSchema.astro` : animation d'entrée ;
+  - `src/components/MethodeFacons.astro` : réécrit ;
+  - `src/components/Methode.astro` : animation « facons » (200ms, montée) et commentaires ;
+  - `src/pages/index.astro` : commentaire de la liste des fonds ;
+  - `src/styles/global.css` : commentaires de `argile` et `creme-fonce`.
+- **Rien n'est commité.**
+
+---
+
+## Refonte de la section Cas types (13 octobre 2026)
+
+⚠️ **La demande a été reçue coupée** après « MAISON », au début du 3e cas (question 108). Tout ce qui était lisible a été fait. Les 3 derniers cas affichent des textes provisoires. **Les questions ouvertes sont les n° 108 à 113.**
+
+### 1. Ce qui a été fait
+
+**Fond : rupture sombre**
+- Fond **bleu nuit** (`nuit-900`, #1d2b36), textes en blanc.
+- Contrastes mesurés sur les couleurs réelles du navigateur et calculés :
+
+| Élément | Couleurs | Contraste |
+|---|---|---|
+| Titre, introduction | blanc sur nuit-900 | 14,5:1 |
+| Onglet inactif | blanc sur nuit-700 | 10,9:1 |
+| Onglet inactif au survol | blanc sur nuit-filet | 9,3:1 |
+| Onglet actif | texte (#16212a) sur blanc | 16,3:1 |
+| Titre et textes du bloc | blanc sur nuit-700 / nuit-900 | 10,9:1 / 14,5:1 |
+| Libellé « Les contraintes » | orange action-500 sur nuit-900 | 6,1:1 |
+| Libellé « Ce qu'on fait à la place » | vert-clair #8fd1b0 sur nuit-900 | 8,2:1 |
+| Contour de focus des onglets | blanc sur nuit-900 | 14,5:1 |
+
+- **Bloc de contenu en nuit-700** (question 110). Les deux encarts sont en nuit-900, avec un filet de 4px à gauche (orange, puis vert clair).
+- **Onglets** :
+  - inactifs : fond nuit-700, texte blanc ; au survol, fond nuit-filet ;
+  - actif : fond blanc, texte noir, soulignement orange de 3px ;
+  - contour de focus blanc (il était bleu nuit, invisible sur ce fond).
+
+**Titre et introduction** (fournis, repris mot pour mot)
+- Titre (h2) : « Chaque maison a ses spécificités. »
+- Introduction : « Une maison en pierre ne se rénove pas comme un pavillon des années 70. Nous partons de votre bâti, pas d'une méthode toute faite. »
+- L'introduction est en blanc plein, comme celle du Collectif. Elle était en texte doux sur le brume.
+
+**Les 5 onglets, renommés et réordonnés** (vérifié dans le navigateur, dans cet ordre)
+1. Bâti ancien et historique (ex « Maison en pierre »)
+2. Années 50 à 90
+3. Maison moderne (ex « Années 2000 »)
+4. Appartement (remonté)
+5. Changement d'équipement (ex « Équipement à changer »)
+
+Les identifiants techniques suivent : `bati-ancien`, `annees-50-90`, `moderne`, `appartement`, `equipement`. Les illustrations, textes alternatifs et étiquettes restent attachés à leur cas.
+
+**Nouvelle structure de chaque cas**
+- Encart « Ce que vous y gagnez » **supprimé**.
+- Encart « L'erreur qui coûte cher » **remplacé** par deux encarts : « LES CONTRAINTES » et « CE QU'ON FAIT À LA PLACE ».
+- Champs de `src/data/cas-types.ts` : `piege` et `gain` deviennent `contraintes` et `solution`. Un champ `provisoire` marque les textes en attente.
+
+**Contenus**
+- **Fournis, repris mot pour mot** (espaces insécables ajoutées devant « : ») :
+  - Bâti ancien et historique : « Des murs qui doivent respirer » ; contraintes et solution fournies ;
+  - Années 50 à 90 : « Le cas le plus simple, et le plus rentable » ; contraintes et solution fournies.
+- **PROVISOIRES, rédigés par Claude** (demande coupée, question 108) :
+  - **Maison moderne** — titre « Isolée, mais pas tout à fait » (ancien titre).
+    - Contraintes : « L'isolation est souvent correcte, mais la ventilation est sous-dimensionnée et le chauffage reste électrique ou au gaz. »
+    - Solution : « Vérifier la ventilation, compléter l'isolation là où elle manque, puis passer à un chauffage plus sobre et étudier le solaire. »
+  - **Appartement** — titre « Vous ne décidez pas seul » (ancien titre).
+    - Contraintes : « Les murs extérieurs, la toiture et le chauffage collectif dépendent de la copropriété. »
+    - Solution : « Agir sur ce qui vous appartient (fenêtres, isolation par l'intérieur, ventilation) et préparer le reste avec le syndic. »
+  - **Changement d'équipement** — titre « La panne qui oblige à décider vite » (ancien titre).
+    - Contraintes : « Une chaudière en panne ne laisse pas le temps d'isoler d'abord. »
+    - Solution : « Choisir un appareil dimensionné pour la maison une fois isolée : vous ne payez pas deux fois. »
+
+**Anciens textes supprimés** (pour mémoire ; ils étaient déjà provisoires, rédigés par Claude)
+
+| Ancien onglet | Ancien titre | « L'erreur qui coûte cher » | « Ce que vous y gagnez » |
+|---|---|---|---|
+| Maison en pierre | Des murs épais qui doivent respirer | Un isolant étanche ou un enduit ciment emprisonne l'humidité dans la pierre. | Des isolants perspirants : le confort revient sans abîmer les murs. |
+| Années 50 à 90 | Le pavillon qui chauffe la rue | Installer une pompe à chaleur avant d'isoler, c'est la payer trop grosse. | Isoler d'abord, puis chauffer avec un appareil plus petit et moins cher. |
+| Années 2000 | Isolée, mais pas tout à fait | Croire que l'isolation est terminée et oublier la ventilation. | Compléter l'isolation, puis passer à un chauffage plus sobre. |
+| Équipement à changer | La panne qui oblige à décider vite | Remplacer dans l'urgence par un appareil trop gros une fois la maison isolée. | Un équipement choisi pour les travaux à venir : vous ne payez pas deux fois. |
+| Appartement | Vous ne décidez pas seul | Lancer des travaux sans savoir ce que prévoit la copropriété. | Agir sur ce qui vous appartient, et préparer le reste avec le syndic. |
+
+**Inchangé** :
+- les illustrations et leur débordement à gauche (question 111) ;
+- les étiquettes flottantes (question 109) ;
+- les animations d'entrée et de changement d'onglet ;
+- le clavier (flèches, Début, Fin) ;
+- le rendu sans JavaScript (5 panneaux les uns sous les autres).
+
+### 2. Mesures et vérifications
+
+- **Build de production** : réussi, sans erreur.
+- **Navigateur** (Chromium, build de production) : aucun débordement horizontal, aucune erreur dans la console.
+- **Hauteur de la section** : 1 338px à 1280px, 1 489px à 375px. Ancienne hauteur non mesurée avant la modification.
+- **Captures** (`captures/cas-types/`) :
+  - `1280-onglet-1.png` à `1280-onglet-5.png` : les 5 cas à 1280px ;
+  - `375-onglet-1.png` : téléphone ;
+  - `1280-focus-onglet.png`, `375-focus-onglet.png` : focus clavier ;
+  - mesures brutes : `mesures.json`.
+
+### 3. Fichiers
+
+- **Modifiés** :
+  - `src/data/cas-types.ts` : ordre, libellés, nouveaux champs, textes ;
+  - `src/components/CasTypes.astro` : fond, titre, introduction, onglets, bloc, encarts, commentaires ;
+  - `src/styles/global.css` : nouvelle couleur `vert-clair`, commentaires de `brume` et `vert-800` ;
+  - `src/pages/index.astro` : commentaire de la liste des fonds.
+- **Rien n'est commité.**
+
+---
+
+## État des lieux des illustrations (13 octobre 2026)
+
+Demande : lister les fichiers de `src/assets/illustrations/` et les références du code, et repérer celles qui pointent vers un fichier absent. **Aucune correction faite**, à la demande. Question ouverte : n° 114.
+
+### Fichiers présents dans `src/assets/illustrations/`
+
+| Fichier | Taille | Date |
+|---|---|---|
+| `aides.jpg` | 765 Ko | 12 oct. 18:28 |
+| `annees70.png` | 489 Ko | 13 oct. 14:45 |
+| `appartement.png` | 581 Ko | 13 oct. 14:45 |
+| `moderne.png` | 557 Ko | 13 oct. 14:45 |
+| `pierre.png` | 600 Ko | 13 oct. 14:45 |
+| `technique.png` | 506 Ko | 13 oct. 14:45 |
+| `travaux.png` | 679 Ko | 13 oct. 14:14 |
+
+Le dossier n'est pas suivi par git : impossible de retrouver l'historique des fichiers. En début de séance, il contenait `pierre.jpg`, `annees70.jpg`, `moderne.jpg`, `technique.jpg`, `appartement.jpg` et `carte.jpg`. Les 5 premiers ont été remplacés par des `.png` à 14:45 ; `carte.jpg` a disparu.
+
+### Références dans le code
+
+Toutes passent par `illustration(nom)` (`src/data/illustrations.ts`), qui cherche le nom EXACT, extension comprise.
+
+| Fichier du code | Ligne | Nom référencé | Existe ? |
+|---|---|---|---|
+| `src/data/cas-types.ts` (Bâti ancien et historique) | 55 | `pierre.jpg` | ❌ non (il y a `pierre.png`) |
+| `src/data/cas-types.ts` (Années 50 à 90) | 65 | `annees70.jpg` | ❌ non (il y a `annees70.png`) |
+| `src/data/cas-types.ts` (Maison moderne) | 77 | `moderne.jpg` | ❌ non (il y a `moderne.png`) |
+| `src/data/cas-types.ts` (Appartement) | 89 | `appartement.jpg` | ❌ non (il y a `appartement.png`) |
+| `src/data/cas-types.ts` (Changement d'équipement) | 101 | `technique.jpg` | ❌ non (il y a `technique.png`) |
+| `src/components/Collectif.astro` | 44 | `carte.jpg` | ❌ non (aucun fichier « carte ») |
+| `src/components/SimulateurAides.astro` | 33 | `aides.jpg` | ✅ oui |
+| `src/components/MethodeFacons.astro` | 35 | `travaux.png` | ✅ oui |
+
+- Le commentaire d'en-tête de `src/data/illustrations.ts` (lignes 4 à 6) liste encore les anciens noms en `.jpg` et `carte.jpg`.
+- **Conséquence** : pas d'erreur de build. `illustration()` renvoie « rien » et le composant affiche un emplacement vide :
+  - les 5 cas types : emplacement crème foncé, sans image ;
+  - la carte du Collectif : rien du tout (`{carte && …}`), mais les 2 étiquettes flottantes restent affichées seules.
+- **Fichiers orphelins** : les 5 `.png` des cas types ne sont référencés nulle part (seulement sous leur ancien nom en `.jpg`).
+
+### Hors du dossier des illustrations (vérifié au passage)
+
+- `src/components/Header.astro` : 10 images de `src/assets/menu/`, toutes présentes.
+- `src/content/blog/comprendre-pompe-a-chaleur.md` : `./pompe-a-chaleur.jpg`, présent.
+- `src/layouts/Layout.astro`, ligne 24 : image de partage par défaut `/images/og-default.jpg`. **Absente** (`public/images/` n'existe pas) : ce n'est pas une illustration de la page, mais les aperçus de lien (réseaux sociaux, messageries) pointent vers un fichier introuvable.
+- `public/favicon.svg` : présent.
+
+---
+
+## Correction des références aux illustrations (13 octobre 2026)
+
+Suite de l'état des lieux (question 114, désormais réglée). **Questions ouvertes : n° 115 à 117.**
+
+### 1. Ce qui a été fait
+
+**Références des cas types** (`src/data/cas-types.ts`)
+- Les 5 images passent en `.png` : `pierre.png`, `annees70.png`, `moderne.png`, `appartement.png`, `technique.png`.
+- Le commentaire d'en-tête de `src/data/illustrations.ts` est mis à jour :
+  - liste des fichiers réels ;
+  - `carte.png` attendue ;
+  - rappel : le nom doit correspondre exactement, extension comprise.
+
+**Carte du Collectif** (`src/components/Collectif.astro`)
+- Le code attend maintenant `carte.png`.
+- **Tant que le fichier est absent, tout le bloc de la carte est omis** : ni image, ni emplacement crème, ni les deux étiquettes flottantes. La section se termine après la ligne des engagements.
+  - Vérifié dans le navigateur, à 1280px et à 375px : 0 étiquette, 0 image, 0 bloc crème.
+  - Hauteur de la section : 646px à 1280px, 706px à 375px.
+- Quand `carte.png` sera déposée, le bloc réapparaîtra **avec les proportions du nouveau fichier**, lues automatiquement (avant : 16/9 fixe, celui de l'ancienne carte). Les étiquettes reviendront avec lui.
+- ⚠️ Le texte alternatif décrit l'ancienne carte (« Carte de France parsemée de maisons et de camionnettes d'artisans… ») : à revoir avec la nouvelle.
+
+**Image de partage** : signalée, non corrigée (question 117).
+
+### 2. Vérification du style des nouveaux PNG sur le bleu nuit
+
+**Mesures sur les fichiers** (réduits à 400px de large) :
+
+| Fichier | Taille | Pixels transparents |
+|---|---|---|
+| `pierre.png` | 2752 × 1536 | 78 % |
+| `annees70.png` | 2752 × 1536 | 79 % |
+| `moderne.png` | 2752 × 1536 | 78 % |
+| `appartement.png` | 2752 × 1536 | 83 % |
+| `technique.png` | 2752 × 1536 | 87 % |
+
+Ce sont bien des fonds **transparents**, pas blancs. Mais les traits ont un **halo blanc** et les surfaces des bâtiments sont **remplies de blanc**.
+
+**Constats** :
+1. **Lisibilité des traits** : aujourd'hui, ils sont lisibles **uniquement grâce au fond crème foncé du cadre**, prévu pour l'emplacement vide, qui passe derrière le PNG transparent.
+   - Sans ce fond, le dessin à l'encre bleu nuit ne disparaît pas : les halos et les remplissages blancs le détachent. Mais il apparaît « en négatif », avec des taches blanches floues.
+   - Détail et solutions : question 115.
+2. **Débordement à gauche** : il fonctionne visuellement. On voit un rectangle crème coupé par le bord gauche de l'écran, comme une feuille de plan posée sur le bleu nuit.
+3. **Rognage** : 43 % de la largeur de chaque dessin est coupé, à cause du cadre presque carré (question 116).
+4. **Étiquettes flottantes blanches** : lisibles sur les 5 cas (texte noir sur blanc, ombre portée). Elles se détachent du bleu nuit comme du crème.
+
+### 3. Vérifications
+
+- **Build de production** : réussi, sans erreur.
+- **Les 5 onglets à 1280px** : chaque image se charge (`img.complete`, largeur réelle 768px, versions WebP générées).
+  - `cas-panneau-bati-ancien` → `pierre…webp` ✅
+  - `cas-panneau-annees-50-90` → `annees70…webp` ✅
+  - `cas-panneau-moderne` → `moderne…webp` ✅
+  - `cas-panneau-appartement` → `appartement…webp` ✅
+  - `cas-panneau-equipement` → `technique…webp` ✅
+  - **Aucun emplacement vide.**
+- **Captures** (`captures/illustrations/`) :
+  - `1280-cas-1.png` à `1280-cas-5.png` : les 5 cas types ;
+  - `375-cas-1.png` : téléphone ;
+  - `1280-collectif.png`, `375-collectif.png` : le Collectif sans carte ;
+  - simulations, **non appliquées** : `simulation-sans-fond-cas-1.png` et `-4.png`, `simulation-inverse-cas-1.png` et `-4.png`, `simulation-proportions-cas-1.png` ;
+  - mesures brutes : `mesures.json`, `transparence.json`.
+
+### 4. Fichiers
+
+- **Modifiés** :
+  - `src/data/cas-types.ts` : 5 extensions ;
+  - `src/data/illustrations.ts` : commentaire d'en-tête ;
+  - `src/components/Collectif.astro` : `carte.png`, bloc conditionnel, proportions lues dans le fichier, commentaires.
+- **Rien n'est commité.**
+
+---
+
+## Corrections de la section Cas types (13 octobre 2026)
+
+**Questions ouvertes : n° 118 à 122.** Réglées ou sans objet : 108 à 112, 115, 116. La 113 (`vert-clair`) reste ouverte.
+
+### 1. Ce qui a été fait
+
+**Couleur de fond : PRUNE** (#3d2c40, nouvelle couleur `prune` dans `global.css`) (question 118)
+- Le bleu nuit est abandonné.
+- Les nuances de la section sont **dérivées de la seule teinte de fond** (variables CSS dans `CasTypes.astro`) : changer `--cas-fond` suffit à tout recolorer.
+  - bloc de contenu et onglets inactifs : fond + 8 % de blanc ;
+  - survol des onglets : + 16 % de blanc ;
+  - encarts : fond + 25 % de noir.
+- **Contrastes mesurés** sur les couleurs affichées par le navigateur :
+
+| Élément | Contraste |
+|---|---|
+| Texte blanc sur le fond (titre, introduction) | 12,9:1 |
+| Texte blanc sur le bloc et les onglets inactifs | 10,3:1 |
+| Texte blanc sur un onglet survolé | 8,2:1 |
+| Texte blanc dans les encarts | 16,7:1 |
+| Libellé orange « Les contraintes » | 7,0:1 |
+| Libellé vert clair « Ce que l'on fait » | 9,5:1 |
+| Bloc contre le fond (différence de teinte) | 1,25:1 |
+
+- **Teintes essayées**, sur le vrai rendu : prune, moka, brique, aubergine. Captures dans `captures/cas-types-fond/`.
+
+**Étiquettes flottantes : supprimées** (balisage et champ `etiquettes` de `src/data/cas-types.ts`). La classe `etiquette` de `global.css` reste : elle sert à la carte du Collectif.
+
+**Illustrations**
+- **Plus de débordement à gauche** : l'image reste dans la grille.
+- **Taille divisée par deux** : 573 × 320px à 1280px, contre un cadre de 688 × 672px avant.
+- **Dessin entier** : il garde ses proportions (2752 × 1536). Les 43 % rognés auparavant sont visibles.
+- **Fond transparent** utilisé : les PNG le sont bien (78 à 87 % de pixels transparents, mesurés à l'étape précédente). Plus de fond crème derrière, ni de cadre.
+- **Lisibilité sur la prune** : voir la question 120. Les dessins se lisent grâce à leurs halos blancs, pas grâce à leur encre.
+- **Textes alternatifs réécrits** d'après les nouveaux dessins : ils décrivaient les anciens JPEG.
+
+**Renommages**
+- 3e cas : onglet « Années 1995 à 2012 », titre « Isolée, mais pas performante » ; identifiant `annees-1995-2012`. Le dessin ne correspond pas (question 122).
+- 4e cas : titre « Ce que vous pouvez décider seul ».
+- 5e cas : titre « Ne pas figer quinze ans d'erreur ».
+- 2e encart : « CE QUE L'ON FAIT ».
+
+**Textes étoffés** (3 à 4 phrases par encart). Textes exacts, extraits du fichier de données :
+
+**1. Bâti ancien et historique** — « Des murs qui doivent respirer » (`pierre.png`)
+- Les contraintes — *fourni* : « Souvent en secteur protégé : l'isolation par l'extérieur est refusée par les Bâtiments de France. Et un mur ancien, pierre ou brique, évacue l'humidité à travers son épaisseur. » — **ajouté par Claude, à valider** : « Sans fondations étanches, l'eau du sol remonte souvent dans le bas des murs. Les menuiseries, les enduits et la toiture sont, eux aussi, soumis à l'avis de l'architecte des Bâtiments de France. »
+- Ce que l'on fait — *fourni* : « Isolation par l'intérieur en matériaux perspirants, après diagnostic d'humidité. Jamais de polystyrène ni d'enduit ciment, qui emprisonnent l'eau dans le mur. » — **ajouté par Claude, à valider** : « Fibre de bois, chanvre et chaux, ou liège : ces isolants laissent passer la vapeur d'eau tout en gardant la chaleur. À l'extérieur, les enduits sont refaits à la chaux et les fenêtres remplacées dans le respect du style d'origine, pour obtenir l'accord des Bâtiments de France. »
+- Texte alternatif *(rédigé par Claude, d'après le dessin)* : « Dessin au trait d'une maison ancienne en pierre, au toit de tuiles et aux volets de bois, prolongée par un mur et un portail en arc. »
+
+**2. Années 50 à 90** — « Le cas le plus simple, et le plus rentable » (`annees70.png`)
+- Les contraintes — *fourni* : « Peu ou pas d'isolant, menuiseries d'origine, pas de ventilation mécanique. Rien de bloquant techniquement. » — **ajouté par Claude, à valider** : « Avant la première réglementation thermique, en 1974, les murs en parpaing ou en brique creuse étaient souvent montés sans aucun isolant. Le chauffage d'origine, au fioul, au gaz ou par convecteurs électriques, arrive souvent en bout de course. »
+- Ce que l'on fait — *fourni* : « Combles, murs, menuiseries, ventilation, puis chauffage. Dans cet ordre : une pompe à chaleur posée sur une maison qui fuit sera trop grosse et ne tiendra pas ses promesses. » — **ajouté par Claude, à valider** : « Les murs s'isolent le plus souvent par l'extérieur, ce qui traite la plupart des ponts thermiques sans réduire la surface habitable. Une ventilation mécanique adaptée évite ensuite que la maison, devenue étanche, ne garde l'humidité. »
+- Texte alternatif *(rédigé par Claude, d'après le dessin)* : « Dessin au trait d'un pavillon avec garage, toit ouvert sur la charpente, échafaudage, échelle et rouleaux d'isolant au pied du mur. »
+
+**3. Années 1995 à 2012** — « Isolée, mais pas performante » (`moderne.png`)
+- Les contraintes *(fourni)* : « L'isolation d'origine respecte les normes de son époque, mais elle est loin des exigences actuelles. La ventilation est souvent sous-dimensionnée, voire absente dans les premières années. Le chauffage, gaz ou électrique, arrive en fin de vie. Et l'étanchéité à l'air n'était pas encore un sujet sur cette génération. »
+- Ce que l'on fait *(fourni)* : « On commence par mesurer ce qui manque réellement, plutôt que de refaire ce qui tient encore. Un renfort des combles coûte peu et rapporte beaucoup sur ces maisons. On remet la ventilation à niveau, puis on remplace le chauffage fossile par une pompe à chaleur, qui sera bien dimensionnée puisque le bâti est correct. Le photovoltaïque vient ensuite, calculé sur vos besoins futurs. »
+- Texte alternatif *(rédigé par Claude, d'après le dessin)* : « Dessin au trait d'une maison à toit plat, avec des panneaux solaires en cours de pose, une pompe à chaleur au pied de la façade et une borne de recharge. »
+
+**4. Appartement** — « Ce que vous pouvez décider seul » (`appartement.png`)
+- Les contraintes *(fourni)* : « La façade, la toiture et les colonnes de ventilation sont des parties communes : toute intervention passe par l'assemblée générale. Une pompe à chaleur avec unité extérieure est rarement acceptée, pour des raisons d'aspect et de bruit. Et si le chauffage est collectif, vous ne décidez pas de votre installation. »
+- Ce que l'on fait *(fourni)* : « On traite d'abord ce qui relève de vous seul : isolation par l'intérieur des murs donnant sur l'extérieur, remplacement des menuiseries si le règlement le permet, et ventilation. Quand la colonne commune ne peut pas être modifiée, on pose une VMC double flux compacte dans le logement, avec des sorties courtes en façade. Cette solution reste un second choix : si une rénovation globale de l'immeuble est envisageable, elle sera toujours plus efficace et moins coûteuse. »
+- Texte alternatif *(rédigé par Claude, d'après le dessin)* : « Dessin au trait d'un appartement vu de dessus, cloisons ouvertes : isolant posé contre un mur, fenêtre déposée, panneaux d'isolant et outils au sol. »
+
+**5. Changement d'équipement** — « Ne pas figer quinze ans d'erreur » (`technique.png`)
+- Les contraintes *(fourni)* : « Une chaudière qui lâche en plein hiver ne laisse pas le temps d'isoler d'abord. Et une pompe à chaleur décevante est rarement défaillante : elle est surdimensionnée, mal réglée, ou raccordée à des radiateurs incompatibles avec une basse température. Ce que vous installez maintenant restera quinze ans. »
+- Ce que l'on fait *(fourni)* : « On diagnostique l'existant avant de chiffrer quoi que ce soit : dimensionnement, réglages, émetteurs, état de l'isolation. Si un réglage suffit, on vous le dit, même quand ça nous fait perdre une vente. Si le remplacement s'impose, l'appareil est calculé sur la maison telle qu'elle sera après travaux, pas telle qu'elle est aujourd'hui. »
+- Texte alternatif *(rédigé par Claude, d'après le dessin)* : « Dessin au trait d'une chaufferie : ancienne chaudière, ballon d'eau chaude, pompe à chaleur, tuyauterie en cuivre et outils posés au sol. »
+
+### 2. Mesures et vérifications
+
+- **Build de production** : réussi, sans erreur. Aucun débordement horizontal, aucune erreur dans la console.
+- **Les 5 onglets à 1280px**, vérifiés un par un dans le navigateur :
+  - bon libellé et bon titre ;
+  - libellés « Les contraintes » et « Ce que l'on fait » ;
+  - image chargée, 573 × 320px ;
+  - 0 étiquette.
+- **Hauteur de la section** (elle varie selon l'onglet, question 121) :
+
+| Onglet | 1280px | 375px |
+|---|---|---|
+| 1. Bâti ancien et historique | 1 458px | 1 899px |
+| 2. Années 50 à 90 | 1 458px | 1 836px |
+| 3. Années 1995 à 2012 | 1 395px | 1 773px |
+| 4. Appartement | 1 458px | 1 899px |
+| 5. Changement d'équipement | 1 364px | 1 710px |
+
+- Pour comparaison, la version précédente (bleu nuit, grande image, textes courts) faisait 1 338px à 1280px et 1 489px à 375px. La section est donc **plus haute** qu'avant, malgré l'image réduite de moitié : les textes ont doublé ou triplé de longueur.
+- **Lisibilité des illustrations sur le nouveau fond** : traits clairs nets sur les 5 cas, avec des défauts (question 120). Sur téléphone, le dessin est petit : environ 200px de large utiles dans une image de 335 × 187px, à cause des marges transparentes du PNG.
+- **Captures** (`captures/cas-types-prune/`) :
+  - `1280-cas-1.png` à `1280-cas-5.png` ;
+  - `375-cas-1.png` ;
+  - mesures brutes : `mesures.json`.
+
+### 3. Fichiers
+
+- **Modifiés** :
+  - `src/data/cas-types.ts` : textes, renommages, alternatives, suppression des étiquettes ;
+  - `src/components/CasTypes.astro` : couleurs dérivées, illustration dans la grille, libellé d'encart, commentaires ;
+  - `src/styles/global.css` : nouvelle couleur `prune`, commentaire de `vert-clair` ;
+  - `src/pages/index.astro` : commentaire de la liste des fonds.
+- **Rien n'est commité.**
+
+## Raccourcis du Hero sous le schéma et bandeau « Comment ça se passe ? » (14 octobre 2026)
+
+**Questions ouvertes : n° 123 à 134** (« Questions en attente de réponse »). ⚠️ Bloquant pour le rendu final : la vidéo n'existe pas (question 130).
+
+### 1. Ce qui a été fait
+
+**Partie 1 : Hero**
+
+*1.1 Déplacement des raccourcis*
+- Le bandeau pleine largeur des raccourcis (fond brume), sous le Hero, est **supprimé**.
+- Les raccourcis sont **dans le Hero, sous le schéma**, dans la colonne de droite.
+- Ils ont un titre : « Par où voulez-vous commencer ? » (balise h2, 20px, gras).
+- Sous le titre, une phrase d'aide qui change selon l'appareil (question 128) :
+  - souris : « Survolez une solution pour la voir sur le schéma. » ;
+  - écran tactile : « Touchez une solution pour la voir sur le schéma, touchez-la à nouveau pour ouvrir sa page. »
+
+*1.2 Forme des raccourcis*
+- Icône au trait à gauche (les icônes de l'ancien bandeau), libellé à droite.
+- Fond clair : brume à 45 %, avec un filet brume et des coins arrondis.
+- Hauteur : **58px** mesurés (minimum fixé à 48px, au-delà des 44px demandés).
+- Disposition :
+  - téléphone : 2 colonnes ;
+  - tablette (768 à 1279px) : 4 colonnes, le schéma y occupe toute la largeur ;
+  - grand écran (1280px et plus) : 3 colonnes.
+- Survol, focus clavier ou toucher : fond orange pâle et anneau orange, comme l'équipement allumé sur le schéma.
+- Focus clavier : contour bleu nuit en plus.
+- Téléphone : icône de 20px et marges resserrées. « photovoltaïques » tient ainsi entier sur une ligne à 375px (au premier essai, le mot était coupé en « photovol-taïques »).
+
+*1.3 « Rénovation globale »*
+- Lien : `/solutions/renovation-energetique-globale`, **en premier**.
+- Fond bleu nuit, texte blanc, icône orange (une maison avec une coche), mention « L'offre complète ».
+- Pleine largeur sur téléphone et tablette ; une case comme les autres sur grand écran, pour garder une grille 3 × 3 sans trou (question 124).
+
+*1.4 Interaction avec le schéma*
+- Le survol, le focus clavier ou le toucher d'un raccourci allume le ou les équipements correspondants **en orange, trait doublé** :
+
+| Raccourci | Équipements allumés |
+|---|---|
+| Rénovation globale | **tous**, avec la pompe à chaleur parmi les trois chauffages |
+| Isolation | isolation des combles + isolation des murs |
+| Fenêtres et volets | menuiseries |
+| Pompe à chaleur | pompe à chaleur (qui apparaît) |
+| Climatisation réversible | climatisation (qui apparaît) |
+| Chaudière biomasse | chaudière biomasse (qui apparaît) |
+| Chauffe-eau | chauffe-eau |
+| Panneaux photovoltaïques | panneaux photovoltaïques |
+| Borne de recharge | borne de recharge |
+
+- La ventilation n'a pas de raccourci : elle ne s'allume qu'avec « Rénovation globale » (question 125).
+- **Écran tactile** :
+  - un premier toucher allume l'équipement sans ouvrir le lien ;
+  - un second toucher sur le même raccourci ouvre la page ;
+  - toucher un autre raccourci allume l'autre ;
+  - toucher ailleurs éteint le schéma.
+  - Souris, stylet et clavier ouvrent le lien dès le premier clic.
+- **Effet sur la navigation (vérifié)** :
+  - le script n'intercepte que le clic. Il ne touche jamais au début du toucher, donc il **ne peut pas bloquer le défilement** ;
+  - un retour arrière depuis la page ouverte remet le schéma au repos ;
+  - risque à vérifier pour les lecteurs d'écran sur mobile : question 131.
+- Mécanisme :
+  - le Hero pose l'attribut `data-allume` sur le schéma, avec les identifiants des équipements, ou « tout » ;
+  - le schéma réagit en CSS ;
+  - chaque raccourci porte la liste de ses équipements (champ `equipements` du tableau `raccourcis` de `Hero.astro`).
+- Sans JavaScript : les liens fonctionnent normalement et le schéma reste au repos.
+
+*1.5 Équipements masqués par défaut*
+- **Deux équipements dessinés** dans `SchemaMaison.astro` :
+  - **climatisation réversible** :
+    - unité extérieure compacte (un ventilateur, une grille), au même endroit que celle de la pompe à chaleur, puisque les deux ne sont jamais affichées ensemble ;
+    - ses liaisons vers la maison ;
+    - une unité murale (split) à l'étage, avec trois souffles d'air ;
+  - **chaudière biomasse** à granulés, dans le local technique :
+    - bandeau de commande, porte vitrée avec une flamme, tiroir à cendres ;
+    - conduit de fumée qui traverse les planchers et sort au-dessus du toit, avec son chapeau ;
+    - radiateur à l'étage, le même que celui de la pompe à chaleur.
+- **Pompe à chaleur, climatisation et biomasse sont masquées par défaut.** Au survol de son raccourci, chacune apparaît seule ; les deux autres restent masquées (vérifié dans le navigateur, voir les mesures).
+- Les **sept** autres équipements restent visibles en permanence (question 126).
+- **Légende numérotée sous le schéma : supprimée**, avec sa navigation au clavier par flèches. Les raccourcis la remplacent.
+- Repères : les cercles numérotés sont devenus des pastilles orange pleines (question 127).
+- La description du schéma pour les lecteurs d'écran est réécrite (question 128).
+
+*1.6 Le collectif en surtitre*
+- « Collectif d'artisans locaux — en direct, sans sous-traitance. » est passé **au-dessus du h1**, aligné à gauche.
+- Style mesuré : **19,2px (1.2rem), graisse 700**, contre 14,4px en graisse normale avant.
+- **Couleur : orange foncé action-600** (#d17f08), pas action-500. L'orange des boutons n'atteint que 2,4:1 sur le blanc ; action-600 atteint 3,1:1 (question 123).
+
+*Autre réglage*
+- Grand écran : marges verticales du Hero ramenées de 120 à 64px.
+- Avec 120px, la dernière rangée de raccourcis passait sous le bas d'un écran de 1280 × 900. Elle finit maintenant à 849px : le Hero entier, raccourcis compris, tient dans le premier écran.
+
+**Partie 2 : bandeau « Comment ça se passe ? »** (nouveau composant `CommentCaMarche.astro`)
+
+*Contenu*
+- Placé juste après le Hero, à la place de l'ancien bandeau des solutions.
+- Titre « Comment ça se passe ? » et les 3 étapes, **textes fournis repris mot pour mot** :
+  1. « Vous nous contactez » — « Un formulaire en ligne ou un appel. Vous décrivez votre projet, même vaguement : on est là pour le préciser avec vous. »
+  2. « L'artisan Akelia le plus proche de chez vous vous contacte » — « Sous 24 heures. C'est une entreprise du collectif implantée dans votre secteur qui vous rappelle, pas un centre d'appel. Vos coordonnées ne sortent jamais du réseau : aucun démarchage, aucune revente. »
+  3. « Il vient chez vous et chiffre les travaux » — « Visite sur place gratuite, puis un devis détaillé : nature des travaux, aides estimées, reste à charge. »
+- Pastilles numérotées : cercle blanc cerclé d'orange, chiffre bleu nuit. Un filet orange clair relie les pastilles.
+- Les lecteurs d'écran entendent « Étape 1 : … ».
+
+*Disposition*
+- À partir de 1024px : vidéo à gauche ; titre et étapes à droite.
+- En dessous : titre, vidéo, puis étapes.
+
+*Vidéo*
+- Balise `<video>` avec `autoplay muted loop playsinline`, `preload="metadata"` et un `poster` (image fixe).
+- Sources : WebM d'abord (plus léger), MP4 ensuite.
+- Décorative : masquée aux lecteurs d'écran, les étapes disent tout.
+- « Réduire les animations » activé :
+  - la vidéo est masquée par CSS et l'image fixe affichée à sa place, même sans JavaScript ;
+  - un petit script la met en pause et coupe son préchargement ;
+  - si le réglage change pendant la visite, le site suit.
+- Fichiers attendus dans `public/videos/` : `comment-ca-marche.webm`, `comment-ca-marche.mp4`, `comment-ca-marche.jpg`.
+- **Ces fichiers n'existent pas.** La présence des trois est vérifiée à la construction du site ; sans eux, un **emplacement vide** 4:3 (blanc à 50 %) est affiché. Il suffit de les déposer et de reconstruire (question 130).
+
+*Fond : argile (#f1dace)*. Justification :
+- **Il tranche** avec les deux fonds blancs qui encadrent la section (Hero et Méthode) : c'est une teinte pleine, pas un blanc cassé.
+- **Il est chaud.** La section parle de contact humain et de proximité, et doit recevoir des personnages illustrés. Le rose terre cuite le dit mieux qu'un bleu ou un vert.
+- **Il n'est le fond d'aucune autre section** : rien ne fait doublon avec le crème foncé, la prune, le lichen, le bleu nuit ou la bruyère plus bas.
+- **Il accompagne l'orange de la marque** (pastilles, bouton) sans le concurrencer.
+- **Lisibilité** : texte 12,2:1 ; texte secondaire 5,3:1.
+- Candidat écarté : la brume, plus froide (question 129).
+
+**Ordre et fonds de la page d'accueil** (commentaire de `index.astro` mis à jour) :
+1. Hero : blanc ;
+2. **Comment ça se passe ? : argile** ;
+3. Méthode : blanc ;
+4. Deux façons de faire : crème foncé ;
+5. Cas types : prune ;
+6. Simulateur : lichen ;
+7. Collectif : bleu nuit ;
+8. Articles : bruyère.
+
+### 2. Mesures et vérifications
+
+- **Build de production** : réussi, sans erreur.
+- **Navigateur** (Chromium, build de production, animations réduites) :
+  - aucun débordement horizontal ;
+  - aucune erreur dans la console.
+  - `astro check` n'a pas été lancé : il demande l'installation d'un paquet supplémentaire (`@astrojs/check`), non installé.
+
+| Mesure | 1280px | 375px |
+|---|---|---|
+| **Hauteur du Hero** | **791px** | **1 254px** |
+| **Hauteur du bandeau « Comment ça se passe ? »** | **773px** | **1 195px** |
+| Schéma | 581 × 344px | 335 × 198px |
+| Raccourcis | 186px de large ; 78px de haut (1re rangée) et 58px | 58px de haut (9 sur 9) |
+| Bas de la dernière rangée de raccourcis | 849px (écran : 900px) | 1 279px (écran : 812px) |
+| Surtitre | 19,2px, 700, rgb(209, 127, 8), au-dessus du titre | idem |
+
+- Pour comparaison, le Hero d'avant (captures `hero-corrections`) mesurait :
+  - à 1280px : 808px seul, 1 020px avec le bandeau ;
+  - à 375px : 1 029px seul, 1 453px avec le bandeau.
+- **Allumage au survol** (1280px) : pour chaque raccourci testé, le navigateur rapporte l'attribut posé, les équipements visibles et ceux en orange :
+  - « Pompe à chaleur », « Climatisation réversible », « Chaudière biomasse » : l'équipement apparaît seul parmi les trois, en orange ;
+  - « Isolation » : les deux isolants en orange ;
+  - « Rénovation globale » : **8 équipements en orange** (les 7 permanents et la pompe à chaleur), climatisation et biomasse masquées.
+  - Focus clavier sur « Chaudière biomasse » : même allumage qu'au survol.
+- **Au repos** : 7 équipements visibles (les 3 chauffages masqués).
+- **Tactile** (simulé dans Chromium : écran tactile, mode mobile, 375px) :
+  - 1er toucher sur « Pompe à chaleur » : aucune ouverture, pompe à chaleur allumée ;
+  - toucher sur « Chaudière biomasse » : bascule vers la biomasse ;
+  - toucher ailleurs : schéma éteint ;
+  - 1er toucher sur « Borne » : allumée, pas d'ouverture ;
+  - 2e toucher : la page `/solutions/borne-de-recharge` s'ouvre ;
+  - retour arrière (testé sur le serveur de développement) : schéma au repos.
+  - Le dernier raccourci en bas de l'écran laisse **le schéma entièrement visible** en haut (de 168 à 367px) : on voit l'équipement s'allumer.
+  - Le défilement par glissé n'a pas pu être simulé : le navigateur de test ne défile pas, même hors des raccourcis. **À confirmer sur un vrai téléphone**, comme la question 131.
+- **Captures** (`captures/hero-raccourcis/`) :
+  - `1280-hero.png`, `375-hero.png` : le Hero, raccourcis sous le schéma ;
+  - `1280-ecran-arrivee.png` : le premier écran à 1280 × 900 ;
+  - `1280-survol-pompe-a-chaleur.png`, `1280-survol-climatisation.png`, `1280-survol-chaudiere-biomasse.png`, `1280-survol-isolation.png` : un raccourci survolé, équipement allumé ;
+  - `1280-survol-renovation-globale.png` : tous les équipements allumés ;
+  - `375-toucher-pac.png`, `375-toucher-borne.png` : toucher sur téléphone ;
+  - `1280-bandeau-comment-ca-se-passe.png`, `375-bandeau-comment-ca-se-passe.png` : le nouveau bandeau (emplacement vidéo vide) ;
+  - mesures brutes : `mesures.json`, `tactile.json`.
+
+### 3. Fichiers
+
+- **Créé** : `src/components/CommentCaMarche.astro`.
+- **Modifiés** :
+  - `src/components/Hero.astro` : surtitre, raccourcis sous le schéma, 9e raccourci, script d'allumage, marges ;
+  - `src/components/SchemaMaison.astro` : climatisation et biomasse, 3 équipements masqués, règles d'allumage `data-allume`, légende et navigation clavier supprimées, repères en pastilles, description ;
+  - `src/pages/index.astro` : nouveau bandeau, commentaire des fonds ;
+  - commentaires seulement : `src/components/MethodeEtapes.astro`, `src/components/MethodeEtape.astro`, `src/data/methode.ts` (ils parlaient de l'ancien bandeau).
+- **Rien n'est commité.**
+
+## Corrections de la section « Fonctionnement » et badge du Hero (14 octobre 2026)
+
+**Questions ouvertes : n° 135 à 140.**
+- Réglées : 123 (couleur du surtitre), 129 (fond argile).
+- Sans objet : 130 (vidéo).
+- Toujours ouvertes : 124 à 128 et 131 à 134. La 128 ne porte plus sur la vidéo ; la 133 est mise à jour plus bas.
+
+### 1. Ce qui a été fait
+
+**1. Badge du collectif (Hero)**
+- « Collectif d'artisans locaux — en direct, sans sous-traitance. » est désormais une **étiquette** :
+  - fond orange action-500, texte bleu nuit, graisse 700 ;
+  - contraste mesuré : **6,1:1**, alors que l'orange sur blanc n'atteignait que 2,4:1 ;
+  - coins très arrondis (28px) ;
+  - padding : 12 × 24px à partir de 768px, 10 × 20px sur téléphone ;
+  - aligné à gauche, au-dessus du h1.
+- Texte en 18px (question 139). Le badge tient sur 1 ligne à 1280px et sur 2 lignes à 375px.
+- Les coins sont arrondis à 28px plutôt qu'en pilule parfaite. Sur deux lignes, une pilule aurait des bouts démesurés.
+
+**2. Raccourcis de même hauteur**
+- Grille en `auto-rows-fr` : toutes les rangées prennent la hauteur de la plus haute.
+- Mesuré : **les 9 raccourcis ont la même hauteur à toutes les largeurs testées** :
+  - 78px à 1280 et 1920px (calés sur « Rénovation globale », sur 3 lignes : question 135) ;
+  - 58px à 1024, 768 et 375px.
+- « Rénovation globale » garde son fond bleu nuit.
+
+**3. Titre** : « Comment ça se passe ? » devient **« Fonctionnement »**.
+
+**4. Quatrième étape** (texte fourni, repris mot pour mot) : « Les travaux démarrent » — « Votre artisan réalise le chantier et reste votre interlocuteur ensuite, pour l'entretien comme pour le dépannage. »
+
+**5. Animation des étapes**
+- Nouvel attribut `data-scene-etape`, ajouté au système d'animation existant (`global.css`, `AnimationScenes.astro`).
+- Chaque étape apparaît par un fondu avec une montée de 16px, en 0,5 s. La première part 200 ms après le titre, puis une toutes les 150 ms.
+- Vérifié dans le navigateur, animations actives :
+  - délais lus : 200, 350, 500 et 650 ms ;
+  - les 4 étapes sont invisibles avant l'arrivée et visibles 1,35 s après ;
+  - l'animation est remise à zéro après une sortie complète de l'écran, puis rejouée au retour.
+- « Réduire les animations » : rien n'est caché, rien ne bouge (règle CSS et script existants, étendus à `data-scene-etape`).
+
+**6. Illustrations à la place de la vidéo**
+- La balise `<video>`, l'image fixe, le script de pause et le contrôle des fichiers de `public/videos/` sont supprimés.
+- `contact.png` et `chantier.png` sont affichés avec `<Image>` d'Astro : WebP, 4 tailles, chargement différé.
+- Ils sont retrouvés par `src/data/illustrations.ts`. Si un fichier manque, un emplacement vide s'affiche.
+- Fond transparent vérifié dans les fichiers : 63 % de pixels transparents pour `contact.png`, 45 % pour `chantier.png`.
+- Ni cadre, ni arrondi, ni ombre.
+- Textes alternatifs : ceux que vous avez fournis, mot pour mot.
+- **Mise en page** :
+  - à partir de 1024px : 3 colonnes (1 / 1,4 / 1). `contact.png` à gauche, le titre et les 4 étapes au centre, `chantier.png` à droite. Les deux illustrations sont posées en bas, sur la même ligne, comme sur un sol ;
+  - en dessous de 1024px : titre, puis **les deux illustrations côte à côte**, puis les étapes.
+  - La variante « une au-dessus, une en dessous » a été essayée : elle ajoute 467px à 375px (question 138).
+- **Bord droit de `chantier.png`** (la maison est coupée dans le dessin, question 136) :
+  - sous 1024px, l'image va jusqu'au bord de l'écran ;
+  - à partir de 1024px, son bord droit s'efface en fondu.
+
+**7. Couleur : brume** (#ccdce8, bleu ardoise pâle, déjà dans la charte). Justification, d'après les dominantes des illustrations :
+- **bleu nuit** (fauteuil, camionnette, rives du toit) : c'est un cousin foncé de la brume, il s'y détache nettement (10,3:1) sans heurt de teinte ;
+- **crème** (pull, isolant, murs) : il est plus clair que la brume et ressort en clair. Sur un fond crème, argile ou crème foncé, il se serait fondu dans le décor ;
+- **orange** (pot, tuiles, pantalon, pastilles) : c'est la couleur opposée du bleu sur le cercle chromatique, il vibre sur la brume ;
+- **contraste avec le blanc** du Hero et de la Méthode : 1,40:1, le plus fort des fonds pâles de la charte (argile : 1,34:1, lichen : 1,28:1) ;
+- **lisibilité** : texte 11,7:1, texte secondaire 5,1:1 ;
+- **aucune autre section** n'a ce fond. Il n'est plus utilisé que par l'onglet actif de l'étape 4 de la Méthode, une petite surface dans la section suivante ;
+- **teintes écartées** :
+  - lichen : déjà le fond du simulateur, et son vert jaunâtre contrarie l'orange ;
+  - bruyère : déjà le fond des articles ;
+  - bleu nuit : le fauteuil et la camionnette s'y perdraient.
+
+### 2. Mesures et vérifications
+
+- **Build de production** : réussi. Aucune erreur dans la console, aucun débordement horizontal, à 375, 768, 1024, 1280 et 1920px. Les 2 images sont chargées à chaque largeur.
+
+| Mesure | 1920px | 1280px | 1024px | 768px | 375px |
+|---|---|---|---|---|---|
+| **Hauteur de la section « Fonctionnement »** | 1 009px | **1 009px** | 1 090px | 1 280px | **1 287px** |
+| Hauteur du Hero | 831px | 831px | 1 584px | 1 400px | 1 275px |
+| Hauteur des 9 raccourcis | 78px (×9) | 78px (×9) | 58px (×9) | 58px (×9) | 58px (×9) |
+| Illustrations (largeur affichée) | 332 / 332px | 332 / 332px | 266 / 266px | 348 / 368px | 160 / 180px |
+| Colonne des étapes | 466px | 466px | 372px | pleine largeur | pleine largeur |
+
+- **Hero** :
+  - 1280px : 831px, contre 791px avant (badge plus haut, raccourcis de 78px). La dernière rangée de raccourcis finit maintenant à 889px, contre 849px. Sur un écran de 900px, elle tient encore, de justesse ;
+  - 375px : 1 275px, contre 1 254px.
+- **Section** à 375px : 1 287px, contre 1 195px pour la version à 3 étapes avec vidéo. Cette version occupe 1,6 écran d'iPhone X (question 133).
+- **Captures** (`captures/fonctionnement/`) :
+  - `1280-section.png`, `375-section.png`, ainsi que `1024-section.png` et `1920-section.png` ;
+  - `1280-hero.png`, `375-hero.png` : le Hero avec le badge ;
+  - `375-variante-dessus-dessous.png` : la variante écartée (question 138) ;
+  - mesures brutes : `mesures.json`.
+
+### 3. Fichiers
+
+- **Modifiés** :
+  - `src/components/CommentCaMarche.astro` : réécrit ;
+  - `src/components/Hero.astro` : badge, `auto-rows-fr` ;
+  - `src/styles/global.css` : animation `data-scene-etape` ;
+  - `src/pages/index.astro` : commentaires.
+- **Images utilisées** : `src/assets/illustrations/contact.png` et `chantier.png`, non modifiées.
+- **Rien n'est commité.**
+
+## Étiquette pâle du Hero et agrandissement des illustrations (14 octobre 2026)
+
+**Questions ouvertes : n° 141 à 143.** La question 135 (raccourcis de 78px sur grand écran) reste ouverte, et elle est liée à la 142.
+
+### 1. Ce qui a été fait
+
+**1. Étiquette du collectif (Hero)**
+- L'orange plein action-500 est abandonné : c'était la couleur du bouton « Obtenir un devis » juste en dessous, et les deux se concurrençaient.
+- Nouveau style :
+  - fond **action-50** (#fdf0e0) ;
+  - **filet orange action-500 de 1,5px** ;
+  - texte **bleu nuit, graisse 700**, contraste mesuré **12,9:1** ;
+  - coins très arrondis (28px) et padding conservés : 12 × 24px à partir de 768px, 10 × 20px sur téléphone ;
+  - alignée à gauche, au-dessus du h1.
+- L'orange plein reste réservé au bouton. Capture : `1280-hero.png`.
+
+**2. Illustrations agrandies**
+- **Recadrage sur la zone dessinée.** Les PNG ont de larges marges transparentes autour du dessin :
+  - `contact.png` : la zone dessinée fait 851 × 951 pixels sur 1200 × 1200 ;
+  - `chantier.png` : 1154 × 981.
+  - Chaque image est placée dans un cadre aux proportions de cette zone, puis agrandie pour la remplir. Les marges transparentes débordent du cadre et sont coupées.
+  - Les fichiers ne sont pas modifiés. ⚠️ Si un PNG est remplacé, il faut remesurer sa zone dessinée : tableau `cadrages` dans `CommentCaMarche.astro`.
+- **À partir de 1024px** :
+  - trois colonnes **30 / 40 / 30** ;
+  - illustrations **centrées verticalement sur le bloc des étapes**, et non plus posées en bas ;
+  - fondu du bord droit de `chantier.png` conservé.
+- **Sur téléphone** :
+  - toujours côte à côte au-dessus des étapes ;
+  - elles vont maintenant jusqu'aux deux bords de l'écran, avec 8px entre elles ;
+  - la colonne des artisans est un peu plus large (5/9 contre 4/9), car leur dessin est plus large que haut : les deux ont ainsi presque la même hauteur.
+
+### 2. Mesures (Chromium, build de production)
+
+Tailles des **cadres** (le dessin les remplit) :
+
+| | 1280px | 375px |
+|---|---|---|
+| Femme au fauteuil | **339 × 379px** (28 % de la largeur utile ; 30 % des colonnes) | **165 × 185px** |
+| Artisans | **339 × 288px** | **202 × 171px** |
+| Bloc des 4 étapes | 452 × 702px | 335 × 856px |
+| Centre vertical : illustrations / étapes | 569 / 570px (alignés) | — |
+
+- **Avant** cet agrandissement :
+  - à 1280px : femme d'environ 235px de large dans une image de 332px, artisans d'environ 320px ;
+  - à 375px : femme d'environ 115px, artisans d'environ 170px.
+- **Gain** :
+  - femme : × 1,4 sur grand écran et sur téléphone ;
+  - artisans : × 1,1 sur grand écran, × 1,2 sur téléphone. Ils remplissaient déjà presque toute leur image.
+- **Hauteur visée non atteinte à 1280px** : 379 et 288px contre 702px pour les étapes (question 141).
+
+**Hauteurs surveillées** :
+
+| Mesure | Avant | Maintenant |
+|---|---|---|
+| Hero à 1280px | 831px | **831px** |
+| Bas de la dernière rangée de raccourcis (écran de 900px) | 889px | **889px** (question 142) |
+| Étiquette à 1280px | environ 49px (non mesurée ; calcul : 24px de padding et une ligne de 24,75px, sans filet) | 51px, 1 ligne, 514px de large |
+| Hero à 375px | 1 275px | 1 277px (filet de l'étiquette) |
+| **Section « Fonctionnement » à 375px** | 1 287px | **1 293px** (+6px) |
+| Section « Fonctionnement » à 1280px | 1 009px | 1 040px |
+
+- À 375px, la section ne prend que 6px : les illustrations se sont élargies mais ne sont presque pas plus hautes que leurs anciennes images carrées. Aucune piste de réduction n'est nécessaire.
+- Aucun débordement horizontal, aucune erreur dans la console, aux 5 largeurs testées (375, 768, 1024, 1280, 1920).
+- Les 9 raccourcis ont toujours la même hauteur à toutes les largeurs.
+
+**Captures** (`captures/fonctionnement-v2/`) :
+- `1280-section.png`, `375-section.png`, ainsi que `1024-section.png` et `1920-section.png` ;
+- `1280-hero.png`, `375-hero.png` : le Hero avec l'étiquette pâle ;
+- mesures : `cadres.json` (tailles des cadres, étapes, étiquette, Hero : **valeurs de référence**) et `mesures.json`.
+- ⚠️ Dans `mesures.json` :
+  - le champ `imgs` mesure les images agrandies, débordement transparent compris, et non ce qu'on voit ;
+  - le champ `badge.lignes` est faussé par le filet. Utiliser `cadres.json`.
+
+### 3. Fichiers
+
+- **Modifiés** :
+  - `src/components/Hero.astro` : style de l'étiquette ;
+  - `src/components/CommentCaMarche.astro` : grille 30 / 40 / 30, recadrage, centrage vertical, mise en page mobile.
+- **Rien n'est commité.**
+
+## Badge vert, textes raccourcis, étapes élargies et animation réparée (14 octobre 2026)
+
+**Questions ouvertes : n° 144 à 147.**
+- Sans objet : 134 (l'étape 1 ne parle plus d'appel), 141 (nouvelle répartition).
+- La 143 (badge sur 2 lignes sur téléphone) reste valable.
+
+### 1. Ce qui a été fait
+
+**1. Badge du Hero : vert foncé**
+- Style :
+  - fond **vert-600** (#2a6b4f) ;
+  - texte **crème** (#f7f4ee), graisse 700 ;
+  - coins arrondis à 28px ;
+  - padding inchangé : 12 × 24px à partir de 768px, 10 × 20px sur téléphone ;
+  - aligné à gauche, au-dessus du h1.
+- Le filet orange de la version pâle est supprimé.
+- **Contraste mesuré : 5,8:1**. C'est au-dessus du minimum d'accessibilité pour un texte courant (4,5:1), mais pas au niveau renforcé (question 144).
+- Commentaire de vert-600 dans `global.css` mis à jour.
+
+**2. Textes des étapes** (fournis, repris mot pour mot) :
+1. « Contactez-nous » — « Via le formulaire en ligne, décrivez votre projet, même succinctement. »
+2. « L'artisan Akelia le plus proche de chez vous vous contacte » — « Sous 24 heures, une entreprise du collectif implantée dans votre secteur vous rappelle. Vos coordonnées ne sortent jamais du réseau. »
+3. « Chiffrage des travaux » — « Un artisan se déplace chez vous gratuitement et vous propose un devis détaillé : nature des travaux, aides estimées, reste à charge. »
+4. « Les travaux démarrent » — « Votre artisan réalise le chantier et reste votre interlocuteur ensuite, pour l'entretien comme pour le dépannage. »
+
+**3. Mise en page**
+
+*a) Colonne des étapes élargie*
+- Nouvelle répartition **25 / 50 / 25** à partir de 1024px.
+- À 1280px, la colonne passe de 452 à **565px**. Lignes par texte : 2, 3, 2, 2. Avant, avec les anciens textes : 3, 5, 2, 3 (comptées sur la capture `captures/fonctionnement-v2/1280-section.png`).
+
+*b) Illustrations débordantes*
+- Même principe que `deborde-gauche` / `deborde-droite` : l'illustration s'élargit au-delà de sa colonne, vers l'extérieur, jusqu'au bord de l'écran et au-delà. La section coupe ce qui dépasse (`overflow-x-clip`), sans défilement horizontal.
+- Les classes de `global.css` n'ont pas été reprises telles quelles : elles font sortir 5rem (80px) de l'écran, soit 22 % de la femme et 24 % des artisans. Cela aurait coupé le fauteuil et l'artisan de droite.
+- Deux classes propres à la section (`deborde-contact`, `deborde-chantier`, dans `CommentCaMarche.astro`) dosent la part coupée :
+  - **12 % de `contact.png`, à gauche** : la plante. Le fauteuil commence à 16 % du dessin ;
+  - **6 % de `chantier.png`, à droite** : le bord de la maison, déjà coupé dans le dessin. L'artisan de droite s'arrête à 91 % de la largeur.
+- **Largeur plafonnée** : 32rem pour la femme, 44rem pour les artisans. Sur les très grands écrans, la marge extérieure est énorme (355px à 1920px) : sans plafond, la femme ferait 724px de large.
+- Le fondu du bord droit de `chantier.png` est réduit à ses 12 % derniers.
+- Sur téléphone : inchangé. Les illustrations vont déjà d'un bord à l'autre de l'écran.
+
+*c) Animation des étapes : elle existait, mais se jouait hors de la vue*
+- **Cause, mesurée** : l'animation partait avec celle de la section, quand 25 % de la section était visible. À ce moment, les 4 étapes étaient **toutes sous le bas de l'écran** :
+  - à 1280 × 900 : première étape à 907px ;
+  - à 375 × 812 : première étape à 971px.
+  - Le temps d'y arriver en défilant, l'animation était finie.
+- **Correction** (dans `AnimationScenes.astro`) : chaque étape a désormais **son propre déclenchement** :
+  - elle part quand 30 % d'elle est visible, dans les 90 % supérieurs de l'écran ;
+  - les étapes qui arrivent ensemble, par exemple après un saut direct à la section, partent avec **150 ms d'écart** ;
+  - en défilant, chacune part à son arrivée ;
+  - toutes sont remises à zéro quand la section a complètement quitté l'écran.
+- **Amplitude augmentée** : montée de **40px** (16px avant), durée 0,7 s (0,5 s avant), courbe qui démarre vite et ralentit à la fin.
+- « Réduire les animations » : inchangé, tout est visible et immobile.
+
+### 2. Vérifications et mesures (Chromium, build de production)
+
+**Animation des étapes** (`captures/fonctionnement-v3/animation.json` et `animation-saut.json`)
+- **Défilement progressif**, 40px toutes les 40 ms :
+  - chaque étape démarre alors qu'elle est **à l'écran** : son haut se trouve entre 768 et 814px sur un écran de 900px, et entre 674 et 694px sur 812px ;
+  - opacité de 0 au départ, de 1 une seconde après, pour les 4 étapes, à 1280 comme à 375px.
+- **Rejeu** :
+  - après un retour en haut de page, les 4 étapes sont remises à zéro (opacité 0) ;
+  - au second passage, elles se rejouent toutes, aux deux largeurs.
+- **Saut direct à la section** : décalages lus de **0, 150, 300 et 450 ms**. 250 ms après le saut :
+  - étape 1 : opacité 0,76, encore 10px de montée ;
+  - étape 2 : 0,25 et 30px ;
+  - étapes 3 et 4 : pas encore parties.
+  - Capture : `1280-animation-en-cours.png`.
+- **Animations réduites** : 4 étapes à opacité 1, aucune animation.
+
+**Hauteurs et tailles**
+
+| Mesure | 1280px | 375px |
+|---|---|---|
+| **Hauteur de la section « Fonctionnement »** | **886px** (1 040px avant) | **1 202px** (1 293px avant) |
+| Bloc des 4 étapes | 565 × 548px | 335 × 765px |
+| Femme au fauteuil (cadre visible) | 361 × 403px, dont 43px hors écran | 165 × 185px |
+| Artisans | 338 × 287px, dont 20px hors écran | 202 × 171px |
+| Badge | 512 × 49px, 1 ligne | 335 × 70px, 2 lignes |
+| Hero / bas de la dernière rangée de raccourcis | 831px / 889px (inchangés) | 1 275px |
+
+- Autres largeurs (`illustrations.json`) :
+  - **1440px** : femme 452 × 505px, artisans 423 × 359px, étapes 548px de haut ;
+  - **1920px** : femme 512 × 572px (plafond atteint, ne touche plus le bord), artisans 678 × 577px, étapes 577px ;
+  - **1024px** : femme 280 × 312px, artisans 262 × 222px, étapes 452px de large.
+- Aucun débordement horizontal, aux 5 largeurs.
+
+**Captures** (`captures/fonctionnement-v3/`) :
+- `1280-section.png`, `375-section.png`, ainsi que `1024-section.png` et `1920-section.png` ;
+- `1280-hero.png`, `375-hero.png` : le Hero avec le badge vert ;
+- `1280-animation-en-cours.png` : les étapes en train d'apparaître ;
+- mesures : `mesures.json` (Hero, badge), `illustrations.json` (cadres, étapes, lignes), `animation.json`, `animation-saut.json`.
+
+### 3. Fichiers
+
+- **Modifiés** :
+  - `src/components/Hero.astro` : badge vert ;
+  - `src/components/CommentCaMarche.astro` : textes, grille 25 / 50 / 25, débordement des illustrations ;
+  - `src/components/AnimationScenes.astro` : déclenchement propre à chaque étape ;
+  - `src/styles/global.css` : animation des étapes (40px, 0,7 s, `data-visible`), commentaire de vert-600.
+- **Rien n'est commité.**
+
+## Badge compact et illustrations en pleine largeur sur téléphone (14 octobre 2026)
+
+**Questions ouvertes : n° 148 à 151.**
+- Réglée : 143 (badge sur 2 lignes larges).
+- Sans objet : 147.
+
+### 1. Ce qui a été fait
+
+**1. Badge du Hero sous 768px**
+- Texte de **14px** (18px avant).
+- Padding de **6 × 14px** (10 × 20px avant).
+- Espace sous le badge : 16px (20px avant).
+- La ligne unique est impossible à 375px (question 148). Le texte est donc coupé **après le tiret**, uniquement sous 768px (`<br>` masqué au-delà) : deux lignes courtes.
+- Mesures à 375px : badge de **212 × 51px**, contre 335 × 70px. Il ne prend plus que 57 % de la largeur et ne touche plus le bord droit.
+- **À partir de 768px : rien ne change.** Vérifié à 768 et 1280px : 512 × 49px, 18px, une ligne, padding de 12 × 24px.
+
+**2. Illustrations sous 1024px**
+- Une seule colonne, **dans l'ordre du parcours** :
+  1. le titre ;
+  2. `contact.png` (on appelle) ;
+  3. les 4 étapes ;
+  4. `chantier.png` (les travaux démarrent).
+- L'ordre du code est le même : les lecteurs d'écran et la navigation au clavier suivent le même parcours.
+- **Téléphone** : chaque illustration occupe **toute la largeur de l'écran**, d'un bord à l'autre (question 151).
+- **Tablette** (768 à 1023px) : largeur plafonnée (question 150) :
+  - femme : 448px, collée au bord gauche ;
+  - artisans : 576px, collés au bord droit.
+- **À partir de 1024px : rien ne change.** Vérifié à 1280px : section de 886px, femme de 361 × 403px, artisans de 338 × 287px, comme avant.
+- Défaut trouvé et corrigé pendant la vérification :
+  - à 768px, l'illustration des artisans avait une **largeur de 0px** ;
+  - cause : la marge automatique qui la colle à droite empêchait le cadre de prendre la largeur de la colonne, et son image est en position absolue ;
+  - correction : ajout de `md:w-full`.
+
+### 2. Mesures (Chromium, build de production)
+
+| Mesure | 320px | 375px | 768px | 1280px |
+|---|---|---|---|---|
+| **Section « Fonctionnement »** | 1 840px | **1 795px** (1 202px avant) | 1 887px | 886px (inchangé) |
+| Femme au fauteuil | 320 × 358px | **375 × 419px** (165 × 185px avant) | 448 × 501px | 361 × 403px |
+| Artisans | 320 × 272px | **375 × 319px** (202 × 171px avant) | 576 × 490px | 338 × 287px |
+| Badge | 212 × 51px, 2 lignes | **212 × 51px**, 2 lignes (335 × 70px avant) | 512 × 49px, 1 ligne | 512 × 49px, 1 ligne |
+| Hero | 1 444px | **1 252px** (1 275px avant) | 1 400px | 831px |
+
+- **À 375px, la section augmente de 593px** : 2,2 écrans d'iPhone X. Pistes de réduction à la question 149.
+- Les illustrations sont 2,3 fois plus larges qu'avant pour la femme et 1,9 fois pour les artisans.
+- Aucun débordement horizontal, aux 4 largeurs.
+
+**Captures** (`captures/mobile-v4/`) :
+- `375-section.png` : la section sur téléphone ;
+- `375-hero.png` : le Hero avec le badge compact ;
+- `375-arrivee-ecran.png` : le premier écran du téléphone ;
+- `768-section.png`, `768-hero.png`, `1280-section.png`, `1280-hero.png` : contrôle que la tablette et le grand écran sont conformes ;
+- mesures brutes : `mesures.json`.
+
+### 3. Fichiers
+
+- **Modifiés** :
+  - `src/components/Hero.astro` : badge compact sous 768px ;
+  - `src/components/CommentCaMarche.astro` : une colonne sous 1024px, largeurs, ordre.
+- **Rien n'est commité.**
+
+## Avancement automatique des étapes de la Méthode au défilement (14 octobre 2026)
+
+**Questions ouvertes : n° 152 à 156.**
+
+### 1. Ce qui a été fait
+
+Tout est dans le script de `src/components/MethodeEtapes.astro`. Le principe est décrit en tête du fichier.
+
+**Principe**
+- En descendant dans la section, l'étape active passe de 1 à 2, 3, puis 4, **exactement comme un clic** : la même fonction `activer()` est appelée, sans déplacer le focus. Le schéma (avec son tracé rapide), la ligne des onglets et le texte suivent.
+- En remontant, l'étape redescend.
+- **Le défilement n'est jamais touché** :
+  - l'écouteur de défilement est déclaré « passive » : le navigateur sait d'avance qu'il ne peut pas bloquer le défilement ;
+  - aucun `preventDefault`, aucune position fixe, aucun défilement provoqué par le script, aucun focus déplacé ;
+  - le calcul est fait au plus une fois par image affichée (`requestAnimationFrame`) ;
+  - l'écouteur n'est actif que lorsque la section est à l'écran : il est posé et retiré par un IntersectionObserver.
+
+**Tranches** (question 152)
+- La traversée commence quand la moitié du schéma est entrée par le bas de l'écran.
+- Elle finit quand la moitié du schéma a disparu sous l'en-tête collant (`#site-header`) : 122px de haut à 1280px, 72px sur téléphone.
+- Elle est découpée en 4 tranches égales.
+- Calcul : progression = (hauteur d'écran − h/2 − haut du schéma) ÷ (hauteur d'écran − bas de l'en-tête). Étape = 1 + partie entière de (progression × 4), entre 1 et 4.
+- **Deux réglages corrigés pendant la mise au point** :
+  - première version (de 80 % du schéma entré à 20 % sorti) : 155px par étape seulement, un cran de molette suffisait presque à sauter une étape ;
+  - deuxième version : l'en-tête collant n'était pas compté. À l'étape 4, une bonne partie du schéma était cachée sous lui.
+
+**Zone morte**
+- Une frontière n'est franchie qu'à 4 % de la traversée au-delà, soit 31px à 1280 × 900 et environ 30px à 375 × 812, dans un sens comme dans l'autre.
+- Il faut donc revenir d'environ 60px en arrière pour retrouver l'étape précédente. Arrêté pile sur une frontière, l'étape ne clignote pas.
+
+**Clic**
+- Un clic sur une étape, ou les flèches du clavier dans les onglets, **suspend** l'avancement automatique.
+- La suspension dure jusqu'à ce que la section ait **complètement** quitté l'écran. L'avancement reprend au passage suivant.
+
+**Réglages**
+- « Réduire les animations » : aucun avancement automatique. L'étape 1 reste affichée, seuls les clics changent l'étape. Le réglage est relu à chaque défilement : s'il change pendant la visite, le site suit.
+- Sans JavaScript : rien ne change, puisque tout est dans le script. Les 4 étapes restent les unes sous les autres, schéma complet.
+
+### 2. Ce qui se passe en défilant (mesuré, build de production)
+
+Positions données par rapport à l'écran. L'en-tête collant cache le haut de l'écran : 122px à 1280px, 72px à 375px.
+
+**À 1280 × 900, en descendant lentement** (20px toutes les 40 ms) :
+1. **Étape 1** : active à l'arrivée de la section. Elle le reste pendant que le titre, l'introduction, puis le schéma entrent par le bas.
+2. **Étape 2** : quand le haut du schéma arrive à **423px**. Le schéma est alors entièrement visible (de 423 à 889px).
+3. **Étape 3** : **180px de défilement plus loin**, haut du schéma à 243px.
+4. **Étape 4** : **200px plus loin**, haut du schéma à 43px. Ses 79 premiers pixels sont sous l'en-tête, la maison et les équipements sont visibles.
+5. L'étape 4 reste active jusqu'à la sortie de la section, puis dans la section suivante.
+
+**À 1280 × 900, en remontant** : étape 3 quand le haut du schéma redescend à 127px, étape 2 à 327px, étape 1 à 507px. Chaque retour arrive environ 80px plus bas qu'à la descente : c'est la zone morte (2 × 31px), plus le pas de 20px du test.
+
+**À 375 × 812** :
+- en descendant : étape 2 quand le haut du schéma est à 491px (schéma de 209px de haut, entièrement visible), étape 3 à 291px, étape 4 à 111px. L'écart entre deux étapes est de 180 à 200px de défilement ;
+- en remontant : étape 3 à 198px, étape 2 à 378px, étape 1 à 558px.
+
+**Zone morte vérifiée** :
+- allers-retours de 10 à 40px autour de la frontière 1 → 2 : l'étape passe à 2 au premier franchissement, puis ne revient plus à 1 en oscillant ;
+- elle ne revient à 1 qu'à 90px en arrière, aux deux largeurs.
+
+**Clic qui fige le choix**
+- Test : clic sur l'étape 3 dans la section, puis traversée complète vers le bas et retour vers le haut, sans sortir de la section. **L'étape 3 reste affichée en permanence**, aux deux largeurs.
+- Ensuite : sortie complète (retour en haut de page), puis nouveau passage. L'avancement reprend : 1, 2, 3, 4.
+- À 375px, l'étape 3 choisie reste affichée pendant le tout premier instant du retour, tant que la section n'est pas encore à l'écran. Elle repasse à 1 dès que la section entre dans l'écran, avant que le schéma soit visible.
+
+**Défilement jamais entravé** (Chromium ; la page était espionnée pour relever chaque écouteur posé et chaque appel à `preventDefault`) :
+- **Molette** : 8 crans de 120px pendant la traversée, **120px parcourus à chaque cran**, changements d'étape compris.
+- **Clavier**, focus sur la page :
+  - Flèche bas : 40px ;
+  - Page suivante : 787px ;
+  - Espace : 787px ;
+  - Page précédente : −787px.
+  - Valeurs normales du navigateur.
+- **Doigt** (375px, écran tactile simulé) : un glissé de 300px fait défiler **285px**, sans blocage. L'élan des vrais téléphones ne se simule pas (question 156).
+- **Écouteurs de défilement** : tous « passive ».
+- **`preventDefault`** : **aucun appel** sur la molette, le toucher, le défilement ou le clavier pendant tous les tests. Seul cas existant, inchangé : les flèches quand le focus est sur un onglet (modèle « onglets », question 155).
+
+**Réduire les animations** : traversée complète de la section, **seule l'étape 1 est vue**. Un clic sur l'étape 2 l'affiche bien.
+
+### 3. Captures
+
+`captures/methode-defilement/` : les 4 états à 1280 et 375px, chacun pris au milieu de sa tranche, 2,5 s après l'arrivée (fin de l'animation d'entrée du schéma) :
+- `1280-etape-1.png` à `1280-etape-4.png` ;
+- `375-etape-1.png` à `375-etape-4.png` ;
+- mesures brutes : `mesures.json`, avec les descentes, les montées, la zone morte, les tests d'entrave, les écouteurs et le clic.
+
+### 4. Fichiers
+
+- **Modifié** : `src/components/MethodeEtapes.astro` (script et commentaire d'en-tête).
+- **Rien n'est commité.**
+
+## Badge pleine largeur et illustrations réduites sur téléphone (14 octobre 2026)
+
+**Questions ouvertes : n° 157 à 159.**
+- Réglées : 149 (hauteur de la section), 151 (débordement sur téléphone).
+- Sans objet : 150 (tablette).
+
+### 1. Ce qui a été fait
+
+**1. Badge du Hero sous 768px**
+- **Toute la largeur du conteneur** (`block w-full`), comme le bouton « Obtenir un devis ».
+- **Texte centré** (question 157).
+- Taille et padding inchangés : 14px, 6 × 14px.
+- La coupure après le tiret est conservée : « Collectif d'artisans locaux — » / « en direct, sans sous-traitance. »
+- À partir de 768px : inchangé. Le badge épouse le texte, aligné à gauche : `md:inline-block md:w-auto md:text-left`.
+
+**2. Illustrations de « Fonctionnement » sous 1024px**
+- Disposition conservée : `contact.png`, puis les 4 étapes, puis `chantier.png`.
+- **Taille fortement réduite**, sur la base d'une hauteur d'environ la moitié de la largeur de l'écran :
+  - `contact.png` : 45 % de la largeur de l'écran, 17rem au plus ;
+  - `chantier.png` : 54 %, 20rem au plus.
+  - Les deux ont ainsi presque la même hauteur.
+- **Plus de débordement** : les deux images restent dans le conteneur, centrées.
+- Le fondu du bord droit de `chantier.png` s'applique désormais **à toutes les tailles** : centrée, la coupe de la maison tomberait sinon net au milieu de l'écran (question 159).
+- La tablette suit la même règle (question 158).
+- **À partir de 1024px : rien ne change.** Vérifié à 1280px : femme 361 × 403px, débordant de 43px à gauche ; artisans 338 × 287px ; section de 886px.
+
+### 2. Mesures (Chromium, build de production)
+
+| Mesure | 320px | 375px | 768px | 1280px |
+|---|---|---|---|---|
+| **Section « Fonctionnement »** | 1 519px | **1 418px** | 1 473px | 886px (inchangé) |
+| Femme au fauteuil | 144 × 161px | **169 × 189px** | 272 × 304px | 361 × 403px |
+| Artisans | 173 × 147px | **203 × 172px** | 320 × 272px | 338 × 287px |
+| Bloc des 4 étapes | 280 × 919px | **335 × 765px** | 728 × 485px | 565 × 548px |
+| Badge | 280 × 51px | **335 × 51px**, pleine largeur | 512 × 49px | 512 × 49px |
+| Hero | 1 444px | 1 252px | 1 400px | 831px |
+
+- **Section à 375px : 1 418px**, soit :
+  - 377px de moins qu'avec les illustrations en pleine largeur (1 795px) ;
+  - 216px de plus qu'avec les illustrations côte à côte (1 202px) : c'est le prix de la disposition dessus / dessous.
+  - 1,75 écran d'iPhone X.
+- Les illustrations ont retrouvé à peu près leur taille côte à côte : 165 × 185px et 202 × 171px à l'époque. Elles sont nettement plus petites que le bloc des étapes : 189 et 172px de haut, contre 765px.
+- Le Hero ne change pas de hauteur : le badge pleine largeur a la même hauteur qu'avant (51px).
+- Aucun débordement horizontal, aux 4 largeurs.
+
+**Captures** (`captures/mobile-v5/`) :
+- `375-hero.png`, `375-section.png` ;
+- contrôles : `768-hero.png`, `768-section.png`, `1280-hero.png`, `1280-section.png`, `375-arrivee-ecran.png` ;
+- mesures brutes : `mesures.json`.
+
+### 3. Fichiers
+
+- **Modifiés** :
+  - `src/components/Hero.astro` : badge pleine largeur sous 768px ;
+  - `src/components/CommentCaMarche.astro` : tailles, centrage, fondu à toutes les tailles.
+- **Rien n'est commité.**
+
+## Refonte de la section Cas types : violet, 6 onglets, paragraphes, boutons (14 octobre 2026)
+
+**Questions ouvertes : n° 160 à 165.**
+- Réglée : 118 (prune).
+- Sans objet : 113 (`vert-clair`).
+- Mise à jour : 121 (hauteur variable).
+- Toujours ouvertes : 120 (halos des dessins, voir la 164) et 122 (dessin du 3e cas, voir la 161).
+
+### 1. Ce qui a été fait
+
+**1. Couleur : violet #5a2d82** (nouvelle couleur `violet` de `global.css`)
+- Même famille que le prune, mais teinte **franche** : son intensité (chroma, mesurée en oklab) est 0,139, contre 0,042 pour le prune. Il est 3,3 fois plus coloré.
+- Les nuances restent **dérivées automatiquement** de `--cas-fond` dans `CasTypes.astro` :
+  - bloc de contenu et onglets inactifs : fond + 8 % de blanc ;
+  - onglet survolé : + 16 % de blanc.
+- Les encarts, plus foncés, ont disparu avec les nouveaux textes.
+- `prune` et `vert-clair` restent dans la charte, inutilisés.
+- **Contrastes**, mesurés sur les couleurs rendues par le navigateur :
+
+| Élément | Couleurs | Contraste |
+|---|---|---|
+| Titre, sous-titre (blanc sur le fond) | #ffffff / #5a2d82 | **9,85:1** |
+| Paragraphes (blanc sur le bloc) | #ffffff / #663e8c | **7,98:1** |
+| Onglet inactif (blanc sur le bloc) | #ffffff / #663e8c | **7,98:1** |
+| Onglet survolé | #ffffff / #724f97 | **6,40:1** |
+| Onglet actif (texte noir sur blanc) | #16212a / #ffffff | 16,3:1 |
+| Bouton : texte noir sur orange | #16212a / #f0920f | 6,87:1 |
+| Bouton orange contre le bloc (repérage du bouton, 3:1 demandés) | #f0920f / #663e8c | **3,35:1** |
+| Onglet actif blanc contre le fond | #ffffff / #5a2d82 | 9,85:1 |
+| Bloc contre le fond (différence de teinte) | #663e8c / #5a2d82 | 1,23:1 |
+| *Pour mémoire : blanc sur l'ancien prune* | #ffffff / #3d2c40 | 12,9:1 |
+
+- Le contraste du texte baisse forcément par rapport au prune, puisqu'une couleur plus vive est plus claire. Il reste au-dessus du niveau renforcé (7:1) pour tout le texte courant.
+
+**2. Sixième onglet**
+- « Construction de maison neuve », identifiant `neuf`, en 5e position, avant « Changement d'équipement ».
+- Illustration prévue : `src/assets/illustrations/neuf.png`. **Fichier absent** : emplacement vide de mêmes proportions (4:3), repérable dans le code par `data-illustration-absente="neuf.png"` (question 161). Il suffit de déposer le fichier et de reconstruire le site.
+
+**3. Titre et sous-titre** (fournis) :
+- titre : « Chaque maison a ses spécificités » (le point final de l'ancien titre a disparu) ;
+- sous-titre : « Nous partons toujours de l'état initial, pas d'une méthode toute faite. »
+
+**4. Textes** (fournis, repris mot pour mot dans `src/data/cas-types.ts`)
+- Chaque onglet a **deux paragraphes suivis** : la situation, puis ce que fait Akelia.
+- Supprimés :
+  - les encarts « Les contraintes » et « Ce que l'on fait », avec leurs libellés en majuscules et leurs filets colorés ;
+  - les titres de panneau (« Des murs qui doivent respirer », etc.) ;
+  - les phrases ajoutées par Claude le 13 octobre (question 119, sans objet).
+- Seule retouche typographique : espaces insécables avant « : » et « ! ».
+
+| Onglet | Bouton |
+|---|---|
+| 1. Bâti ancien et historique | « Demander un audit de mon bâti ancien » |
+| 2. Années 50 à 90 | « Demander un audit énergétique » |
+| 3. Années 1995 à 2012 | « Demander un audit d'optimisation » |
+| 4. Appartement | « Demander un audit de mon appartement » — **rédigé par Claude, non fourni (question 162)** |
+| 5. Construction de maison neuve | « Obtenir une étude pour mon projet neuf » |
+| 6. Changement d'équipement | « Obtenir une étude personnalisée » |
+
+**5. Boutons**
+- Un par onglet, en bas du panneau, vers `/devis`.
+- Bouton principal orange, texte noir, flèche, **48px de haut minimum**.
+- Pleine largeur sur téléphone ; ils passent à 2 lignes à 375px, 69px de haut.
+- Contour de focus blanc, visible sur le violet.
+
+**6. Illustrations agrandies**
+- Recadrées sur leur **zone dessinée**, comme dans « Fonctionnement » : les PNG font 2752 × 1536, mais le dessin n'occupe que 55 à 73 % de leur largeur.
+- La zone est désormais **mesurée automatiquement à la construction du site** (`zoneDessinee()`, `src/data/illustrations.ts`, avec sharp) : rien à remesurer si un dessin est remplacé.
+- Chaque dessin occupe toute la largeur de sa colonne (573px à 1280px, contre environ 330px de dessin utile avant).
+
+**Autre changement** : à partir de 1024px, les onglets sont en grille de 3 × 2 (question 165).
+
+### 2. Mesures (Chromium, build de production)
+
+| Onglet | Section à 1280px | Illustration à 1280px | Bloc de texte | Section à 375px | Illustration à 375px |
+|---|---|---|---|---|---|
+| 1. Bâti ancien | 1 223px | 573 × 482px | 523px | 1 548px | 335 × 282px |
+| 2. Années 50 à 90 | 1 192px | 573 × 406px | 491px | 1 504px | 335 × 237px |
+| 3. Années 1995 à 2012 | 1 223px | 573 × 347px | 523px | 1 470px | 335 × 203px |
+| 4. Appartement | 1 223px | 573 × 417px | 523px | 1 542px | 335 × 244px |
+| 5. Maison neuve | 1 192px | vide, 573 × 430px | 491px | 1 549px | vide, 335 × 251px |
+| 6. Changement d'équipement | **1 230px** | 573 × 529px | 523px | **1 576px** | 335 × 309px |
+
+- **Hauteur avec le plus long des onglets** (« Changement d'équipement ») : **1 230px à 1280px** et **1 576px à 375px**.
+- Avant cette refonte : 1 458px et 1 899px au plus. La section est donc plus basse : textes plus courts, et plus de titre de panneau.
+- Pour chaque onglet, vérifié dans le navigateur :
+  - aucun titre de panneau, 2 paragraphes, un bouton vers `/devis` de 48px de haut ;
+  - aucun débordement horizontal ;
+  - aucune erreur dans la console.
+
+**Captures** (`captures/cas-types-violet/`) :
+- `1280-onglet-1.png` à `1280-onglet-6.png` ;
+- `375-onglet-1.png` : la section à 375px ;
+- `375-onglet-5.png` : l'onglet de la maison neuve, avec son emplacement vide ;
+- mesures brutes : `mesures.json`.
+
+### 3. Incident pendant le travail
+
+- Une commande de remplacement automatique a **tronqué `CasTypes.astro`** : une recherche du mot « style » s'est arrêtée sur le commentaire d'en-tête au lieu de la balise.
+- Le fichier n'étant pas dans git, il a été **réécrit en entier**. La rangée d'onglets et le script des onglets ont été repris mot pour mot de la version lue juste avant.
+- Vérifications après coup :
+  - les 6 onglets, un par un : clic, panneau affiché, textes et boutons ;
+  - le clavier (`captures/cas-types-violet/clavier.txt`) : flèches droite et gauche, avec retour au début après le 6e et à la fin avant le 1er, Début, Fin, puis Tab qui mène au panneau. À chaque fois : un seul onglet dans l'ordre de tabulation, le focus sur l'onglet actif, le bon panneau affiché.
+
+### 4. Fichiers
+
+- **Modifiés** :
+  - `src/data/cas-types.ts` : réécrit (6 cas, nouveaux champs `situation`, `approche`, `bouton`) ;
+  - `src/components/CasTypes.astro` : réécrit ;
+  - `src/data/illustrations.ts` : mesure automatique de la zone dessinée ;
+  - `src/styles/global.css` : couleur `violet`, commentaires de `prune` et `vert-clair` ;
+  - `src/pages/index.astro` : commentaire des fonds.
+- **Attendu** : `src/assets/illustrations/neuf.png`.
+- **Rien n'est commité.**
+
+## Badge du Hero : étiquette discrète orange pâle à toutes les largeurs (14 octobre 2026)
+
+Demande : sur téléphone, le badge vert plein en pleine largeur écrasait le titre et se lisait comme un titre. Il devient une étiquette discrète inspirée d'akelia.fr. Le traitement est **le même à toutes les largeurs**, simplement un peu plus grand à partir de 768px. Cette version **remplace** les badges vert-600 décrits dans les trois sections « Badge… » ci-dessus.
+
+### 1. Ce qui a été fait
+
+- **Fond** : `action-50` (#fdf0e0), très pâle.
+- **Texte** : graisse 600 (`font-semibold`, contre 700 avant), en orange foncé `action-800` (#9a5a00).
+- **Forme** : coins arrondis `rounded-lg` (8px). Ce n'est plus une pilule, parce que le texte passe sur deux lignes sur téléphone.
+- **Largeur** : `inline-block`, la largeur suit le contenu. Le badge est aligné à gauche à toutes les largeurs. Le `block w-full text-center` sous 768px est supprimé.
+- **Taille** :
+  - sous 768px : texte de 14px, padding de 4 × 12px ;
+  - à partir de 768px : texte de 16px (18px avant), padding de 6 × 14px (12 × 24px avant).
+- **Coupure volontaire après le tiret, conservée sur téléphone** (`<br class="md:hidden">`) :
+  - premier essai sans elle : le navigateur coupait après « en direct, » ;
+  - la première ligne occupait alors presque toute la largeur, et le badge s'étirait à ~335px ;
+  - avec la coupure, le badge fait ~200px de large à 375px.
+- « sans sous-traitance » reste insécable (`whitespace-nowrap`).
+
+### 2. Contraste (décision)
+
+| Texte sur action-50 (#fdf0e0) | Contraste | Verdict |
+|---|---|---|
+| action-600 (#d17f08), demandé au départ | **2,77:1** (mesure confirmée) | insuffisant |
+| **action-800 (#9a5a00)**, retenu | **4,88:1** | conforme AA (≥ 4,5:1) |
+
+- Nouvelle couleur `--color-action-800: #9a5a00` dans `global.css`. Elle est **réservée au texte de ce badge**, ce que dit son commentaire.
+- Le commentaire de `vert-600` ne mentionne plus le badge. vert-600 reste utilisé ailleurs (bouton de devis.astro, surtitres, Méthode).
+
+### 3. Captures (`captures/hero-badge/`)
+
+Chromium sans interface, serveur de dev :
+
+- `375-hero.png` : le badge tient sur deux lignes courtes, il est aligné à gauche, la largeur suit le texte (~200 × 47px) et il est nettement plus discret que le titre ;
+- `1280-hero.png` : le badge tient sur une ligne (~430 × 34px), au-dessus du titre.
+
+Les dimensions sont estimées sur les captures, pas mesurées dans le DOM.
+
+### 4. Fichiers
+
+- `src/components/Hero.astro` : classes du badge, commentaire d'en-tête et commentaire du badge réécrits ;
+- `src/styles/global.css` : ajout d'`action-800`, commentaire de `vert-600`.
+- **Rien n'est commité.**
+
+### 5. À arbitrer
+
+- **Question 166** : la taille à partir de 768px est de 16px, contre 18px pour l'ancien badge vert. Est-ce que « un peu plus grand » convient ainsi, ou faut-il 17-18px ?
+- **Question 167** : l'en-tête du Hero écartait autrefois la version « orange pâle action-50 avec filet », jugée pas assez visible. La version retenue n'a pas de filet. Faut-il ajouter un filet fin `action-500` si l'étiquette paraît trop effacée à l'écran ?
+
+## Illustrations 3D des Cas types (14 octobre 2026)
+
+Demande : trois illustrations 3D, à fond transparent, remplacent les dessins au trait dans la section Cas types.
+
+### 1. Ce qui a été fait
+
+| Onglet | Avant | Maintenant | Texte alternatif |
+|---|---|---|---|
+| Bâti ancien et historique | `pierre.png` | **`cas-ancien.png`** | fourni : « Un artisan posant un panneau d'isolant contre un mur en pierre ancienne, vu de l'intérieur. » |
+| Années 50 à 90 | `annees70.png` | **`cas-annees70.png`** | fourni : « Deux artisans isolant par l'extérieur la façade d'un pavillon des années 70, depuis un échafaudage. » |
+| Années 1995 à 2012 | `moderne.png` | **`cas-recent.png`** | fourni : « Un artisan installant une pompe à chaleur contre la façade d'une maison des années 2000. » |
+| Appartement | `appartement.png` | `cas-appartement.png` (**attendu**, emplacement vide) | vide, à rédiger |
+| Construction de maison neuve | `neuf.png` (attendu) | `cas-neuf.png` (**attendu**, emplacement vide) | vide, à rédiger |
+| Changement d'équipement | `technique.png` | `cas-equipement.png` (**attendu**, emplacement vide) | vide, à rédiger |
+
+- **Aucun changement de mise en page.** Le composant affichait déjà les images sans cadre, arrondi ni ombre, posées sur le violet. Vérifié dans le navigateur : sur le conteneur de l'image, `border-radius: 0`, `box-shadow: none`, fond transparent.
+- **Recadrage automatique conservé** (`zoneDessinee()`, `src/data/illustrations.ts`). Les PNG 3D font 1200 × 1200px, dont 28 à 38 % de pixels transparents. La zone réellement dessinée est mesurée à la construction du site, et elle remplit la largeur de la colonne (573px à 1280px).
+- Dès qu'un fichier `cas-appartement.png`, `cas-neuf.png` ou `cas-equipement.png` est déposé dans `src/assets/illustrations/`, il s'affiche sans toucher au code. Il faudra seulement ajouter son texte alternatif dans `src/data/cas-types.ts`.
+
+### 2. Fichiers orphelins (non supprimés, comme demandé)
+
+- `src/assets/illustrations/appartement.png` et `technique.png` : présents, plus utilisés nulle part (vérifié par recherche dans `src/`).
+- `pierre.png`, `annees70.png`, `moderne.png` : **déjà absents du dossier** avant cette tâche, et absents de Git. Rien à faire.
+
+### 3. Vérification (`captures/cas-types-3d/`)
+
+Chromium sans interface, serveur de dev, fenêtre de 1280px, animations réduites. L'en-tête collant et la barre d'outils d'Astro sont masqués pour les captures.
+
+- `1280-onglet-1.png` (Bâti ancien) : ✅ l'image se détache nettement du violet, sans aucun rectangle blanc.
+- `1280-onglet-2.png` (Années 50 à 90) : ⚠️ l'image se détache bien, **mais du fond blanc résiduel reste pris dans l'échafaudage**, sous le plancher et à droite (question 168). Il n'y a pas de rectangle blanc autour de l'image : le contour est propre.
+- `1280-onglet-3.png` (Années 1995 à 2012) : ✅ aucun blanc résiduel. ⚠️ **La maison est coupée net en haut et à gauche**, au bord du fichier (question 169).
+- Analyse des fichiers : les 4 coins sont transparents pour `cas-ancien` et `cas-annees70`. Pour `cas-recent`, le coin haut gauche est opaque (le mur de la maison). Blanc pur opaque : 0,19 % des pixels (ancien), 2,93 % (années 70, dont l'échafaudage, mais aussi les pulls et la fenêtre), 0,73 % (récent).
+- Les trois onglets vides affichent bien l'emplacement vide, avec les nouveaux noms (attribut `data-illustration-absente`).
+- Textes alternatifs relus dans le DOM : conformes, mot pour mot.
+
+### 4. Fichiers
+
+- `src/data/cas-types.ts` : noms d'images, textes alternatifs, commentaires.
+- `src/data/illustrations.ts` : liste des fichiers en commentaire.
+- `src/components/CasTypes.astro` : commentaires seulement.
+- Nouvelles captures : `captures/cas-types-3d/`.
+- **Rien n'est commité.**
+
+### 5. À arbitrer
+
+Questions 168 à 172, dans « Questions en attente de réponse » : blanc résiduel de `cas-annees70.png`, maison coupée dans `cas-recent.png`, onglets désormais vides, suppression des orphelins, mélange 3D / dessins au trait sur la page.
+
+## Badge à 90 %, seuils de la Méthode et raccourcis tactiles (14 octobre 2026)
+
+### 1. Badge du Hero sur téléphone (`src/components/Hero.astro`)
+
+- **Sous 768px** : `block w-[90%] text-left`. Le badge prend 90 % de la largeur du conteneur, et le texte est aligné à gauche. Les 10 % manquants créent le décalage voulu avec le titre.
+- **À partir de 768px** : inchangé (`md:inline-block md:w-auto`, la largeur suit le texte).
+- Fond `action-50`, texte `action-800`, `rounded-lg` : inchangés.
+- Mesuré à 375px : badge de **301,5px pour un conteneur de 335px (90,0 %)**, `text-align: left`.
+- La coupure forcée après « locaux — » est gardée (question 176).
+
+### 2. Seuils de la Méthode (`src/components/MethodeEtapes.astro`)
+
+**Diagnostic** (mesures dans le navigateur) :
+
+- La traversée allait de « moitié du schéma entrée par le bas » à « moitié sortie sous l'en-tête ».
+- À 1280 × 900, le schéma n'est **entièrement visible** que sur 40 % de cette traversée (de 30 % à 70 %).
+- Les anciens seuils (25 %, 50 %, 75 %, plus 4 % de zone morte) tombaient à 29 %, 54 % et 79 % :
+  - l'étape 4 se déclenchait schéma déjà en partie sorti ;
+  - l'étape 2 se déclenchait avant que le schéma soit entier. L'étape 1 n'était donc jamais vue avec le schéma entier.
+- Répartir simplement les seuils sur les deux premiers tiers de la traversée (17 %, 33 %, 50 %) n'aurait pas suffi : l'étape 2 serait arrivée encore plus tôt, schéma toujours incomplet.
+
+**Correction** :
+
+- Les seuils sont calculés dans la **fenêtre où le schéma est entièrement visible**, mesurée en direct (hauteur du schéma, de l'écran et de l'en-tête collant).
+- Ils sont répartis sur les **deux premiers tiers de cette fenêtre** : étape 2 à 15 %, étape 3 à 40 %, étape 4 à 65 %. L'étape 4 reste ensuite affichée, schéma entier, sur le dernier tiers.
+- **Zone morte** réduite de 4 % à 2 % de la traversée (16px à 1280 × 900), car les tranches sont plus courtes.
+- **Écran bas** : si la fenêtre fait moins de 30 % de la traversée, elle est élargie autour du milieu.
+
+**Moment où chaque étape s'active** (défilement simulé vers le bas par pas de 4px, positions dans l'écran) :
+
+| Écran | Étape 1 | Étape 2 | Étape 3 | Étape 4 | Défilement avec schéma entier, étapes 1 / 2 / 3 / 4 |
+|---|---|---|---|---|---|
+| 1280 × 900 (en-tête : 122px) | dès l'arrivée | haut du schéma à 370px, bas à 836px | haut à 290px | haut à 214px, bas à 680px | 64 / 80 / 76 / 96px |
+| 1280 × 720 | dès l'arrivée | haut à 238px | haut à 190px | haut à 146px | 16 / 48 / 44 / 28px |
+| 375 × 667 (en-tête : 73px) | dès l'arrivée | haut à 385px, bas à 594px | haut à 289px | haut à 193px, bas à 402px | 72 / 96 / 96 / 124px |
+| 375 × 812 | dès l'arrivée | haut à 506px | haut à 374px | haut à 242px | 96 / 132 / 132 / 172px |
+
+En mots : l'étape 1 est affichée dès que la section arrive. L'étape 2 s'active **dès que le bas du schéma est entièrement entré** dans l'écran, juste au-dessus du bord bas. Les étapes 3 et 4 suivent à intervalles réguliers pendant que le schéma remonte. **L'étape 4 s'active quand le schéma est à peu près au milieu de la zone visible**, avec encore 90 à 120px de marge sous l'en-tête. ✅ Dans les 4 formats, **les 3 changements ont lieu schéma entier**, et chacune des 4 étapes est vue avec le schéma entier.
+
+Le reste est inchangé : défilement jamais intercepté, suspension après un clic, rien si « réduire les animations » est activé.
+
+### 3. Raccourcis du Hero sur écran tactile (`src/components/Hero.astro`)
+
+- **Supprimé** : l'interception du premier toucher (allumage seul, ouverture au second toucher). Sont aussi supprimés l'extinction au toucher ailleurs et l'attribut `data-actif`, avec ses classes, qui ne servait qu'à cela.
+- **Un seul toucher ouvre la page**, comme n'importe quel lien.
+- **Allumage du schéma** gardé au survol à la souris et au focus clavier. Le faux survol déclenché par le doigt est toujours ignoré.
+- **Phrase d'aide** : la version tactile (« Touchez une solution… ») est supprimée. La phrase « Survolez une solution pour la voir sur le schéma. » est masquée sur écran tactile (`pointer-coarse:hidden`) : sur tactile, il n'y a aucune phrase d'aide.
+
+### 4. Vérifications (`captures/corrections-hero-methode/`)
+
+Chromium sans interface, serveur de dev.
+
+- `375-hero.png` : badge à 90 %, texte à gauche, décalage visible avec le titre (qui occupe 100 %).
+- `375-hero-raccourcis.png` : en simulation tactile (iPhone 13, `pointer: coarse`), aucune phrase d'aide sous « Par où voulez-vous commencer ? ».
+- **Simulation tactile** : un seul toucher (`tap`) sur « Isolation » ouvre directement `/solutions/isolation-thermique-par-l-exterieur-ite`. ✅
+- **Souris (1280px)** : le survol d'« Isolation » allume toujours le schéma (`data-allume="isolation-combles isolation-murs"`), et la phrase « Survolez… » est affichée. ✅
+- **Méthode** : voir le tableau ci-dessus.
+- **Non testé** : vrai téléphone, et lecteurs d'écran (VoiceOver, TalkBack). La suppression du double toucher règle d'ailleurs le risque signalé à la question 131.
+
+### 5. Fichiers
+
+- `src/components/Hero.astro` : badge, phrase d'aide, script d'allumage, commentaires.
+- `src/components/MethodeEtapes.astro` : calcul des seuils, zone morte, commentaires.
+- **Rien n'est commité.**
+
+### 6. À arbitrer
+
+Questions 173 à 176 : étapes rapides sur ordinateur (piste du schéma collant), étape 2 un peu plus tardive, écran bas, coupure du badge.
+
+## Refonte complète des Cas types : une couleur par onglet (14 octobre 2026, soir)
+
+⚠️ *Tâche interrompue le 14 octobre 2026 (limite d'utilisation atteinte), puis **terminée le 15 octobre 2026** : voir la section « Suite et fin de la refonte des Cas types » plus bas.*
+
+### 1. Ce qui a été fait
+
+- **`src/styles/global.css`** : 6 couleurs `--color-cas-ancien`, `-annees50`, `-annees95`, `-appartement`, `-neuf`, `-modernisation`, valeurs de la demande, sans ajustement. `violet` est marqué « plus utilisé ».
+- **`src/data/cas-types.ts`** : réécrit. Contient la teinte, le libellé complet, le libellé court, le paragraphe, les 2 points, le bouton, et des images par ordre de préférence (voir la question 178). Le 6e onglet devient « Modernisation » (id `modernisation`).
+- **`src/components/CasTypes.astro`** : réécrit.
+  - À partir de 1024px : une grille de 3 colonnes (33 / 19 / 48 %, 2rem d'écart). Les panneaux reprennent les colonnes de la grille (subgrid), et les onglets se posent dans la colonne du centre.
+  - Sous 1024px : onglets en 2 colonnes, libellés courts, puis texte, puis illustration.
+  - Couleur de fond : `data-teinte` sur la section, transition de 0,4 s. Les nuances (filet, survol, onglet actif, bouton) sont dérivées par `color-mix` de `--cas-fond` et `--cas-texte`.
+  - Panneau : fondu et montée en 0,4 s (`@starting-style`).
+  - Si « réduire les animations » est activé : changement instantané.
+  - Uniquement au clic. Clavier : flèches dans les 4 sens, Début, Fin.
+  - Illustration : `lg:deborde-droite`, section en `overflow-x-clip`.
+
+### 2. Contrastes (texte de la section sur son fond ; c'est aussi celui de l'onglet actif et du bouton, aux couleurs inversées)
+
+| Onglet | Fond | Texte | Contraste |
+|---|---|---|---|
+| Bâti ancien | #1a2b4a | blanc | 14,11:1 ✅ |
+| Années 50 à 90 | #fdf0e3 | #16212a | 14,59:1 ✅ |
+| Années 1995 à 2012 | #e8f4f0 | #16212a | 14,50:1 ✅ |
+| Appartement | #ede8f7 | #16212a | 13,61:1 ✅ |
+| Maison neuve | #1e5c45 | blanc | 7,86:1 ✅ (le plus juste) |
+| Modernisation | #fde8e0 | #16212a | 13,85:1 ✅ |
+
+Orange #f0920f avec le texte #16212a : 6,87:1 ❌, d'où la question 177.
+
+### 3. Mesures (Chromium, animations réduites, `captures/cas-types-refonte/`)
+
+| Écran | Onglet | Hauteur de la section | Illustration |
+|---|---|---|---|
+| 1280 | 1 à 6 | 1 096 à 1 323px (onglet 2 : 1 323px, onglet 3 : 1 096px) | de 699 à 1 360px, coupée à 1 280px : **581px visibles = 45,4 % de la largeur** ✅ |
+| 375 | 1 et 2 | 1 304 et 1 356px | pleine largeur du contenu (335px), sans débordement |
+
+- **Défilement horizontal : aucun** (`scrollWidth` = largeur de la fenêtre, à 1280px et à 375px). ✅
+- Couleur de fond relevée pour chaque onglet : conforme.
+- Captures : `1280-onglet-1.png` à `1280-onglet-6.png`, `375-onglet-1.png`, `375-onglet-2.png`. Seule `1280-onglet-2.png` a été relue visuellement ; **les 7 autres restent à relire**. Sur cette capture, l'onglet « Bâti ancien » apparaît survolé, parce que la souris est restée dessus après le clic précédent.
+
+### 4. Reste à faire
+
+- Relire les captures, et en particulier vérifier la grille à 1024px.
+- Mesurer le contraste des nuances dérivées (question 180).
+- Rédiger les textes alternatifs des nouvelles illustrations dès leur livraison.
+- **Rien n'est commité.**
+
+## Suite et fin de la refonte des Cas types (15 octobre 2026)
+
+Reprise de la tâche interrompue la veille. Questions ouvertes : 177, 178 (`aides.jpg`), 182, 183 et 184.
+
+### 1. Ce qui a été fait
+
+- **Les 6 illustrations demandées sont arrivées** dans `src/assets/illustrations/` (déposées le 14 octobre à 19 h 33, juste après les captures de la veille). Elles font toutes 1 200 × 1 200px, sur fond transparent. Ce sont des illustrations 3D : des artisans en casquette orange, avec les matériaux de chaque cas.
+- **`src/data/cas-types.ts`** :
+  - un seul fichier par cas ; les images de secours `cas-ancien`, `cas-annees70` et `cas-recent` sont retirées, et ces fichiers n'existent plus ;
+  - les 6 textes alternatifs sont rédigés, après avoir regardé chaque image :
+
+| Onglet | Fichier | Texte alternatif |
+|---|---|---|
+| Bâti ancien et historique | `maisonancienne.png` | Un artisan agenouillé, une scie à la main, à côté d'une pile de panneaux d'isolant, d'un seau d'enduit et d'une truelle. |
+| Années 50 à 90 | `annee5090.png` | Un artisan sur un échafaudage reçoit un épais panneau d'isolant que lui tend un collègue resté au sol ; d'autres panneaux sont empilés au pied de l'échafaudage. |
+| Années 1995 à 2012 | `annee9512.png` | Un artisan agenouillé raccorde les tuyaux en cuivre d'une pompe à chaleur extérieure avec une clé, ses caisses à outils posées au sol. |
+| Appartement | `appartement.png` | Un artisan, tournevis en main, pose la main sur une fenêtre double vitrage neuve, à côté d'un caisson de ventilation compact. |
+| Construction de maison neuve | `maisonneuve.png` | Un artisan et une cliente penchés sur le plan d'une maison étalé sur des tréteaux, entourés de panneaux solaires et d'un panneau d'isolant. |
+| Modernisation | `modernisation.png` | Deux artisans au travail : l'un raccorde une borne de recharge électrique, l'autre tient un panneau solaire. |
+
+- **`src/components/CasTypes.astro`** : nouveaux survols sur les 2 fonds foncés, et bouton souligné au survol (voir le point 2).
+- **`src/data/illustrations.ts`** : commentaire d'en-tête mis à jour (liste des fichiers, `aides.jpg` signalé absent).
+- `astro build` : réussi, sans erreur.
+
+### 2. Contrastes (tous les couples texte/fond, minimum 7:1)
+
+Texte courant, onglet actif et bouton (mêmes couleurs, inversées) :
+
+| Onglet | Fond | Texte | Contraste |
+|---|---|---|---|
+| Bâti ancien | #1a2b4a | blanc | 14,11:1 ✅ |
+| Années 50 à 90 | #fdf0e3 | #16212a | 14,59:1 ✅ |
+| Années 1995 à 2012 | #e8f4f0 | #16212a | 14,50:1 ✅ |
+| Appartement | #ede8f7 | #16212a | 13,61:1 ✅ |
+| Maison neuve | #1e5c45 | blanc | 7,86:1 ✅ |
+| Modernisation | #fde8e0 | #16212a | 13,85:1 ✅ |
+
+Nuances dérivées, mesurées dans le navigateur, en survolant :
+
+| Onglet | Onglet inactif survolé | Bouton survolé | Filet des onglets inactifs (pas un texte, minimum 3:1) |
+|---|---|---|---|
+| Bâti ancien | 16,81:1 ✅ | 12,71:1 ✅ | 4,91:1 ✅ |
+| Années 50 à 90 | 11,74:1 ✅ | 9,27:1 ✅ | 4,08:1 ✅ |
+| Années 1995 à 2012 | 11,62:1 ✅ | 9,17:1 ✅ | 4,04:1 ✅ |
+| Appartement | 10,99:1 ✅ | 8,77:1 ✅ | 3,95:1 ✅ |
+| Maison neuve | 11,34:1 ✅ (avant : 6,18:1 ❌) | 7,23:1 ✅ (avant : 5,81:1 ❌) | 3,50:1 ✅ |
+| Modernisation | 11,17:1 ✅ | 8,88:1 ✅ | 3,98:1 ✅ |
+
+**Correction apportée** : sur le vert « Maison neuve », éclaircir le fond pour le survol faisait tomber le texte blanc sous 7:1. Sur les 2 fonds foncés, le survol d'un onglet assombrit donc le fond (20 % de noir), et le bouton survolé ne se grise que de 5 % (au lieu de 18 %). Pour que le survol du bouton reste visible, il se souligne aussi, sur tous les fonds (question 183).
+
+### 3. Mesures (Chromium, animations réduites)
+
+| Écran | Onglet | Hauteur de la section | Illustration |
+|---|---|---|---|
+| 1280 | 1 Bâti ancien | 1 180px | cadre de 699 à 1 360px, coupé à 1 280px : 581px visibles (45,4 % de la largeur) |
+| 1280 | 2 Années 50 à 90 | 1 323px | idem |
+| 1280 | 3 Années 1995 à 2012 | 1 096px | idem |
+| 1280 | 4 Appartement | 1 155px | idem |
+| 1280 | 5 Maison neuve | 1 209px | idem |
+| 1280 | 6 Modernisation | 1 113px | idem |
+| 1024 | 1 et 5 | 1 033 et 1 057px | cadre de 566 à 1 104px, coupé à 1 024px : 458px visibles (44,7 %) |
+| 375 | 1 et 2 | 1 304 et 1 356px | pleine largeur du contenu (335px), sans débordement |
+
+- **Illustration coupée par le bord droit** : oui, à 1280 et à 1024px (80px coupés). ✅
+- **Défilement horizontal : aucun** (`scrollWidth` = largeur de la fenêtre, à 1280, 1024 et 375px). ✅
+- **Taille** : la partie visible fait 45,4 % de la largeur à 1280px ; le cadre entier (coupé compris) en fait 51,6 %. À 1024px, la partie visible fait 44,7 %, juste sous les 45 % demandés.
+- **La hauteur varie selon l'onglet** (227px d'écart à 1280px) : question 184.
+- **Grille à 1024px vérifiée** : les 3 colonnes tiennent ; « Années 1995 à 2012 » passe sur 2 lignes dans les onglets, sans gêne.
+
+### 4. Captures (`captures/cas-types-illustrations/`, relues une à une)
+
+- `1280-onglet-1.png` à `1280-onglet-6.png` : les 6 onglets ;
+- `1280-onglet-5-survol-bouton.png` : bouton survolé sur le vert (souligné) ;
+- `1024-onglet-1.png`, `1024-onglet-5.png` ;
+- `375-onglet-1.png`, `375-onglet-2.png`.
+
+L'en-tête collant du site et la barre d'outils d'Astro sont masqués sur ces captures, pour ne pas cacher le titre. Les captures de la veille (`captures/cas-types-refonte/`) montrent encore les anciennes images : elles sont périmées.
+
+### 5. Reste à faire
+
+- Relire les textes alternatifs (question 182).
+- Trancher les questions 177, 183 et 184, et le sort de `aides.jpg` (question 178).
+- **Rien n'est commité.**
+
+## Badge sans coupure forcée et rythme de la Méthode (15 octobre 2026)
+
+Deux corrections. Questions ouvertes : 185, 186 et 187. Les questions 173 et 176 sont réglées.
+
+### 1. Badge du Hero (`src/components/Hero.astro`)
+
+- **`<br class="md:hidden">` supprimé.** La phrase coule librement et passe à la ligne là où la place manque.
+- **Ce qui est conservé** :
+  - largeur de 90 %, texte aligné à gauche ;
+  - fond action-50, texte action-800 ;
+  - « sans sous-traitance. » groupé (`whitespace-nowrap`).
+- **Vérifié** : le badge ne contient aucun autre `<br>`, ni `&nbsp;`, ni espace insécable. Le HTML rendu est exactement : `Collectif d'artisans locaux — en direct, <span class="whitespace-nowrap">sans sous-traitance.</span>`.
+- **Coupures observées** (captures `captures/methode-rythme/320-badge.png`, `360-badge.png`, `375-badge.png` et `414-badge.png`) :
+  - 375px : « Collectif d'artisans locaux — en direct, » / « sans sous-traitance. » ;
+  - 320px : « Collectif d'artisans locaux — en » / « direct, sans sous-traitance. ».
+- **Risque** : un tiret pourrait se retrouver en début de ligne (question 185).
+
+### 2. Rythme de la Méthode (`src/components/MethodeEtapes.astro`)
+
+**Pourquoi la marge seule ne suffisait pas.** Sans rien qui reste fixé à l'écran, le schéma n'est entier que pendant « hauteur visible − hauteur du schéma », soit 312px à 1280 × 900, quelle que soit la hauteur de la section. Une marge en plus aurait allongé la section sans rien changer au rythme des étapes (c'était déjà la question 173).
+
+**Ce qui a été fait : une « piste collante ».**
+- Un élément vide `[data-methode-piste]`, sous les colonnes, allonge la section de **30 %**.
+- Pendant ce surplus de défilement, les colonnes restent **collées à l'écran** (`position: sticky`), centrées sous l'en-tête :
+  - à partir de 1024px : les deux colonnes, étapes et schéma ;
+  - sous 1024px : seulement le schéma et son texte.
+- **Rien n'est bloqué** : la page défile toujours au rythme de la molette ou du doigt, et aucun `preventDefault` n'est ajouté.
+- **Conditions** : le collage ne s'applique que si ce qui colle tient dans la hauteur visible, avec 16px de marge. Il est désactivé si « réduire les animations » est activé, et sans JavaScript.
+- Les réglages sont recalculés au redimensionnement, puis quand les polices et les images sont chargées.
+- **Seuils écartés** : étape 2 à 20 % de la fenêtre où le schéma est entier, étape 3 à 45 %, étape 4 à 70 % (avant : 15, 40 et 65 %).
+- **Zone morte** : toujours 2 % de la traversée.
+- Calcul de la progression : il est repris sur la grille, qui, elle, ne colle pas. Sans piste, il donne exactement le même résultat qu'avant.
+
+### 3. Mesures (Chromium, balayage du défilement par pas de 4px, positions en `scrollY`)
+
+| Écran | Hauteur de la section | Piste | Schéma entier de… à… | Étape 2 | Étape 3 | Étape 4 | Écart entre étapes |
+|---|---|---|---|---|---|---|---|
+| 1280 × 900 | **1 711px** (avant 1 316, +30 %) | 331px (+48 d'écart) | 1 887 → 2 595 (**708px**, avant 312) | 2 055 | 2 231 | 2 407 | **176px** (avant 76 à 80) |
+| 1024 × 768 | 1 595px (avant ≈ 1 227) | 320px | 2 677 → 3 357 (680px) | 2 833 | 3 005 | 3 177 | 172px |
+| 375 × 667 | **2 200px** (avant 1 692, +30 %) | 468px | 3 372 → 4 264 (892px) | 3 572 | 3 796 | 4 020 | **224px** (avant 96) |
+| 1280 × 720 | 1 316px (inchangée) | aucune : les colonnes ne tiennent pas | 2 067 → 2 199 (132px) | 2 095 | 2 139 | 2 183 | 44px (question 186) |
+
+- **L'étape 4 se déclenche toujours avec le schéma entier**, à toutes les tailles. À 1280 × 900, elle reste ensuite affichée, schéma entier, pendant 188px.
+- **L'étape 1** est vue avec le schéma entier pendant 168px avant le passage à l'étape 2 (1280 × 900).
+- **En remontant**, les étapes redescendent de 4 à 1 aux mêmes endroits, à la zone morte près : 2 358, 2 182 et 2 002 à 1280 × 900.
+- **Défilement horizontal : aucun**, à toutes les tailles.
+- **Captures** (`captures/methode-rythme/`) : `<taille>-etape-2.png` à `-etape-4.png` pour chaque taille, et les badges. Relues : étapes 2 et 4 à 1280 × 900 (colonnes collées, schéma entier), étape 3 à 375 × 667, badges à 375 et 320px.
+- `astro build` : réussi.
+
+### 4. Reste à faire
+
+- Questions 185 (tiret du badge), 186 (écrans bas) et 187 (étapes hors de l'écran sur téléphone pendant le collage).
+- Rien n'est commité.
+
+## Cas types : onglets centrés, superposés à l'illustration (15 octobre 2026)
+
+Questions ouvertes : **188** (taille du dessin contre chevauchement, à trancher) et 189. La question 184 (hauteur variable) est réglée.
+
+### 1. Ce qui a été fait (`src/components/CasTypes.astro`)
+
+- **Grille à partir de 1024px**, de 3 colonnes : texte | onglets (15rem) | reste.
+  - Les deux colonnes latérales sont égales, donc les onglets sont au **centre exact** de la page.
+  - **L'illustration occupe la même case que les onglets**, plus la colonne de droite. Elle commence sous les onglets et s'étend jusqu'au bord de l'écran (`deborde-droite`), qui la coupe (80px hors écran).
+  - Les onglets sont au-dessus (`z-index`), avec un **fond plein**, la couleur de la section sans transparence. Les contrastes sont inchangés.
+  - Les panneaux reprennent les colonnes de la grille (`subgrid`). **Aucune position absolue.**
+- **Taille de l'illustration** :
+  - la case ne pèse pas sur la hauteur de la rangée (`contain: size`) ;
+  - le dessin y est calé à droite, à une hauteur de **120 % du bloc de texte le plus haut des 6** (variable `--cas-dessin`, posée par le script, recalculée au redimensionnement).
+  - Voir la question 188 : ce plafond empêche le chevauchement à 1280px.
+- **Hauteur stable** : les 6 panneaux sont **superposés** dans la même case, comme le texte de la Méthode.
+  - Les panneaux inactifs sont en `visibility: hidden`, donc masqués aussi pour les lecteurs d'écran et hors de l'ordre de tabulation.
+  - La section prend la hauteur du plus haut.
+  - S'applique à toutes les largeurs.
+- **Transition** : le nouveau panneau arrive en fondu avec une légère montée (0,4 s), et l'ancien disparaît d'un coup, pour ne pas mélanger deux textes. Tout est instantané si « réduire les animations » est activé.
+- **Sous 1024px** : pas de superposition avec l'illustration. Ordre : onglets en 2 colonnes, puis texte, puis illustration.
+- **Sans JavaScript** :
+  - pas d'onglets ;
+  - chaque panneau sur 2 colonnes égales (texte, illustration), les 6 les uns sous les autres ;
+  - vérifié : pas de défilement horizontal.
+- `astro build` : réussi.
+
+### 2. Mesures (Chromium, animations réduites)
+
+| Écran | Hauteur de la section | Centre des onglets | Défilement horizontal |
+|---|---|---|---|
+| 1280 | **889px pour les 6 onglets** (avant : 1 096 à 1 323px) | **640px = centre exact** (onglets de 520 à 760px) | aucun (`scrollWidth` = 1 280) |
+| 1024 | **932px pour les 2 onglets testés** | **512px = centre exact** (de 392 à 632px) | aucun (1 024) |
+| 375 | **1 356px pour les 2 onglets testés** | pleine largeur, 2 colonnes | aucun (375) |
+
+**Hauteur du dessin et du texte :**
+
+| Écran | Texte le plus haut | Dessin | Dessin / texte le plus haut |
+|---|---|---|---|
+| 1280 | 364px | 437px de haut, de 353 à 488px de large selon l'onglet | 1,20 |
+| 1024 | 448px | 538px | 1,20 |
+
+**Chevauchement avec les onglets :**
+- **à 1024px : oui.** Le dessin commence à 578px (onglet 1) ou 670px (onglet 2), sous la colonne d'onglets qui s'arrête à 632px ;
+- **à 1280px : non.** Les dessins commencent entre 872 et 1 007px, et les onglets s'arrêtent à 760px (question 188).
+
+À 1280px, la section passe de 1 096–1 323px à 889px : le dessin n'écrase plus le texte.
+
+### 3. Captures (`captures/cas-types-superposition/`)
+
+- `1280-onglet-1.png` à `1280-onglet-6.png` ;
+- `1024-onglet-1.png`, `1024-onglet-2.png` ;
+- `375-onglet-1.png`, `375-onglet-2.png`.
+
+Relues : 1280 onglets 2 et 3, 1024 onglet 1, 375 onglet 2. L'en-tête collant et la barre d'outils d'Astro sont masqués sur les captures.
+
+Problème rencontré : le serveur de développement servait une ancienne version du style de la section (cache de Vite). Il a fallu le redémarrer avant les mesures.
+
+### 4. Reste à faire
+
+- Trancher la question 188. Un seul réglage (`1.2` dans le script, et le calage à droite) suffira à appliquer le choix.
+- Rien n'est commité.
+
+## Cas types : illustration adossée aux onglets (15 octobre 2026)
+
+Questions ouvertes : 190 (demande tronquée) et 191 (hauteur de la section). La question 188 est réglée.
+
+### 1. Ce qui a été fait (`src/components/CasTypes.astro`, à partir de 1024px)
+
+- **Calage à gauche** : l'illustration est dans la colonne de droite, tirée de **3rem (48px) vers la gauche**, sous la colonne d'onglets. Les onglets restent au-dessus, avec leur fond plein.
+- **Débordement réduit** : l'illustration s'étire jusqu'au bord droit de l'écran, plus **24px coupés** par ce bord (avant : 80px). La classe `deborde-droite` n'est plus utilisée ici : même calcul, avec un dépassement de 1,5rem au lieu de 5rem.
+- **Plafond de 120 % supprimé** : le script `hauteurDessin` et la variable `--cas-dessin` sont retirés. La hauteur découle de la largeur, selon les proportions du dessin.
+- **Hauteur toujours stable** : la rangée commune prend la hauteur du plus haut des 6 dessins.
+- **Sans JavaScript** : panneaux sur 2 colonnes, sans débordement.
+- Sous 1024px : inchangé.
+- `astro build` : réussi.
+
+### 2. Mesures (Chromium, animations réduites)
+
+| Écran | Hauteur de la section (tous les onglets testés) | Onglets | Dessin | Chevauchement | Coupé par le bord | Défilement horizontal |
+|---|---|---|---|---|---|---|
+| 1280 | **1 213px** (stable) | 520 → 760px, centre 640px | de 732px à 1 304px (572px de large ; 513 à 709px de haut) | 28px | 24px | aucun |
+| 1024 | **1 034px** (stable) | 392 → 632px, centre 512px | de 604px à 1 048px (444px de large ; 454 et 550px de haut) | 28px | 24px | aucun |
+| 375 | 1 356px (stable) | 2 colonnes | pleine largeur du contenu | — | — | aucun |
+
+- **Chevauchement de 28px.** Le cadre commence 48px avant la colonne de droite, mais l'écart entre les colonnes en absorbe 20. Les dessins étant recadrés au plus près de leurs pixels non transparents, ce sont bien 28px de dessin qui passent sous les onglets : par exemple, à 1280px, le bord de la pompe à chaleur de « Années 1995 à 2012 » et l'ouvrier de gauche de « Années 50 à 90 ». Pour un chevauchement plus marqué, il suffit d'augmenter `--cas-chevauchement`.
+
+### 3. Captures (`captures/cas-types-superposition/`, remplacées)
+
+- `1280-onglet-1.png` à `1280-onglet-6.png` ;
+- `1024-onglet-1.png`, `1024-onglet-2.png` ;
+- `375-onglet-1.png`, `375-onglet-2.png`.
+
+Relues : 1280 onglets 2 et 3, 1024 onglet 2.
+
+Problème rencontré à nouveau : le serveur de développement servait un style périmé. Il a fallu le redémarrer avant de mesurer.
+
+### 4. Reste à faire
+
+- Questions 190 et 191.
+- Rien n'est commité.
+
+## Cas types : plafond de hauteur rétabli (15 octobre 2026)
+
+Question ouverte : 192. La question 191 est réglée.
+
+### 1. Ce qui a été fait (`src/components/CasTypes.astro`, à partir de 1024px)
+
+- **Plafond rétabli** : le script `hauteurDessin` pose `--cas-dessin`, égal à 120 % du bloc de texte le plus haut des 6. Il est recalculé au redimensionnement et quand les polices sont chargées. La largeur découle de cette hauteur.
+- **Ce qui reste en place** :
+  - le calage à **gauche**, avec le décalage de 3rem sous les onglets ;
+  - au plus **24px** coupés par le bord droit ;
+  - la **hauteur stable**. La case de l'illustration ne pèse plus sur la hauteur de la rangée (`container-type: size`, qui inclut `contain: size`).
+- **Ajout** : la largeur du dessin est limitée à sa case (unités `cqw`, rapport largeur/hauteur passé au cadre dans `--cas-ratio`). Ainsi, le dessin ne dépasse jamais de plus de 24px le bord de l'écran. Cette limite ne joue qu'à 1024px (question 192).
+- `astro build` : réussi.
+
+### 2. Mesures (Chromium, animations réduites)
+
+**1280px** : section de **889px pour les 6 onglets**. Texte le plus haut : 364px. Onglets de 520 à 760px, centre 640px.
+
+| Onglet | Dessin (haut × de… à…) | Dessin / texte le plus haut | Chevauchement | Bord droit de l'écran |
+|---|---|---|---|---|
+| 1 Bâti ancien | 437px, de 732 à 1 159px | **1,20** | 28px | non atteint (121px avant) |
+| 2 Années 50 à 90 | 437px, de 732 à 1 085px | **1,20** | 28px | non atteint |
+| 3 Années 1995 à 2012 | 437px, de 732 à 1 220px | **1,20** | 28px | non atteint |
+| 4 Appartement | 437px, de 732 à 1 175px | **1,20** | 28px | non atteint |
+| 5 Maison neuve | 437px, de 732 à 1 142px | **1,20** | 28px | non atteint |
+| 6 Modernisation | 437px, de 732 à 1 206px | **1,20** | 28px | non atteint |
+
+**1024px** : section de **932px pour les 6 onglets**. Texte le plus haut : 448px. Onglets de 392 à 632px, centre 512px.
+
+| Onglet | Dessin | Dessin / texte le plus haut | Chevauchement | Bord droit |
+|---|---|---|---|---|
+| 1 | 454px, de 604 à 1 048px | 1,01 (limité en largeur) | 28px | coupé de 24px |
+| 2 | 538px, de 604 à 1 038px | **1,20** | 28px | coupé de 14px |
+| 3 | 398px | 0,89 (limité) | 28px | coupé de 24px |
+| 4 | 438px | 0,98 (limité) | 28px | coupé de 24px |
+| 5 | 474px | 1,06 (limité) | 28px | coupé de 24px |
+| 6 | 409px | 0,91 (limité) | 28px | coupé de 24px |
+
+**375px** : section de 1 356px pour les 2 onglets testés (inchangée).
+
+**Défilement horizontal : aucun**, à 1280, 1024 et 375px, pour tous les onglets testés.
+
+### 3. Captures (`captures/cas-types-plafond/`)
+
+- `1280-onglet-1.png` à `1280-onglet-6.png` ;
+- `1024-onglet-1.png` à `1024-onglet-6.png` ;
+- `375-onglet-1.png`, `375-onglet-2.png`.
+
+Relues : 1280 onglets 2 et 5, 1024 onglet 1. Les onglets 1, 2 et 5 demandés sont dans le dossier, aux deux largeurs.
+
+### 4. Reste à faire
+
+- Question 192.
+- Rien n'est commité.
+
+## Cas types : trois colonnes séparées, sans chevauchement ni débordement (15 octobre 2026)
+
+Questions ouvertes : 193 et 194. La question 192 est remplacée par la 193.
+
+### 1. Ce qui a été fait (`src/components/CasTypes.astro`, à partir de 1024px)
+
+- **Chevauchement abandonné** : le décalage de 3rem vers la gauche est supprimé.
+- **Débordement supprimé** : l'illustration reste dans sa colonne (la 3e) ; rien n'est coupé par le bord de l'écran.
+- **Trois colonnes nettement séparées** : texte et bouton | onglets (15rem) | illustration, avec **2,5rem d'écart** entre chaque. Les colonnes latérales sont égales : les onglets restent au **centre exact**.
+- **Taille** : toujours le plafond de **120 % du bloc de texte le plus haut** (script `hauteurDessin`). Si la colonne est trop étroite, la largeur est limitée à la colonne et la hauteur réduite d'autant (`cqw`, `--cas-ratio`). Le dessin est centré dans sa colonne.
+- **Alignement vertical** : texte, onglets et illustration sont **calés en haut** de la rangée, et commencent à la même hauteur. L'illustration ne dépasse plus au-dessus des onglets.
+- **Hauteur stable** : panneaux toujours superposés ; la rangée prend la hauteur du plus haut des éléments des 6 panneaux.
+- Sous 1024px : inchangé.
+- `astro build` : réussi.
+
+**Problème rencontré et corrigé** : le `z-index` des onglets avait d'abord été retiré, car il ne servait plus au chevauchement. Or les panneaux couvrent les 3 colonnes et viennent après les onglets dans la page. Sans lui, ils recouvraient les onglets et **interceptaient les clics** : la vérification automatique n'arrivait plus à cliquer. Le `z-index` est rétabli et commenté.
+
+### 2. Mesures (Chromium, animations réduites)
+
+| Écran | Hauteur de la section | Texte | Onglets | Illustration | Haut des 3 colonnes |
+|---|---|---|---|---|---|
+| 1280 | **903px pour les 6 onglets** (avant : 889px) | 35 → 480px ; le plus haut : 333px | 520 → 760px, **centre 640px** | entre 800 et 1 245px ; **399px de haut = 1,20 × 333px** pour les 6 | **382px pour les trois** ✅ |
+| 1024 | **900px pour les 6 onglets** | 20 → 352px ; le plus haut : 417px | 392 → 632px, **centre 512px** | entre 672 et 1 004px ; 297 à 412px de haut (limitée par la colonne, question 193) | **363px pour les trois** ✅ |
+| 375 | 1 356px (inchangée) | — | — | — | — |
+
+- **Chevauchement : aucun.**
+  - À 1280px : texte jusqu'à 480px, onglets de 520 à 760px, illustration à partir de 800px. Il y a 40px de vide entre chaque colonne.
+  - À 1024px : 352 / 392–632 / 672px. Même chose.
+- **Débordement : aucun.** L'illustration finit au plus à 1 245px (le contenu s'arrête à 1 260px) à 1280px, et à 1 004px (contenu jusqu'à 1 004px) à 1024px.
+- **Défilement horizontal : aucun** (`scrollWidth` = largeur de la fenêtre, à 1280, 1024 et 375px).
+
+### 3. Captures (`captures/cas-types-trois-colonnes/`)
+
+- `1280-onglet-1.png` à `1280-onglet-6.png` ;
+- `1024-onglet-1.png` à `1024-onglet-6.png` ;
+- `375-onglet-1.png`, `375-onglet-2.png`.
+
+Les onglets 1, 2 et 6 demandés y sont, aux deux largeurs. Relues : 1280 onglet 1, 1024 onglet 6.
+
+### 4. Reste à faire
+
+- Questions 193 et 194.
+- Rien n'est commité.
+
+## Cas types : illustration en débordement vertical, façon alan.com (15 octobre 2026)
+
+Questions ouvertes : **195** (pas de coupe en haut ni en bas) et 196. Les questions 193 et 194 sont sans objet.
+
+### 1. Ce qui a été fait (`src/components/CasTypes.astro`, à partir de 1024px)
+
+- **L'illustration est une couche en position absolue**, hors flux : elle ne pèse plus sur la hauteur de la section.
+  - **Référence** : le panneau (`position: relative`), qui a exactement la boîte du bloc texte + onglets.
+  - **Hauteur** : **140 %** de ce bloc (`top: -20%`, `height: 140%`), centrée dessus. Elle dépasse donc de 20 % en haut et en bas.
+  - **Horizontalement** : elle commence 1,5rem avant le bord droit des onglets (léger chevauchement) et va jusqu'au bord droit de l'écran. Le dessin est calé à gauche ; s'il est plus large que la place, il est coupé par le bord de l'écran.
+- **Les onglets restent au-dessus** (`z-index: 1`, fond plein).
+- **Grille** : texte | onglets (15rem) | espace libre (2,5rem d'écart). Les onglets restent au **centre exact** ; la 3e colonne n'a plus de contenu.
+- **Section coupée** : `overflow: clip` à partir de 1024px (classe `lg:overflow-clip`), plutôt que `overflow: hidden`. Le rendu est le même, mais avec `hidden` la section devenait une zone défilable : son contenu dépasse de 58px, et un focus clavier ou un `scrollIntoView` aurait pu la faire glisser. Vérifié : avec `clip`, forcer `scrollLeft` ou `scrollTop` reste sans effet (0).
+- **Supprimé** :
+  - le script `hauteurDessin` et la variable `--cas-dessin` (plafond de 120 %) ;
+  - la limite de largeur (`--cas-ratio`, `cqw`).
+- Sous 1024px : inchangé (illustration dans le flux, sous le texte).
+- `astro build` : réussi.
+
+### 2. Mesures (Chromium, animations réduites)
+
+| Écran | Hauteur de la section | Bloc texte + onglets | Dessin | Onglets | Chevauchement |
+|---|---|---|---|---|---|
+| 1280 | **889px pour les 6 onglets** ✅ | 386px (haut à 383px du haut de la section) | **540px = 1,40 × 386**, de 77px au-dessus à 77px au-dessous du bloc ; de 736px vers la droite (jusqu'à 1 171 à 1 338px selon le dessin) | 520 → 760px, **centre 640px** | 24px |
+| 1024 | **900px pour les onglets 1, 2 et 5** | 417px | 583px = 1,40 × 417 ; de 608px vers la droite (1 078 à 1 178px) | 392 → 632px, **centre 512px** | 24px |
+| 375 | 1 356px (inchangée) | — | dans le flux | — | — |
+
+**Coupe par les bords :**
+- **À droite** (bord de l'écran) : oui, pour les dessins larges. À 1280px, c'est le cas de « Années 1995 à 2012 » (jusqu'à 1 338px), « Appartement » (1 284px) et « Modernisation » (1 322px) ; à 1024px, des 3 onglets mesurés.
+- **En haut et en bas : NON.** Le dessin finit à 306px du haut de la section et à 43px de son bas, à 1280px (question 195).
+
+**Défilement :**
+- **Défilement horizontal parasite : aucun** (`scrollWidth` de la page = largeur de la fenêtre, à 1280, 1024 et 375px).
+- **Défilement vertical parasite : aucun.** La section mesure exactement sa hauteur (`scrollHeight` = `clientHeight`), et la page n'est pas allongée par le dessin.
+
+### 3. Captures (`captures/cas-types-debordement/`)
+
+- `1280-onglet-1.png` à `1280-onglet-6.png` ;
+- `1024-onglet-1.png`, `1024-onglet-2.png`, `1024-onglet-5.png` ;
+- `375-onglet-1.png`, `375-onglet-2.png`.
+
+Relues : 1280 onglet 2, 1024 onglet 5.
+
+### 4. Reste à faire
+
+- Trancher la question 195.
+- Rien n'est commité.
+
+## Cas types : titre « Chaque projet… » et illustration calée à droite (15 octobre 2026)
+
+Questions ouvertes : 195 (toujours ouverte : pas de coupe en haut ni en bas), 197 et 198.
+
+### 1. Titre et textes
+
+- **Titre** : « Chaque maison a ses spécificités » → **« Chaque projet a ses spécificités »**. Une espace insécable relie « a » et « ses » : sans elle, la coupure tombait en « Chaque projet a / ses spécificités ». Le titre se lit maintenant « Chaque projet / a ses spécificités » à 1280, 1024 et 375px.
+- **Autres « maison » de la section** (`src/data/cas-types.ts`) : un seul texte modifié, celui de l'onglet Modernisation (« …communique bien avec le reste ~~de la maison~~ **du logement**. »). Les autres sont laissés tels quels (question 198). L'origine de cette modification est notée en tête du fichier.
+- Commentaires mis à jour (`CasTypes.astro`, `cas-types.ts`).
+
+### 2. Position de l'illustration (`src/components/CasTypes.astro`, à partir de 1024px)
+
+- **Toujours en position absolue, hors flux, à 140 % du bloc texte + onglets.** Seule la position horizontale a changé.
+- **Couche** : elle va du bord droit des onglets + **2,5rem** (le même écart qu'entre le texte et les onglets) jusqu'au bord droit de l'écran.
+- **Dessin** : calé à **droite** dans cette couche. Il dépasse de **24px** le bord de l'écran, qui le coupe.
+- **Plus aucun chevauchement** : la largeur du dessin est limitée à celle de la couche (+ 24px). Un dessin plus large voit sa hauteur réduite d'autant (`--cas-ratio`, `cqw`, `cqh`), pour ne jamais passer sous les onglets (question 197).
+- Commentaire du `z-index` des onglets mis à jour : il ne sert plus qu'à les garder au-dessus des panneaux, qui sinon intercepteraient les clics.
+- `astro build` : réussi.
+
+### 3. Mesures (Chromium, animations réduites)
+
+| Écran | Onglet | Hauteur de la section | Espace onglets → dessin | Dessin (haut) | Dépassement à droite |
+|---|---|---|---|---|---|
+| 1280 | 1 Bâti ancien | 889px | 40px | 515px | 24px |
+| 1280 | **2 Années 50 à 90** | 889px | **109px** (dessin étroit, calé à droite) | 540px | 24px |
+| 1280 | 3 | 889px | 40px | 452px | 24px |
+| 1280 | 4 | 889px | 40px | 497px | 24px |
+| 1280 | **5 Maison neuve** | 889px | **40px** | 538px | 24px |
+| 1280 | 6 | 889px | 40px | 464px | 24px |
+| 1024 | 1 à 6 | **900px** | **40px** pour les 6 | 337 à 466px | 24px |
+
+- **Hauteur de la section inchangée** : 889px à 1280px et 900px à 1024px, comme avant cette correction, et stable sur les 6 onglets. 375px : 1 356px, inchangée.
+- **Espace onglets → dessin** : au moins 40px partout, soit le même écart (2,5rem) qu'entre le texte et les onglets. Aucun contact.
+- **Défilement horizontal : aucun** (1280, 1024, 375px).
+- **Coupe en haut et en bas : toujours non.** Le dessin finit à 306px et plus du haut de la section, et à 43px et plus de son bas (question 195, toujours ouverte).
+
+### 4. Captures (`captures/cas-types-cale-droite/`)
+
+- `1280-onglet-1.png` à `1280-onglet-6.png` ;
+- `1024-onglet-1.png` à `1024-onglet-6.png` ;
+- `375-onglet-1.png`, `375-onglet-2.png`.
+
+Les onglets 2 et 5 demandés y sont, aux deux largeurs. Relues : 1280 onglets 2 et 5, 1024 onglet 2, 375 onglet 1.
+
+### 5. Reste à faire
+
+- Questions 195, 197 et 198.
+- Rien n'est commité.
+
+## Cas types : illustration centrée dans l'espace libre à droite (15 octobre 2026)
+
+Questions ouvertes : **199** (taille des dessins), 195 (toujours ouverte : pas de coupe en haut ni en bas) et 198. La question 197 est remplacée par la 199.
+
+### 1. Ce qui a été fait (`src/components/CasTypes.astro`, à partir de 1024px)
+
+- **Seul l'ancrage horizontal change.** La couche absolue couvre exactement l'espace libre, du bord droit des onglets (`left: calc(50% + 7.5rem)`) au bord droit de l'écran (`right: -marge-ecran`). Le dessin y est **centré**, en flexbox (`justify-content: center`).
+  - C'est équivalent au « left à mi-chemin + translate de −50 % » suggéré, mais plus simple, car la couche sert aussi de conteneur de requête pour limiter la taille.
+- **Respiration** : 2,5rem de chaque côté (padding de la couche), le même écart qu'entre le texte et les onglets. Le dessin ne touche donc jamais les onglets, ni le bord de l'écran. Plus aucun débordement à droite.
+- **Taille** :
+  - celle d'avant (140 % du bloc texte + onglets) si elle tient ;
+  - sinon, le dessin est **réduit** (et non décalé), selon sa largeur disponible (`100cqw / --cas-ratio`). Voir la question 199.
+- **Inchangé** :
+  - position absolue, hors flux ;
+  - débordement vertical à 140 %, coupe par la section (`overflow: clip`) ;
+  - hauteur de la section fixée par le texte et les onglets, et stable ;
+  - sous 1024px.
+- `astro build` : réussi.
+
+### 2. Mesures (Chromium, animations réduites)
+
+| Écran | Onglet | Hauteur de la section | Onglets → dessin | Dessin → bord de l'écran | Dessin (haut × large) |
+|---|---|---|---|---|---|
+| 1280 | **1** Bâti ancien | 889px | **40px** | **40px** | 450 × 440px |
+| 1280 | **2** Années 50 à 90 | 889px | **42px** | **42px** | 540 × 436px |
+| 1280 | 3 | 889px | 40px | 40px | 394 × 440px |
+| 1280 | 4 | 889px | 40px | 40px | 434 × 440px |
+| 1280 | **5** Maison neuve | 889px | **40px** | **40px** | 469 × 440px |
+| 1280 | 6 | 889px | 40px | 40px | 405 × 440px |
+| 1024 | **1** | 900px | **40px** | **40px** | 319 × 312px |
+| 1024 | **2** | 900px | **40px** | **40px** | 387 × 312px |
+| 1024 | 3 | 900px | 40px | 40px | 280 × 312px |
+| 1024 | 4 | 900px | 40px | 40px | 308 × 312px |
+| 1024 | **5** | 900px | **40px** | **40px** | 333 × 312px |
+| 1024 | 6 | 900px | 40px | 40px | 288 × 312px |
+
+- **Les deux distances sont égales** (au pixel près) pour les 6 onglets, aux deux largeurs.
+- **Hauteur de la section inchangée** : 889px à 1280px, 900px à 1024px, et 1 356px à 375px.
+- **Défilement horizontal : aucun** (1280, 1024, 375px).
+- **Coupe en haut et en bas : toujours non** (question 195). Le dessin le plus haut, celui de l'onglet 2, s'arrête à 43px du bas de la section.
+
+### 3. Captures (`captures/cas-types-centre/`)
+
+- `1280-onglet-1.png` à `1280-onglet-6.png` ;
+- `1024-onglet-1.png` à `1024-onglet-6.png` ;
+- `375-onglet-1.png`, `375-onglet-2.png`.
+
+Relues : 1280 onglet 1, 1024 onglet 5.
+
+### 4. Reste à faire
+
+- Questions 199, 195 et 198.
+- Rien n'est commité.
+
+## Cas types : un titre par onglet (15 octobre 2026)
+
+Aucune nouvelle question. Questions toujours ouvertes sur la section : 195, 198 et 199.
+
+### 1. Ce qui a été fait
+
+- **`src/data/cas-types.ts`** : nouveau champ `titre`, avec les 6 titres **fournis, repris mot pour mot, ponctuation comprise** :
+
+| Onglet | Titre |
+|---|---|
+| Bâti ancien et historique | Préserver le charme, moderniser le confort. |
+| Années 50 à 90 | De la passoire thermique à l'indépendance énergétique |
+| Années 1995 à 2012 | Moderniser vos équipements pour faire des économies |
+| Appartement | Rénover malin, sans fâcher le syndic. |
+| Construction de maison neuve | Concevoir une maison qui vous rend indépendant |
+| Modernisation | Moderniser intelligemment vos équipements |
+
+- **`src/components/CasTypes.astro`** : un `<h3>` en haut de la colonne de texte de chaque panneau, au-dessus du paragraphe.
+  - Style : `text-h3` (taille h3, graisse 900, `text-balance`), dans la couleur de texte de la section (héritée, elle change selon l'onglet).
+  - Espace de 1,25rem (`mt-5`) avant le paragraphe.
+- Cela revient sur la décision du 14 octobre 2026 (« les titres de panneau sont supprimés : le libellé de l'onglet suffit »). Commentaires mis à jour.
+- **Contraste** : le titre a la couleur du texte courant sur le même fond, donc les mêmes contrastes (de 7,86:1 à 14,59:1).
+- `astro build` : réussi.
+
+### 2. Hauteur de la section (Chromium, animations réduites)
+
+| Écran | Avant | Après | Écart | Stable sur les onglets mesurés ? |
+|---|---|---|---|---|
+| 1280 | 889px | **983px** | +94px | ✅ oui, 983px pour les 6 |
+| 1024 | 900px | **1 021px** | +121px | ✅ oui, 1 021px pour les 6 |
+| 375 | 1 356px | **1 466px** | +110px | ✅ oui, 1 466px pour les 2 mesurés |
+
+- C'est le panneau le plus haut qui fixe la hauteur (panneaux superposés) : à 1280px, « Années 1995 à 2012 », dont le titre fait 3 lignes (bloc de texte de 479px).
+- **Illustration** : toujours centrée, à 40px des onglets et 40px du bord de l'écran, aux deux largeurs. Sa taille ne change pas, car elle est limitée par la largeur (question 199).
+- **Défilement horizontal : aucun** (1280, 1024, 375px).
+
+### 3. Captures (`captures/cas-types-titres/`)
+
+- `1280-onglet-1.png` à `1280-onglet-6.png` ;
+- `1024-onglet-1.png` à `1024-onglet-6.png` ;
+- `375-onglet-1.png`, `375-onglet-2.png`.
+
+Relues : 1280 onglet 3 (titre de 3 lignes), 375 onglet 2.
+
+### 4. Reste à faire
+
+- Rien n'est commité.
+
+## Cas types : titres de panneau allégés (15 octobre 2026)
+
+Aucune nouvelle question.
+
+### 1. Ce qui a été fait
+
+- **Titres des panneaux** (`src/components/CasTypes.astro`) : `text-h3` (graisse 900, jusqu'à 38px) est remplacé par :
+  - **graisse 500** (`font-medium`) ;
+  - **taille** `clamp(1.5rem, 2.5vw, 2rem)` : 32px à 1280px et au-delà, réduite proportionnellement en dessous (25,6px à 1024px), et 24px au minimum (375px) ;
+  - **interligne 1,25** ;
+  - `text-balance` et couleur héritée de la section, inchangés.
+- **Police** (`src/styles/global.css`) : **la graisse 500 de Source Sans 3 n'était pas chargée** (seulement 400, 600, 700 et 900). Sans elle, le navigateur aurait affiché une graisse voisine. Elle est ajoutée à l'import Google Fonts. Vérifié : `document.fonts.check('500 32px "Source Sans 3"')` = vrai. Les commentaires de la charte (graisses disponibles, classe `font-medium`) sont mis à jour.
+- Le titre (32px, 500) reste nettement plus visible que le paragraphe (18px, 400).
+- `astro build` : réussi.
+
+### 2. Mesures (Chromium, animations réduites)
+
+| Écran | Taille / interligne | Lignes par titre | Hauteur de la section | Avant (titres en 900) | Stable ? |
+|---|---|---|---|---|---|
+| 1280 | 32px / 40px | **2 pour les 6** ✅ (3 au plus avant) | **936px** | 983px | ✅ 936px pour les 6 |
+| 1024 | 25,6px / 32px | 2 pour les 6 | **984px** | 1 021px | ✅ 984px pour les 6 |
+| 375 | 24px / 30px | 2 pour les 6 | **1 436px** | 1 466px | ✅ 1 436px pour les 6 |
+
+- **Défilement horizontal : aucun** (1280, 1024, 375px).
+
+### 3. Captures (`captures/cas-types-titres-alleges/`)
+
+- `1280-onglet-1.png` à `1280-onglet-6.png` ;
+- `375-onglet-1.png`, `375-onglet-2.png`.
+
+Relues : 1280 onglet 3 (le titre le plus long, sur 2 lignes), 375 onglet 1.
+
+Remarque : sur une première série de captures à 375px, l'image n'apparaissait pas, car elle était encore en chargement différé (`loading="lazy"`) au moment de la capture. Avec un chargement forcé, elle s'affiche normalement. C'était un artefact du script de capture, pas un défaut du site.
+
+### 4. Reste à faire
+
+- Rien n'est commité.
+
+## Simulateur d'aides : nouveaux textes et bandeau (15 octobre 2026)
+
+Questions ouvertes : **n° 200 à 203** (« Questions en attente de réponse »). ⚠️ Le montant de 32 000 € n'est pas confirmé par une source officielle (question 200).
+
+### 1. Ce qui a été fait (`src/components/SimulateurAides.astro`)
+
+- **Titre** : « Votre maison peut vous rapporter **plus de 32 000 €**. Il suffit de la rénover. » Une seule phrase continue ; le montant reste en vert-600 (espaces insécables, il ne se coupe pas). **30 000 → 32 000 €.**
+- **Paragraphe** remplacé mot pour mot (« Votre maison possède une valeur insoupçonnée… sans que vous ayez à rembourser. »).
+- **Sous-titre accentué** (`text-h3`, comme l'ancienne accroche) : « Et en plus on s'occupe de tout : montage du dossier, dépôt des demandes et sécurisation des versements. »
+- **Supprimés** : « L'État les verse pour isoler, chauffer… », « Et vous n'avez presque rien à faire. », « On monte votre dossier… ». La question 34 (« L'État les verse ») devient sans objet.
+- **Bloc beige vide supprimé** : l'emplacement de `aides.jpg` (fond `bg-creme-fonce`, 28rem / 44rem de haut, classe `deborde-gauche`) est retiré, ainsi que toute référence à `aides.jpg` dans `src/` (composant et commentaire de `src/data/illustrations.ts`). Vérifié : `grep aides.jpg src` ne renvoie rien. La question 178 est réglée.
+- **Bandeau `bandeau-aides.png`** sous le texte de la colonne de gauche, sur toute sa largeur :
+  - aucun cadre, arrondi, ombre ni fond : il se pose sur le lichen ;
+  - recadré automatiquement sur la zone dessinée (`zoneDessinee`, `styleCadre`, `styleRecadrage` de `src/data/illustrations.ts`, mesure à la construction du site) ;
+  - **fichier absent : rien n'est rendu** (pas de bloc de remplacement, contrairement aux autres illustrations) ; la colonne s'arrête après le sous-titre ;
+  - texte alternatif fourni, repris mot pour mot ; optimisé en WebP (480 à 1600px), chargement différé, animation d'entrée `data-scene-image`.
+
+### 2. Vérification (Chromium, page d'accueil, `bandeau-aides.png` ABSENT)
+
+| Écran | Hauteur de la section | Colonne de gauche | Dernier élément de la colonne | Image dans la section | Défilement horizontal |
+|---|---|---|---|---|---|
+| 1280 | **843px** | 603px | le sous-titre | 0 | aucun |
+| 375 | **1 348px** | 721px | le sous-titre | 0 | aucun |
+
+- **Aucun emplacement vide** : les seuls éléments `bg-creme-fonce` restants sont la barre de progression du simulateur et l'état survol d'un bouton.
+- À 1280px, la section est désormais plus courte, car c'est le simulateur (colonne de droite) qui fixe sa hauteur ; il reste environ 240px de lichen sous le sous-titre, que le bandeau remplira.
+- Captures : `captures/simulateur-bandeau/1280-section.png`, `375-section.png`, `mesures.json`. Sur la capture à 375px, l'en-tête collant et la barre d'outils d'Astro passent par-dessus la section : artefact de la capture, pas un défaut du site.
+- Non vérifié : `astro build` (pas lancé) et le rendu avec l'image (question 203).
+
+### 3. Reste à faire
+
+- Déposer `bandeau-aides.png` dans `src/assets/illustrations/`, puis recapturer (aucune modification de code nécessaire).
+- Confirmer le montant de 32 000 € (question 200).
+- Rien n'est commité.
+
+## Simulateur d'aides : textes raccourcis, équilibre et fond lagon (15 octobre 2026)
+
+Questions ouvertes : **n° 200 (mise à jour), 204, 205 et 206** (« Questions en attente de réponse »). Les questions 201 et 203 sont réglées ou sans objet.
+
+### 1. Textes (`src/components/SimulateurAides.astro`)
+
+- **Titre** : « Augmentez la valeur de votre bien de **plus de 32 000 €**. » Le montant est en vert-600 et ne se coupe pas (espaces insécables).
+- **Paragraphe** : « Offrez-vous plus de confort… (jusqu'à 90 % du prix des travaux). », repris mot pour mot. Une espace insécable est ajoutée dans « 90 % ».
+- **Sous-titre** : « On s'occupe de tout : montage du dossier, dépôt des demandes et sécurisation des versements. »
+  - **Taille** : `text-h3` (4 lignes) passe à `text-corps font-semibold`, soit la taille du texte courant en graisse 600, et `mt-6` passe à `mt-4`. La couleur `text-texte` (foncée) le distingue du paragraphe (`text-texte-doux`).
+  - Résultat : 2 lignes à 1280px, 3 lignes à 375px.
+- Les anciens textes sont supprimés.
+
+### 2. Équilibre avec le formulaire : ce qui a été fait
+
+Hauteurs mesurées (Chromium, animations réduites, bandeau affiché) :
+
+| Écran | État | Colonne gauche | Simulateur (droite) | Écart | Section |
+|---|---|---|---|---|---|
+| 1280 | Question 1 | 587px | 476px | gauche +111 | 827px |
+| 1280 | Question 2 | 587px | 412px | gauche +175 | 827px |
+| 1280 | Question 3 | 587px | 559px | gauche +28 | 827px |
+| 1280 | **Résultat** | 587px | **929px** | **droite +342** | 1 169px |
+| 1024 | Question 1 | 589px | 483px | gauche +106 | 829px |
+| 1024 | Résultat | 589px | 945px | droite +356 | 1 185px |
+| 375 (empilé) | Question 1 | 591px | 451px | — | 1 218px |
+| 375 (empilé) | Résultat | 591px | 1 029px | — | 1 796px |
+
+Constats :
+- Avec les textes courts, la colonne de gauche ne dépasse plus que de **28 à 175px** pendant les questions (106 à 111px à la question 1). Ce n'est plus « nettement plus haut ».
+- À l'**état résultat**, c'est l'**inverse** : le simulateur dépasse de 342px, et un grand vide se forme sous le bandeau.
+
+Décisions :
+- **Bandeau non réduit** (152px de haut à 1280px, 123px à 1024px, 87px à 375px). Le réduire aurait à peine réduit l'écart aux questions, et l'aurait creusé à l'état résultat.
+- **Bandeau non placé à cheval** sur les deux colonnes : il perdrait son lien avec le texte et serait repoussé sous le résultat, à 930px du titre.
+- **Colonne de gauche collante** (`.accroche-colonne`, `<style>` du composant). Elle s'applique à partir de 1024px, et seulement si l'écran fait au moins 800px de haut. Elle se place à 7rem du haut de l'écran (10rem à partir de 1280px), sous l'en-tête collant. Quand le visiteur fait défiler le résultat, le texte et le bandeau restent à l'écran. Vérifié à 1280 × 900, au bas du résultat : colonne de 160 à 747px à l'écran (`captures/simulateur-lagon/1280-resultat-bas-ecran.png`). Sur un écran plus bas, la colonne ne suit pas le défilement, comme avant. Contrepartie : question 205.
+- **Téléphone et tablette** (sous 1024px) : les colonnes sont empilées, la question de l'équilibre ne se pose pas.
+
+### 3. Couleur de fond : lagon (#bce8ea)
+
+Ajoutée à la charte (`--color-lagon`, `src/styles/global.css`) ; le lichen y reste (fond de l'onglet actif de l'étape 3 de la Méthode).
+
+**Pourquoi une teinte FROIDE** : la crème de l'illustration (maison, isolant) a la même luminosité que n'importe quel fond clair (1,00 à 1,03:1). Elle ne peut donc ressortir que par la teinte. Sur un fond froid, la crème chaude se détache, l'orange (tuiles, pièces) vibre, car c'est la couleur opposée du turquoise, et le bleu nuit reste net.
+
+**Teintes testées** (captures dans le dossier temporaire, non conservées) :
+- **#d3e9ee** (turquoise grisé) et **#dbe8f4** (bleu ciel) : trop proches de la brume de « Fonctionnement » ;
+- **#dfe3f3** (pervenche) : trop proche de la lavande de l'onglet « Appartement » (écart 2,4) et de la bruyère des articles (2,8) ;
+- **#d4d8f9** (pervenche plus franche) : correcte, mais proche de la bruyère (3,3) et de la brume (3,1) ;
+- **#bce8ea (lagon)** : retenue.
+
+Une recherche systématique sur des teintes claires (hors vert jaunâtre, contrastes imposés) montre que la page couvre déjà presque toute la gamme des pastels. Les teintes plus éloignées de tout étaient trop saturées (menthe ou cyan vifs).
+
+**Contrastes du lagon (WCAG)** :
+
+| Élément | Contraste |
+|---|---|
+| Texte #16212a | **12,35:1** |
+| Texte-doux #4c5a64 (paragraphe) | **5,37:1** (AA) |
+| Montant en vert-600 #2a6b4f (très grand texte gras) | **4,79:1** (AA et AAA grand texte) : vert-600 conservé, il rappelle la flèche verte de l'illustration |
+| Bloc blanc du simulateur | 1,32:1 (lichen : 1,28:1), plus l'ombre `shadow-carte` : il se détache nettement |
+
+**Écart avec les autres fonds (OKLab ×100 ; à titre de repère, crème contre blanc : 3,3)** :
+
+| Fond | Écart |
+|---|---|
+| Collectif, juste après (nuit-900) | 62,0 |
+| Cas types, juste avant, onglet par défaut (Bâti ancien, #1a2b4a) | 61,2 |
+| Cas types, Maison neuve | 47,5 |
+| Cas types, Années 50 à 90 | 8,8 |
+| Cas types, Modernisation | 8,3 |
+| Cas types, Appartement | 6,6 |
+| Cas types, Années 1995 à 2012 | 6,6 |
+| Bruyère (articles) | 6,1 |
+| Crème foncé (« Deux façons de faire ») | 6,0 |
+| Lichen | 5,2 |
+| Brume (« Fonctionnement », loin dans la page) | 3,5 |
+
+### 4. Vérification
+
+- Captures (`captures/simulateur-lagon/`) :
+  - `1280-question-1.png`, `1280-question-2.png`, `1280-question-3.png`, `1280-resultat.png`, `1280-resultat-bas-ecran.png` ;
+  - `375-question-1.png` à `375-resultat.png`, et `375-resultat-bas-ecran.png` ;
+  - `mesures.json`.
+- L'en-tête n'est plus collant pendant la capture, pour qu'il ne masque pas la section. Sur `1280-resultat.png`, le titre de gauche est 40px plus bas que « Estimez vos aides » : c'est l'effet collant, avec la page défilée jusqu'au haut de la section (question 205).
+- Défilement horizontal : aucun (1280, 1024, 375px).
+- `astro build` : réussi.
+- Le dossier `captures/simulateur-avant-equilibre/` (premières mesures, fond lichen) a été supprimé ; ses mesures sont celles du tableau ci-dessus (identiques).
+
+### 5. Reste à faire
+
+- Arbitrer les questions 200, 204, 205 et 206.
+- Rien n'est commité.
+
+
+## Collectif : bandeau illustré et bouton ; Simulateur d'aides en blanc (15 octobre 2026)
+
+Questions ouvertes : **n° 207 à 211** (« Questions en attente de réponse »). La question 204 (fond lagon) est sans objet. ⚠️ La bande claire sous les personnages **se remarque** sur le bleu nuit (question 207).
+
+### 1. Bandeau illustré (`src/components/Collectif.astro`)
+
+- **Fichier** : `src/assets/illustrations/collectif.png`, 1800 × 595, fond transparent. Absent au début du travail, il est arrivé pendant celui-ci. Zone dessinée mesurée automatiquement : x 0 à 1799, y 69 à 534 (le dessin occupe toute la largeur ; 69px vides en haut et 60px en bas sont retirés par le recadrage).
+- **Position** : sous le texte, HORS du conteneur de la section : il occupe toute la largeur, à toutes les largeurs d'écran. Ce n'est pas une colonne.
+- **Débordement léger** : 120 % de la largeur de la section sous 768px (10 % coupés de chaque côté) et 106 % à partir de 768px (3 % de chaque côté). La section garde `overflow-x-clip` : la partie hors de l'écran est coupée, sans défilement horizontal.
+- **Aucun cadre, aucun arrondi, aucune ombre, aucun fond** : il se pose sur le bleu nuit.
+- **Recadrage** : mêmes fonctions que les autres illustrations (`zoneDessinee`, `styleCadre`, `styleRecadrage`, `src/data/illustrations.ts`).
+- **Fichier manquant** : rien n'est affiché, et la marge du bas de la section revient sous le bouton (aucun emplacement vide).
+- **Texte alternatif** : celui fourni, mot pour mot.
+- **Marges** : 48px entre le bouton et le bandeau (56px à partir de 768px). Sous le bandeau, la marge de bas de section habituelle (72px, puis 120px).
+- **Carte de France supprimée** : le bloc `carte.png` (fichier jamais livré, donc jamais affiché) et ses deux étiquettes flottantes sont retirés du code (question 210).
+
+### 2. Bouton
+
+- « Trouver un artisan près de chez moi » → `/devis`, centré, sous la ligne des engagements, au-dessus du bandeau (40px au-dessus).
+- Orange principal (`bg-action-500`, survol `action-600`), texte foncé (6,9:1), comme les autres boutons orange du site. **Hauteur mesurée : 56px** (48px minimum demandé), largeur 326px, aux deux tailles d'écran.
+- Contour de focus **blanc** (le contour bleu nuit des autres boutons serait invisible sur ce fond). Orange sur bleu nuit : 6,1:1.
+- Il fait partie du bloc d'en-tête animé : il apparaît avec le titre.
+
+### 3. Animation
+
+- Le bandeau porte `data-scene-etape` : il démarre à **son** arrivée à l'écran (30 % de lui visible dans les 90 % supérieurs de l'écran). Avec le déclenchement de la section (`data-scene-image`), il se serait animé hors de la vue : à 1280 × 800, il est encore sous le bas de l'écran quand le titre s'anime.
+- Règle propre dans `global.css` (`.bandeau-collectif`) : fondu et **légère montée de 30px** (comme les autres images, au lieu des 40px des étapes), 0,6 s, avec **250 ms de retard** : il part toujours après le titre, même quand les deux arrivent ensemble.
+- Rejoué à chaque passage, après sortie complète de la section (mécanisme existant des étapes).
+- Vérifié (Chromium, 1280 × 800) : titre visible et bandeau encore caché sous l'écran ; bandeau animé (`scene-montee-image`, retard 0,25 s) une fois à l'écran ; remis à zéro après retour en haut de page. Avec « réduire les animations » : tout est visible et immobile.
+
+### 4. Simulateur d'aides en blanc
+
+- Fond de la section : `bg-lagon` → `bg-fond` (blanc). La couleur `--color-lagon` reste dans la charte, inutilisée.
+- **Bloc du simulateur** (`SimulateurQuestions.astro`) : blanc sur blanc, il se détache par un **filet de 1px crème foncé** et une **ombre plus ample** (`0 14px 40px -10px`, bleu nuit à 25 %, au lieu de `shadow-carte`). Fond du bloc gardé blanc : les réponses (cartes blanches bordées de crème foncé) restent nettes. Vérifié sur les captures : le bloc se distingue clairement.
+- Contrastes sur blanc : montant en vert-600 6,3:1 ; paragraphe (texte-doux) 7,1:1.
+- **Enchaînement** : Cas types (sombre, onglet par défaut #1a2b4a) → Simulateur (blanc) → Collectif (bleu nuit). Les deux ruptures sont nettes (captures `1280-transition-cas-types.png` et `1280-transition-collectif.png`). Le bandeau `bandeau-aides.png` se pose bien sur le blanc.
+- Commentaires mis à jour : `SimulateurAides.astro`, `index.astro` (liste des couleurs de la page).
+
+### 5. Mesures et vérification
+
+Chromium, animations réduites, en-tête rendu non collant pendant la capture.
+
+| Écran | Section Collectif | Bandeau (l × h) | Section Simulateur | Page d'accueil (hauteur totale) | Défilement horizontal |
+|---|---|---|---|---|---|
+| 1280px | **1 149px** | 1 357 × 351px | 827px | **7 781px** | aucun (1280 = 1280) |
+| 375px | **966px** | 450 × 117px | 1 220px | **10 118px** | aucun (375 = 375) |
+
+`astro build` : réussi.
+
+Captures (`captures/collectif-bandeau/`) : `1280-collectif.png`, `375-collectif.png`, `1280-simulateur.png`, `375-simulateur.png`, `1280-transition-cas-types.png`, `1280-transition-collectif.png`, les mêmes en 375, et `mesures.json`.
+
+### 6. Fichiers modifiés
+
+- `src/components/Collectif.astro` : bouton, bandeau, suppression de la carte et des étiquettes, en-tête mis à jour.
+- `src/styles/global.css` : règle d'animation `.bandeau-collectif`.
+- `src/components/SimulateurAides.astro` : fond blanc.
+- `src/components/SimulateurQuestions.astro` : filet et ombre du bloc.
+- `src/pages/index.astro` : commentaire des couleurs.
+
+### 7. Reste à faire
+
+- Arbitrer les questions 207 à 211 (en priorité la 207 : bande claire).
+- Rien n'est commité.
+
+
+## Collectif : bandeau remonté sous le bouton (16 octobre 2026)
+
+Question ouverte : **n° 212** (« Questions en attente de réponse »).
+
+### Demande
+
+Réduire fortement le vide entre le bouton « Trouver un artisan près de chez moi » et le dessin : le bouton doit se trouver dans le creux entre les deux collines vertes, légèrement au-dessus de la tête de la femme qui porte l'échelle. Le dessin peut affleurer le bas du bouton sans jamais le recouvrir.
+
+### Repères mesurés dans `collectif.png` (1800 × 595)
+
+- Haut de la zone recadrée : y = 69.
+- Casquette de la femme à l'échelle : haut à **y = 201**, x ≈ 940 à 1010 (juste à droite du centre).
+- Creux entre les deux collines : x ≈ 925, y ≈ 262 (le centre de l'image, x = 900, tombe dedans ; le bouton est centré, et le bandeau aussi, donc le centre du bouton tombe sur x = 900 à toutes les largeurs).
+- Cible retenue : bas du bouton à y ≈ 190, soit **121px d'image sous le haut du recadrage** (11px au-dessus de la casquette).
+
+### Ce qui a été fait (`src/components/Collectif.astro`)
+
+- **Marge supérieure du bandeau, par palier** :
+  - à partir de 768px : `md:-mt-[7.1vw]` (au lieu de 56px). 7,1vw = 121/1800 × 106vw (largeur du bandeau) : la marge suit exactement l'échelle du dessin, donc le bouton reste au même endroit du paysage à toutes les largeurs de 768px et plus (vérifié à 1280 et 1024) ;
+  - sous 768px : `mt-1` (4px, au lieu de 48px). Sur téléphone, le bouton (326px) couvre presque toute la largeur de l'écran : une marge négative ferait passer le bouton sur le toit de l'atelier et sur la camionnette. Le dessin vient donc **affleurer** le bas du bouton, sans chevauchement.
+- **Ordre d'empilement** : le conteneur du texte (titre, engagements, bouton) porte `relative z-10` : le bouton passe au-dessus du bandeau (qui vient après dans la page et est lui-même positionné/animé). Le dessin ne recouvre jamais le bouton.
+- Rien d'autre ne change (largeurs 120 % / 106 %, recadrage, animation, texte alternatif, fichier manquant : la section se termine toujours après le bouton, la marge négative étant portée par le bloc du bandeau qui n'est alors pas affiché).
+
+### Vérification (Chromium, animations réduites, en-tête non collant pendant la capture)
+
+| Écran | Section Collectif (avant → après) | Bouton (h × l) | Bas du bouton → haut du bandeau | Bouton cliquable (5 points testés) | Défilement horizontal |
+|---|---|---|---|---|---|
+| 1280px | 1 149px → **1 002px** (−147) | 56 × 326 | **−91px** (chevauchement, bouton au-dessus) | oui | aucun |
+| 1024px | (non mesurée avant) → **959px** | 56 × 326 | **−73px** | oui | aucun |
+| 375px | 966px → **922px** (−44) | 56 × 326 | **+4px** (affleurement) | oui | aucun |
+
+- « Cliquable » : `document.elementFromPoint` aux quatre coins (5px en retrait) et au centre du bouton renvoie bien le lien, aux trois largeurs : aucune partie du dessin ne passe par-dessus.
+- À l'œil : à 1280 et 1024, le bouton est posé dans le creux des collines, sa bordure basse juste au-dessus de la casquette de la femme à l'échelle ; les sapins centraux passent derrière lui. À 375, le dessin commence juste sous le bouton.
+- Captures : `captures/collectif-remonte/1280-collectif.png`, `1024-collectif.png`, `375-collectif.png` (la barre d'outils du serveur de développement Astro apparaît en bas des captures : elle n'existe pas sur le site publié).
+
+### Reste à faire
+
+- Arbitrer la question 212 (espace entre les engagements et le haut du dessin à 1280px).
+- Rien n'est commité.
+
+
+## Corrections de la page d'accueil (16 octobre 2026)
+
+Questions ouvertes : **n° 213 à 215** (« Questions en attente de réponse »). ⚠️ Le montant de 32 000 € de la nouvelle phrase du Hero n'est pas confirmé et sa formulation (« plus de ») contredit le simulateur (« jusqu'à ») : question 213.
+
+### 1. Hero : phrase sur les aides (`Hero.astro`, `global.css`)
+
+- Ajoutée sous « Obtenir un devis » et « Estimer mes aides » (16px d'écart) : « Recevez plus de 32 000 € d'aides pour réaliser votre projet. » Le montant est insécable.
+- Style : taille du texte courant (`text-corps`, 18px), graisse 600.
+- **Couleur retenue : `--color-corail: #d9304a`** (nouvelle, ajoutée au `@theme`), un rouge corail vif.
+  - **Contraste sur le blanc du Hero : 4,70:1** (minimum demandé : 4,5:1). Vérifié dans le navigateur : rgb(217, 48, 74), 18px, 600.
+  - Contraste avec l'orange du bouton (#f0920f) : 1,97:1. Ce sont deux teintes nettement distinctes (rouge rosé et orange) : la phrase tranche sans concurrencer le bouton, qui reste plus grand, plein et plus lumineux.
+  - Teintes écartées : #e8445a (3,88:1), #e03c52 (4,25:1) et #e0394f (4,31:1) étaient plus vives, mais sous 4,5:1 ; #cf3350 (4,95:1) était plus terne. `alerte-500` (#ff0256) n'atteint pas 4,5:1 et `alerte-700` (#ca0808) se lirait comme un message d'erreur.
+- Captures : `captures/corrections-accueil/375-hero.png`, `375-hero-texte.png`, `1280-hero.png`. À 375px, la phrase tient sur deux lignes.
+
+### 2. Méthode : rythme de l'étape 2 (`MethodeEtapes.astro`)
+
+- Seuils passés de **20, 45 et 70 %** à **20, 50 et 72 %** de la fenêtre où le schéma est entier. La zone morte de 2 % reste inchangée.
+- Part de la fenêtre pour chaque étape : étape 2, **30 %** (25 % avant) ; étape 3, 22 % (25 % avant) ; étape 4, 28 % (30 % avant).
+- **Déclenchements mesurés** (Chromium, défilement par pas de 4px, animations actives) :
+
+| Écran | Fenêtre « schéma entier » | Étape 2 | Étape 3 | Étape 4 | Schéma entier au déclenchement |
+|---|---|---|---|---|---|
+| 1280 × 900 | 704px | à 23 % (164px) | à 53 % (376px) | à 76 % (532px) | oui, aux 3 seuils |
+| 375 × 812 | 1 036px | à 22 % | à 53 % | à 75 % | oui, aux 3 seuils |
+
+  - L'étape 1 s'affiche dès l'arrivée de la section.
+  - À 1280 × 900, l'étape 2 reste affichée pendant **212px** de défilement (contre environ 176px avant), l'étape 3 pendant 156px. L'étape 4 dispose encore de 172px avec le schéma entier.
+  - Le léger décalage entre seuil et déclenchement (+2 à 3 %) correspond à la zone morte et au pas de mesure.
+- **L'étape 4 se déclenche toujours schéma entier** : la correction précédente est conservée.
+
+### 3. Cas types sur téléphone (`CasTypes.astro`)
+
+- Sous 1024px, nouvel ordre : titre, sous-titre, **illustration**, onglets, texte, bouton. Mesures à 375px (haut de chaque élément, en px depuis le haut de la page) : titre 5 617, sous-titre 5 722, illustration 5 890, onglets 6 265, texte 6 457, bouton 6 853.
+- Technique : l'illustration est dans chaque panneau. Sous 1024px, le bloc a donc 3 rangées (illustration, onglets, texte). Chaque panneau couvre les 3 (`subgrid`), avec son illustration en rangée 1 et son texte en rangée 3. Les onglets sont en rangée 2, au-dessus des panneaux (`z-index`), sinon les clics seraient interceptés. L'écart est de 32px entre l'illustration, les onglets et le texte.
+- **Hauteur de section stable** : 1 480px sur les 6 onglets, tous cliqués et vérifiés (onglet sélectionné, hauteur). Voir la question 215 sur le vide au-dessus des dessins plus petits.
+- À partir de 1024px et sans JavaScript : rien ne change.
+- Captures : `375-cas-types.png` (onglet 1) et `375-cas-types-onglet4.png`.
+
+### 4. Section aides sur téléphone (`SimulateurAides.astro`)
+
+- Sous 1024px, nouvel ordre : titre, **illustration**, paragraphe, sous-titre, simulateur. Mesures à 375px : titre 7 097, illustration 7 230, paragraphe 7 341, sous-titre 7 578, simulateur 7 704.
+- Technique : le bandeau est placé juste après le titre dans le code, et la colonne passe en flex. À partir de 1024px, il repasse sous le texte (`order-last`, 40px au-dessus). L'écart est de 24px sous le titre et de 24px avant le paragraphe.
+- Grand écran : rendu inchangé, et la colonne d'accroche reste collante.
+- Capture : `375-aides.png`.
+
+### 5. Articles : fond blanc (`index.astro`, `ArticleList.astro`)
+
+- Fond de la section : `bg-bruyere` → `bg-fond` (blanc). La couleur bruyère reste dans la charte. La bruyère foncée sert toujours à la Méthode.
+- Les cartes d'articles étaient blanches sans bordure : elles auraient disparu sur le blanc. Elles reçoivent donc un **filet de 1px crème foncé** (`border-creme-fonce`), comme le bloc du simulateur. L'ombre au survol est conservée. `ArticleList` n'est utilisé que sur la page d'accueil.
+- Enchaînements :
+  - **Collectif (bleu nuit) → Articles (blanc)** : rupture nette.
+  - **Articles (blanc) → pied de page (crème)** : ⚠️ deux fonds clairs qui se suivent, avec une distinction faible (1,07:1). Signalé : question 214.
+- Captures : `1280-articles.png`, `1280-transition-collectif-articles.png`, `1280-transition-articles-pied.png`. Section : 912px de haut à 1280px.
+- Remarque : l'image de l'article de démonstration est un emplacement bleu pâle (pas d'image dans le contenu). Cela n'a rien à voir avec ce travail.
+
+### 6. Collectif : animation plus rapide (`global.css`)
+
+- Retard du bandeau : **250 ms → 100 ms** après le titre quand les deux arrivent ensemble.
+- Le déclenchement propre du bandeau est **conservé** : il s'anime quand 30 % de lui est visible dans les 90 % supérieurs de l'écran. Le passer sur le déclenchement de la section (25 % de la section visible) le ferait s'animer hors de la vue : à 1280 × 900, quand le titre s'anime, le haut du bandeau est encore environ 300px sous le bas de l’écran (calcul : déclenchement à 225px de section visible, bandeau à 531px du haut de la section). Quand titre et bandeau arrivent ensemble à l'écran, le bandeau part donc 100 ms après le titre. Sinon, il part 100 ms après son arrivée.
+
+### 7. Vérification
+
+- `astro build` : réussi (8 pages).
+- Aucun défilement horizontal à 375px (largeur de défilement = 375).
+- Remarque technique : le serveur de développement servait une ancienne version du CSS de `CasTypes.astro` après modification. Il a fallu le relancer (`astro dev stop` puis `astro dev --background`). Si un changement n'apparaît pas, relancer le serveur.
+- Captures dans `captures/corrections-accueil/`.
+
+### 8. Fichiers modifiés
+
+- `src/components/Hero.astro` : phrase sur les aides.
+- `src/styles/global.css` : couleur `--color-corail` ; retard du bandeau du Collectif.
+- `src/components/MethodeEtapes.astro` : seuils et commentaire d'en-tête.
+- `src/components/CasTypes.astro` : ordre sur téléphone (CSS) et commentaire d'en-tête.
+- `src/components/SimulateurAides.astro` : position du bandeau.
+- `src/pages/index.astro` : fond de la section articles et liste des couleurs.
+- `src/components/ArticleList.astro` : filet des cartes.
+
+### 9. Reste à faire
+
+- Arbitrer les questions 213 (montant et formulation de la phrase du Hero), 214 (limite articles / pied de page) et 215 (vide au-dessus des illustrations des Cas types sur téléphone).
+- Rien n'est commité.
+
+## Collectif : nouvelle phrase, engagements rapprochés, bandeau animé à son entrée (16 octobre 2026)
+
+Aucune nouvelle question. La question 212 (espace entre les engagements et le haut du dessin à 1280px) reste ouverte : l'écart n'a pas changé (environ 15px, voir le point 4).
+
+### 1. Paragraphe (`Collectif.astro`)
+
+- Ancien texte : « Pas d'intermédiaire, pas de prestataire anonyme. Un interlocuteur identifié, des engagements clairs et un suivi dans la durée. »
+- Nouveau texte : « Ici, pas d'intermédiaire, de sous-traitance ou de franchise. Vous travaillez directement avec l'artisan local de notre collectif le plus proche de chez vous. Ce qui vous garantit : » (espace insécable avant « : »).
+- Les cinq engagements ne changent pas et suivent immédiatement.
+- Le paragraphe passe de 2 à 3 lignes à 1280px et de 4 à 5 lignes à 375px (largeur maximale de 50 caractères, inchangée).
+
+### 2. Engagements rapprochés du paragraphe
+
+- Espace entre le paragraphe et la liste : **40px → 16px** (`mt-10` → `mt-4`). Le paragraphe et la liste se lisent comme un seul bloc.
+- L'espace entre la liste et le bouton (40px) ne change pas.
+
+### 3. Animation du bandeau : déclenchement à l'entrée de son haut (`AnimationScenes.astro`, `Collectif.astro`)
+
+- **Constat** : le bandeau avait déjà son propre déclenchement (`data-scene-etape`), mais avec le réglage des étapes de « Fonctionnement » : 30 % de lui visible dans les 90 % supérieurs de l'écran. Il est bas sur téléphone (117px à 375px). Mesure avant correction à 375 × 812 : il ne partait qu'avec **100px de ses 117px déjà à l'écran**. On le voyait donc arriver vide, puis apparaître alors qu'il était presque entier à l'écran.
+- **Correction** : nouvel attribut `data-declenchement="entree"`, posé sur le bandeau. L'élément est observé avec un seuil de 0, sans marge : il part dès que **son haut** entre dans l'écran. Les étapes de « Fonctionnement » gardent leur réglage. La remise à zéro (quand la section a complètement quitté l'écran) et le retard de 100 ms après le titre ne changent pas.
+- **Ce réglage s'applique aussi en grand écran** (un seul déclenchement pour toutes les largeurs). À 1280 × 900, le bandeau part aussi dès que son haut entre dans l'écran (avant : 30 % de ses 351px visibles).
+
+### 4. Vérification
+
+- Mesure à 375 × 812, défilement lent (5px toutes les 50 ms, environ 100px/s), position du haut du bandeau par rapport au bas de l'écran :
+  - de -60px à 0px (encore sous l'écran) : pas déclenché, opacité 0 ;
+  - **déclenché dès l'entrée de son haut** (entre 0 et 5px dans l'écran) ;
+  - à 15px dans l'écran : opacité 0,59, en pleine montée ;
+  - à 30px dans l'écran : opacité 1, animation terminée.
+  - Le bandeau s'anime donc **sous les yeux** : il monte en fondu pendant qu'il entre par le bas de l'écran, et rien ne s'anime hors de la vue (le titre de la section est animé bien avant).
+- 1280 × 900 : déclenché quand son haut entre dans l'écran.
+- Mise en page à 1280px : le bas du bouton reste dans le creux des collines, au-dessus de la casquette de la femme à l'échelle. Le paragraphe a une ligne de plus (+28px), mais l'espace sous lui a perdu 24px : le bloc ne bouge presque pas. Le haut des sapins reste environ 15px sous la ligne des engagements (question 212).
+- `astro build` : réussi (8 pages).
+- Captures : `captures/collectif-texte/375-collectif.png` et `captures/collectif-texte/1280-collectif.png` (le menu fixe du site recouvre le haut de la section sur les captures : c'est normal).
+
+### 5. Fichiers modifiés
+
+- `src/components/Collectif.astro` : phrase, `mt-4` sur la liste, `data-declenchement="entree"` sur le bandeau, commentaires.
+- `src/components/AnimationScenes.astro` : second observateur (seuil 0) pour `data-declenchement="entree"`, en-tête documenté.
+
+### 6. Reste à faire
+
+- Arbitrer les questions 212 à 215.
+- Rien n'est commité.
+
+## Refonte du pied de page (16 octobre 2026)
+
+Questions ouvertes : **n° 216 à 218** (« Questions en attente de réponse »). ⚠️ Trois liens mènent à des pages inexistantes (question 217). Le téléphone, l'e-mail et le médiateur sont à fournir (question 216).
+
+### 1. Ce qui a été fait (`src/components/Footer.astro`, réécrit)
+
+- **Fond crème conservé** (`bg-creme`).
+- **Mise en page** : 4 colonnes à partir de 1024px. Entre 640 et 1023px, 2 colonnes. En dessous, tout est empilé. Les colonnes, dans l'ordre :
+  1. **Akelia** (lien vers l'accueil), une phrase courte (question 218) et le **bouton orange « Obtenir un devis »** (→ /devis), au même style que celui de l'en-tête (48px de haut).
+  2. **Navigation** : Services, Aides rénovation, Blog, Qui sommes-nous, Rejoindre le collectif (→ /entreprise).
+  3. **Nous contacter** : téléphone et e-mail, en attente (« à venir »). Puis **Nous retrouver** : YouTube.
+  4. **Informations légales** : Mentions légales, Politique de confidentialité (→ /politique-confidentialite), Médiation de la consommation (en attente).
+- **Ligne du bas**, séparée par un filet crème foncé : « © 2026 Akelia. Tous droits réservés. » (année calculée), et, discret, en petit texte gris : « Site réalisé par Neocraft » (→ https://ncraft.fr/, nouvel onglet).
+- **YouTube** : logo en SVG intégré dans la page (bleu nuit, rouge YouTube au survol). Le lien mène à https://www.youtube.com/@Akelia-NC et s'ouvre dans un nouvel onglet (`rel="noopener noreferrer"`). Le lecteur d'écran annonce « Akelia sur YouTube (s'ouvre dans un nouvel onglet) » (`aria-label`). Zone cliquable : **48 × 48px**.
+- **Public senior** : tous les liens font **44px de haut au moins** (mesuré : 44px, 48px pour le bouton et YouTube), en taille de texte normale. Contour de focus bleu nuit sur tous les liens.
+- Accessibilité : la navigation est une balise `<nav>` titrée « Navigation ». Les titres de colonne sont des `<h2>`. Les liens qui ouvrent un nouvel onglet le signalent aux lecteurs d'écran.
+
+### 2. Décisions prises
+
+- **« Mentions légales » est placé dans la colonne « Informations légales »**, avec la politique de confidentialité et la médiation, et non dans « Navigation ». Le lien est bien présent.
+- Libellés modifiés par rapport à l'ancien pied de page : « Aides » → « Aides rénovation », « L'équipe » → « Qui sommes-nous ». Le logo texte « AKELIA » devient « Akelia », comme dans l'en-tête.
+- **Coordonnées et médiateur en attente** : trois constantes en tête du composant (`TELEPHONE`, `EMAIL`, `MEDIATEUR`). Tant qu'elles valent `null`, la ligne affiche « … : à venir » en gris, sans lien. Une fois remplies, la ligne devient un lien : `tel:` pour le téléphone, `mailto:` pour l'e-mail, et le site du médiateur dans un nouvel onglet.
+
+### 3. Liens vers des pages inexistantes (vérifiés : statut HTTP)
+
+| Lien | Page | Statut |
+|---|---|---|
+| Qui sommes-nous | `/qui-sommes-nous` | **404** (n'existe pas encore) |
+| Rejoindre le collectif | `/entreprise` | **404** (sera créée plus tard) |
+| Politique de confidentialité | `/politique-confidentialite` | **404** (page obligatoire à rédiger) |
+
+Les autres liens répondent (200) : `/`, `/devis`, `/services`, `/aides-renovation`, `/blog`, `/mentions-legales`. Les liens externes (YouTube, ncraft.fr) n'ont pas été appelés.
+
+### 4. Vérification
+
+- Captures : `captures/pied-de-page/1280-pied.png` et `captures/pied-de-page/375-pied.png`. Sur la capture à 375px, l'en-tête fixe du site recouvre le milieu du pied de page : c'est un effet de la capture, il n'apparaît pas à l'écran.
+- Hauteur du pied de page : 457px à 1280px, 1 153px à 375px.
+- Aucun défilement horizontal à 375px.
+- Corrigé pendant la vérification : l'espace manquant dans « Site réalisé par Neocraft ». À 1280px, la ligne « Médiation de la consommation : à venir » passait à la ligne ; la dernière colonne a été élargie.
+- `astro build` : réussi (8 pages).
+
+### 5. Reste à faire
+
+- Fournir le téléphone, l'e-mail et le médiateur (question 216).
+- Créer `/politique-confidentialite` (obligatoire), `/qui-sommes-nous` et `/entreprise` (question 217).
+- Valider la phrase sous le logo (question 218).
+- Rien n'est commité.
+
+## Menu principal : entrée « Construction neuve » (16 octobre 2026)
+
+Questions ouvertes : **n° 219 et 220** (« Questions en attente de réponse »). ⚠️ La page `/solutions/construction-neuve` **n'existe pas encore** (404, question 219).
+
+### 1. Ce qui a été fait (`src/components/Header.astro`, `src/styles/global.css`)
+
+- Nouvelle entrée dans la liste `liensDirects`, juste **après « Rénovation globale »** : « Construction neuve » → `/solutions/construction-neuve`, avec un drapeau `enAvant: true`. C'est un lien direct, sans méga-menu.
+- **Menu ordinateur** (à partir de 1280px) : étiquette verte.
+  - Fond **vert-50** (#e9f3ee), texte **vert-600** (#2a6b4f), graisse 600.
+  - Coins arrondis **8px** (`rounded-lg`, comme le badge du Hero).
+  - 44px de haut. 16px d'écart avec « Rénovation globale » (12px de marge + 4px d'écart de la liste).
+  - Au survol : fond **vert-100** (#d6eadf), nouvelle couleur ajoutée à la charte (`global.css`), réservée à ce survol.
+  - Page en cours : texte souligné.
+  - Contour de focus bleu nuit, comme le reste du menu.
+- **Tiroir mobile** : même traitement dans le bloc des liens directs, après « Rénovation globale ». Fond vert-50, texte vert-600, coins 8px, survol vert-100, flèche verte. Il garde la même hauteur (56px) et la même largeur que ses voisins.
+
+### 2. Contraste (calcul WCAG)
+
+| Texte | Fond | Contraste |
+|---|---|---|
+| vert-600 #2a6b4f | vert-50 #e9f3ee (repos) | **5,59:1** ✅ |
+| vert-600 #2a6b4f | vert-100 #d6eadf (survol) | **5,04:1** ✅ |
+
+Les deux dépassent 4,5:1 : **aucun vert plus foncé n'a été nécessaire**. Valeurs relevées dans le navigateur : fond rgb(233, 243, 238), texte rgb(42, 107, 79), graisse 600, arrondi 8px ; au survol, rgb(214, 234, 223).
+
+### 3. Le menu tient-il sur une ligne à 1280px ?
+
+**Oui.** Les 5 entrées sont alignées à la même hauteur. « Construction neuve » se termine à 1 131px, et le conteneur à 1 245px : il reste **114px** libres. Il n'y a aucun défilement horizontal. Une 6e entrée ne tiendrait pas : voir la question 220 (solutions proposées, non appliquées).
+
+### 4. Vérification
+
+- Captures dans `captures/construction-neuve/` : `1280-header.png`, `1280-header-survol.png` et `375-tiroir.png` (tiroir ouvert).
+- Remarque visuelle : à 1280px, l'étiquette (44px) occupe presque toute la hauteur de la ligne du menu (48px). Elle arrive à 2px du filet sous l'en-tête. C'est acceptable à l'œil (voir la capture).
+- `/solutions/construction-neuve` : **404**.
+- `astro build` : réussi (8 pages).
+
+### 5. Reste à faire
+
+- Créer la page Construction neuve (question 219).
+- Rien n'est commité.
+
+## Vérification et nettoyage de la page d'accueil (16 octobre 2026)
+
+Périmètre : `src/pages/index.astro`, `src/layouts/Layout.astro` et les composants, données et scripts de l'accueil. Les autres pages (blog, devis, services, mentions légales) n'ont pas été touchées.
+
+Questions ouvertes : **n° 221 à 229** (« Questions en attente de réponse »).
+
+**Commit : voir le point 7.**
+
+### 1. Code mort (RIEN N'A ÉTÉ SUPPRIMÉ : à valider, question 221)
+
+**Composants** : les 17 composants de `src/components/` sont tous importés et utilisés. Rien à supprimer. `CollectifEngagement.astro` avait déjà été supprimé lors d'une tâche précédente (suppression incluse dans ce commit).
+
+**Couleurs du `@theme` inutilisées sur TOUT le site** (ni classe, ni `var()`, hors page de démonstration de la charte) :
+
+| Couleur | Valeur | Historique |
+|---|---|---|
+| `prune` | #3d2c40 | Fond des Cas types du 13 au 14 octobre 2026 |
+| `violet` | #5a2d82 | Fond des Cas types ensuite, remplacé par une couleur par onglet |
+| `lagon` | #bce8ea | Fond du Simulateur d'aides le 15 octobre 2026 |
+| `vert-800` | #1e5c45 | Doublon exact de `cas-neuf`, qui est utilisé |
+| `vert-clair` | #8fd1b0 | Libellés sur fond sombre, encarts supprimés le 14 octobre 2026 |
+
+**Couleurs inutilisées sur l'accueil, mais utilisées ailleurs** (à garder) : `alerte-500` et `alerte-600` (seulement dans la page `test-charte`), `vert-400` (devis et `test-charte`), `nuit-filet` (seulement dans `test-charte`).
+
+**Couleurs que la demande citait, mais qui SONT utilisées** (à garder) : `argile`, `lichen`, `bruyere`, `brume` et leurs variantes `-fonce` servent aux 4 onglets de la Méthode (`src/data/methode.ts`) ; `brume` est aussi le fond de « Fonctionnement » et le filet des raccourcis du Hero.
+
+**Autres jetons du `@theme` inutilisés** :
+- `--container-large` (classe `max-w-large`) : utilisé nulle part.
+- `--radius-petit` (classe `rounded-petit`) : utilisé nulle part.
+- `--spacing-section` (`py-section`, `mt-section`) : seulement dans `test-charte`.
+- `--inset-shadow-assombrir` : seulement dans `test-charte`.
+
+**Classes CSS globales** (`global.css`) :
+- `@utility etiquette` : utilisée nulle part.
+- Règles `[data-scene-etiquette]` (animation « rebond », 3 sélecteurs) : plus aucun élément ne porte cet attribut depuis la suppression des étiquettes de la carte du Collectif. Un commentaire le signale désormais dans `global.css`.
+- `surtitre`, `deborde-gauche`, `deborde-droite` : utilisées.
+
+**Attributs `data-` sans objet** (posés, mais lus par aucun script ni aucun CSS) :
+- `data-hero` (section du Hero) ;
+- `data-cas-section` (section Cas types : le script la trouve par `previousElementSibling`) ;
+- `data-estimation` (`SimulateurEstimation.astro`) ;
+- `data-mega-panneau` (panneaux du méga-menu, trouvés par `aria-controls`) ;
+- `data-erreur` (posé par `simulateur-etapes.ts` sur un groupe de champs en erreur, sans style associé) ;
+- `data-illustration-absente` (Cas types) : il ne sert qu'au débogage, en affichant le nom du fichier manquant. Je recommande de le garder.
+
+**Scripts** : les 3 scripts de `src/scripts/` sont importés par `SimulateurAides.astro`. Aucun script mort.
+
+**Illustrations** (`src/assets/illustrations/`) : les 11 fichiers sont tous référencés (`illustrations.ts` et les composants). Les 10 images du méga-menu (`src/assets/menu/`) sont toutes référencées par `Header.astro`.
+
+### 2. Cohérence
+
+- **Couleurs Tailwind par défaut** (`gray`, `blue`, `white`, `black`…) : **aucune** sur l'accueil et ses composants.
+- **Couleurs hors `@theme`** : `hover:text-[#ff0000]` (rouge YouTube, pied de page) et deux ombres `#1d2b3640`. **Tailles de texte hors jetons** : 5 valeurs entre crochets et `text-base`. Détail et proposition : question 229 (non appliqué : à valider).
+- **Commentaires corrigés** (sans effet sur l'affichage) :
+  - `index.astro` : la liste des fonds annonçait « Cas types : violet » et « Simulateur entre deux sections sombres ». Elle dit maintenant : une couleur par onglet, bleu nuit profond pour « Bâti ancien ».
+  - `global.css` et `AnimationScenes.astro` : `data-scene-etiquette` signalé comme inutilisé.
+  - `Layout.astro` : commentaire des favicons.
+
+### 3. Accessibilité (mesurée dans le navigateur, à 1280 et 375px)
+
+- **Titres** : **un seul h1** (« Une maison qui consomme moins, et qui vaut plus. »), **aucun niveau sauté**. Plan : h1, puis un h2 par section, puis des h3. Le pied de page a 4 h2 (Navigation, Nous contacter, Nous retrouver, Informations légales).
+- **Images** : toutes ont un attribut alt. Les 13 illustrations ont un alt descriptif. Les 10 images du méga-menu ont `alt=""` : elles sont décoratives, le titre de colonne juste dessous dit la même chose. Les deux schémas SVG (`SchemaMaison`, `MethodeSchema`) ont `role="img"`, un titre et une description. Remarque : l'image de l'article de démonstration a pour alt le titre de l'article, ce qui fait doublon avec le titre de la carte (à revoir avec le contenu du blog).
+- **Zones cliquables sous 44px** : « Lire la suite → » (85 × 22px) et « Blog » dans le pied de page (30px de large). Question 226. Les boutons radio du simulateur (24px) sont dans des étiquettes cliquables de 519 × 56px : conforme. Le lien d'évitement (1px) est volontairement caché tant qu'il n'a pas le focus.
+- **Texte de taille courante sous 7:1** (tous au-dessus de 4,5:1) :
+
+| Texte | Couleurs | Contraste |
+|---|---|---|
+| Hero : « Recevez plus de… » | corail sur blanc, 18px, 600 | 4,70:1 |
+| Hero : badge du collectif | action-800 sur action-50 | 4,88:1 |
+| **« Fonctionnement » : paragraphes des étapes** | **texte-doux sur brume, 18px** | **5,07:1** |
+| Menu : « Construction neuve » | vert-600 sur vert-50 | 5,59:1 |
+| Collectif : surtitre « Le collectif » | orange sur bleu nuit, 13,6px gras | 6,08:1 |
+| Articles : surtitre « Le blog » | vert-600 sur blanc, 13,6px gras | 6,34:1 |
+| Pied de page : phrase, « à venir », copyright | texte-doux sur crème | 6,48:1 |
+| En-tête : bouton « Obtenir un devis » | texte sur orange | 6,87:1 |
+
+  Le grand texte « plus de 32 000 € » (vert-600 sur blanc, 6,34:1) est conforme : le seuil AAA pour le grand texte est 4,5:1. Question 225.
+- **Limite de la mesure** : seuls les éléments visibles au chargement sont mesurés. Les onglets inactifs (Méthode, Cas types) et les étapes suivantes du simulateur n'ont pas été mesurés. Les contrastes des 6 fonds des Cas types sont documentés dans `global.css` (tous au-dessus de 7:1).
+
+### 4. SEO de l'accueil
+
+**a) Balises actuelles** :
+- title : « Akelia - Expert Rénovation Énergétique & Solutions Durables » ;
+- description : « Accélérez votre transition écologique avec Akelia. Pompes à chaleur, isolation, panneaux solaires et bornes de recharge pour particuliers et professionnels. »
+
+Elles ne parlent ni des artisans, ni des aides. **Propositions (non appliquées, question 222)** :
+
+| | Title (60 max) | Car. |
+|---|---|---|
+| T1 | Rénovation énergétique : artisans locaux et aides \| Akelia | 58 |
+| T2 | Rénovation énergétique : vos artisans, vos aides \| Akelia | 57 |
+| T3 | Artisans en rénovation énergétique, aides gérées \| Akelia | 57 |
+
+| | Meta description (155 max) | Car. |
+|---|---|---|
+| D1 | Rénovez avec un artisan local Akelia : rénovation énergétique, devis gratuit à domicile, et nous montons votre dossier d'aides à votre place. | 141 |
+| D2 | Rénovation énergétique avec l'artisan Akelia le plus proche : isolation, chauffage, solaire. Estimez vos aides en ligne, on monte le dossier pour vous. | 151 |
+| D3 | Collectif d'artisans locaux de la rénovation énergétique. Estimez vos aides en ligne : nous montons le dossier et sécurisons les versements. | 140 |
+
+Les promesses reprennent des textes déjà présents sur la page : « Un artisan se déplace chez vous gratuitement » (Fonctionnement) et « On s'occupe de tout : montage du dossier, dépôt des demandes et sécurisation des versements » (Simulateur). Ma préférence : **T1 + D2** (le mot-clé en tête, une description concrète).
+
+**b) Balises de partage** : Open Graph (`og:locale` fr_FR, `og:type`, `og:title`, `og:description`, `og:url`, `og:site_name`, `og:image`) et Twitter Card (`summary_large_image`, titre, description, image) sont **présentes**. ⚠️ **L'image `/images/og-default.jpg` est absente** (question 223). Il manque aussi `og:image:width`, `og:image:height` et `og:image:alt` : à ajouter avec l'image.
+
+**c) Données structurées** : ⚠️ **aucun balisage schema.org** (ni `Organization`, ni `LocalBusiness`) sur le site. Question 224.
+
+**d) Canonique et langue** : `<link rel="canonical">` présent, il vaut `https://akelia.fr/` (adresse de secours, voir la question 228). `<html lang="fr">` présent. `<meta name="robots" content="index, follow">` présent.
+
+### 5. Favicon (fait)
+
+- Constat : l'ancien `favicon.svg` n'était pas un losange bleu. C'était **le logo Astro par défaut** (noir, ou blanc en mode sombre), comme `favicon.ico`. Aucun logo Akelia n'existe dans le projet : le losange a été dessiné à partir de la description.
+- **`public/favicon.svg`** (réécrit) : carré de 32 × 32, coins arrondis à 6, fond **orange action-500** (#f0920f). Losange plein **bleu nuit nuit-900** (#1d2b36), centré, de 20px de diagonale (62 % de la largeur), aux angles légèrement adoucis. J'ai choisi le bleu nuit plutôt que le blanc : 6,1:1 sur l'orange, contre 2,2:1 pour le blanc, donc bien plus lisible à 16px.
+- **`public/apple-touch-icon.png`** (nouveau) : 180 × 180, même dessin, carré plein sans arrondi (iOS arrondit lui-même les icônes) et sans transparence.
+- **`public/favicon.ico`** (remplacé) : 32 × 32, même dessin. Il remplace le logo Astro pour les navigateurs qui demandent `/favicon.ico` d'office.
+- **Déclarés dans `Layout.astro`** : `favicon.ico` (32px), `favicon.svg` (préféré par les navigateurs récents) et `apple-touch-icon.png`.
+- Aperçu dans une barre d'onglets simulée, à 16px : `captures/favicon/onglets-16px.png`. Le carré orange ressort nettement entre les onglets gris.
+
+### 6. Performance de l'accueil (`astro build`, version de production)
+
+Mesuré dans le navigateur. Poids **non compressés** : le serveur de test ne compresse pas, et un hébergeur avec gzip ou brotli divisera par environ 5 le HTML, le CSS et le JS.
+
+| | Chargement initial | Après défilement complet |
+|---|---|---|
+| 1280px | **511 Ko** (10 requêtes) | **1 080 Ko** (19 requêtes) |
+| 375px | **334 Ko** (8 requêtes) | **687 Ko** (18 requêtes) |
+
+Répartition à 1280px : images 766 Ko, HTML 162 Ko, CSS 77 Ko, police 44 Ko, JS 31 Ko.
+
+Ressources les plus lourdes (1280px) :
+1. **HTML de la page : 162 Ko** (31 Ko compressé). Il contient les deux schémas SVG en ligne, les 6 panneaux des Cas types et le simulateur.
+2. `travaux.webp` (Deux façons de faire) : 122 Ko. Il est chargé dès le départ à 1280px : Chrome charge les images différées situées à moins d'environ 1 250px de l'écran.
+3. `annee5090.webp` 105 Ko, `modernisation.webp` 93 Ko, `maisonneuve.webp` 87 Ko, `annee9512.webp` 78 Ko, `collectif.webp` 73 Ko, `maisonancienne.webp` 63 Ko.
+4. `global.css` : 58 Ko (+ 18 Ko de CSS propre à l'accueil).
+5. Police Source Sans 3 (Google Fonts) : 29 à 44 Ko.
+6. Script du simulateur : 31 Ko.
+
+Toutes les illustrations sont converties en WebP, en plusieurs largeurs, et chargées en différé. Les PNG sources (9,5 Mo) ne sont jamais envoyés au navigateur. Pistes, si besoin : charger les illustrations des onglets Cas types seulement au clic (environ 300 Ko économisés au défilement), et héberger la police sur le site au lieu de Google Fonts.
+
+`astro build` : réussi (8 pages).
+
+### 7. Sauvegarde
+
+- Commit « Page d'accueil terminée » sur `main` : identifiant ci-dessous.
+- **Contenu** : tout le code source modifié depuis 0b3202d (composants, pages, styles, scripts, données, illustrations, favicons, `inventaire-charte.md`).
+- **Exclu** : les nouveaux dossiers de `captures/` (78 Mo de PNG de vérification), laissés non suivis. Question 227.
+- Note : les autres pages (blog, devis, services, mentions légales, test-charte) avaient des modifications en attente, faites lors de tâches précédentes (styles de la charte). Elles sont incluses dans le commit telles quelles : je ne les ai pas modifiées aujourd'hui.
