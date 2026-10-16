@@ -13,12 +13,37 @@ import CasTypes from '../components/CasTypes.astro';
 import SimulateurAides from '../components/SimulateurAides.astro';
 import Collectif from '../components/Collectif.astro';
 import ArticleList from '../components/ArticleList.astro';
+
+// DONNÉES STRUCTURÉES schema.org (16 octobre 2026) : LocalBusiness, lu par
+// les moteurs de recherche (fiche d'entreprise). additionalType précise
+// l'activité (HomeAndConstructionBusiness : entreprise du bâtiment).
+// ⚠️ EN ATTENTE : téléphone (telephone) et adresse (address), à ajouter
+// dès qu'ils seront fournis (voir inventaire-charte.md). Sans adresse,
+// Google n'affiche pas de fiche enrichie. Logo provisoire : le favicon
+// en 180 × 180 (apple-touch-icon.png), faute de logo Akelia.
+const site = Astro.site ?? new URL('https://akelia.fr');
+const donneesStructurees = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  additionalType: 'https://schema.org/HomeAndConstructionBusiness',
+  '@id': new URL('/#entreprise', site).href,
+  name: 'Akelia',
+  description: "Collectif d'artisans locaux de la rénovation énergétique : isolation, chauffage, solaire. Estimation des aides en ligne et montage du dossier.",
+  knowsAbout: 'Rénovation énergétique',
+  areaServed: { '@type': 'Country', name: 'France' },
+  url: new URL('/', site).href,
+  logo: new URL('/apple-touch-icon.png', site).href,
+  image: new URL('/apple-touch-icon.png', site).href,
+  sameAs: ['https://www.youtube.com/@Akelia-NC'],
+};
 ---
 
 <Layout
-  title="Akelia - Expert Rénovation Énergétique & Solutions Durables"
-  description="Accélérez votre transition écologique avec Akelia. Pompes à chaleur, isolation, panneaux solaires et bornes de recharge pour particuliers et professionnels."
+  title="Rénovation énergétique : artisans locaux et aides | Akelia"
+  description="Rénovation énergétique avec l'artisan Akelia le plus proche : isolation, chauffage, solaire. Estimez vos aides en ligne, on monte le dossier pour vous."
 >
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(donneesStructurees)} />
+
   {/* UNE COULEUR PLEINE LARGEUR PAR SECTION (refonte « alan.com »,
       octobre 2026) : deux sections voisines n'ont jamais la même.
       Couleurs : voir global.css.

@@ -31,7 +31,9 @@
 //   vibre sur la brume.
 // La brume tranche avec les fonds blancs du Hero et de la Méthode
 // (1,40:1, le plus fort écart des fonds pâles de la charte). Texte :
-// 11,7:1 ; texte-doux : 5,1:1.
+// 11,7:1. Paragraphes des étapes en nuit-700 (7,78:1) depuis le
+// 16 octobre 2026 : texte-doux n'y faisait que 5,07:1, sous le seuil de
+// 7:1 du site pour le texte courant.
 //
 // DISPOSITION :
 // - à partir de 1024px (lg:) : TROIS colonnes, 25 % / 50 % / 25 %
@@ -195,7 +197,7 @@ const tailles = '(min-width: 1250px) 720px, (min-width: 1024px) 45vw, (min-width
             <h3 class="text-h4 font-bold text-texte">
               <span class="sr-only">Étape {index + 1} : </span>{etape.titre}
             </h3>
-            <p class="mt-2 text-corps text-texte-doux">{etape.texte}</p>
+            <p class="mt-2 text-corps text-nuit-700">{etape.texte}</p>
           </div>
         </li>
       ))}

@@ -2349,6 +2349,13 @@ Les 8 raccourcis du hero pointent tous vers des URLs déjà listées ci-dessous.
 227. **Captures non commitées.** Le commit « Page d'accueil terminée » ne contient PAS les nouveaux dossiers de `captures/` (78 Mo de PNG, utiles seulement pour la vérification). Ils restent sur le disque, non suivis. Faut-il les ajouter à `.gitignore`, les commiter quand même, ou les supprimer ? (12 captures plus anciennes sont déjà dans le dépôt.)
 228. **URL du site non déclarée.** `astro.config.mjs` n'a pas d'option `site`. La balise canonique et les URL de partage utilisent donc l'adresse de secours écrite dans le layout : `https://akelia.fr`. Est-ce bien le domaine définitif ? Si oui, je propose de le déclarer dans `astro.config.mjs` (`site: 'https://akelia.fr'`), ce qui permettra aussi un plan du site (sitemap).
 229. **Tailles de texte et couleurs hors jetons sur l'accueil.** Valeurs entre crochets : `text-[1.5rem]` et `text-[1.75rem]` (titres des étapes de la Méthode), `text-[1.25rem]` (MethodeEtape), `text-[0.875rem]` (badge du Hero), `text-[clamp(1.5rem,2.5vw,2rem)]` (titres des panneaux Cas types). La taille Tailwind par défaut `text-base` (16px) est aussi utilisée dans Header, Footer, Hero et SimulateurQuestions. Couleurs : `hover:text-[#ff0000]` (rouge YouTube, pied de page) et deux ombres en `#1d2b3640` (bleu nuit à 25 %, MethodeEtapes et SimulateurQuestions). Faut-il créer des jetons (`--text-etape`, `--text-badge`, `--color-youtube`, `--shadow-interieure`…) et remplacer ces valeurs ? Le rendu ne changerait pas.
+230. **Cas types : délai au clic sur réseau lent.** Les illustrations des onglets inactifs ne se chargent plus qu'au survol, au focus ou au clic de leur onglet. Mesures (pire cas : clic sans survol préalable, comme au doigt) :
+   - réseau local : 12 à 25 ms ;
+   - 4G (9 Mb/s) : 100 à 180 ms, **masqués** par le fondu de 0,4 s du panneau ;
+   - **3G lente (1,6 Mb/s, 300 ms de latence) : 1,6 s**, pendant lesquelles un fond neutre occupe la place de l'image (capture `captures/nettoyage-seo/375-cas-types-attente-3g.png`).
+
+   J'ai **gardé** l'optimisation : le délai n'est pas perceptible en 4G ni en wifi, et sur ordinateur le survol lance le chargement avant le clic. Sur une connexion très lente, l'attente se voit. Compromis possible : précharger les 5 autres images une fois la section affichée et la page chargée (pendant les temps morts du navigateur). Elles ne seraient alors économisées que pour ceux qui ne s'arrêtent pas sur la section. Garder tel quel, ajouter ce préchargement, ou revenir à l'ancien comportement ?
+231. **Logo pour les données structurées.** Il n'existe aucun logo Akelia dans le projet. Le balisage LocalBusiness utilise provisoirement le favicon en 180 × 180 (`apple-touch-icon.png`). Google recommande un logo carré d'au moins 112 × 112px, sur fond uni. Fournir le logo officiel (PNG ou SVG) ?
 
 
 
@@ -5954,7 +5961,7 @@ Périmètre : `src/pages/index.astro`, `src/layouts/Layout.astro` et les composa
 
 Questions ouvertes : **n° 221 à 229** (« Questions en attente de réponse »).
 
-**Commit : voir le point 7.**
+**Commit : `e10b02a` (point 7).**
 
 ### 1. Code mort (RIEN N'A ÉTÉ SUPPRIMÉ : à valider, question 221)
 
@@ -6089,7 +6096,101 @@ Toutes les illustrations sont converties en WebP, en plusieurs largeurs, et char
 
 ### 7. Sauvegarde
 
-- Commit « Page d'accueil terminée » sur `main` : identifiant ci-dessous.
+- Commit « Page d'accueil terminée » sur `main` : **`e10b02a`** (`e10b02a2b0fa2750f6d104974dad8183f3746bc3`). Cette ligne a été ajoutée après le commit : elle n'est pas dans le commit.
 - **Contenu** : tout le code source modifié depuis 0b3202d (composants, pages, styles, scripts, données, illustrations, favicons, `inventaire-charte.md`).
 - **Exclu** : les nouveaux dossiers de `captures/` (78 Mo de PNG de vérification), laissés non suivis. Question 227.
 - Note : les autres pages (blog, devis, services, mentions légales, test-charte) avaient des modifications en attente, faites lors de tâches précédentes (styles de la charte). Elles sont incluses dans le commit telles quelles : je ne les ai pas modifiées aujourd'hui.
+
+## Nettoyage, SEO, contraste et chargement des Cas types (16 octobre 2026)
+
+Réponses aux questions 221, 222, 224 (en partie), 225, 226 et 227, et à la question 213 pour la phrase du Hero. Questions ouvertes : **n° 223 (image de partage), 228, 229, 230 et 231**, ainsi que 216 (téléphone, adresse) pour les données structurées.
+
+**Commit : voir le point 10.**
+
+### 1. Suppressions validées (question 221)
+
+`src/styles/global.css` :
+- couleurs supprimées : `prune`, `violet`, `lagon`, `vert-800`, `vert-clair` (avec leurs blocs de commentaires) ;
+- `--container-large` (et sa mention `max-w-large` dans le commentaire des conteneurs) ;
+- `--radius-petit` : son commentaire le disait « réservé à SchemaMaison.astro », mais ce fichier ne l'utilisait plus ;
+- `@utility etiquette` ;
+- règles `[data-scene-etiquette]` (masquage, animation, réduction des animations) et l'animation `scene-rebond`, devenue inutile. Un commentaire note la suppression.
+
+Gardés : `--spacing-section` et `--inset-shadow-assombrir` (page `test-charte`).
+
+Attributs supprimés : `data-hero` (`Hero.astro`), `data-cas-section` (`CasTypes.astro`), `data-estimation` (`SimulateurEstimation.astro`), `data-mega-panneau` (`Header.astro`), `data-erreur` (`simulateur-etapes.ts` : la ligne qui le posait ; `aria-invalid` est conservé). Gardé : `data-illustration-absente`.
+
+Commentaire mis à jour : `cas-neuf` ne renvoie plus à `vert-800`.
+
+### 2. SEO (question 222)
+
+- **Title** : « Rénovation énergétique : artisans locaux et aides | Akelia » (58 caractères).
+- **Description** : « Rénovation énergétique avec l'artisan Akelia le plus proche : isolation, chauffage, solaire. Estimez vos aides en ligne, on monte le dossier pour vous. » (151 caractères).
+- Vérifié dans le HTML produit par `astro build`.
+
+### 3. Données structurées LocalBusiness (question 224)
+
+- Bloc JSON-LD dans le `<head>` de l'accueil seulement. `Layout.astro` reçoit pour cela un emplacement `<slot name="head" />` : chaque page peut désormais y ajouter ses propres balises.
+- Contenu :
+  - `@type` : LocalBusiness ;
+  - `additionalType` : HomeAndConstructionBusiness (entreprise du bâtiment) ;
+  - `knowsAbout` : « Rénovation énergétique » ;
+  - `name`, `description` ;
+  - `areaServed` : pays, France ;
+  - `url` : https://akelia.fr/ ;
+  - `logo` et `image` ;
+  - `sameAs` : la chaîne YouTube ;
+  - `@id` : https://akelia.fr/#entreprise.
+- ⚠️ **EN ATTENTE : `telephone` et `address`** (question 216). Sans adresse, Google n'affiche pas de fiche enrichie. Le balisage reste valide et lisible par les moteurs.
+- ⚠️ **Logo provisoire** : `apple-touch-icon.png` (le favicon en 180px), faute de logo (question 231).
+- Les URL dépendent du domaine `https://akelia.fr`, qui reste à confirmer (question 228).
+
+### 4. Zones cliquables (question 226)
+
+- « Lire la suite → » (`ArticleList.astro`) : `inline-flex min-h-11 items-center`, plus un contour de focus. Mesuré : **44px** de haut (22px avant).
+- Liens du pied de page (`Footer.astro`) : `min-w-11` ajouté à la classe commune. « Blog » mesure **44 × 44px** (30px de large avant).
+
+### 5. Montant du Hero (question 213, en partie)
+
+- « Recevez **plus de** 32 000 € d'aides… » devient « Recevez **jusqu'à** 32 000 € d'aides pour réaliser votre projet. » C'est la même promesse que le résultat du simulateur.
+- Reste ouvert : le montant n'est toujours confirmé par aucune source officielle. Et le titre de la section aides (« Augmentez la valeur de votre bien de plus de 32 000 € ») utilise le même chiffre dans un autre sens (valeur du bien) : non modifié, ce n'était pas demandé.
+
+### 6. Image de partage : RAPPEL (question 223)
+
+⚠️ **`/images/og-default.jpg` est toujours absente** (le dossier `public/images/` n'existe pas). Toutes les pages y renvoient (`og:image`, `twitter:image`).
+
+**À fournir** : une image de **1 200 × 630px** (rapport 1,91:1), en JPG, de préférence sous 300 Ko. Le texte important doit rester dans la zone centrale, car certains réseaux recadrent en carré. Elle sera à déposer dans **`public/images/og-default.jpg`**. Il faudra ensuite ajouter `og:image:width`, `og:image:height` et `og:image:alt` dans `Layout.astro`.
+
+### 7. Captures hors du dépôt (question 227)
+
+- `.gitignore` : ajout de `captures/`.
+- Les 12 captures déjà suivies (`captures/etape-22/`…) sont retirées de l'index Git (`git rm --cached`). **Tous les fichiers restent sur le disque.**
+
+### 8. Contraste de « Fonctionnement » (question 225, pour ces paragraphes)
+
+- Les paragraphes des 4 étapes passent de `texte-doux` (#4c5a64) à **`nuit-700` (#2b3f4e)**, une couleur qui existe déjà dans la charte. Aucune nouvelle couleur.
+- Contraste sur la brume (#ccdce8), fond inchangé : **5,07:1 → 7,78:1**. Couleur relevée dans le navigateur : rgb(43, 63, 78).
+- Les autres textes sous 7:1 (liste de la question 225 : badge et phrase du Hero, surtitres, bouton de l'en-tête, « Construction neuve », pied de page) **n'ont pas été modifiés**. La question reste ouverte pour eux.
+
+### 9. Chargement des illustrations des Cas types
+
+- **Principe** : le script des onglets s'exécute juste après la section, avant que le navigateur ne télécharge les images (chargement différé). Il range `srcset` et `src` des 5 images inactives dans `data-srcset` et `data-src`. L'image se charge quand son onglet est survolé, reçoit le focus ou est cliqué. Sans JavaScript, toutes les images se chargent comme avant.
+- **Pas de vide** : le cadre de chaque image a déjà sa taille (rapport de la zone dessinée). Pendant le chargement, il affiche un fond neutre dérivé de la couleur de la section (`--cas-survol`, coins arrondis), retiré à l'arrivée de l'image.
+- **Hauteur de la section stable**, mesurée sur les 6 onglets : **968px à 1280px** et **1 480px à 375px**, identique avant et après chaque chargement.
+- **Délai au clic** : voir la question 230. Il est imperceptible en 4G et en wifi, et atteint 1,6 s en 3G lente, avec le fond neutre visible. Optimisation **gardée**.
+- **Poids de la page après défilement complet** (non compressé) :
+
+| | Avant | Après | Économie |
+|---|---|---|---|
+| 1280px | 1 080 Ko (19 requêtes) | **677 Ko** (14 requêtes) | −403 Ko |
+| 375px | 687 Ko (18 requêtes) | **455 Ko** (13 requêtes) | −232 Ko |
+
+  Chargement initial : inchangé (513 Ko à 1280px, 335 Ko à 375px). Au défilement, seule l'illustration du premier onglet (`maisonancienne.webp`) est chargée.
+
+### 10. Vérification et commit
+
+- `astro build` : réussi (8 pages).
+- Captures pleine page : `captures/nettoyage-seo/1280-pleine-page.png` (7 998px de haut) et `375-pleine-page.png` (11 186px). Toutes les sections s'affichent normalement après les suppressions.
+- Aucune erreur dans la console, aucun défilement horizontal (largeur de défilement = largeur d'écran).
+- Captures du chargement des Cas types en 3G lente : `375-cas-types-attente-3g.png` (fond neutre) et `375-cas-types-charge-3g.png`.
+- Commit « Nettoyage et SEO » : identifiant ci-dessous.

@@ -111,9 +111,7 @@
   --color-vert-50: #e9f3ee;   /* Fond d'encart vert (« Ce que vous y gagnez ») */
   --color-vert-100: #d6eadf;  /* Survol de l'entrée « Construction neuve » du menu (texte vert-600 : 5,04:1) — 16 octobre 2026 */
   --color-vert-400: #4f9e7d;  /* Hachures, variantes */
-  --color-vert-clair: #8fd1b0; /* Vert sur fond SOMBRE (nuit-900 : 8,2:1 ; encarts prune : 9,5:1) : libellé « Ce que l'on fait » des Cas types (13 octobre 2026). Plus utilisé depuis le 14 octobre 2026 (encarts supprimés) ; gardé dans la charte */
   --color-vert-600: #2a6b4f;  /* Surtitres, icônes de la méthode, chiffres  */
-  --color-vert-800: #1e5c45;  /* Vert foncé (texte blanc : 7,9:1). Plus utilisé (les Cas types sont sur fond bleu nuit depuis le 13 octobre 2026) ; gardé dans la charte */
 
   /* --- CRÈME -------------------------------------------------------------
      Fonds de section alternatifs : la différenciation entre sections et
@@ -134,42 +132,10 @@
   --color-argile: #f1dace;   /* Rose terre cuite pâle, chaud : étape 2 de la Méthode (fond de l'onglet actif). N'est plus un fond de section depuis le 13 octobre 2026 (texte 12,2:1) */
   --color-brume: #ccdce8;    /* Bleu ardoise pâle, froid, cousin du bleu nuit : bandeau des solutions du Hero, étape 4 de la Méthode (fond de l'onglet actif). Plus le fond des Cas types depuis le 13 octobre 2026 (texte 11,7:1) */
   --color-lichen: #e0e6d0;   /* Vert-gris pâle, tirant sur le jaune (rien à voir avec le vert sapin) : étape 3 de la Méthode (fond de l'onglet actif). N'est plus le fond du Simulateur d'aides depuis le 15 octobre 2026 (texte 12,8:1) */
-  /* LAGON (15 octobre 2026) : turquoise pâle, fond du Simulateur d'aides, à
-     la place du lichen (refusé). Teinte FROIDE choisie pour l'illustration
-     bandeau-aides.png : la crème (maison, isolant) a la même luminosité que
-     tout fond clair (1,00 à 1,03:1) et ne ressort que par la teinte ;
-     l'orange (tuiles, pièces) est l'opposé du turquoise et vibre ; le bleu
-     nuit (pompe à chaleur, panneaux) reste net.
-     Contrastes : texte 12,35:1 ; texte-doux 5,37:1 ; vert-600 4,79:1 (le
-     montant du titre, très grand texte gras) ; bloc blanc 1,32:1 (lichen :
-     1,28:1). Écart OKLab (×100) avec les autres fonds clairs de la page :
-     brume 3,5 (section Fonctionnement, loin) ; bruyère 6,1 ; Cas types
-     pâles 6,0 à 6,6 ; lichen 5,2 ; creme-fonce 6,0 ; blanc 10,9. */
-  --color-lagon: #bce8ea;
   --color-bruyere: #e4d8e6;  /* Mauve grisé pâle : section des articles (texte 11,9:1) */
 
-  /* --- PRUNE (13 octobre 2026) ------------------------------------------
-     Fond FONCÉ de la section Cas types : rupture sombre dans une suite de
-     fonds clairs, sans reprendre le bleu nuit (réservé au Collectif). De la
-     famille de la bruyère (mauve). Texte blanc : 12,9:1. Les illustrations
-     (dessins à fond transparent, halos blancs) s'y lisent en traits clairs.
-     Nuances dérivées dans CasTypes.astro (color-mix).
-     Plus utilisé depuis le 14 octobre 2026 (jugé trop terne, remplacé par
-     le violet ci-dessous) ; gardé dans la charte. */
-  --color-prune: #3d2c40;
-
-  /* --- VIOLET (14 octobre 2026) ------------------------------------------
-     Fond de la section Cas types, à la place du prune : même famille
-     violette, mais teinte franche (intensité 3,3 fois celle du prune).
-     Texte blanc : 9,9:1 ; sur le bloc de contenu (+8 % de blanc) : 8,0:1 ;
-     sur un onglet survolé (+16 %) : 6,4:1. Bouton orange sur le bloc :
-     3,35:1. Détail : inventaire-charte.md.
-     Plus utilisé depuis la refonte complète des Cas types (14 octobre 2026,
-     une couleur par onglet, ci-dessous) ; gardé dans la charte. */
-  --color-violet: #5a2d82;
-
   /* --- FONDS DES 6 CAS TYPES (14 octobre 2026, refonte complète) -------
-     Le violet ci-dessus est ABANDONNÉ (gardé dans la charte) : chaque
+     Chaque
      onglet de la section Cas types a sa propre couleur de fond, appliquée
      à toute la section (CasTypes.astro), avec un texte blanc sur les 2 fonds
      foncés et le texte foncé (#16212a) sur les 4 fonds pâles. Couleurs
@@ -179,7 +145,7 @@
   --color-cas-annees50: #fdf0e3;      /* Années 50 à 90 : crème chaud, texte foncé 14,6:1 */
   --color-cas-annees95: #e8f4f0;      /* Années 1995 à 2012 : vert d'eau pâle, texte foncé 14,5:1 */
   --color-cas-appartement: #ede8f7;   /* Appartement : lavande pâle, texte foncé 13,6:1 */
-  --color-cas-neuf: #1e5c45;          /* Maison neuve : vert profond (= vert-800), texte blanc 7,9:1 */
+  --color-cas-neuf: #1e5c45;          /* Maison neuve : vert profond, texte blanc 7,9:1 */
   --color-cas-modernisation: #fde8e0; /* Modernisation : pêche pâle, texte foncé 13,9:1 */
 
   /* --- TEINTES FONCÉES DES 4 ÉTAPES DE LA MÉTHODE (13 octobre 2026) ------
@@ -328,11 +294,9 @@
      6. CONTENEURS (largeur maximale du contenu)
      -----------------------------------------------------------------------
      max-w-site  → largeur standard des pages (1250px)
-     max-w-large → sections qui ont besoin de plus de place (1400px)
      À combiner avec mx-auto pour centrer : « mx-auto max-w-site ».
      ======================================================================= */
   --container-site: 78.125rem;  /* 1250px */
-  --container-large: 87.5rem;   /* 1400px */
 
 
   /* =======================================================================
@@ -360,9 +324,7 @@
      ======================================================================= */
   --radius-bloc: 10px;
 
-  /* Compatibilité : RÉSERVÉ à SchemaMaison.astro (anciens noms qu'il
-     utilise encore). Ne pas utiliser ailleurs. */
-  --radius-petit: 5px;
+  /* Cercle (pastille numérotée de « Fonctionnement »). */
   --radius-pilule: 9999px;
 
 
@@ -492,39 +454,12 @@
 
 
 /* =========================================================================
-   ÉTIQUETTE FLOTTANTE (classe : etiquette)
-   -------------------------------------------------------------------------
-   Petite pastille blanche posée sur une grande illustration, en partie
-   hors de ses bords : un chiffre ou un fait court. Ombre douce. La
-   position (top, left…) est donnée au cas par cas.
-   ========================================================================= */
-@utility etiquette {
-  position: absolute;
-  z-index: 1;
-  border-radius: var(--radius-bloc);
-  background-color: var(--color-fond);
-  padding: 0.6rem 1rem;
-  font-size: 1rem;
-  line-height: 1.3;
-  font-weight: 700;
-  color: var(--color-texte);
-  white-space: nowrap;
-  box-shadow: 0 10px 30px -8px #16212a40;
-}
-
-
-/* =========================================================================
    ANIMATION D'ENTRÉE DES SECTIONS (attributs data-scene…)
    -------------------------------------------------------------------------
    Script : src/components/AnimationScenes.astro (page d'accueil).
    Sur la <section> : data-scene. Dedans :
      data-scene-titre     → fondu + montée de 20px, 0,5 s ;
      data-scene-image     → fondu + montée de 30px, 0,5 s, 150 ms après ;
-     data-scene-etiquette → rebond, en dernier, 100 ms d'écart entre deux
-                            étiquettes (style="--rang: 0", 1…). Plus
-                            utilisé par aucune page au 16 octobre 2026
-                            (étiquettes de la carte supprimées) : règles
-                            gardées en attendant validation ;
      data-scene-etape     → fondu + montée de 40px, 0,7 s. DÉCLENCHEMENT
                             PROPRE à chaque étape, à son arrivée à
                             l'écran (attribut data-visible posé par le
@@ -536,12 +471,12 @@
    [data-scenes] est posé sur <html> par le script seulement si le
    navigateur sait observer (IntersectionObserver) et si « réduire les
    animations » n'est pas activé : sinon rien n'est jamais caché.
-   Les animations agissent sur « transform » ; les positions des
-   étiquettes utilisent les classes translate-… de Tailwind (propriété
-   « translate », distincte) : elles ne se gênent pas.
+   Les animations agissent sur « transform ». Les étiquettes flottantes
+   (data-scene-etiquette, rebond) et la classe etiquette ont été supprimées
+   le 16 octobre 2026 : plus aucune page ne les utilisait.
    ========================================================================= */
 [data-scenes] [data-scene-etape]:not([data-visible]),
-[data-scenes] [data-scene]:not([data-etat='anime']) :is([data-scene-titre], [data-scene-image], [data-scene-etiquette]) {
+[data-scenes] [data-scene]:not([data-etat='anime']) :is([data-scene-titre], [data-scene-image]) {
   opacity: 0;
 }
 [data-scenes] [data-scene][data-etat='anime'] [data-scene-titre] {
@@ -549,10 +484,6 @@
 }
 [data-scenes] [data-scene][data-etat='anime'] [data-scene-image] {
   animation: scene-montee-image 0.5s ease-out 150ms both;
-}
-[data-scenes] [data-scene][data-etat='anime'] [data-scene-etiquette] {
-  animation: scene-rebond 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  animation-delay: calc(550ms + var(--rang, 0) * 100ms);
 }
 [data-scenes] [data-scene-etape][data-visible] {
   animation: scene-montee-etape 0.7s cubic-bezier(0.22, 0.8, 0.3, 1) both;
@@ -570,11 +501,10 @@
 @keyframes scene-montee-etape { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
 @keyframes scene-montee-titre { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
 @keyframes scene-montee-image { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
-@keyframes scene-rebond { from { opacity: 0; transform: translateY(12px) scale(0.8); } to { opacity: 1; transform: none; } }
 
 /* Réduire les animations : tout s'affiche immédiatement, sans mouvement. */
 @media (prefers-reduced-motion: reduce) {
-  [data-scene] :is([data-scene-titre], [data-scene-image], [data-scene-etiquette], [data-scene-etape]) {
+  [data-scene] :is([data-scene-titre], [data-scene-image], [data-scene-etape]) {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

@@ -69,6 +69,10 @@ const resolvedImageURL = new URL(image, Astro.site || 'https://akelia.fr').href;
 
     {/* Optimisations de performance : DNS Prefetch / Preconnect si nécessaire */}
     <link rel="preconnect" href="https://api.web3forms.com" crossorigin />
+
+    {/* Balises propres à une page (ex. données structurées JSON-LD de
+        l'accueil) : <… slot="head" /> dans la page. */}
+    <slot name="head" />
   </head>
   <body class="flex min-h-screen flex-col">
     {/* En-tête global du site */}

@@ -68,7 +68,6 @@ const panneaux = await Promise.all(
 
 <section
   data-scene
-  data-cas-section
   data-teinte={casTypes[0].teinte}
   aria-labelledby="cas-titre"
   class="cas-types overflow-x-clip lg:overflow-clip"
@@ -233,8 +232,39 @@ const panneaux = await Promise.all(
         else panneaux[j].setAttribute('data-inactif', '');
       });
       section.setAttribute('data-teinte', onglets[i].getAttribute('data-teinte'));
+      charger(i);
       if (focus) onglets[i].focus();
     }
+
+    // CHARGEMENT DIFFÉRÉ DES ILLUSTRATIONS (16 octobre 2026) : seule
+    // celle de l'onglet actif se charge ; les 5 autres (environ 300 Ko)
+    // seulement quand on choisit leur onglet. Ce script s'exécute avant
+    // que le navigateur ne télécharge les images (loading="lazy") : il
+    // range leurs adresses dans data-srcset / data-src. Pour éviter un
+    // délai au clic, le chargement part dès le survol ou le focus de
+    // l'onglet. Pendant le chargement, le cadre (dont la taille est déjà
+    // fixée) affiche un fond neutre (data-attente, voir le style).
+    // Sans JavaScript : toutes les images se chargent normalement.
+    function differer(panneau) {
+      var img = panneau.querySelector('.cas-cadre img');
+      if (!img || !img.getAttribute('srcset')) return;
+      img.setAttribute('data-srcset', img.getAttribute('srcset'));
+      img.setAttribute('data-src', img.getAttribute('src'));
+      img.removeAttribute('srcset');
+      img.removeAttribute('src');
+      img.parentNode.setAttribute('data-attente', '');
+    }
+    function charger(i) {
+      var img = panneaux[i] && panneaux[i].querySelector('.cas-cadre img[data-srcset]');
+      if (!img) return;
+      var cadre = img.parentNode;
+      img.addEventListener('load', function () { cadre.removeAttribute('data-attente'); }, { once: true });
+      img.setAttribute('srcset', img.getAttribute('data-srcset'));
+      img.setAttribute('src', img.getAttribute('data-src'));
+      img.removeAttribute('data-srcset');
+      img.removeAttribute('data-src');
+    }
+    panneaux.forEach(function (panneau, j) { if (j > 0) differer(panneau); });
 
     liste.hidden = false;
     bloc.setAttribute('data-actif', '');
@@ -242,6 +272,8 @@ const panneaux = await Promise.all(
 
     onglets.forEach(function (onglet, i) {
       onglet.addEventListener('click', function () { activer(i, true); });
+      onglet.addEventListener('pointerenter', function () { charger(i); });
+      onglet.addEventListener('focus', function () { charger(i); });
       onglet.addEventListener('keydown', function (e) {
         var n = onglets.length;
         var cible = null;
@@ -443,6 +475,14 @@ const panneaux = await Promise.all(
       width: auto;
       flex: none;
     }
+  }
+
+  /* ILLUSTRATION EN COURS DE CHARGEMENT (data-attente, posé par le script) :
+     fond neutre dérivé de la section (--cas-survol, 10 % du texte), coins
+     arrondis, à la place exacte de l'image : rien ne bouge à son arrivée. */
+  .cas-cadre[data-attente] {
+    background-color: var(--cas-survol);
+    border-radius: var(--radius-bloc);
   }
 
   @media (prefers-reduced-motion: reduce) {

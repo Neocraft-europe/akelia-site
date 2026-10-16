@@ -71,7 +71,8 @@ const filteredPosts = allPosts
                 day: 'numeric',
               })}
             </time>
-            <a href={`/blog/${post.id}`} class="font-semibold text-vert-600 hover:underline">
+            {/* 44px de haut au moins (16 octobre 2026 : 22px avant). */}
+            <a href={`/blog/${post.id}`} class="inline-flex min-h-11 items-center rounded-bloc font-semibold text-vert-600 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900">
               Lire la suite →
             </a>
           </div>

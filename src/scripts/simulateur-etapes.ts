@@ -132,7 +132,6 @@ export function initialiserEtapes() {
     const groupe = formulaire!.querySelector<HTMLElement>(`[data-champ="${champ}"]`);
     if (!zone || !groupe) return;
     zone.textContent = message ?? '';
-    groupe.toggleAttribute('data-erreur', Boolean(message));
     groupe.querySelectorAll('input').forEach((input) => {
       if (message) input.setAttribute('aria-invalid', 'true');
       else input.removeAttribute('aria-invalid');
