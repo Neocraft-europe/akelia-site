@@ -1,0 +1,86 @@
+---
+// =========================================================================
+// COMPOSANT : COMMENT ÇA SE PASSE AVEC AKELIA (src/components/ParcoursAkelia.astro)
+// -------------------------------------------------------------------------
+// Section 8 des pages /solutions/… (19 octobre 2026) : les 4 étapes d'un
+// projet avec un artisan Akelia. TEXTE GÉNÉRIQUE, écrit une fois pour les
+// 21 pages : il parle de « votre projet » et de « votre installation »,
+// JAMAIS d'un « appareil » ni d'une pompe à chaleur (défaut de l'ancien
+// site, où ce bloc était copié de la page PAC sur toutes les autres).
+//
+// Repris de l'ancien bloc « Réalisez vos projets avec un artisan local
+// Akelia », corrigé :
+//   - délai de rappel : « 24 à 48 heures », comme /devis et le bas des
+//     articles (l'ancien texte disait « sous 24 heures, hors week-ends et
+//     jours fériés ») ;
+//   - « date d'intervention sous deux semaines » retirée : impossible à
+//     promettre pour tous les chantiers (question en attente) ;
+//   - « nous » remplacé par « l'artisan » : c'est lui qui signe et réalise.
+// Les 4 photos de l'ancien bloc ne sont pas reprises : elles montrent une
+// pompe à chaleur et des tenues d'une entreprise nommée.
+//
+// Style des étapes de /devis : pastille cerclée d'orange, filet orange.
+// =========================================================================
+
+export interface Props {
+  /** id du titre h2 (ancre du sommaire). */
+  id: string;
+}
+
+const { id } = Astro.props;
+
+const etapes = [
+  {
+    titre: 'Estimation et devis',
+    paragraphes: [
+      'Estimez vos aides depuis notre site ou faites une demande de devis. L’artisan Akelia le plus proche de chez vous vous rappelle sous 24 à 48 heures.',
+      'Selon la complexité de votre projet, une visite gratuite chez vous est nécessaire pour établir un devis précis.',
+    ],
+  },
+  {
+    titre: 'Visite technique et validation de la commande',
+    paragraphes: [
+      '**Évaluation sur place** : un technicien vient vérifier la faisabilité de votre projet et s’assurer que le devis correspond à vos besoins.',
+      '**Validation du devis** : une fois le devis signé, l’artisan fixe avec vous la date d’intervention.',
+    ],
+  },
+  {
+    titre: 'Installation et travaux',
+    paragraphes: [
+      'L’équipe de l’artisan réalise les travaux dans le respect des normes de qualité et de sécurité.',
+    ],
+  },
+  {
+    titre: 'Suivi, maintenance et aides financières',
+    paragraphes: [
+      '**Entretien** : si votre installation en demande un, l’artisan vous propose un contrat de maintenance pour assurer son bon fonctionnement et sa longévité.',
+      '**Aides financières** : il vous accompagne pour obtenir les aides et subventions auxquelles votre projet ouvre droit.',
+    ],
+  },
+];
+
+/** **gras** → <strong>, sur un texte écrit ici (pas de contenu externe). */
+const gras = (texte: string) => texte.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-semibold">$1</strong>');
+---
+
+<section aria-labelledby={id}>
+  <h2 id={id} class="ancre-sommaire text-h2 text-balance text-texte">Comment ça se passe avec Akelia</h2>
+  <ol class="mt-10">
+    {etapes.map((etape, index) => (
+      <li class="relative flex gap-5 pb-10 last:pb-0">
+        {index < etapes.length - 1 && (
+          <span aria-hidden="true" class="absolute top-12 bottom-2 left-5 w-0.5 -translate-x-1/2 bg-action-500/60"></span>
+        )}
+        <span aria-hidden="true" class="flex size-10 shrink-0 items-center justify-center rounded-pilule border-2 border-action-500 bg-fond text-h4 font-bold text-nuit-900">
+          {index + 1}
+        </span>
+        <div class="min-w-0 pt-1">
+          <h3 class="text-h4 font-bold text-texte"><span class="sr-only">Étape {index + 1} : </span>{etape.titre}</h3>
+          <div class="mt-2 max-w-[70ch] space-y-2 text-corps text-texte">
+            {etape.paragraphes.map((p) => <p set:html={gras(p)} />)}
+          </div>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>

@@ -1,0 +1,693 @@
+---
+// =========================================================================
+// PAGE « REJOINDRE LE COLLECTIF » (src/pages/rejoindre-le-collectif.astro)
+// -------------------------------------------------------------------------
+// Page de VENTE destinée aux entreprises du bâtiment (B2B). Créée le
+// 19 octobre 2026 (version minimale), refaite le même jour. Texte fourni
+// le 19 octobre 2026, repris MOT POUR MOT ; émojis remplacés par des
+// icônes de la charte. Détail : inventaire-charte.md,
+// « /rejoindre-le-collectif : la page de vente ».
+//
+// DE HAUT EN BAS (fonds alternés) :
+//   1. en-tête            bleu nuit : se distingue d'emblée des pages
+//                         pour les particuliers. h1, phrase orange
+//                         (« 100 % maître de vos prix… »), introduction,
+//                         rejoindre-collectif.png à droite (992px et
+//                         plus ; rien si le fichier manque), 3 arguments,
+//                         bouton « Devenir partenaire » (→ #candidature) ;
+//   2. schéma             blanc : SchemaPartenaire.astro (SVG) ;
+//   3. en quoi c'est      crème : tableau comparatif des MODÈLES
+//      différent          (plateforme, agence de leads, franchise,
+//                         Akelia), cartes sous 992px. Aucun concurrent
+//                         n'est nommé ;
+//   4. règles du jeu      blanc : 3 constats numérotés 01 à 03, puis la
+//                         phrase de bascule en grand ;
+//   5. fonctionnement     crème : 2 paragraphes, 3 cartes à filet orange ;
+//   6. pour qui ?         blanc : 3 critères d'éligibilité (AUCUNE note
+//                         Google), phrase pour les créateurs d'entreprise,
+//                         métiers en vignettes ;
+//   7. FAQ                crème (blanc jusqu'au 19 octobre 2026, avant
+//                         que la section « Le parcours » ne disparaisse) :
+//                         4 <details>, le premier ouvert ; JSON-LD
+//                         FAQPage tiré des MÊMES données ;
+//   8. candidature        bleu nuit : le formulaire (carte blanche) et, à
+//                         droite à partir de lg (992px), le parcours en
+//                         4 étapes (« Ce qui se passe ensuite »), comme la
+//                         colonne de réassurance de /devis. Referme la page
+//                         comme l'en-tête l'ouvre et se détache du pied de
+//                         page crème.
+//
+// ⚠️ CRITÈRES : ceux de cette page (critèresEligibilite ci-dessous) ne sont
+// PAS ceux de /qui-sommes-nous (criteresEntree, src/data/collectif.ts,
+// adressés aux particuliers, avec la note Google). Deux listes, deux
+// lecteurs : ne pas fusionner.
+// « Un seul … par corps de métier » : nombre lu dans
+// src/data/collectif.ts (parMetierEtSecteur).
+//
+// FORMULAIRE : Web3Forms (clé src/data/web3forms.ts), sujet
+// « Candidature artisan Akelia : <métier>, <entreprise> (<code postal>) ».
+// Champ « Note Google » supprimé le 19 octobre 2026 (la note n'est pas un
+// critère d'entrée).
+// - Avec JavaScript : vérification par le script, messages en toutes
+//   lettres sous chaque champ, envoi en arrière-plan, confirmation qui
+//   REMPLACE le formulaire.
+// - Sans JavaScript : le navigateur vérifie les champs obligatoires, puis
+//   le formulaire est posté directement à Web3Forms.
+// Obligatoires : entreprise, contact, téléphone, code postal, métier.
+// Facultatif : message.
+//
+// SEO : title et description tournés vers l'artisan, canonique,
+// indexable, BreadcrumbList, FAQPage (questions et réponses visibles à
+// l'écran). Pas de Product ni d'Offer (ni prix ni produit).
+// =========================================================================
+
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import FilAriane from '../components/FilAriane.astro';
+import SchemaPartenaire from '../components/SchemaPartenaire.astro';
+import Icone from '../components/aides/Icone.astro';
+import Vignettes from '../components/aides/Vignettes.astro';
+import { CLE_WEB3FORMS, ADRESSE_WEB3FORMS } from '../data/web3forms';
+import { parMetierEtSecteur, majuscule } from '../data/collectif';
+import { illustration, zoneDessinee, styleCadre, styleRecadrage } from '../data/illustrations';
+import { filArianeJsonLd, jsonLdTexte } from '../utils/seo';
+
+const SITE = Astro.site ?? new URL('https://akelia.fr');
+const ADRESSE = '/rejoindre-le-collectif';
+
+const filAriane = [
+  { libelle: 'Accueil', href: '/' },
+  { libelle: 'Qui sommes-nous', href: '/qui-sommes-nous' },
+  { libelle: 'Rejoindre le collectif' },
+];
+
+// Nombre d'entreprises par corps de métier et par secteur (« un seul »,
+// « une seule ») : lu dans collectif.ts.
+const { masculin: unSeul, feminin: uneSeule } = parMetierEtSecteur;
+
+// --- 1. En-tête : les trois arguments ----------------------------------------
+const arguments_ = [
+  { icone: 'calendrier' as const, titre: 'Rendez-vous qualifiés :', texte: 'Nous vous trouvons des projets qualifiés sur votre secteur géographique.' },
+  { icone: 'prix' as const, titre: 'Indépendance tarifaire totale :', texte: 'Vous êtes le contractant direct du client. Vous appliquez vos grilles, vos prix et préservez vos marges.' },
+  { icone: 'repere' as const, titre: 'Exclusivité de secteur :', texte: `${majuscule(unSeul)} partenaire Akelia par corps de métier sur chaque zone géographique.` },
+];
+
+// --- 1. En-tête : l'illustration ----------------------------------------------
+// rejoindre-collectif.png, seule illustration de la page. Absente : rien
+// n'est affiché, et le texte occupe toute la largeur.
+const imageEntete = illustration('rejoindre-collectif.png');
+const zoneEntete = await zoneDessinee('rejoindre-collectif.png');
+
+// --- 3. En quoi c'est différent : le tableau comparatif ------------------------
+// On compare des MODÈLES, jamais des entreprises : aucun nom de
+// concurrent. Texte du ticket du 19 octobre 2026, mot pour mot. « — » :
+// sans objet (annoncé ainsi aux lecteurs d'écran).
+const modeles = ['Plateforme nationale', 'Agence de leads', 'Franchise', 'Akelia'];
+const AKELIA = modeles.length - 1;
+const comparatif = [
+  { critere: 'Qui signe avec le client', valeurs: ['la plateforme', 'vous', 'vous', 'vous'] },
+  { critere: 'Qui fixe les prix', valeurs: ['la plateforme', 'vous', 'cadre imposé', 'vous'] },
+  { critere: 'Droit d’entrée', valeurs: ['non', 'non', 'oui', 'non'] },
+  { critere: 'Redevance sur votre CA', valeurs: ['marge prise sur le chantier', 'non', 'oui', 'non'] },
+  { critere: 'Le contact', valeurs: ['—', 'souvent partagé entre plusieurs entreprises', '—', 'exclusif sur votre secteur'] },
+  { critere: 'Votre enseigne', valeurs: ['effacée', 'gardée', 'remplacée', 'gardée'] },
+  { critere: 'Ce que vous payez', valeurs: ['une marge sur chaque chantier', 'chaque contact', 'droit d’entrée + redevance', 'l’acquisition : au choix, un prix par rendez-vous ou un budget publicitaire que nous pilotons'] },
+];
+
+// --- 4. Les règles du jeu ont changé -------------------------------------------
+const constats = [
+  { titre: 'Le développement des mastodontes', texte: 'Des plateformes nationales adossées à de grands groupes de l’énergie investissent des millions pour imposer leur marque. Ils captent le client final avant même qu’il ne pense à vous contacter. Votre excellence technique devient invisible face à leur puissance de frappe marketing.' },
+  { titre: 'Les limites financières', texte: 'Pour rivaliser, il faudrait intégrer des compétences pointues : marketing digital, vente complexe, service client réactif en 5 min, gestion administrative pour gérer le labyrinthe des aides (MaPrimeRénov’, CEE). Internaliser ces métiers seul coûte une fortune et vous détourne de votre cœur de métier.' },
+  { titre: 'L’invisibilité de votre valeur face au « low-cost »', texte: 'De nouvelles structures se créent chaque année. Elles cassent les prix en proposant des services pas chers. Le client final, peu averti, peine à faire la différence entre votre offre qualitative et ces solutions au rabais. Résultat : vos devis au juste prix sont refusés.' },
+];
+
+// --- 5. Fonctionnement : les garanties -------------------------------------------
+const garanties = [
+  { titre: 'Zéro sous-traitance :', texte: 'Vous signez le devis directement avec le client final. Il n’y a aucun intermédiaire entre vous et votre chantier.' },
+  { titre: 'Exclusivité territoriale :', texte: 'Une fois partenaire sur votre zone, nous ne travaillons avec aucune autre entreprise de votre corps d’état sur ce secteur.' },
+  { titre: 'Liberté de fonctionnement :', texte: 'Votre entreprise, vos règles.' },
+];
+
+// --- 6. Pour qui ? -----------------------------------------------------------------
+// Critères d'ÉLIGIBILITÉ DES ARTISANS (texte du 19 octobre 2026). Aucune
+// note Google : ce n'est pas un critère d'entrée.
+// TROIS critères, tous vérifiables (question 306, 19 octobre 2026). L'ancien
+// 4e, « Créateur d'entreprise », décrivait un profil et non une garantie, et
+// contredisait l'introduction (« entreprises structurées et reconnues ») :
+// il devient la phrase CREATEURS, affichée à part sous les critères.
+const criteresEligibilite = [
+  { icone: 'audit' as const, titre: 'Garanties légales :', texte: 'Certifications RGE à jour sur vos domaines d’intervention et assurance décennale valide.' },
+  { icone: 'technicien' as const, titre: 'Capacité d’exécution :', texte: 'Une structure équipée, avec du personnel qualifié pour suivre la charge de chantier.' },
+  { icone: 'valide' as const, titre: 'Engagement qualité :', texte: 'Le respect des règles de l’art et de la satisfaction client.' },
+];
+const CREATEURS = { debut: 'Vous créez votre entreprise ?', suite: 'Présentez-vous quand même : nous étudions les candidatures de structures récentes qui ont les capacités de se développer vite.' };
+const metiers = [
+  { icone: 'pompe-a-chaleur' as const, nom: 'Chauffage, plomberie & VMC', detail: '(pompes à chaleur, systèmes de ventilation performants)' },
+  { icone: 'solaire' as const, nom: 'Électricien énergies renouvelables', detail: '(photovoltaïque, bornes de recharge, stockage)' },
+  { icone: 'isolation' as const, nom: 'Isolation thermique', detail: '(isolation par l’extérieur – ITE, et par l’intérieur – ITI)' },
+  { icone: 'fenetre' as const, nom: 'Menuiserie extérieure', detail: '(fenêtres, portes, fermetures haute performance)' },
+  { icone: 'plan' as const, nom: 'Architectes & maîtres d’œuvre', detail: '(rénovation globale et maison passive)' },
+];
+
+// --- 8. Candidature : le parcours (colonne de droite) -----------------------------
+// Aucun délai : le texte n'en donne pas (voir inventaire-charte.md). La
+// première étape est celle du lecteur (« Vous êtes ici »).
+const parcours = ['Dépôt de candidature', 'Entretien', 'Réservation du secteur', 'Lancement de l’acquisition'];
+
+// --- 7. FAQ : UNE seule source pour l'affichage ET le JSON-LD ----------------
+const faq = [
+  { question: 'Est-ce qu’Akelia impose ses prix ou ses grilles tarifaires ?', reponse: 'Non. Vous appliquez vos propres tarifs et vos grilles habituelles. Vous faites vos devis en toute liberté et vous restez le seul contractant direct du client.' },
+  { question: 'Combien coûte le partenariat ?', reponse: 'Il n’y a ni droit d’entrée, ni redevance sur votre chiffre d’affaires. Vous payez l’acquisition, et rien d’autre : soit un prix par rendez-vous transmis, soit un budget publicitaire que nous pilotons sur votre secteur. Le format et le montant se décident ensemble lors de l’entretien, selon votre métier et votre zone.' },
+  { question: 'Comment est garantie l’exclusivité sur mon secteur ?', reponse: `Chaque zone géographique est attribuée à ${uneSeule} entreprise par corps de métier. Tant que vous êtes partenaire Akelia sur votre secteur, aucune autre entreprise de votre spécialité ne rentre dans le réseau sur cette zone.` },
+  { question: 'Puis-je conserver ma propre marque ?', reponse: 'Tout à fait. Le partenariat Akelia est un canal d’acquisition complémentaire pour sécuriser et développer votre carnet de commandes. Vous conservez votre entreprise et votre nom — sauf si vous souhaitez profiter de l’image de marque Akelia.' },
+];
+
+// --- SEO ---------------------------------------------------------------------------
+const jsonLd = [
+  filArianeJsonLd([
+    { nom: 'Accueil', url: '/' },
+    { nom: 'Qui sommes-nous', url: '/qui-sommes-nous' },
+    { nom: 'Rejoindre le collectif', url: ADRESSE },
+  ], SITE),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map(({ question, reponse }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: reponse },
+    })),
+  },
+];
+
+// --- Classes communes ------------------------------------------------------------
+// Sections : même respiration que /qui-sommes-nous.
+const classesSection = 'py-[5.625rem] md:py-[9.375rem]';
+const classesNumero = 'block text-[5rem] leading-none font-black text-action-500/25 select-none md:text-[6rem]';
+// Classes du formulaire (identiques à /devis)
+const classesChamp =
+  'mt-2 block min-h-14 w-full rounded-bloc border border-texte-doux bg-fond px-4 text-corps text-texte focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900 aria-invalid:border-2 aria-invalid:border-alerte-700';
+const classesEtiquette = 'block text-corps font-semibold text-texte';
+const classesFacultatif = 'font-normal text-texte-doux';
+const classesAide = 'mt-1 text-corps text-texte-doux';
+const classesErreur = 'mt-1 text-corps font-semibold text-alerte-700 empty:mt-0';
+---
+
+<Layout
+  title="Devenir partenaire : artisans RGE en rénovation énergétique | Akelia"
+  description="Artisan RGE en rénovation énergétique ? Devenez partenaire Akelia : des rendez-vous qualifiés sur votre secteur, en exclusivité, en restant maître de vos prix, de vos devis et de vos marges."
+  canonicalURL={new URL(ADRESSE, SITE).href}
+>
+  <Fragment slot="head">
+    {jsonLd.map((objet) => <script type="application/ld+json" set:html={jsonLdTexte(objet)} />)}
+  </Fragment>
+
+  {/* ===== 1. EN-TÊTE (bleu nuit) =====
+      Contrastes sur nuit-900 : blanc 14,47:1 ; phrase d'accroche en
+      action-300 (orange clair réservé au texte sur fond sombre) 8,00:1 ;
+      icônes action-300. Bouton orange, texte foncé 6,87:1, contour de
+      focus blanc. */}
+  <header class="bg-nuit-900 text-texte-inverse">
+    <div class:list={['mx-auto max-w-site px-gouttiere pt-8 md:pt-12', 'pb-[5.625rem] md:pb-[7.5rem]']}>
+      <FilAriane etapes={filAriane} fond="sombre" />
+
+      {/* Grille : à partir de 992px, texte à gauche et illustration à
+          droite ; les arguments et le bouton passent dessous, sur toute
+          la largeur. En dessous de 992px, l'illustration vient APRÈS le
+          bouton (order-last). Sans illustration : une seule colonne. */}
+      <div class:list={['grid', imageEntete && zoneEntete && 'lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-center lg:gap-x-14']}>
+      <div class="min-w-0">
+      <h1 class="mt-8 max-w-[22ch] text-h1 text-balance md:mt-12 lg:text-display">Développez votre entreprise avec la force d’un réseau national.</h1>
+      <p class="mt-6 max-w-[48ch] text-chapeau font-semibold text-action-300">Tout en restant 100 % maître de vos prix, de vos devis et de vos marges.</p>
+      <p class="mt-6 max-w-[60ch] text-corps md:text-[1.25rem] md:leading-relaxed">Akelia apporte aux entreprises du bâtiment un flux régulier de rendez-vous pré-qualifiés sur leur secteur géographique, sans intermédiaire ni sous-traitance.</p>
+      </div>
+
+      {imageEntete && zoneEntete && (
+        <div class="relative order-last mt-12 w-full overflow-hidden lg:order-none" style={styleCadre(zoneEntete)}>
+          <Image
+            src={imageEntete}
+            alt=""
+            widths={[480, 800, 1100, 1400].filter((l) => l <= zoneEntete.largeur)}
+            sizes={`(min-width: 1280px) ${Math.ceil((520 * zoneEntete.largeur) / zoneEntete.l)}px, (min-width: 992px) ${Math.ceil((44 * zoneEntete.largeur) / zoneEntete.l)}vw, ${Math.ceil((100 * zoneEntete.largeur) / zoneEntete.l)}vw`}
+            format="webp"
+            loading="eager"
+            class="absolute h-auto"
+            style={styleRecadrage(zoneEntete)}
+          />
+        </div>
+      )}
+
+      <div class="min-w-0 lg:col-span-2">
+      <ul class="mt-12 grid gap-8 border-t border-nuit-filet pt-10 md:grid-cols-3 md:gap-10">
+        {arguments_.map((argument) => (
+          <li class="min-w-0">
+            <Icone nom={argument.icone} class="size-10 text-action-300" />
+            <h2 class="mt-4 text-h4 font-bold">{argument.titre.replace(/ :$/, '')}<span class="sr-only"> :</span></h2>
+            <p class="mt-2 text-corps text-texte-inverse/90">{argument.texte}</p>
+          </li>
+        ))}
+      </ul>
+
+      <a href="#candidature" class="mt-12 inline-flex min-h-12 items-center justify-center rounded-bloc bg-action-500 px-8 py-3 text-h4 font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-texte-inverse">
+        Devenir partenaire
+      </a>
+      </div>
+      </div>
+    </div>
+  </header>
+
+  {/* ===== 2. LE SCHÉMA DE FONCTIONNEMENT (blanc) ===== */}
+  <section aria-label="Le fonctionnement en quatre temps" class="bg-fond">
+    <div class="mx-auto max-w-site px-gouttiere py-[4.5rem] md:py-24">
+      <SchemaPartenaire />
+    </div>
+  </section>
+
+  {/* ===== 3. EN QUOI C'EST DIFFÉRENT (crème) =====
+      La section la plus importante : « c'est quoi, au juste ? ».
+      - À partir de 992px : un vrai tableau (en-têtes de colonnes et de
+        lignes), colonne Akelia détachée : fond orange pâle (texte
+        14,56:1), filets orange, en-tête orange plein (texte foncé gras,
+        6,87:1). Enveloppé dans un cadre qui défilerait plutôt que la page
+        si la place manquait (principe des tableaux d'articles), mais à
+        992px et plus le tableau tient en largeur.
+      - En dessous : une carte par modèle, chaque ligne devenant une paire
+        libellé / valeur (<dl>), la carte Akelia en dernier, mise en avant.
+        Rien à faire défiler horizontalement. */}
+  <section aria-labelledby="difference-titre" class="bg-creme">
+    <div class:list={['mx-auto max-w-site px-gouttiere', classesSection]}>
+      <p class="surtitre">En quoi c’est différent</p>
+      <h2 id="difference-titre" class="mt-3 max-w-[24ch] text-h2 text-balance text-texte">Ni une plateforme, ni une agence de leads, ni une franchise.</h2>
+
+      {/* TABLEAU (992px et plus) */}
+      <div class="mt-12 hidden overflow-x-auto rounded-bloc border border-creme-fonce bg-fond lg:block">
+        <table class="w-full border-collapse text-left text-corps text-texte">
+          <caption class="sr-only">Comparaison des modèles : plateforme nationale, agence de leads, franchise et Akelia</caption>
+          <thead>
+            <tr>
+              <td class="w-[18%] p-4"></td>
+              {modeles.map((modele, i) => (
+                <th scope="col" class:list={['p-4 align-bottom text-h4 font-bold', i === AKELIA ? 'w-[26%] border-x-[3px] border-t-[3px] border-action-500 bg-action-500 text-texte' : 'w-[18%]']}>{modele}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {comparatif.map((ligne, n) => (
+              <tr class="border-t border-creme-fonce">
+                <th scope="row" class="p-4 align-top font-semibold">{ligne.critere}</th>
+                {ligne.valeurs.map((valeur, i) => (
+                  <td class:list={['p-4 align-top', i === AKELIA ? 'border-x-[3px] border-action-500 bg-action-50 font-semibold' : 'text-texte-doux', i === AKELIA && n === comparatif.length - 1 && 'border-b-[3px]']}>
+                    {valeur === '—' ? <><span aria-hidden="true">—</span><span class="sr-only">sans objet</span></> : valeur}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* CARTES (sous 992px) : une par modèle, Akelia en dernier. */}
+      <ul class="mt-10 grid gap-5 md:grid-cols-2 lg:hidden">
+        {modeles.map((modele, i) => (
+          <li class:list={['min-w-0 rounded-bloc p-5 sm:p-6', i === AKELIA ? 'border-[3px] border-action-500 bg-action-50 shadow-carte md:col-span-2' : 'border border-creme-fonce bg-fond']}>
+            <h3 class:list={['text-h4 font-bold text-texte', i === AKELIA && 'flex items-center gap-2']}>
+              {i === AKELIA && <Icone nom="valide" class="size-7 shrink-0 text-action-800" />}
+              {modele}
+            </h3>
+            <dl class="mt-4 divide-y divide-creme-fonce">
+              {comparatif.map((ligne) => (
+                <div class="py-3 first:pt-0 last:pb-0">
+                  <dt class="text-corps text-texte-doux">{ligne.critere}</dt>
+                  <dd class:list={['text-corps text-texte', i === AKELIA && 'font-semibold']}>
+                    {ligne.valeurs[i] === '—' ? <><span aria-hidden="true">—</span><span class="sr-only">sans objet</span></> : ligne.valeurs[i]}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </li>
+        ))}
+      </ul>
+
+      <p class="mt-14 border-l-[6px] border-action-500 pl-5 text-[clamp(1.5rem,3vw,2.25rem)] leading-snug font-bold text-balance text-nuit-900 md:mt-16">
+        Vous restez une entreprise indépendante, avec un canal d’acquisition en plus.
+      </p>
+    </div>
+  </section>
+
+  {/* ===== 4. LES RÈGLES DU JEU ONT CHANGÉ (blanc) =====
+      Trois constats numérotés 01 à 03 (comme les engagements de
+      /qui-sommes-nous), puis la phrase de bascule, sortie des blocs :
+      pleine largeur, plus grande. C'est la charnière de la page. */}
+  <section aria-labelledby="regles-titre" class="bg-fond">
+    <div class:list={['mx-auto max-w-site px-gouttiere', classesSection]}>
+      <h2 id="regles-titre" class="max-w-[20ch] text-h2 text-balance text-texte">Les règles du jeu ont changé</h2>
+      <ol class="mt-14 grid gap-12 md:mt-16 lg:grid-cols-3 lg:gap-10">
+        {constats.map((constat, index) => (
+          <li class="min-w-0">
+            <span aria-hidden="true" class={classesNumero}>{String(index + 1).padStart(2, '0')}</span>
+            <h3 class="-mt-8 text-[1.5rem] leading-tight font-black text-balance text-texte md:-mt-10">{constat.titre}</h3>
+            <p class="mt-4 text-corps text-texte-doux">{constat.texte}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="mt-16 border-t-4 border-action-500 pt-10 text-[clamp(1.5rem,3vw,2.25rem)] leading-snug font-bold text-balance text-nuit-900 md:mt-24">
+        Akelia a été conçu pour inverser ce rapport de force : mutualiser les armes des grands groupes pour restaurer la compétitivité et la rentabilité des entreprises indépendantes.
+      </p>
+    </div>
+  </section>
+
+  {/* ===== 5. FONCTIONNEMENT (crème) ===== */}
+  <section aria-labelledby="fonctionnement-titre" class="bg-creme">
+    <div class:list={['mx-auto max-w-site px-gouttiere', classesSection]}>
+      <h2 id="fonctionnement-titre" class="text-h2 text-balance text-texte">Fonctionnement</h2>
+      <div class="mt-8 max-w-[70ch] space-y-6 text-corps text-texte md:text-[1.25rem] md:leading-relaxed">
+        <p>Akelia mutualise ce qui coûte le plus cher à une entreprise seule : la visibilité, la publicité, la qualification des demandes, l’image de marque et les achats. Vous gardez ce qui fait votre métier : le chantier et votre rentabilité.</p>
+        <p>Et pour les aides, vous n’êtes plus seul : le collectif met en commun ses outils et son expérience pour monter les dossiers de vos clients. Vous ne défrichez plus MaPrimeRénov’ et les CEE dans votre coin.</p>
+      </div>
+      <h3 class="mt-14 text-h3 text-texte">Tout en garantissant</h3>
+      <ul class="mt-8 grid gap-5 md:grid-cols-3">
+        {garanties.map((garantie) => (
+          <li class="min-w-0 rounded-bloc border border-creme-fonce border-t-[6px] border-t-action-500 bg-fond p-6 shadow-legere">
+            <h4 class="text-h4 font-bold text-texte">{garantie.titre.replace(/ :$/, '')}</h4>
+            <p class="mt-2 text-corps text-texte-doux">{garantie.texte}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* ===== 6. POUR QUI ? (blanc) ===== */}
+  <section aria-labelledby="pour-qui-titre" class="bg-fond">
+    <div class:list={['mx-auto max-w-site px-gouttiere', classesSection]}>
+      <h2 id="pour-qui-titre" class="text-h2 text-balance text-texte">Pour qui ?</h2>
+      <p class="mt-8 max-w-[62ch] text-corps text-texte md:text-[1.25rem] md:leading-relaxed">Akelia regroupe des entreprises structurées et reconnues sur leur territoire, capables d’assurer un niveau de réalisation irréprochable.</p>
+
+      {/* CRITÈRES D'ÉLIGIBILITÉ : 3 cartes, 1 colonne sur téléphone, 3 à
+          partir de 768px. */}
+      <h3 class="mt-14 text-h3 text-texte">Critères d’éligibilité</h3>
+      <ul class="mt-8 grid gap-5 md:grid-cols-3 md:gap-6">
+        {criteresEligibilite.map((critere) => (
+          <li class="flex min-w-0 flex-col rounded-bloc border border-creme-fonce bg-fond p-6">
+            <span class="flex size-12 shrink-0 items-center justify-center rounded-pilule bg-vert-50 text-vert-600">
+              <Icone nom={critere.icone} class="size-7" />
+            </span>
+            <h4 class="mt-4 text-h4 font-bold text-texte">{critere.titre.replace(/ :$/, '')}</h4>
+            <p class="mt-2 text-corps text-texte-doux">{critere.texte}</p>
+          </li>
+        ))}
+      </ul>
+
+      {/* CRÉATEURS D'ENTREPRISE : une phrase à part, ni carte ni alerte.
+          Filet orange à gauche en action-600 (3,11:1 sur blanc : seuil des
+          éléments graphiques atteint ; l'orange principal ne fait que
+          2,38:1). Texte 16,34:1. Elle rattrape le lecteur qui vient de se
+          dire que ce n'était pas pour lui. */}
+      <p class="mt-10 max-w-[62ch] border-l-4 border-action-600 pl-5 text-corps text-texte md:text-[1.25rem] md:leading-relaxed">
+        <strong class="font-bold">{CREATEURS.debut}</strong> {CREATEURS.suite}
+      </p>
+
+      <h3 class="mt-16 text-h3 text-texte md:mt-20">Métiers éligibles</h3>
+      <div class="mt-8">
+        <Vignettes vignettes={metiers} couleur="text-vert-600" colonnes="1-2" />
+      </div>
+    </div>
+  </section>
+
+  {/* ===== 7. FAQ (crème) =====
+      Crème depuis le 19 octobre 2026 : la section « Le parcours » (crème)
+      a disparu, et « Pour qui ? » (blanc) la précède désormais. Les
+      <details> passent donc en blanc sur crème. Quatre <details>, le
+      premier ouvert. Chevron de la charte (celui du
+      sommaire et du menu mobile), pas la flèche du navigateur. Les mêmes
+      données (faq) alimentent le JSON-LD FAQPage : texte identique. */}
+  <section aria-labelledby="faq-titre" class="bg-creme">
+    <div class:list={['mx-auto max-w-[calc(56rem+2*var(--spacing-gouttiere))] px-gouttiere', classesSection]}>
+      <h2 id="faq-titre" class="text-h2 text-balance text-texte">FAQ</h2>
+      <div class="mt-10 space-y-4">
+        {faq.map((entree, index) => (
+          <details open={index === 0} class="group/faq rounded-bloc border border-creme-fonce bg-fond">
+            <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-bloc px-5 py-4 text-h4 font-bold text-texte focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900 sm:px-6 [&::-webkit-details-marker]:hidden">
+              {entree.question}
+              <svg class="size-6 shrink-0 text-nuit-900 transition-transform group-open/faq:rotate-180 motion-reduce:transition-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <p class="px-5 pb-6 text-corps text-texte sm:px-6">{entree.reponse}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ===== 8. LA CANDIDATURE (bleu nuit) =====
+      Cible du bouton « Devenir partenaire » : #candidature, décalé sous
+      l'en-tête collant (ancre-sommaire, global.css). Titre blanc
+      (14,47:1).
+      DEUX COLONNES à partir de lg (992px, le même seuil que /devis) :
+      formulaire à gauche (60 %) dans sa carte blanche, parcours à droite
+      (40 %). En dessous : formulaire d'abord, parcours ensuite (ordre du
+      code). La carte ne s'étire pas (self-start) : la confirmation n'est
+      pas laissée seule dans une grande carte vide. */}
+  <section id="candidature" aria-labelledby="candidature-titre" class="ancre-sommaire bg-nuit-900">
+    <div class="mx-auto max-w-site px-gouttiere pt-12 pb-[5.625rem] md:pt-16 md:pb-[9.375rem]">
+      <h2 id="candidature-titre" class="text-h2 text-balance text-texte-inverse">Déposer votre candidature</h2>
+      <div class="mt-10 grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-14">
+        <div class="min-w-0 self-start rounded-bloc border border-creme-fonce bg-fond p-5 shadow-legere sm:p-10">
+          <form id="formulaire-candidature" action={ADRESSE_WEB3FORMS} method="POST" aria-label="Candidature au collectif">
+            <input type="hidden" name="access_key" value={CLE_WEB3FORMS} />
+            <input type="hidden" name="subject" value="Nouvelle candidature artisan sur Akelia" />
+            <input type="hidden" name="from_name" value="Akelia Candidature artisan" />
+            {/* Piège à robots : case invisible que seuls les robots cochent */}
+            <input type="checkbox" name="botcheck" class="hidden" style="display: none;" tabindex="-1" autocomplete="off" />
+
+            <div>
+              <label for="candidature-entreprise" class={classesEtiquette}>Nom de l’entreprise</label>
+              <input id="candidature-entreprise" name="Entreprise" type="text" autocomplete="organization" required aria-describedby="erreur-entreprise" class={classesChamp} />
+              <p id="erreur-entreprise" role="alert" class={classesErreur}></p>
+            </div>
+
+            <div class="mt-6">
+              <label for="candidature-contact" class={classesEtiquette}>Nom du contact</label>
+              <input id="candidature-contact" name="Contact" type="text" autocomplete="name" required aria-describedby="erreur-contact" class={classesChamp} />
+              <p id="erreur-contact" role="alert" class={classesErreur}></p>
+            </div>
+
+            <div class="mt-6 grid gap-6 md:grid-cols-2">
+              <div>
+                <label for="candidature-telephone" class={classesEtiquette}>Téléphone</label>
+                <input id="candidature-telephone" name="Téléphone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="erreur-telephone" class={classesChamp} />
+                <p id="erreur-telephone" role="alert" class={classesErreur}></p>
+              </div>
+              <div>
+                <label for="candidature-code-postal" class={classesEtiquette}>Code postal</label>
+                <input
+                  id="candidature-code-postal"
+                  name="Code postal"
+                  type="text"
+                  inputmode="numeric"
+                  autocomplete="postal-code"
+                  maxlength="5"
+                  pattern="[0-9]{5}"
+                  required
+                  aria-describedby="erreur-code-postal"
+                  class={classesChamp}
+                />
+                <p id="erreur-code-postal" role="alert" class={classesErreur}></p>
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <label for="candidature-metier" class={classesEtiquette}>Métier</label>
+              <p id="aide-metier" class={classesAide}>Par exemple : chauffagiste, couvreur, menuisier, électricien.</p>
+              <input id="candidature-metier" name="Métier" type="text" required aria-describedby="aide-metier erreur-metier" class={classesChamp} />
+              <p id="erreur-metier" role="alert" class={classesErreur}></p>
+            </div>
+
+            <div class="mt-6">
+              <label for="candidature-message" class={classesEtiquette}>
+                Votre message <span class={classesFacultatif}>(facultatif)</span>
+              </label>
+              <p id="aide-message" class={classesAide}>Certifications RGE, zone d’intervention, taille de vos équipes…</p>
+              <textarea id="candidature-message" name="Message" rows="4" aria-describedby="aide-message" class={`${classesChamp} py-3`}></textarea>
+            </div>
+
+            {/* Message d'échec de l'envoi (rempli par le script) */}
+            <p id="candidature-echec" role="alert" tabindex="-1" hidden class="mt-8 rounded-bloc border-2 border-alerte-700 bg-alerte-50 p-4 text-corps font-semibold text-texte"></p>
+
+            <button
+              type="submit"
+              class="mt-8 flex min-h-14 w-full items-center justify-center rounded-bloc bg-action-500 px-8 text-h4 font-semibold text-texte shadow-legere hover:bg-action-600 disabled:cursor-wait disabled:opacity-80 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-nuit-900"
+            >
+              Envoyer ma candidature
+            </button>
+
+            {/* MENTION SUR LES DONNÉES : la même que sur /devis.
+                ⚠️ /politique-confidentialite n'existe pas encore. */}
+            <p class="mt-6 border-t border-creme-fonce pt-4 text-corps text-texte">
+              Vos coordonnées servent uniquement à vous recontacter au sujet de votre projet. Elles ne sont ni revendues ni utilisées à d'autres fins. Vous pouvez demander leur suppression à tout moment.
+              Pour en savoir plus, consultez notre <a href="/politique-confidentialite" class="font-semibold text-nuit-900 underline underline-offset-4 hover:text-vert-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900">politique de confidentialité</a>.
+            </p>
+          </form>
+
+          {/* CONFIRMATION : remplace le formulaire après l'envoi réussi. */}
+          <div id="candidature-confirmation" tabindex="-1" hidden class="py-6 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-nuit-900">
+            <span aria-hidden="true" class="flex size-14 items-center justify-center rounded-pilule border-2 border-succes-600 bg-succes-50 text-h3 text-succes-600">✓</span>
+            <h2 class="mt-6 text-h3 text-texte">Merci, votre candidature est partie.</h2>
+            <p class="mt-4 text-corps text-texte">Nous revenons vers vous pour en parler.</p>
+          </div>
+        </div>
+
+        {/* LE PARCOURS (colonne de droite) : remplace la section « Le
+            parcours » le 19 octobre 2026. Étapes de « Fonctionnement »
+            (accueil) en plus sobre : ni carte, ni ombre, ni fond, tout en
+            orange sur bleu nuit (les 4 couleurs de la Méthode sont
+            abandonnées).
+            - pastilles cerclées d'action-500 (6,08:1 sur nuit-900), chiffre
+              blanc (14,47:1) ; filet action-500 plein (6,08:1 ; pas de
+              transparence, qui le ferait tomber sur le bleu nuit) ;
+            - étape 1, celle du lecteur : pastille orange pleine, chiffre
+              foncé (texte, 6,87:1), mention « Vous êtes ici » en action-300
+              (8,00:1), aria-current="step" ;
+            - libellés blancs semi-gras (14,47:1).
+            Hors de la carte du formulaire : reste affiché après l'envoi. */}
+        <aside aria-labelledby="parcours-titre" class="min-w-0">
+          <h3 id="parcours-titre" class="text-h3 text-balance text-texte-inverse">Ce qui se passe ensuite</h3>
+          <ol class="mt-8">
+            {parcours.map((titre, index) => (
+              <li aria-current={index === 0 ? 'step' : undefined} class="relative flex gap-5 pb-8 last:pb-0">
+                {index < parcours.length - 1 && (
+                  <span aria-hidden="true" class="absolute top-12 bottom-2 left-5 w-0.5 -translate-x-1/2 bg-action-500"></span>
+                )}
+                <span
+                  aria-hidden="true"
+                  class:list={[
+                    'flex size-10 shrink-0 items-center justify-center rounded-pilule border-2 border-action-500 text-h4 font-bold tabular-nums',
+                    index === 0 ? 'bg-action-500 text-texte' : 'text-texte-inverse',
+                  ]}
+                >
+                  {index + 1}
+                </span>
+                <p class="flex flex-wrap items-baseline gap-x-3 pt-1 text-corps">
+                  <span class="font-semibold text-texte-inverse"><span class="sr-only">Étape {index + 1} : </span>{titre}</span>
+                  {index === 0 && <span class="text-action-300">Vous êtes ici</span>}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import { ADRESSE_WEB3FORMS } from '../data/web3forms';
+
+    const MESSAGES = {
+      envoi: 'Envoi en cours…',
+      erreur: "Votre candidature n'a pas pu être envoyée. Veuillez réessayer dans quelques minutes.",
+      injoignable: 'Impossible de joindre le serveur. Veuillez vérifier votre connexion et réessayer.',
+      entreprise: 'Indiquez le nom de votre entreprise.',
+      contact: 'Indiquez le nom de la personne à contacter.',
+      telephone: 'Indiquez un numéro de téléphone (10 chiffres).',
+      codePostal: 'Indiquez un code postal de 5 chiffres, par exemple 31000.',
+      metier: 'Indiquez votre métier, par exemple chauffagiste.',
+    };
+
+    const formulaire = document.querySelector<HTMLFormElement>('#formulaire-candidature');
+    const confirmation = document.getElementById('candidature-confirmation');
+    const echec = document.getElementById('candidature-echec');
+
+    if (formulaire && confirmation && echec) {
+      // Le script prend la main sur la vérification du navigateur.
+      formulaire.noValidate = true;
+      const bouton = formulaire.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+
+      const champs: Record<string, HTMLInputElement | null> = {
+        entreprise: formulaire.querySelector('#candidature-entreprise'),
+        contact: formulaire.querySelector('#candidature-contact'),
+        telephone: formulaire.querySelector('#candidature-telephone'),
+        'code-postal': formulaire.querySelector('#candidature-code-postal'),
+        metier: formulaire.querySelector('#candidature-metier'),
+      };
+
+      /** Affiche ou efface le message d'erreur d'un champ. */
+      function erreur(cle: string, message: string | null) {
+        const zone = document.getElementById(`erreur-${cle}`);
+        if (zone) zone.textContent = message ?? '';
+        const champ = champs[cle];
+        if (!champ) return;
+        if (message) champ.setAttribute('aria-invalid', 'true');
+        else champ.removeAttribute('aria-invalid');
+      }
+
+      /** Vérifie les champs ; renvoie le premier champ en erreur, ou null. */
+      function verifier(): HTMLInputElement | null {
+        const val = (cle: string) => (champs[cle]?.value ?? '').trim();
+        const resultats: [string, string | null][] = [
+          ['entreprise', val('entreprise') ? null : MESSAGES.entreprise],
+          ['contact', val('contact') ? null : MESSAGES.contact],
+          ['telephone', val('telephone').replace(/\D/g, '').length >= 10 ? null : MESSAGES.telephone],
+          ['code-postal', /^\d{5}$/.test(val('code-postal')) ? null : MESSAGES.codePostal],
+          ['metier', val('metier') ? null : MESSAGES.metier],
+        ];
+        resultats.forEach(([cle, message]) => erreur(cle, message));
+        const premiere = resultats.find(([, message]) => message);
+        return premiere ? champs[premiere[0]] : null;
+      }
+
+      // Effacer l'erreur d'un champ dès qu'on le corrige.
+      Object.entries(champs).forEach(([cle, champ]) => champ?.addEventListener('input', () => erreur(cle, null)));
+
+      /** Contenu envoyé : champs vides retirés, sujet précis. */
+      function preparerEnvoi(): FormData {
+        const saisie = new FormData(formulaire!);
+        const envoi = new FormData();
+        for (const [nom, valeur] of saisie) {
+          if (nom !== 'botcheck' && typeof valeur === 'string' && !valeur.trim()) continue;
+          envoi.append(nom, typeof valeur === 'string' ? valeur.trim() : valeur);
+        }
+        envoi.set('subject', `Candidature artisan Akelia : ${envoi.get('Métier')}, ${envoi.get('Entreprise')} (${envoi.get('Code postal')})`);
+        return envoi;
+      }
+
+      formulaire.addEventListener('submit', async (evenement) => {
+        evenement.preventDefault();
+        echec.hidden = true;
+
+        const champEnErreur = verifier();
+        if (champEnErreur) {
+          champEnErreur.focus();
+          return;
+        }
+
+        const texteInitial = bouton.textContent;
+        bouton.disabled = true;
+        bouton.textContent = MESSAGES.envoi;
+
+        try {
+          const reponse = await fetch(ADRESSE_WEB3FORMS, { method: 'POST', body: preparerEnvoi() });
+          const resultat = await reponse.json();
+          if (reponse.ok && resultat.success) {
+            // La confirmation REMPLACE le formulaire.
+            formulaire.reset();
+            formulaire.hidden = true;
+            confirmation.hidden = false;
+            confirmation.scrollIntoView({ block: 'center' });
+            confirmation.focus({ preventScroll: true });
+            return;
+          }
+          // Message de Web3Forms (en anglais) gardé pour la console seulement.
+          console.error('Web3Forms :', resultat.message);
+          echec.textContent = MESSAGES.erreur;
+        } catch {
+          echec.textContent = MESSAGES.injoignable;
+        } finally {
+          bouton.disabled = false;
+          bouton.textContent = texteInitial;
+        }
+        echec.hidden = false;
+        echec.focus();
+      });
+    }
+  </script>
+</Layout>

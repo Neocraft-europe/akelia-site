@@ -1,9 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <!-- Favicon Akelia (16 octobre 2026). Carré orange action-500 (#f0920f),
-       coins arrondis ; losange bleu nuit nuit-900 (#1d2b36), centré, 20px
-       de diagonale sur 32 (62 % de la largeur). Bleu nuit plutôt que blanc :
-       6,1:1 sur l'orange, contre 2,2:1 pour le blanc. Formes pleines, sans
-       détail : lisible à 16px. Version Apple : apple-touch-icon.png. -->
+       coins arrondis ; lettre A majuscule bleu nuit nuit-900 (#1d2b36),
+       centrée, 21px de haut sur 32 (65 %). Tracé vectoriel, sans police :
+       rendu identique partout. Jambages de 5 unités, barre de 3,5 : lisible
+       à 16px. Bleu nuit plutôt que blanc : 6,1:1 sur l'orange, contre 2,2:1
+       pour le blanc. Version Apple : apple-touch-icon.png. -->
   <rect width="32" height="32" rx="6" fill="#f0920f"/>
-  <path d="M16 6 L26 16 L16 26 L6 16 Z" fill="#1d2b36" stroke="#1d2b36" stroke-width="1.5" stroke-linejoin="round"/>
+  <path fill="#1d2b36" fill-rule="evenodd" d="M13.5 5.5H18.5L26 26.5H21L19.3 21.75H12.7L11 26.5H6Z M16 12.5L18.05 18.25H13.95Z"/>
 </svg>

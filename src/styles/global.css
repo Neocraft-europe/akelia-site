@@ -34,6 +34,11 @@
 
 @import "tailwindcss";
 
+/* Module typographique (17 octobre 2026) : styles des articles de blog
+   (classe « prose »). Ne sert qu'à la compilation, aucun JavaScript.
+   Réglages à la charte : voir « TYPOGRAPHIE DES ARTICLES » en bas. */
+@plugin "@tailwindcss/typography";
+
 
 @theme {
   /* =======================================================================
@@ -104,6 +109,11 @@
      concurrencer (contraste avec l'orange : 1,97:1, deux teintes
      nettement distinctes). Texte sur blanc : 4,70:1 (AA). */
   --color-corail: #d9304a;
+  /* ORANGE CLAIR POUR TEXTE SUR FOND SOMBRE (19 octobre 2026) : l'orange
+     principal ne fait que 6,08:1 sur nuit-900, sous les 7:1 visés pour le
+     texte. Réservé au TEXTE posé sur nuit-900 (phrase d'accroche de
+     /rejoindre-le-collectif) : 8,00:1. */
+  --color-action-300: #f7b455;
   --color-action-800: #9a5a00; /* RÉSERVÉ au texte du badge du collectif (Hero), sur action-50 : 4,88:1 (action-600 n'y faisait que 2,77:1) — 14 octobre 2026 */
 
   /* --- VERT --------------------------------------------------------------
@@ -164,6 +174,16 @@
   --color-argile-fonce: #a04e2c;  /* 5,80:1 sur blanc */
   --color-lichen-fonce: #58682a;  /* 6,13:1 sur blanc */
   --color-brume-fonce: #36648a;   /* 6,27:1 sur blanc */
+
+  /* --- PROFILS DE REVENUS MAPRIMERÉNOV' (19 octobre 2026) ----------------
+     Les 4 pastilles de la page /aides-renovation, aux couleurs officielles
+     des profils (teintes propres au site). Texte blanc sur les deux
+     foncés, texte foncé (#16212a) sur les deux clairs : le JAUNE et le
+     ROSE ne supportent pas le blanc (1,6:1). Tous au-dessus de 7:1. */
+  --color-mpr-bleu: #1f4e9c;   /* texte blanc 7,99:1 */
+  --color-mpr-jaune: #f5c518;  /* texte foncé 10,02:1 (blanc : 1,63:1, interdit) */
+  --color-mpr-violet: #6a3d9a; /* texte blanc 7,64:1 */
+  --color-mpr-rose: #f6b8cf;   /* texte foncé 9,86:1 (blanc : 1,66:1, interdit) */
 
   /* --- SUCCÈS (conservé pour les formulaires) ----------------------------
      Vert de validation : messages de confirmation, verdict « Oui » du
@@ -407,6 +427,21 @@
       --text-h1: 2.2rem;
     }
   }
+
+  /* -----------------------------------------------------------------------
+     HAUTEUR DE L'EN-TÊTE COLLANT (src/components/Header.astro), mesurée le
+     17 octobre 2026 : 73px sous 1280px (une ligne), 122px à partir de
+     1280px (xl : la 2e ligne du menu apparaît). Sert au décalage des
+     ancres et à la position du sommaire collant des articles.
+     ⚠️ À mettre à jour si la hauteur de l'en-tête change.
+     ----------------------------------------------------------------------- */
+  :root {
+    --hauteur-entete: 4.5625rem; /* 73px */
+    @variant xl {
+      --hauteur-entete: 7.625rem; /* 122px */
+    }
+  }
+
 }
 
 
@@ -509,4 +544,170 @@
     opacity: 1 !important;
     transform: none !important;
   }
+}
+
+
+/* =========================================================================
+   TYPOGRAPHIE DES ARTICLES DE BLOG (classes : prose prose-lg)
+   -------------------------------------------------------------------------
+   Habillage des articles de blog : on règle la typographie une seule fois ici,
+   le gabarit d'article n'a plus qu'à appliquer la classe « prose ».
+   Module @tailwindcss/typography (17 octobre 2026). Le gabarit
+   (src/pages/post/[slug].astro) utilise « prose prose-lg lg:prose-xl » :
+   corps de 18px sur téléphone et tablette, 20px à partir de 992px (lg) ;
+   titres h2 30px puis 36px, h3 24px puis 30px, h4 20px puis 25px, sous le
+   h1 de la page (48px, 35px sur téléphone). Largeur de lecture : fixée par
+   le gabarit à 70ch (700px à 20px) ; max-w-none annule les 65ch du
+   module.
+   Tableaux, schémas (blocs de code) et images des figures : préparés par
+   les plugins de src/utils/plugins-markdown.mjs.
+   Couleurs : UNIQUEMENT des jetons du bloc @theme. Contrastes sur blanc :
+     texte        16,34:1 (corps, titres, gras, citations)
+     nuit-900     14,47:1 (liens, soulignés ; vert-600 au survol)
+                  vert-600 n'est PAS utilisé pour les liens : 6,34:1,
+                  sous les 7:1 du site pour le texte courant
+     texte-doux    7,11:1 (légendes, numéros de liste, filets d'en-tête de
+                  tableau)
+     vert-600      6,34:1 (puces : décoratives)
+     creme-fonce   1,23:1 (filets entre lignes de tableau, séparateurs :
+                  décoratifs, volontairement discrets)
+   ========================================================================= */
+.prose {
+  --tw-prose-body: var(--color-texte);           /* couleur du texte courant */
+  --tw-prose-headings: var(--color-texte);       /* couleur des titres */
+  --tw-prose-lead: var(--color-texte);
+  --tw-prose-links: var(--color-nuit-900);
+  --tw-prose-bold: var(--color-texte);
+  --tw-prose-counters: var(--color-texte-doux);
+  --tw-prose-bullets: var(--color-vert-600);
+  --tw-prose-hr: var(--color-creme-fonce);
+  --tw-prose-quotes: var(--color-texte);
+  --tw-prose-quote-borders: var(--color-action-500);
+  --tw-prose-captions: var(--color-texte-doux);
+  --tw-prose-code: var(--color-texte);
+  --tw-prose-pre-code: var(--color-texte);
+  --tw-prose-pre-bg: var(--color-creme);
+  --tw-prose-th-borders: var(--color-texte-doux);
+  --tw-prose-td-borders: var(--color-creme-fonce);
+}
+
+/* Ancres du sommaire : le titre visé s'arrête 1rem sous l'en-tête collant,
+   jamais caché dessous. Hors articles (page /aides-renovation), poser la
+   classe ancre-sommaire sur le titre visé. */
+.prose :is(h2, h3),
+.ancre-sommaire {
+  scroll-margin-top: calc(var(--hauteur-entete) + 1rem);
+}
+
+/* Sommaire collant des articles (ordinateur), liste des parties : quand
+   elle défile faute de place, un léger dégradé en haut et en bas signale
+   qu'il reste des entrées. Technique CSS seule (« ombres de défilement ») :
+   - deux caches couleur du fond, attachés au CONTENU (local) : ils
+     suivent la liste et masquent les ombres quand on est tout en haut ou
+     tout en bas ;
+   - deux ombres attachées au CADRE (scroll) : toujours en haut et en bas
+     de la zone visible.
+   Sans défilement (cas courant : tout tient), caches et ombres se
+   superposent et rien n'apparaît. */
+.sommaire-defilant {
+  --ombre-sommaire: color-mix(in srgb, var(--color-nuit-900) 18%, transparent);
+  background:
+    linear-gradient(var(--color-fond) 30%, transparent) top / 100% 2.5rem no-repeat local,
+    linear-gradient(transparent, var(--color-fond) 70%) bottom / 100% 2.5rem no-repeat local,
+    linear-gradient(var(--ombre-sommaire), transparent) top / 100% 1rem no-repeat scroll,
+    linear-gradient(transparent, var(--ombre-sommaire)) bottom / 100% 1rem no-repeat scroll;
+}
+
+/* Liens : soulignés (ils se distinguent du texte par le soulignement, pas
+   par la couleur), vert au survol, contour de focus bleu nuit. */
+.prose a {
+  text-underline-offset: 0.2em;
+}
+.prose a:hover {
+  color: var(--color-vert-600);
+}
+.prose a:focus-visible {
+  outline: 2px solid var(--color-nuit-900);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Figures (<figure> + <figcaption>) : image sur toute la largeur de la
+   colonne, SANS JAMAIS L'AGRANDIR au-delà de sa taille réelle (12 des 14
+   images des figures font 340 à 450px de large : étirées à 650px, elles
+   seraient floues). Plus petite que la colonne, elle est centrée, et sa
+   légende aussi. Légende plus petite (16px, le minimum du site) et en
+   retrait de couleur (texte-doux, via --tw-prose-captions). */
+.prose figure img {
+  /* Largeur : l'attribut width posé par Astro (taille réelle du fichier),
+     plafonnée par max-width. Surtout pas « width: auto » : l'image
+     mesurerait 0px tant qu'elle n'est pas chargée. */
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+  border-radius: var(--radius-bloc);
+}
+.prose figcaption {
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Tableaux : enveloppés par le gabarit (plugin de
+   src/utils/plugins-markdown.mjs) dans <div class="tableau-defilant">. Sur téléphone, le
+   tableau garde sa largeur et C'EST LE CADRE qui défile horizontalement :
+   la page, elle, ne déborde jamais. Le cadre est atteignable au clavier
+   (tabindex="0") pour défiler avec les flèches. */
+.prose .tableau-defilant {
+  overflow-x: auto;
+  margin-block: 2em;
+  border: 1px solid var(--color-creme-fonce);
+  border-radius: var(--radius-bloc);
+}
+.prose .tableau-defilant:focus-visible {
+  outline: 2px solid var(--color-nuit-900);
+  outline-offset: 2px;
+}
+.prose .tableau-defilant table {
+  margin: 0;
+  min-width: 32rem;
+}
+/* Schémas en texte brut (blocs de code ```, dessins en « ┌───┐ ») : rendus
+   tels quels (sans coloration syntaxique, voir astro.config.mjs). Comme
+   les tableaux, C'EST LE CADRE qui défile horizontalement, la page ne
+   déborde jamais. white-space: pre et overflow-wrap: normal sont redits
+   ici : une coupure de ligne détruirait le dessin. Police à chasse fixe
+   (alignement des traits), 15px quelle que soit la taille du texte
+   courant, fond crème (texte sur crème : 15:1 environ). Cadre atteignable
+   au clavier (tabindex="0", plugin schemasDefilants). */
+.prose pre {
+  overflow-x: auto;
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  margin-block: 2em;
+  padding: 1rem 1.25rem;
+  color: var(--color-texte);
+  background-color: var(--color-creme);
+  border: 1px solid var(--color-creme-fonce);
+  border-radius: var(--radius-bloc);
+}
+.prose pre code {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+.prose pre:focus-visible {
+  outline: 2px solid var(--color-nuit-900);
+  outline-offset: 2px;
+}
+.prose .tableau-defilant :is(th, td) {
+  padding-inline: 0.75em;
+}
+.prose .tableau-defilant thead {
+  background-color: var(--color-creme);
 }

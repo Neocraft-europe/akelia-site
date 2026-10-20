@@ -1,0 +1,42 @@
+---
+// =========================================================================
+// COMPOSANT : FIL D'ARIANE (src/components/FilAriane.astro)
+// -------------------------------------------------------------------------
+// « Accueil › Blog › Chauffage » : articles et pages de liste du blog.
+// Une étape avec `href` est un lien ; une étape sans `href` est du texte
+// simple. La DERNIÈRE étape est la page courante (aria-current="page") :
+// une rubrique sans page (pages /solutions/…, 19 octobre 2026) peut donc
+// figurer au milieu, sans lien. Liens de 44px de haut.
+// Le JSON-LD BreadcrumbList est produit à part, par la page
+// (filArianeJsonLd, src/utils/seo.ts) : il peut compter une étape de plus
+// que le fil visible (le titre de l'article).
+// =========================================================================
+
+export interface Props {
+  etapes: { libelle: string; href?: string }[];
+  /** « sombre » : fil posé sur fond bleu nuit (19 octobre 2026). Textes
+   *  et liens blancs (14,47:1), séparateurs blancs à 75 % (décoratifs), contour
+   *  de focus blanc. */
+  fond?: 'clair' | 'sombre';
+}
+
+const { etapes, fond = 'clair' } = Astro.props;
+const sombre = fond === 'sombre';
+---
+
+<nav aria-label="Fil d'Ariane">
+  <ol class:list={['flex flex-wrap items-center gap-x-2 text-base', sombre ? 'text-texte-inverse/75' : 'text-texte-doux']}>
+    {etapes.map((etape, i) => (
+      <>
+        {i > 0 && <li aria-hidden="true">›</li>}
+        <li>
+          {etape.href ? (
+            <a href={etape.href} class:list={['inline-flex min-h-11 items-center underline underline-offset-4 focus-visible:outline-2', sombre ? 'text-texte-inverse hover:text-action-300 focus-visible:outline-texte-inverse' : 'hover:text-vert-600 focus-visible:outline-nuit-900']}>{etape.libelle}</a>
+          ) : (
+            <span aria-current={i === etapes.length - 1 ? 'page' : undefined} class:list={['inline-flex min-h-11 items-center', sombre ? 'text-texte-inverse' : 'text-texte']}>{etape.libelle}</span>
+          )}
+        </li>
+      </>
+    ))}
+  </ol>
+</nav>

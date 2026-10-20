@@ -444,6 +444,72 @@ export const aidesNationales: AideNationale[] = [
 
 
 // -------------------------------------------------------------------------
+// CHIFFRES MIS EN AVANT SUR LA PAGE /aides-renovation (19 octobre 2026)
+// -------------------------------------------------------------------------
+// Les montants affichés comme des DONNÉES sur la page (bandeau des chiffres
+// clés, encart « Ce qu'il faut retenir », plafonds de l'Éco-PTZ) viennent
+// d'ici, jamais du fichier de la page. Les chiffres cités au fil du texte
+// rédigé, eux, restent dans le texte.
+// Quand un montant change : le modifier ICI, puis mettre à jour
+// dateVerificationPage.
+// -------------------------------------------------------------------------
+
+const aide = (id: string) => {
+  const trouvee = aidesNationales.find((a) => a.id === id);
+  if (!trouvee) throw new Error(`Aide nationale inconnue : ${id}`);
+  return trouvee;
+};
+
+/** Date de la dernière vérification des montants de la page
+ *  /aides-renovation (AAAA-MM-JJ), affichée en bas de page. */
+export const dateVerificationPage = '2026-10-19';
+
+/** Taux de TVA cités par la page (en %). */
+export const tauxTva = {
+  reduit: 5.5,
+  // AJOUT du 19 octobre 2026 : taux intermédiaire, celui des radiateurs à
+  // inertie d'après le texte de la page.
+  intermediaire: 10,
+};
+
+/** MaPrimeRénov' par geste : montant maximum (pompe à chaleur
+ *  géothermique, revenus très modestes). Lu dans l'aide ci-dessus. */
+export const mprGesteMax = aide('maprimerenov-geste').montantMax as number;
+
+/** MaPrimeRénov' rénovation d'ampleur (Parcours Accompagné) : part
+ *  maximale du devis prise en charge, en % (revenus très modestes).
+ *  AJOUT du 19 octobre 2026 : le taux figurait seulement en commentaire
+ *  (barème Anah, voir l'aide n° 2 ci-dessus). */
+export const mprAmpleurTauxMax = 80;
+
+/** Prime CEE : montant mis en avant (« plus de … € » pour les gestes les
+ *  plus performants).
+ *  AJOUT du 19 octobre 2026, repris du texte de la page fourni ce jour-là.
+ *  ⚠️ NON CONFIRMÉ par une source officielle : les primes CEE varient
+ *  selon le fournisseur ; c'est pourquoi le simulateur, lui, n'affiche
+ *  toujours AUCUN montant CEE (montantMax: null ci-dessus). */
+export const ceeMontantMisEnAvant = 7500;
+
+/** Éco-PTZ : plafond le plus élevé (rénovation globale). Lu dans l'aide
+ *  ci-dessus. */
+export const ecoPtzMax = aide('eco-ptz').montantMax as number;
+
+/** Éco-PTZ : plafonds selon le projet, dans l'ordre du texte de la page.
+ *  Libellés repris mot pour mot du texte.
+ *  AJOUT du 19 octobre 2026 : seule la ligne « assainissement non
+ *  collectif » (10 000 €) ne figure pas dans le barème Anah cité en
+ *  commentaire de l'aide n° 4 ; elle vient du texte de la page. */
+export const plafondsEcoPtz: { libelle: string; montant: number; precision?: string }[] = [
+  { libelle: 'Action seule sur les fenêtres', montant: 7000 },
+  { libelle: 'Assainissement non collectif', montant: 10000 },
+  { libelle: 'Une action seule (hors fenêtres)', montant: 15000 },
+  { libelle: 'Bouquet de 2 travaux', montant: 25000 },
+  { libelle: 'Bouquet de 3 travaux ou plus', montant: 30000 },
+  { libelle: 'Rénovation globale', montant: ecoPtzMax, precision: 'pour les projets permettant un gain énergétique important' },
+];
+
+
+// -------------------------------------------------------------------------
 // AIDES RÉGIONALES (13 régions de métropole)
 // -------------------------------------------------------------------------
 // Pour chaque région : existe-t-il un dispositif d'aide à la rénovation

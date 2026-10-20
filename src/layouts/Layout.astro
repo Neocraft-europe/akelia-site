@@ -15,6 +15,9 @@ export interface Props {
   image?: string;
   canonicalURL?: string;
   type?: 'website' | 'article';
+  // false : <meta name="robots" content="noindex, follow"> (pages 2 et
+  // suivantes des listes du blog : navigation, pas contenu).
+  indexable?: boolean;
 }
 
 // Extraction des props passées au layout avec des valeurs de secours intelligentes
@@ -23,7 +26,8 @@ const {
   description,
   image = '/images/og-default.jpg',
   canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://akelia.fr').href,
-  type = 'website'
+  type = 'website',
+  indexable = true
 } = Astro.props;
 
 // Construction de l'URL absolue pour l'image Open Graph (exigé par la majorité des crawlers)
@@ -31,12 +35,12 @@ const resolvedImageURL = new URL(image, Astro.site || 'https://akelia.fr').href;
 ---
 
 <!doctype html>
-<html lang="fr" class="scroll-smooth antialiased">
+<html lang="fr" class="antialiased motion-safe:scroll-smooth">
   <head>
     {/* Encodage et compatibilité navigateur */}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {/* Favicon (16 octobre 2026) : carré orange, losange bleu nuit.
+    {/* Favicon (16 octobre 2026) : carré orange, lettre A bleu nuit.
         favicon.ico (32px) pour les navigateurs sans SVG, déclaré AVANT le
         SVG que les navigateurs récents préfèrent ; PNG 180px pour Apple. */}
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
@@ -50,7 +54,7 @@ const resolvedImageURL = new URL(image, Astro.site || 'https://akelia.fr').href;
     <link rel="canonical" href={canonicalURL} />
 
     {/* Directives d'indexation robots */}
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={indexable ? 'index, follow' : 'noindex, follow'} />
 
     {/* Protocole Open Graph (Facebook, LinkedIn, Discord, etc.) */}
     <meta property="og:locale" content="fr_FR" />

@@ -1,0 +1,181 @@
+---
+// =========================================================================
+// COMPOSANT : LES TRAVAUX À RÉALISER (src/components/solutions/TravauxSolution.astro)
+// -------------------------------------------------------------------------
+// Section 4 des pages /solutions/… (19 octobre 2026). Un parcours par
+// type de chantier (« Rénovation », « Neuf »…) : niveau de difficulté en
+// évidence, puis 4 étapes numérotées et illustrées.
+//
+// - UN SEUL PARCOURS : affiché directement, sans onglets.
+// - PLUSIEURS : en onglets, sur le modèle des Cas types de l'accueil
+//   (CasTypes.astro) : modèle « onglets » du W3C (tablist / tab /
+//   tabpanel), flèches (gauche, droite, haut, bas), Début et Fin, un seul
+//   onglet dans l'ordre de tabulation ; onglet actif à fond plein, inactifs
+//   à simple filet. Le code de CasTypes (couleurs de section, images
+//   différées) est propre à l'accueil : seul le principe est repris.
+// - SANS JAVASCRIPT : pas d'onglets, les parcours s'affichent les uns
+//   sous les autres, chacun sous son titre h3.
+// - SOMMAIRE : chaque panneau porte un id (« travaux-renovation ») visé
+//   par une entrée de second niveau du sommaire. Un clic sur un lien vers
+//   un panneau inactif active d'abord son onglet (sinon le navigateur ne
+//   peut pas y descendre) ; idem si la page s'ouvre sur cette ancre.
+//   Chaque changement d'onglet envoie « sommaire:maj » (Sommaire.astro).
+// =========================================================================
+
+import { Image } from 'astro:assets';
+import type { Solution } from '../../data/solutions/type';
+import { idParcours } from '../../utils/texte';
+
+export interface Props {
+  parcours: Solution['parcours'];
+  /** Préfixe des id (« travaux ») : panneau « travaux-renovation ». */
+  prefixe: string;
+}
+
+const { parcours, prefixe } = Astro.props;
+
+const avecOnglets = parcours.length > 1;
+/** 2,5 → « 2,5 ». */
+const note = (n: number) => String(n).replace('.', ',');
+/** Remplissage de chacun des 5 segments de la jauge (0 à 1). */
+const segments = (n: number) => [0, 1, 2, 3, 4].map((i) => Math.max(0, Math.min(1, n - i)));
+---
+
+<div data-travaux class="mt-8">
+  {avecOnglets && (
+    // ONGLETS : 48px de haut, masqués sans JavaScript. Actif : fond bleu
+    // nuit, texte blanc (14,47:1). Inactif : filet bleu nuit de 2px, texte
+    // foncé ; survol crème.
+    <div role="tablist" aria-label="Parcours de travaux" data-travaux-onglets hidden class="mb-8 flex flex-wrap gap-3">
+      {parcours.map((p, index) => (
+        <button
+          type="button"
+          role="tab"
+          id={`onglet-${idParcours(prefixe, p.nom)}`}
+          aria-controls={idParcours(prefixe, p.nom)}
+          aria-selected={index === 0 ? 'true' : 'false'}
+          tabindex={index === 0 ? 0 : -1}
+          data-travaux-onglet
+          class="flex min-h-12 cursor-pointer items-center rounded-bloc border-2 border-nuit-900 bg-fond px-5 text-corps font-semibold text-texte not-aria-selected:hover:bg-creme focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-nuit-900 aria-selected:bg-nuit-900 aria-selected:text-texte-inverse"
+        >
+          {p.nom}
+        </button>
+      ))}
+    </div>
+  )}
+
+  {parcours.map((p, index) => (
+    <div
+      id={idParcours(prefixe, p.nom)}
+      role={avecOnglets ? 'tabpanel' : undefined}
+      aria-labelledby={avecOnglets ? `onglet-${idParcours(prefixe, p.nom)}` : undefined}
+      tabindex={avecOnglets ? 0 : undefined}
+      data-travaux-panneau
+      class:list={['ancre-sommaire focus-visible:outline-[3px] focus-visible:outline-offset-8 focus-visible:outline-nuit-900', index > 0 && 'mt-12']}
+    >
+      {/* EN-TÊTE DU PARCOURS : nom (h3) et niveau de difficulté, en
+          évidence : note en très grand, jauge de 5 segments (décorative :
+          la note est écrite), qualificatif. */}
+      <div class="flex flex-wrap items-end justify-between gap-x-8 gap-y-4 rounded-bloc border border-creme-fonce bg-creme p-5 sm:p-6">
+        <h3 class="text-h3 text-texte">{p.nom}</h3>
+        <div class="min-w-0">
+          <p class="text-corps font-semibold text-texte">Niveau de difficulté</p>
+          <p class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span class="text-[2rem] leading-none font-black whitespace-nowrap text-texte tabular-nums">{note(p.difficulte)}<span class="text-h4 font-bold text-texte-doux"> / 5</span></span>
+            <span aria-hidden="true" class="flex gap-1">
+              {segments(p.difficulte).map((remplissage) => (
+                <span class="relative h-3 w-7 overflow-hidden rounded-full border border-nuit-900 bg-fond">
+                  <span class="absolute inset-y-0 left-0 bg-nuit-900" style={`width: ${remplissage * 100}%`}></span>
+                </span>
+              ))}
+            </span>
+            <span class="text-corps font-semibold text-texte">{p.difficulteTexte}</span>
+          </p>
+        </div>
+      </div>
+
+      {/* LES ÉTAPES. Pastille numérotée cerclée d'orange (comme les
+          étapes de /devis), illustration, titre. Images de 300px de large :
+          jamais agrandies.
+          - sous 768px : une étape par ligne, image (6rem) à gauche du titre
+            (sur 2 colonnes, « raccordement » se coupait en plein mot) ;
+          - de 768 à 1279px : 2 colonnes, image au-dessus du titre ;
+          - à partir de 1280px : 4 colonnes. */}
+      <ol class="mt-6 grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-2 md:gap-y-10 xl:grid-cols-4 xl:gap-x-4">
+        {p.etapes.map((etape, n) => (
+          <li class="flex min-w-0 items-center gap-4 md:flex-col md:items-stretch md:gap-0">
+            <Image
+              src={etape.image}
+              alt={etape.imageAlt}
+              widths={[150, 300].filter((l) => l <= etape.image.width)}
+              sizes="(min-width: 768px) 300px, 96px"
+              format="webp"
+              loading="lazy"
+              class="aspect-square h-auto w-24 shrink-0 rounded-bloc bg-fond object-contain md:mx-auto md:w-full md:max-w-[300px]"
+            />
+            <p class="flex min-w-0 gap-3 md:mt-3 text-corps leading-snug font-semibold text-texte">
+              <span aria-hidden="true" class="flex size-10 shrink-0 items-center justify-center rounded-pilule border-2 border-action-500 bg-fond text-h4 font-bold text-nuit-900">{n + 1}</span>
+              <span class="min-w-0 pt-1.5 [overflow-wrap:anywhere]"><span class="sr-only">Étape {n + 1} : </span>{etape.titre}</span>
+            </p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  ))}
+</div>
+
+{avecOnglets && (
+  <script is:inline>
+    (function () {
+      var bloc = document.currentScript.previousElementSibling;
+      if (!bloc || !bloc.matches('[data-travaux]')) return;
+      var liste = bloc.querySelector('[data-travaux-onglets]');
+      var onglets = Array.prototype.slice.call(bloc.querySelectorAll('[data-travaux-onglet]'));
+      var panneaux = Array.prototype.slice.call(bloc.querySelectorAll('[data-travaux-panneau]'));
+      if (!liste || onglets.length < 2) return;
+
+      function activer(i, focus) {
+        onglets.forEach(function (onglet, j) {
+          var actif = i === j;
+          onglet.setAttribute('aria-selected', actif ? 'true' : 'false');
+          onglet.tabIndex = actif ? 0 : -1;
+          panneaux[j].hidden = !actif;
+        });
+        if (focus) onglets[i].focus();
+        window.dispatchEvent(new Event('sommaire:maj'));
+      }
+
+      liste.hidden = false;
+      panneaux.forEach(function (panneau) { panneau.classList.remove('mt-12'); });
+
+      // Ouverture sur l'ancre d'un panneau : son onglet est activé.
+      var depart = panneaux.findIndex(function (p) { return '#' + p.id === decodeURIComponent(location.hash); });
+      activer(depart >= 0 ? depart : 0, false);
+      if (depart >= 0) panneaux[depart].scrollIntoView();
+
+      // Lien vers un panneau (sommaire) : l'onglet est activé AVANT que le
+      // navigateur ne descende à l'ancre.
+      document.addEventListener('click', function (e) {
+        var lien = e.target.closest && e.target.closest('a[href^="#"]');
+        if (!lien) return;
+        var i = panneaux.findIndex(function (p) { return '#' + p.id === decodeURIComponent(lien.getAttribute('href')); });
+        if (i >= 0 && panneaux[i].hidden) activer(i, false);
+      });
+
+      onglets.forEach(function (onglet, i) {
+        onglet.addEventListener('click', function () { activer(i, true); });
+        onglet.addEventListener('keydown', function (e) {
+          var n = onglets.length;
+          var cible = null;
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') cible = (i + 1) % n;
+          else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') cible = (i - 1 + n) % n;
+          else if (e.key === 'Home') cible = 0;
+          else if (e.key === 'End') cible = n - 1;
+          if (cible === null) return;
+          e.preventDefault();
+          activer(cible, true);
+        });
+      });
+    })();
+  </script>
+)}

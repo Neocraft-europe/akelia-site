@@ -1,0 +1,33 @@
+---
+// =========================================================================
+// COMPOSANT : NOTE MINIMALE EXIGÉE (src/components/NoteMinimale.astro)
+// -------------------------------------------------------------------------
+// Sorti de /devis le 19 octobre 2026 : la même rangée sert sur /devis et
+// sur /qui-sommes-nous. À poser sur un fond BLEU NUIT (texte blanc).
+// - 5 étoiles orange (décoratives, aria-hidden) et la note en très grand,
+//   lue dans src/data/collectif.ts ;
+// - ⚠️ « note minimale exigée » est OBLIGATOIRE et doit rester lisible
+//   (semi-gras, blanc) : sans elle, la note serait prise pour une moyenne
+//   d'avis clients (pratique commerciale trompeuse).
+// Ordre du code : la note puis « note minimale exigée » (lu ainsi par les
+// lecteurs d'écran) ; flex-row-reverse remet les étoiles à gauche à
+// l'écran.
+// Contrastes sur nuit-900 : blanc 14,5:1, orange 6,1:1.
+// =========================================================================
+
+import { noteEnTexte } from '../data/collectif';
+---
+
+<div class="flex flex-row-reverse flex-wrap items-center justify-center gap-4">
+  <p class="text-display leading-none">{noteEnTexte}</p>
+  <div class="flex flex-col items-center">
+    <span aria-hidden="true" class="flex gap-1">
+      {[1, 2, 3, 4, 5].map(() => (
+        <svg viewBox="0 0 24 24" class="size-7 fill-action-500">
+          <path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8L12 2.5Z" />
+        </svg>
+      ))}
+    </span>
+    <p class="mt-2 text-corps font-semibold">note minimale exigée</p>
+  </div>
+</div>

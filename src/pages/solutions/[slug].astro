@@ -1,0 +1,467 @@
+---
+// =========================================================================
+// GABARIT DES PAGES SOLUTIONS (src/pages/solutions/[slug].astro)
+// -------------------------------------------------------------------------
+// Créé le 19 octobre 2026. UNE page par fichier de src/data/solutions/
+// (type : src/data/solutions/type.ts). Adresses héritées de Webflow :
+// /solutions/<slug>, sans barre finale. NE PAS LES CHANGER (référencement,
+// liens du menu : src/data/menu.ts).
+// Détail et état des 21 pages : inventaire-charte.md, « Pages solutions :
+// le gabarit ».
+//
+// DE HAUT EN BAS :
+//   1. en-tête (crème) : fil d'Ariane, surtitre (nom), h1 (promesse),
+//      arguments à coche, bouton devis ; image et chiffre clé à droite à
+//      partir de 992px, dessous en dessous ;
+//   puis, sur fond blanc, à partir de 992px : sommaire collant à gauche
+//   (Sommaire.astro, avec le bouton devis), texte à droite :
+//   2. En bref (encart vert, comme les articles), puis le sommaire replié
+//      (téléphone et tablette) ;
+//   3. Tout ce que vous devez savoir : points forts et inconvénients CÔTE
+//      À CÔTE (768px et plus), caractéristiques, performances (et la
+//      phrase EchelleAkelia.astro), adapté à votre bien, adapté à votre
+//      région (absent si `region` manque) ;
+//   4. les travaux (TravauxSolution.astro : onglets s'il y a plusieurs
+//      parcours ; entrées de second niveau dans le sommaire) ;
+//   5. notre avis : une sous-partie = un h3 ;
+//   6. les cas : un h3 « Cas n° X — … » et une pastille numérotée chacun ;
+//   7. les aides : le simulateur (Simulateur.astro), case pré-cochée
+//      (`equipementSimulateur`), lien vers /aides-renovation ;
+//   8. Comment ça se passe avec Akelia (ParcoursAkelia.astro, commun) ;
+//   9. FAQ : seulement si `faq` n'est pas vide (JSON-LD FAQPage tiré du
+//      même tableau, absent lui aussi sinon) ;
+//   10. À lire aussi (crème, pleine largeur) : articlesPertinents() ;
+//   11. appel à l'action final (bleu nuit) vers /devis.
+//
+// VÉRIFICATIONS À LA CONSTRUCTION : le slug doit être une adresse du menu
+// (src/data/menu.ts), la rubrique le titre de son groupe, et le nom du
+// fichier le slug. Sinon la construction s'arrête avec un message clair.
+// =========================================================================
+
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import FilAriane from '../../components/FilAriane.astro';
+import Sommaire from '../../components/Sommaire.astro';
+import Simulateur from '../../components/Simulateur.astro';
+import CarteArticle from '../../components/CarteArticle.astro';
+import ParcoursAkelia from '../../components/ParcoursAkelia.astro';
+import Icone from '../../components/aides/Icone.astro';
+import EchelleAkelia from '../../components/solutions/EchelleAkelia.astro';
+import TexteMisEnForme from '../../components/solutions/TexteMisEnForme.astro';
+import TravauxSolution from '../../components/solutions/TravauxSolution.astro';
+import type { Solution } from '../../data/solutions/type';
+import { menuSolutions } from '../../data/menu';
+import { articlesPublies, articlesPertinents } from '../../utils/blog';
+import { filArianeJsonLd, jsonLdTexte } from '../../utils/seo';
+import { grasEnHtml, idParcours } from '../../utils/texte';
+
+export async function getStaticPaths() {
+  const fichiers = import.meta.glob<{ default?: Solution }>('../../data/solutions/*.ts', { eager: true });
+  // Adresses du méga-menu, avec le titre de leur groupe (la rubrique).
+  const groupes = new Map(
+    menuSolutions.flatMap((entree) => entree.groupes.flatMap((groupe) => groupe.liens.map((lien) => [lien.href, groupe.titre] as const))),
+  );
+  return Object.entries(fichiers)
+    .filter(([, module]) => module.default) // type.ts n'a pas d'export par défaut
+    .map(([chemin, module]) => {
+      const solution = module.default!;
+      const fichier = chemin.split('/').pop()!.replace(/\.ts$/, '');
+      const adresse = `/solutions/${solution.slug}`;
+      if (fichier !== solution.slug) throw new Error(`${chemin} : le slug « ${solution.slug} » doit être le nom du fichier.`);
+      if (!groupes.has(adresse)) throw new Error(`${chemin} : ${adresse} n'est pas une adresse du menu (src/data/menu.ts).`);
+      if (groupes.get(adresse) !== solution.rubrique)
+        throw new Error(`${chemin} : rubrique « ${solution.rubrique} », mais le menu range cette solution sous « ${groupes.get(adresse)} ».`);
+      return { params: { slug: solution.slug }, props: { solution } };
+    });
+}
+
+interface Props {
+  solution: Solution;
+}
+
+const { solution: s } = Astro.props;
+
+const SITE = Astro.site ?? new URL('https://akelia.fr');
+const ADRESSE = `/solutions/${s.slug}`;
+
+// Fil d'Ariane : Accueil › rubrique (sans page : texte simple) › solution.
+// Le JSON-LD saute la rubrique : chaque étape y doit avoir une adresse.
+const filAriane = [{ libelle: 'Accueil', href: '/' }, { libelle: s.rubrique }, { libelle: s.nom }];
+const jsonLd: Record<string, unknown>[] = [
+  filArianeJsonLd([
+    { nom: 'Accueil', url: '/' },
+    { nom: s.nom, url: ADRESSE },
+  ], SITE),
+];
+if (s.faq.length > 0) {
+  jsonLd.push({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: s.faq.map(({ question, reponse }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: reponse },
+    })),
+  });
+}
+
+// --- Articles -------------------------------------------------------------
+const articles = articlesPertinents(await articlesPublies(), s.motsClesArticles, 3);
+
+// --- Sommaire --------------------------------------------------------------
+// Parcours de travaux en second niveau, seulement s'il y en a plusieurs
+// (un seul : l'entrée « Les travaux » suffit).
+const ID = {
+  savoir: 'tout-savoir',
+  travaux: 'travaux',
+  avis: 'notre-avis',
+  pourVous: 'pour-vous',
+  aides: 'aides',
+  akelia: 'avec-akelia',
+  faq: 'questions',
+  lire: 'a-lire',
+};
+const entreesSommaire = [
+  { id: ID.savoir, texte: 'Tout savoir' },
+  { id: ID.travaux, texte: 'Les travaux' },
+  ...(s.parcours.length > 1 ? s.parcours.map((p) => ({ id: idParcours(ID.travaux, p.nom), texte: p.nom, niveau: 2 as const })) : []),
+  { id: ID.avis, texte: 'Notre avis' },
+  { id: ID.pourVous, texte: 'Est-ce pour vous ?' },
+  { id: ID.aides, texte: 'Les aides' },
+  { id: ID.akelia, texte: 'Avec Akelia' },
+  ...(s.faq.length > 0 ? [{ id: ID.faq, texte: 'Questions fréquentes' }] : []),
+  ...(articles.length > 0 ? [{ id: ID.lire, texte: 'À lire aussi' }] : []),
+];
+
+// --- Performances -------------------------------------------------------------
+const LETTRES = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+const performances = [
+  { libelle: 'Efficacité énergétique', ...s.performances.efficacite, echelle: 'lettres' as const },
+  { libelle: 'Impact environnemental', ...s.performances.impact, echelle: 'lettres' as const },
+  { libelle: 'Économie d’énergie', ...s.performances.economieEnergie, echelle: undefined },
+  { libelle: 'Complexité des travaux', ...s.performances.complexite, echelle: 'sur5' as const },
+];
+/** « 2,5 / 5 » → 2.5 (jauge) ; NaN si la valeur n'a pas cette forme. */
+const surCinq = (valeur: string) => Number(valeur.split('/')[0].trim().replace(',', '.'));
+
+// --- Classes communes ---------------------------------------------------------
+const classesH2 = 'ancre-sommaire text-h2 text-balance text-texte';
+const classesH3 = 'text-[1.5rem] leading-tight font-black text-balance text-texte md:text-[1.75rem]';
+const classesBoutonDevis =
+  'flex min-h-12 w-full items-center justify-center rounded-bloc bg-action-500 px-4 text-base font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900';
+const classesLienCollectif =
+  'mt-3 flex min-h-11 items-center justify-center text-center text-base text-texte-doux underline underline-offset-4 hover:text-nuit-900 focus-visible:outline-2 focus-visible:outline-nuit-900';
+const classesCarte = 'rounded-bloc border border-creme-fonce bg-fond';
+---
+
+<Layout title={s.seo.titre} description={s.seo.description} canonicalURL={new URL(ADRESSE, SITE).href}>
+  <Fragment slot="head">
+    {jsonLd.map((objet) => <script type="application/ld+json" set:html={jsonLdTexte(objet)} />)}
+  </Fragment>
+
+  {/* ===== 1. EN-TÊTE (crème) ===== */}
+  <header class="bg-creme">
+    <div class="mx-auto max-w-[calc(72rem+2*var(--spacing-gouttiere))] px-gouttiere pt-8 pb-14 md:pt-12 md:pb-20">
+      <FilAriane etapes={filAriane} />
+      <div class="mt-6 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-center lg:gap-14">
+        <div class="min-w-0">
+          <p class="surtitre">{s.nom}</p>
+          <h1 class="mt-3 max-w-[22ch] text-h1 text-balance text-texte">{s.promesse}</h1>
+          {/* ARGUMENTS : coche verte (vert-600, 5,59:1 sur crème), texte 18px. */}
+          <ul class="mt-8 space-y-4">
+            {s.arguments.map((argument) => (
+              <li class="flex gap-3 text-corps text-texte md:text-[1.25rem] md:leading-snug">
+                <Icone nom="valide" class="mt-0.5 size-7 shrink-0 text-vert-600" />
+                <span class="min-w-0">{argument}</span>
+              </li>
+            ))}
+          </ul>
+          <a href="/devis" class="mt-10 inline-flex min-h-14 items-center justify-center rounded-bloc bg-action-500 px-8 py-3 text-h4 font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900">
+            Obtenir un devis
+          </a>
+        </div>
+
+        {/* IMAGE ET CHIFFRE CLÉ : le chiffre est une carte blanche posée à
+            cheval sur le bas de l'image. Image jamais agrandie au-delà de
+            sa largeur réelle. */}
+        <div class="relative mx-auto w-full pb-10" style={`max-width: ${s.image.width}px`}>
+          <Image
+            src={s.image}
+            alt={s.imageAlt}
+            widths={[320, 480, s.image.width].filter((l, i, t) => l <= s.image.width && t.indexOf(l) === i)}
+            sizes={`(min-width: 992px) 416px, min(${s.image.width}px, calc(100vw - 2.5rem))`}
+            format="webp"
+            loading="eager"
+            fetchpriority="high"
+            class="h-auto w-full rounded-bloc shadow-legere"
+          />
+          {s.chiffreCle && (
+            <p class="absolute bottom-0 left-4 max-w-[calc(100%-2rem)] rounded-bloc bg-fond px-5 py-4 shadow-carte">
+              <span class="block text-[1.75rem] leading-none font-black text-texte">{s.chiffreCle.valeur}</span>
+              <span class="mt-1 block text-corps text-texte-doux">{s.chiffreCle.libelle}</span>
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="bg-fond">
+    <div class="mx-auto max-w-[calc(72rem+2*var(--spacing-gouttiere))] px-gouttiere pt-scene pb-scene lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-12">
+      <Sommaire forme="colonne" entrees={entreesSommaire} libelle={`Sommaire : ${s.nom}`}>
+        <a href="/devis" class={classesBoutonDevis}>Demander un devis</a>
+        <a href="/qui-sommes-nous" class={classesLienCollectif}>Akelia, le collectif d'artisans locaux</a>
+      </Sommaire>
+
+      <div class="min-w-0">
+        {/* ===== 2. EN BREF (encart des articles) ===== */}
+        <aside aria-labelledby="en-bref-titre" class="rounded-bloc border-l-[6px] border-vert-600 bg-vert-50 p-6 sm:p-8">
+          <h2 id="en-bref-titre" class="text-h4 font-black text-texte">En bref</h2>
+          <ul class="mt-4 list-disc space-y-3 pl-6 text-corps text-texte marker:text-vert-600">
+            {s.enBref.map((ligne) => <li set:html={grasEnHtml(ligne)} />)}
+          </ul>
+        </aside>
+
+        <Sommaire forme="replie" entrees={entreesSommaire} libelle={`Sommaire : ${s.nom}`} class="mt-8" />
+
+        <div class="mt-scene space-y-scene md:mt-scene-large md:space-y-scene-large">
+
+          {/* ===== 3. TOUT CE QUE VOUS DEVEZ SAVOIR ===== */}
+          <section aria-labelledby={ID.savoir}>
+            <h2 id={ID.savoir} class={classesH2}>Tout ce que vous devez savoir sur {s.nomDefini}</h2>
+
+            {/* POINTS FORTS ET INCONVÉNIENTS, côte à côte à partir de
+                768px : les deux se lisent ensemble. Filet vert / filet
+                orange foncé (action-600, 3,11:1) en haut de chaque carte. */}
+            <div class="mt-10 grid gap-6 md:grid-cols-2">
+              {[
+                { titre: 'Ses points forts', lignes: s.pointsForts, icone: 'valide' as const, filet: 'border-t-vert-600', couleur: 'text-vert-600' },
+                { titre: 'Ses inconvénients', lignes: s.inconvenients, icone: 'alerte' as const, filet: 'border-t-action-600', couleur: 'text-action-800' },
+              ].map((colonne) => (
+                <div class:list={[classesCarte, 'min-w-0 border-t-[6px] p-5 sm:p-6', colonne.filet]}>
+                  <h3 class="flex items-center gap-3 text-h4 font-black text-texte">
+                    <Icone nom={colonne.icone} class:list={['size-8 shrink-0', colonne.couleur]} />
+                    {colonne.titre}
+                  </h3>
+                  <ul class="mt-6 space-y-6">
+                    {colonne.lignes.map((ligne) => (
+                      <li class="flex gap-4">
+                        <Icone nom={ligne.icone} class:list={['mt-0.5 size-7 shrink-0', colonne.couleur]} />
+                        <div class="min-w-0 text-corps text-texte">
+                          <p class="font-bold">{ligne.titre}</p>
+                          <p class="mt-1">{ligne.texte}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            {/* CARACTÉRISTIQUES : paires libellé / valeur. */}
+            <h3 class:list={[classesH3, 'mt-14']}>Ses caractéristiques techniques</h3>
+            <dl class="mt-6 grid gap-x-8 sm:grid-cols-2">
+              {s.caracteristiques.map((c) => (
+                <div class="min-w-0 border-t border-creme-fonce py-4">
+                  <dt class="text-corps text-texte-doux">{c.libelle}</dt>
+                  <dd class="mt-1 text-h4 font-bold text-texte">
+                    {c.valeur.split('\n').map((ligne) => <span class="block">{ligne}</span>)}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            {/* PERFORMANCES : 4 indicateurs. Échelle A à G : lettre active
+                pleine (bleu nuit, texte blanc), autres au filet. Jauges
+                décoratives (aria-hidden) : la valeur est écrite. */}
+            <h3 class:list={[classesH3, 'mt-14']}>Ses performances</h3>
+            <dl class="mt-6 grid gap-4 sm:grid-cols-2">
+              {performances.map((indicateur) => (
+                <div class:list={[classesCarte, 'flex min-w-0 flex-col p-5']}>
+                  <dt class="text-corps font-semibold text-texte">{indicateur.libelle}</dt>
+                  <dd class="mt-2">
+                    <span class="block text-[2.5rem] leading-none font-black text-texte">{indicateur.valeur}</span>
+                    {indicateur.echelle === 'lettres' && LETTRES.includes(indicateur.valeur) && (
+                      <span aria-hidden="true" class="mt-3 flex flex-wrap gap-1">
+                        {LETTRES.map((lettre) => (
+                          <span class:list={[
+                            'flex size-8 items-center justify-center rounded-md text-corps font-bold',
+                            lettre === indicateur.valeur ? 'bg-nuit-900 text-texte-inverse' : 'border border-creme-fonce text-texte-doux',
+                          ]}>{lettre}</span>
+                        ))}
+                      </span>
+                    )}
+                    {indicateur.echelle === 'sur5' && !Number.isNaN(surCinq(indicateur.valeur)) && (
+                      <span aria-hidden="true" class="mt-3 flex gap-1">
+                        {[0, 1, 2, 3, 4].map((i) => (
+                          <span class="relative h-3 w-8 overflow-hidden rounded-full border border-nuit-900 bg-fond">
+                            <span class="absolute inset-y-0 left-0 bg-nuit-900" style={`width: ${Math.max(0, Math.min(1, surCinq(indicateur.valeur) - i)) * 100}%`}></span>
+                          </span>
+                        ))}
+                      </span>
+                    )}
+                    {indicateur.precision && <span class="mt-3 block text-corps text-texte-doux">{indicateur.precision}</span>}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <EchelleAkelia class="mt-5" />
+
+            {/* ADAPTÉ À VOTRE BIEN */}
+            <h3 class:list={[classesH3, 'mt-14']}>Est-ce adapté à votre bien ?</h3>
+            <ul class="mt-6 grid gap-4 sm:grid-cols-2">
+              {s.adapteAuBien.map((critere) => (
+                <li class:list={[classesCarte, 'flex min-w-0 gap-4 p-5']}>
+                  <span class="flex size-12 shrink-0 items-center justify-center rounded-pilule bg-vert-50 text-vert-600">
+                    <Icone nom={critere.icone} class="size-7" />
+                  </span>
+                  <div class="min-w-0 text-corps text-texte">
+                    <p class="font-bold">{critere.titre}</p>
+                    <p class="mt-1">{critere.texte}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {/* ADAPTÉ À VOTRE RÉGION : absent si `region` manque (pas de
+                titre orphelin). Légende : pastille de la couleur de la
+                carte, cerclée de bleu nuit (les couleurs claires restent
+                visibles sur blanc), et les régions écrites en toutes
+                lettres : la couleur n'est jamais la seule information. */}
+            {s.region && (
+              <>
+                <h3 class:list={[classesH3, 'mt-14']}>Est-ce adapté à votre région ?</h3>
+                <div class="mt-6 grid gap-8 md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-start">
+                  <Image
+                    src={s.region.carte}
+                    alt={s.region.carteAlt}
+                    widths={[272, s.region.carte.width].filter((l, i, t) => l <= s.region!.carte.width && t.indexOf(l) === i)}
+                    sizes={`min(272px, ${s.region.carte.width}px)`}
+                    format="webp"
+                    loading="lazy"
+                    class="mx-auto h-auto w-full max-w-[17rem]"
+                  />
+                  <ul class="min-w-0 space-y-6">
+                    {s.region.zones.map((zone) => (
+                      <li class="flex gap-4">
+                        <span aria-hidden="true" class="mt-1 size-6 shrink-0 rounded-md border-2 border-nuit-900" style={`background-color: ${zone.couleur}`}></span>
+                        <div class="min-w-0">
+                          <p class="text-corps font-bold text-texte">{zone.titre}</p>
+                          {zone.regions && <p class="text-corps text-texte-doux">{zone.regions}</p>}
+                          <TexteMisEnForme texte={zone.texte} class="mt-2" />
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </>
+            )}
+          </section>
+
+          {/* ===== 4. LES TRAVAUX ===== */}
+          <section aria-labelledby={ID.travaux}>
+            <h2 id={ID.travaux} class={classesH2}>Les travaux à réaliser</h2>
+            <TravauxSolution parcours={s.parcours} prefixe={ID.travaux} />
+          </section>
+
+          {/* ===== 5. NOTRE AVIS : une sous-partie = un vrai h3 ===== */}
+          <section aria-labelledby={ID.avis}>
+            <h2 id={ID.avis} class={classesH2}>Notre avis sur {s.nomDefini}</h2>
+            {s.avis.map((partie) => (
+              <>
+                <h3 class:list={[classesH3, 'mt-12']}>{partie.titre}</h3>
+                <TexteMisEnForme texte={partie.texte} class="mt-4" />
+              </>
+            ))}
+          </section>
+
+          {/* ===== 6. EST-CE FAIT POUR CHEZ VOUS ? =====
+              Un h3 par cas ; pastille numérotée bleu nuit (décorative : le
+              numéro est dans le titre) pour les repérer au défilement. */}
+          <section aria-labelledby={ID.pourVous}>
+            <h2 id={ID.pourVous} class={classesH2}>{s.questionPourVous}</h2>
+            {s.introPourVous && <p class="mt-6 max-w-[70ch] text-corps text-texte md:text-[1.25rem] md:leading-relaxed">{s.introPourVous}</p>}
+            <div class="mt-10 space-y-10">
+              {s.cas.map((cas) => (
+                <div class="border-t border-creme-fonce pt-8">
+                  <div class="flex items-start gap-4">
+                    <span aria-hidden="true" class="flex size-12 shrink-0 items-center justify-center rounded-pilule bg-nuit-900 text-h4 font-black text-texte-inverse tabular-nums">{cas.numero}</span>
+                    <h3 class="min-w-0 pt-1.5 text-[1.375rem] leading-snug font-bold text-balance text-texte">Cas n°&nbsp;{cas.numero} — {cas.titre}</h3>
+                  </div>
+                  <TexteMisEnForme texte={cas.texte} class="mt-4 sm:pl-16" />
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* ===== 7. LES AIDES : le simulateur, case pré-cochée =====
+              Montants : src/data/aides.ts, jamais écrits ici. */}
+          <section aria-labelledby={ID.aides}>
+            <h2 id={ID.aides} class={classesH2}>Les aides pour ce projet</h2>
+            <p class="mt-6 max-w-[70ch] text-corps text-texte">Estimez vos aides en trois questions. À la troisième, les travaux de cette page sont déjà cochés : ajoutez-en d’autres si votre projet en compte.</p>
+            <div class="mt-8">
+              <Simulateur travauxPrecoches={[s.equipementSimulateur]} />
+            </div>
+            <p class="mt-6">
+              <a href="/aides-renovation" class="inline-flex min-h-11 items-center gap-2 text-corps font-semibold text-nuit-900 underline underline-offset-4 hover:text-vert-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900">
+                Tout savoir sur les aides à la rénovation énergétique <span aria-hidden="true">→</span>
+              </a>
+            </p>
+          </section>
+
+          {/* ===== 8. COMMENT ÇA SE PASSE AVEC AKELIA (commun) ===== */}
+          <ParcoursAkelia id={ID.akelia} />
+
+          {/* ===== 9. FAQ : seulement si des questions sont écrites =====
+              Même présentation que /rejoindre-le-collectif. */}
+          {s.faq.length > 0 && (
+            <section aria-labelledby={ID.faq}>
+              <h2 id={ID.faq} class={classesH2}>Questions fréquentes</h2>
+              <div class="mt-10 space-y-4">
+                {s.faq.map((entree, index) => (
+                  <details open={index === 0} class="group/faq rounded-bloc border border-creme-fonce bg-creme">
+                    <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-bloc px-5 py-4 text-h4 font-bold text-texte focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900 sm:px-6 [&::-webkit-details-marker]:hidden">
+                      {entree.question}
+                      <svg class="size-6 shrink-0 text-nuit-900 transition-transform group-open/faq:rotate-180 motion-reduce:transition-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </summary>
+                    <p class="px-5 pb-6 text-corps text-texte sm:px-6">{entree.reponse}</p>
+                  </details>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* ===== 10. À LIRE AUSSI (crème, pleine largeur) ===== */}
+  {articles.length > 0 && (
+    <section aria-labelledby={ID.lire} class="bg-creme">
+      <div class="mx-auto max-w-site px-gouttiere py-scene">
+        <h2 id={ID.lire} class="ancre-sommaire text-h3 text-texte">À lire aussi</h2>
+        <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {articles.map((article) => <CarteArticle article={article} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* ===== 11. APPEL À L'ACTION FINAL (bleu nuit) =====
+      Même texte que le bas des articles. Contour de focus blanc. */}
+  <section aria-labelledby="cta-titre" class="bg-nuit-900 text-texte-inverse">
+    <div class="mx-auto max-w-[calc(48rem+2*var(--spacing-gouttiere))] px-gouttiere py-scene text-center md:py-scene-large">
+      <p class="surtitre text-action-300">Votre projet</p>
+      <h2 id="cta-titre" class="mx-auto mt-3 max-w-[22ch] text-h2 text-balance">Un artisan du collectif étudie votre projet</h2>
+      <p class="mx-auto mt-6 max-w-[45ch] text-corps md:text-[1.25rem]">Il vous rappelle sous 24 à 48 heures, se déplace gratuitement et vous remet un devis détaillé.</p>
+      <a
+        href="/devis"
+        class="mt-10 inline-flex min-h-14 items-center justify-center rounded-bloc bg-action-500 px-8 py-3 text-h4 font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-texte-inverse"
+      >
+        Demander un devis gratuit
+      </a>
+    </div>
+  </section>
+</Layout>

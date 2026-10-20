@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/verifier-build.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -18,5 +18,8 @@
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.20"
   }
 }

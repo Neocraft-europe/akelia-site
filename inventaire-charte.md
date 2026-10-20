@@ -2357,6 +2357,222 @@ Les 8 raccourcis du hero pointent tous vers des URLs déjà listées ci-dessous.
    J'ai **gardé** l'optimisation : le délai n'est pas perceptible en 4G ni en wifi, et sur ordinateur le survol lance le chargement avant le clic. Sur une connexion très lente, l'attente se voit. Compromis possible : précharger les 5 autres images une fois la section affichée et la page chargée (pendant les temps morts du navigateur). Elles ne seraient alors économisées que pour ceux qui ne s'arrêtent pas sur la section. Garder tel quel, ajouter ce préchargement, ou revenir à l'ancien comportement ?
 231. **Logo pour les données structurées.** Il n'existe aucun logo Akelia dans le projet. Le balisage LocalBusiness utilise provisoirement le favicon en 180 × 180 (`apple-touch-icon.png`). Google recommande un logo carré d'au moins 112 × 112px, sur fond uni. Fournir le logo officiel (PNG ou SVG) ?
 
+232. **⚠️ Envoi réel des formulaires non confirmé : test à faire depuis votre navigateur.** Web3Forms (protégé par Cloudflare) refuse les envois venant de l'adresse IP de ce Codespace, hébergé dans un centre de données Azure : réponse 403 « This method is not allowed. Use our API in client side […] (Pro plan is required) ». Le navigateur de test passe par la même IP, donc ses envois sont bloqués (erreur CORS dans la console). **Aucun message de test n'est parti.** Ce n'est pas un problème du code. À faire : ouvrir le site dans votre propre navigateur (port 4321 transféré par Codespaces, ou version en ligne), envoyer une demande depuis /devis et une depuis le simulateur, puis vérifier la réception. Voir la section « Clé Web3Forms ». Pouvez-vous confirmer que les deux mails arrivent ?
+
+233. **Données hors Union européenne (Web3Forms, Inde) : à mentionner dans la politique de confidentialité.** Le site n'a pas encore de page « Politique de confidentialité ». Il faudra y indiquer que les formulaires (/devis et simulateur) transmettent nom ou prénom, e-mail, téléphone (et le type de travaux et le message pour /devis) à Web3Forms, dont l'opérateur est établi en Inde, hors UE. Il faudra aussi y préciser la base du transfert (par exemple des clauses contractuelles types). Faut-il la rédiger, ou envisager un service établi dans l'UE ?
+
+234. **Texte affiché sous le formulaire du simulateur** : « Vos coordonnées servent uniquement à vous recontacter au sujet de votre projet… ». Il ne dit pas que les données passent par un prestataire hors UE. Faut-il y ajouter un lien vers la future politique de confidentialité ?
+
+235. **⚠️ Consigne du point 4 (« Équilibre des colonnes ») coupée.** Le texte reçu s'arrête à : « Après ces suppressions, la colonne « Nous contacter » ne contient plus qu'un lien et le bloc YouTube, et la colonne « Informations légales ». La suite manque, donc **rien n'a été fait pour le point 4**. Mesures actuelles : à 1280px, les 4 colonnes partagent une grille de 252px de haut, mais le contenu de « Nous contacter » s'arrête vers 140px et celui d'« Informations légales » vers 120px, contre 252px pour « Navigation ». Pouvez-vous renvoyer la fin de la consigne ?
+
+236. **« Nous contacter » en lien : alignement avec les titres des autres colonnes.** Le lien a le style des liens de navigation, comme demandé (texte normal, non gras, 44px de haut). Les autres colonnes commencent par un titre en gras. Conséquences visibles à 1280px : « Nous contacter » n'est pas en gras, alors qu'il occupe la place d'un titre, et son texte est environ 10px plus bas que « Navigation » et « Informations légales », car il est centré dans ses 44px. Capture : `captures/pied-de-page/corrections-1280.png`. Garder ainsi, le passer en gras (style titre, mais cliquable), ou remonter le lien de 10px ?
+
+237. **« Rénovation énergétique » ailleurs sur le site** : liste dans la section « Pied de page : contact, médiation, phrase sous le logo ». Trancher au cas par cas.
+
+238. **/devis : entrée « Autre projet » gardée.** Elle existait avant la refonte (valeur envoyée « Autre demande », libellé « Autre projet ») et ne figure pas dans la nouvelle liste. Comme demandé, elle n'est pas supprimée : elle est placée en dernier, après « Je ne sais pas encore » (valeur envoyée désormais : « Autre projet »). Les deux se recoupent en partie. La garder, ou la supprimer ?
+
+239. **/devis : réception de l'e-mail non vérifiée.** Comme pour la question 232, Web3Forms refuse les envois depuis le Codespace. Le contenu envoyé a été contrôlé en interceptant la requête dans le navigateur (voir la section « /devis : choix du type de projet »). À vérifier dans votre boîte : le sujet doit être « Demande de devis Akelia : <projet> », et le corps doit contenir une ligne « Type de projet ».
+
+240. *(Réglée le 17 octobre 2026 : tous les champs de /devis portent un nom en français, voir « /devis : refonte de la page ».)* **/devis : noms techniques des autres champs dans l'e-mail.** Web3Forms affiche le nom de chaque champ tel quel. Le type de projet s'appelle désormais « Type de projet », mais les autres champs restent `name`, `email`, `phone` et `message`. Faut-il les renommer en français (« Nom », « Téléphone », « Détails du projet ») ? L'e-mail serait plus lisible. Attention : Web3Forms utilise le champ `email` pour l'adresse de réponse, celui-là doit garder son nom.
+
+241. *(Réglée le 19 octobre 2026 : la page est réécrite entièrement. Voir « /aides-renovation : création de la page ».)* **⚠️ /aides-renovation est cassée et en ligne.** Le fichier ne contient que 40 caractères (« --- » puis « // ===… », en-tête jamais fermé). La page publiée affiche ce texte brut sur fond blanc, sans en-tête, sans pied de page, sans titre. Or le menu, le pied de page et l'accueil y renvoient (3 liens par page, sur toutes les pages). Que faire en attendant la vraie page : la retirer et masquer les liens, ou rediriger vers la section simulateur de l'accueil (`/#simulateur-titre`) ?
+
+242. **/test-charte : à supprimer avant la mise en ligne ?** Elle porte `noindex, nofollow` et aucun lien n'y mène, donc Google ne devrait pas l'indexer. Mais elle reste publique pour qui connaît l'adresse, et son commentaire indique « PAGE TEMPORAIRE : à supprimer avant la mise en ligne ». Je recommande de la supprimer (ou de l'exclure de la version de production). D'accord ?
+
+243. **Mentions légales incomplètes (obligation légale, LCEN).** Manquent : adresse du siège (seulement « France »), SIREN ou RCS, capital, numéro de TVA, nom d'une personne physique comme directeur de la publication, nom, adresse et téléphone de l'hébergeur. L'adresse contact@akelia.fr y figure, mais elle n'est pas confirmée : le pied de page a `EMAIL = null`. Pouvez-vous fournir ces informations ?
+
+244. **Article de blog provisoire.** Image de couverture unie (bleu pâle, aucun dessin), date du 15 janvier 2025, titre « … en 2025 », affirmation « diviser vos factures de chauffage par 3 » non sourcée. ⚠️ Dans l'en-tête de l'article, `videoEmbedUrl` pointe vers une vidéo YouTube sans rapport (`dQw4w9WgXcQ`, le célèbre « Rickroll »). Elle n'est pas affichée aujourd'hui, mais le serait si l'intégration vidéo était branchée. Supprimer l'article, ou le réécrire ?
+
+245. **Recommandations de l'état des lieux** (détail dans la section « État des lieux des pages », fin de fichier) : /aides-renovation à refaire entièrement ; /services à refaire entièrement ; /blog à compléter ; /blog/[slug] à refaire (gabarit) ; /mentions-legales à compléter ; /devis à compléter ; /test-charte à supprimer. Quelle page voulez-vous traiter en premier ?
+
+246. **/devis : « huit services » ou neuf entrées ?** La consigne parle de « huit services » avec un « ordre inchangé ». La liste actuelle compte 7 équipements, plus « Je ne sais pas encore » et « Autre projet », soit 9 entrées. Je n'ai rien retiré. Faut-il supprimer l'une des deux dernières (voir aussi la question 238) ?
+
+247. *(Réglée le 17 octobre 2026 : exclusivité confirmée et étendue aux projets d'ensemble, voir « /devis : exclusivité des choix et encart ».)* **/devis : « Je ne sais pas encore » rendu exclusif.** Avec les cases à cocher, on pourrait cocher « Je ne sais pas encore » en même temps que « Pompe à chaleur ». J'ai repris la règle du simulateur : cocher cette case décoche les autres, et inversement. Pas demandé : à garder ?
+
+248. *(Mise à jour le 17 octobre 2026 : avec la règle d'exclusivité, seuls les équipements peuvent encore être cochés à plusieurs ; la règle « même groupe → consigne du groupe » ne joue donc plus qu'entre équipements.)* **/devis : consigne du champ « Précisions » quand plusieurs cases du même groupe sont cochées.** La consigne dit : « plusieurs cases cochées → texte générique ». J'ai fait une exception : si toutes les cases cochées sont du **même groupe** (par exemple Isolation + Fenêtres et volets, ou Pompe à chaleur + Chauffe-eau), c'est la consigne du groupe qui s'affiche, puisqu'elle s'applique aux deux. Dès que les groupes diffèrent, c'est la générique. « Climatisation réversible » est rangée avec la pompe à chaleur et le chauffe-eau. « Je ne sais pas encore » et « Autre projet » donnent la générique. D'accord ?
+
+249. **/devis : phrase du lien vers la politique de confidentialité.** Ajoutée à la fin de la mention : « Pour en savoir plus, consultez notre politique de confidentialité. » (*rédigée par Claude*). ⚠️ **La page /politique-confidentialite n'existe pas encore (404)** : le lien est mort tant qu'elle n'est pas rédigée (voir aussi les questions 233 et 234 : le transfert hors UE vers Web3Forms n'est toujours pas mentionné).
+
+250. **/devis : phrase « Plusieurs choix possibles. » ajoutée sous « Type de projet »** (reprise du simulateur), pour signaler qu'on peut cocher plusieurs cases. La garder ?
+
+251. **/devis : champs vides retirés de l'e-mail.** Pour un e-mail lisible, les champs facultatifs laissés vides (Adresse, E-mail, Précisions, Vous êtes) ne sont pas envoyés. L'artisan ne voit donc pas de ligne « Adresse : » vide. D'accord ? Par ailleurs, quand un e-mail est saisi, un champ `replyto` est ajouté : l'artisan peut répondre directement au client depuis sa messagerie. Cette ligne `replyto` apparaîtra probablement dans le corps de l'e-mail (à vérifier à la réception réelle).
+
+252. **/devis sans JavaScript : comportement de Web3Forms à vérifier.** Avant, sans JavaScript, le formulaire s'envoyait vers /devis en GET (les coordonnées se retrouvaient dans l'adresse de la page, et rien n'était transmis). Il est maintenant posté directement à Web3Forms (`action` + `method="POST"`), après vérification des champs obligatoires par le navigateur. Deux points non vérifiables depuis le Codespace (question 232) : Web3Forms affiche sa propre page de confirmation (en anglais) ; et les cases cochées partent en plusieurs champs « Type de projet » portant le même nom : on ne sait pas si Web3Forms les garde tous ou seulement le dernier. Ce cas est rare (JavaScript désactivé).
+
+253. *(Mise à jour le 17 octobre 2026 : l'illustration est réduite à 224 × 494px sur téléphone et 288 × 635px à partir de 1024px, voir « /devis : encart de sélection et netteté de l'illustration ». Reste à trancher : la garder sur téléphone, et le texte alternatif vide.)* **/devis : illustration `devis.png` décorative.** Le fichier est présent (artisan au téléphone, presse-papiers à la main). Je l'ai déclaré décoratif (`alt=""`) : il n'apporte pas d'information que le texte ne donne pas déjà. Il est recadré automatiquement sur la zone dessinée et plafonné à 384px de large. Sur téléphone, il arrive tout en bas de la page, après l'encart (hauteur de la page à 375px : 5 448px, formulaire vide). Le garder sur téléphone, le réduire, ou le masquer sous 1024px ?
+
+254. **/devis : réception réelle toujours non vérifiée** (même blocage que les questions 232 et 239). Sujet attendu : « Demande de devis Akelia : Rénovation globale, Pompe à chaleur, Borne de recharge ». Corps attendu : une ligne par champ, avec des noms en français (« Type de projet », « Précisions », « Nom », « Téléphone », « Code postal », « Adresse », « E-mail », « Vous êtes »). La question 240 (noms de champs en français) est réglée.
+
+255. **/devis : « Autre projet » traité comme un équipement.** La nouvelle règle ne dit rien de cette case. Je l'ai rangée avec les équipements : elle se cumule avec eux (« Isolation, Autre projet »), et cocher « Rénovation globale » ou « Construction neuve » la décoche. Elle pourrait aussi être exclusive de tout, comme « Je ne sais pas encore ». Votre choix ? (Voir aussi les questions 238 et 246 : faut-il la garder ?)
+
+256. *(Sans objet depuis le 17 octobre 2026 : l'encart a été entièrement refait, avec les étoiles et la note.)* **/devis : encart « Comment nous choisissons nos artisans » : il était présent.** Vérifié le 17 octobre 2026 : il figurait dans le code et dans le HTML servi par le serveur de développement, et il apparaissait sur les captures précédentes (`captures/devis-refonte/vide-1280.png`). Si vous ne le voyiez pas, deux explications possibles : une version en ligne ou en cache antérieure à la refonte, ou un encart blanc trop discret, qui se confondait avec les étapes. Il est désormais en bleu nuit plein (voir la section). Si vous ne le voyez toujours pas, de quelle adresse s'agit-il : le port 4321 du Codespace, ou une version publiée ?
+
+257. **⚠️ /devis : seuil de sélection passé de 4,3 à 4,5.** La consigne précédente disait « notées 4,3 ou plus » ; la nouvelle dit « 4,5 ». J'ai appliqué **4,5** partout sur la page (le grand chiffre et la phrase). Aucune autre page ne cite de note (vérifié dans `src/`). Pouvez-vous confirmer que **4,5 est bien le seuil réellement appliqué** au recrutement des artisans ? Une note affichée doit être vérifiable : sur quelle plateforme d'avis est-elle mesurée (Google, autre) ? Faut-il le préciser dans l'encart ou dans une future page « Qui sommes-nous » ?
+
+258. **/devis : titre de l'encart masqué à l'écran.** La nouvelle consigne ne mentionne plus le titre « Comment nous choisissons nos artisans ». Je l'ai gardé **pour les lecteurs d'écran seulement** (h3 `sr-only`) : il annonce le sujet de l'encart et garde la structure des titres de la colonne. À l'écran, l'encart commence directement par les étoiles et « 4,5 ». Le remettre à l'écran, au-dessus des étoiles ?
+
+259. *(Réglé le 17 octobre 2026 : le brouillon reste non publié, il est exclu de toutes les listes ; voir « Blog : page d'entrée, pages de catégorie et pagination ».)* **Blog : l'article brouillon est justement l'un des trois à vérifier.** Le seul article marqué `brouillon: true` est `chaudiere-a-cogeneration-fonctionnement-avantages-et-inconvenients-pour-les-particuliers`, celui que le ticket désignait pour contrôler le tableau de prix. Comme demandé, il n'est pas publié : `/post/chaudiere-a-cogeneration-…` n'existe pas (101 pages). J'ai contrôlé les tableaux sur un autre article : `/post/chauffage-le-plus-ecologique-comparatif-co2-pm-et-nox-2026` (4 tableaux). Aucun autre article ne pointe vers le brouillon (vérifié). Le brouillon est-il voulu ? Sinon, il suffit de passer `brouillon: false` dans son fichier.
+
+260. **Blog : comptes du ticket différents de ce que contiennent les fichiers.** Tableaux : **17 articles** (le ticket en annonçait 28). Figures : **18 `<figure>` réparties dans 6 articles** (le ticket parlait de 18 articles), dont 15 avec une légende. Liens internes : **78** (75 vers `/post/…` et 3 autres, voir la question 261), pour 85 annoncés. Rien ne semble manquer : les 102 fichiers sont bien là. Mais si vous attendiez davantage de tableaux ou de figures, un export Webflow a peut-être été incomplet.
+
+261. *(Réglé le 17 octobre 2026 : les deux liens pointent maintenant vers des articles existants. ⚠️ Le second est à rebasculer vers `/solutions/climatisation-reversible-pac-air-air` quand cette page existera, voir la question 277.)* **Blog : 2 liens internes d'articles mènent à des pages inexistantes.** Tous les liens `/post/…` mènent à un article existant. Restent :
+    - `/installation-dun-chauffe-eau-thermodynamique` (dans `pompe-a-chaleur-et-chauffe-eau-quelles-sont-les-meilleurs-solutions-pour-la-production-deau-chaude`) : ancienne page Webflow, absente du nouveau site ;
+    - `/solutions/climatisation-reversible-pac-air-air` (dans `quelles-sont-les-regions-adaptees-aux-pompes-a-chaleur`) : page solution prévue, pas encore créée (le menu y pointe aussi).
+
+    À corriger dans les articles, ou par des redirections au moment de la mise en ligne ?
+
+262. **⚠️ Blog : barre finale des adresses, à régler selon l'hébergeur.** Astro produit `dist/post/<slug>/index.html`. La balise canonique pointe vers `/post/<slug>`, sans barre finale, comme sur Webflow. Certains hébergeurs servent `/post/<slug>` directement. D'autres le redirigent vers `/post/<slug>/`, et la canonique ne correspondrait alors plus à l'adresse servie. Où le site sera-t-il hébergé ? Selon la réponse : réglage `build.format: 'file'` d'Astro (fichiers `post/<slug>.html`) ou réglage de l'hébergeur. Rien n'a été changé pour l'instant.
+
+263. **Blog : images des figures affichées à leur taille réelle, pas sur toute la largeur.** Le ticket demandait l'image sur toute la largeur de la colonne. Or 12 des 14 images de figure font 340 à 450px de large, pour une colonne de 540px : étirées, elles seraient floues (même défaut que `devis.png`). Elles s'affichent donc à leur taille réelle, centrées, légende centrée. Elles occupent toute la largeur sur téléphone, et les deux images de 1920px la remplissent à toutes les tailles. Pour qu'elles remplissent la colonne sur ordinateur, il faudrait les fournir en 1 100px de large au moins. D'accord ?
+
+264. **Blog : textes de l'appel à l'action et des articles liés (*rédigés par Claude*).** Bloc bleu nuit en bas de chaque article : surtitre « Votre projet », titre « Un artisan du collectif étudie votre projet », phrase « Il vous rappelle sous 24 à 48 heures, se déplace gratuitement et vous remet un devis détaillé. », bouton « Demander un devis gratuit ». Titre de la section des articles liés : « À lire aussi ». Également « Publié le » devant la date. À valider ou à remplacer.
+
+265. **Blog : contenu des articles à reprendre (rien n'a été modifié dans les 102 fichiers).**
+    - ~~**11 articles commencent leurs intertitres au niveau h3**~~ *(réglé le 17 octobre 2026 : défaut de conversion corrigé dans les fichiers livrés ; plus aucun saut de niveau dans le corps des articles vérifiés, voir « Blog : vérification des titres h2 restaurés »).*
+    - **Encart « En bref »** : certaines lignes sont des intertitres (« **Les 3 facteurs déterminants :** », « **Conditions de réussite :** ») ou des listes numérotées (« **1. Isolation :** »). Comme demandé, chaque ligne devient une puce : ces intertitres ont donc aussi une puce. Faut-il une convention dans le frontmatter (par exemple, une ligne qui se termine par « : » devient un sous-titre sans puce) ?
+    - Coquilles repérées en passant : « vous avez toujours des de l'humidité » (article VMC, description et chapeau), « Surement », « voit leur efficacité », etc. Une relecture serait utile.
+
+266. **Blog : import d'une dépendance d'Astro dans la configuration.** Le moteur Markdown d'Astro 7 s'appelle Sätteri. Pour lui passer les deux plugins (tableaux, images des figures), `astro.config.mjs` importe `@astrojs/markdown-satteri`. Ce paquet est **installé avec Astro** (aucun ajout à `package.json`), mais il n'est pas déclaré comme dépendance directe du projet. Si une future version d'Astro le renommait, la compilation échouerait avec un message clair. L'alternative, les plugins rehype classiques, aurait exigé d'installer `@astrojs/markdown-remark`, une seconde dépendance. D'accord avec ce choix ?
+
+267. **⚠️ /devis : les deux colonnes commencent à 992px, pas à 1024px.** En relisant `global.css` pour ce ticket, j'ai vu que le point de rupture `lg:` de la charte vaut **992px** (repris de Webflow), et non 1024px comme dans Tailwind par défaut. Les comptes rendus /devis du 17 octobre disent « à partir de 1024px » : c'est en réalité **à partir de 992px**. Le rendu entre 992 et 1023px n'a pas été vérifié. Garder 992px (cohérent avec le reste du site) ?
+
+268. **npm audit : 2 alertes « modérées », non corrigées.** Elles concernent `postcss-selector-parser`, utilisé par `@tailwindcss/typography` **uniquement à la compilation**, sur notre propre CSS. Rien n'arrive dans le site publié, et le risque (lenteur sur un sélecteur CSS piégé) ne concerne pas ce projet. Le correctif proposé (`npm audit fix --force`) ferait redescendre le module à la version 0.5.4, très ancienne : je ne l'ai pas appliqué. À surveiller lors des mises à jour.
+
+269. *(Réglé le 17 octobre 2026 : les 27 articles sans h2 ou avec un ou deux h2 venaient d'un défaut de conversion, corrigé dans les fichiers livrés. Il reste exactement les 6 articles vidéo sans sommaire. Voir « Blog : vérification des titres h2 restaurés ».)* **Blog : 33 articles sans sommaire, et non 6.** La règle demandée (titres h2 seuls, sommaire seulement à partir de 3) écarte :
+    - les **6 articles vidéo**, sans aucun titre (prévu) ;
+    - **27 articles longs** (900 à 3 750 mots), dont les grandes parties sont écrites en **h3** : 11 n'ont aucun h2 (de 8 à 20 h3), 16 n'ont qu'un ou deux h2 (de 8 à 22 h3). Exemples : `pompe-a-chaleur-geothermique-tout-ce-que-vous-devez-savoir` (3 070 mots, 0 h2, 20 h3), `poele-a-granules-ou-pompe-a-chaleur-air-air-quel-systeme-choisir-pour-votre-logement` (3 752 mots, 1 h2, 13 h3), `chauffage-le-plus-ecologique-comparatif-co2-pm-et-nox-2026` (0 h2, 12 h3).
+
+    Ils s'affichent en une colonne centrée, sans sommaire, alors que ce sont souvent les plus longs. Deux solutions :
+    - **(a) corriger le contenu** : passer leurs `###` en `##` (et `####` en `###`). Cela règle aussi la hiérarchie sautée (question 265). Recommandé, mais il faut relire chaque article : dans les 16 articles qui ont déjà 1 ou 2 h2, les h3 ne sont pas tous des grandes parties ;
+    - **(b) adapter la règle** : prendre les h3 quand l'article a moins de 3 h2. Rapide, mais le sommaire atteindrait 20 entrées pour certains articles.
+
+    Rien n'a été changé en attendant votre choix. La liste complète des 33 articles se trouve dans la section « Blog : largeur de lecture, sommaire et cartes cliquables ».
+
+270. **Blog : petit appel à l'action sur téléphone fusionné avec le grand.** Le ticket demandait, sur téléphone, de placer le bloc « Demander un devis » + « Akelia, le collectif d'artisans locaux » à la fin de l'article, avant les articles liés. Or le grand bloc bleu nuit « Un artisan du collectif étudie votre projet », avec son bouton « Demander un devis gratuit », s'y trouve déjà : deux boutons « devis » se seraient suivis. Sur téléphone et tablette (et sur les articles sans sommaire), le lien « Akelia, le collectif d'artisans locaux » est donc ajouté **sous le bouton du grand bloc**, au lieu d'un second bloc. Sur ordinateur, le petit bloc est bien dans la colonne collante, sous le sommaire. Préférez-vous les deux blocs séparés ?
+
+271. **Blog : l'article « long avec tableaux » du ticket n'a pas de tableau.** `/post/quel-systeme-de-chauffage-est-le-plus-rentable-comparatif-complet-sur-10-15-30-et-plus` ne contient aucun tableau Markdown : ses comparatifs sont **deux images** de 1 920px (affichées sur 700px, lisibles). Les tableaux ont été vérifiés sur `chauffage-le-plus-ecologique-comparatif-co2-pm-et-nox-2026` (4 tableaux) et `stockage-photovoltaique-…` (1 tableau). Des tableaux en image ne sont pas lus par les lecteurs d'écran ni par Google : à reconvertir en vrais tableaux ?
+
+272. *(Réglé le 17 octobre 2026 : plus de gras sur l'entrée active sous 992px ; 5/5, 6/6 et 9/9 titres à 89px. Voir « Blog : correctifs 272, 273 et 274 ».)* **Blog, téléphone : le lien actif du sommaire passe en gras et peut prendre une ligne de plus, ce qui décale l'article pendant le défilement.** Le sommaire replié (`<details>`) est placé **au-dessus** du texte. Quand on l'ouvre et qu'on clique une entrée, les liens deviennent actifs tour à tour pendant le défilement doux ; si l'intitulé en gras passe à la ligne, le sommaire grandit de 22px et tout l'article descend. Le titre visé s'arrête alors **à 111px au lieu de 89px** (il reste visible sous l'en-tête de 73px), mais il est sous la ligne de lecture : **c'est la partie précédente qui reste en surbrillance**. Constaté sur `renovation-thermique-reussir-lite-et-les-ponts-thermiques` (entrées 2, 3 et 4, à 375px). Avec « réduire les animations », pas de souci (89px, bon lien actif). Recensement à 375px : **19 articles** ont au moins un intitulé qui change de nombre de lignes en gras (liste dans « Blog : vérification des titres h2 restaurés »). Sur ordinateur, même phénomène dans 18 articles, mais **sans effet** sur le texte (colonne séparée) : seul le sommaire bouge d'une ligne. **Aucun code modifié** (ticket de vérification). Corrections possibles : (a) réserver la largeur du gras (pseudo-élément invisible `content: attr(data-texte)` en gras, technique classique) ; (b) ne plus mettre en gras, garder seulement le trait orange et la couleur `texte` ; (c) ne pas mettre à jour le lien actif tant que le `<details>` est ouvert au-dessus du texte. Je recommande (a), qui ne change rien au rendu. Laquelle ?
+
+273. *(Réglé le 17 octobre 2026. Cause : la **conversion**, pas le contenu : l'ancienne conversion aplatissait les schémas sur une seule ligne de code en ligne. Fichiers réimportés (v3) : 18 schémas en vrais blocs de code, qui défilent dans leur cadre ; débordement 0px sur les 101 articles. Voir « Blog : correctifs 272, 273 et 274 ».)* **Blog : 4 articles débordent horizontalement à cause de tableaux dessinés en caractères (« ┌───┐ ») écrits en code en ligne.** Une ligne Markdown entre accents graves simples contient tout un tableau en dessin de caractères (1 426 caractères pour l'article ITE), sans retour à la ligne possible. Résultat : la page devient plus large que l'écran. **Ce défaut existait déjà dans les fichiers précédents** (vérifié dans `akelia-blog-102-articles.zip`) ; il n'avait pas été vu car les articles concernés n'étaient pas dans l'échantillon mesuré. Débordement mesuré :
+    - `renovation-thermique-reussir-lite-et-les-ponts-thermiques` : **+605px à 375px, +88px à 1440px** ;
+    - `rafraichissement-dappartement-des-ecogestes-strategiques-a-la-pompe-a-chaleur-reversible` : +394px à 375px ;
+    - `isolation-thermique-pourquoi-elle-est-indispensable-ete-comme-hiver-et-quels-travaux-prioriser` : +231px à 375px ;
+    - `rafraichir-une-maison-sans-surconsommer-la-strategie-combinee-de-larchitecture-passive-et-de-la-renovation` : +77px à 375px.
+
+    Trois autres articles contiennent aussi ces caractères sans déborder (`gestionnaire-denergie-hems-…`, `renovation-energetique-la-methode-akelia-…`, `v2l-v2h-v2g-…`). Ces « tableaux » sont illisibles sur une ligne et ne sont pas lus correctement par les lecteurs d'écran. Recommandé : **les reconvertir en vrais tableaux Markdown dans la conversion** (comme pour la question 271). Rustine possible côté code en attendant : autoriser la coupure du code en ligne dans `.prose` (`overflow-wrap: anywhere`), vérifiée : plus de débordement, mais le dessin reste illisible. Aucun code modifié.
+
+274. *(Réglé le 17 octobre 2026 : seule la liste des parties défile, le bouton et le lien restent entiers jusqu'à 1024 × 500. Voir « Blog : correctifs 272, 273 et 274 ».)* **Blog, 1024px : sur un écran de moins de 725px de haut, le petit appel à l'action n'est accessible qu'en faisant défiler le bloc collant.** Le bloc (sommaire de 7 entrées + bouton + lien) mesure **604px** sur `pompe-a-chaleur-geothermique-tout-ce-que-vous-devez-savoir`. Il **ne dépasse jamais l'écran** (plafond de hauteur respecté, défilement interne), mais : à **1024 × 768**, tout tient (bas du bloc à 701px) ; à **1024 × 700**, le bouton est visible, le lien « Akelia, le collectif… » est coupé ; à **1024 × 600**, le bouton est caché sous le pli du bloc. Acceptable selon moi (le grand appel à l'action reste en fin d'article et 768px est le cas courant). Faut-il, sous une certaine hauteur d'écran, sortir l'appel à l'action du bloc défilant pour le garder toujours visible ?
+
+275. **Blog : la livraison du 17 octobre ne change pas que les h2.** Comparaison fichier par fichier avec `akelia-blog-102-articles.zip` (version précédente) : frontmatter **identique** dans les 102 fichiers, 116 images inchangées, 151 lignes `##` ajoutées. Mais aussi : **31 sous-titres `###` réapparaissent** (24 dans `choisir-la-meilleure-pompe-a-chaleur-…`, les noms de marques : Daikin, Atlantic, Mitsubishi…, et 7 dans 6 autres articles, par exemple « FAQ : Tout savoir sur le pilotage intelligent ») ; et dans `pompe-a-chaleur-et-chauffe-eau-quelles-s…`, le h3 « Tableau comparatif des différentes solutions » est **remplacé** par un h2 « Comparaison des solutions pour la production d'eau chaude ». Ce sont visiblement d'autres titres perdus par l'ancienne conversion : simple information, rien à faire si c'est voulu.
+
+276. **Blog : coquille dans un titre h2 restauré.** `renovation-thermique-reussir-lite-et-les-ponts-thermiques`, ligne 149 : « Retours **d mexpérience** et écueils de chantier » (au lieu de « d'expérience »). Le titre apparaît aussi dans le sommaire. C'est la seule occurrence de ce genre dans les 102 fichiers (recherche faite). Non corrigé (contenu livré tel quel) : faut-il le corriger dans la source de la conversion, ou je le corrige directement dans le fichier ?
+
+277. *(Close le 17 octobre 2026, sans modification : le rappel reste valable. Le lien sera rebasculé vers la page solution quand elle existera.)* **À FAIRE quand la page solution existera : rebasculer un lien d'article.** Dans `src/content/blog/quelles-sont-les-regions-adaptees-aux-pompes-a-chaleur.md`, le lien « La PAC air-air peut avoir plus de sens » menait à `/solutions/climatisation-reversible-pac-air-air` (page pas encore créée). Il pointe provisoirement vers `/post/pompe-a-chaleur-air-air-vs-air-eau-guide-complet-pour-faire-le-bon-choix`. À remettre vers la page solution dès qu'elle sera publiée.
+
+278. **Blog : la répartition par catégorie du ticket est décalée d'un article.** Le ticket annonçait Chauffage 57 et Conseils 12. Les pages compilées donnent **Chauffage 58** et **Conseils 11** (total 101 dans les deux cas). Le seul brouillon, `chaudiere-a-cogeneration-…`, est classé dans `autre` (Conseils), pas dans le chauffage. Conséquences :
+    - Chauffage : 58 articles, toujours **5 pages** (12 + 12 + 12 + 12 + 10) ;
+    - Conseils : 11 articles, **une seule page** ;
+    - pages de suite des catégories : **5** (4 pour Chauffage, 1 pour Rénovation énergétique), et non 9 comme annoncé. Avec 12 articles par page, aucune autre catégorie ne dépasse une page.
+
+    Rien à corriger dans le code. Le brouillon doit-il plutôt être classé dans le chauffage ? Cela ne changerait rien tant qu'il reste un brouillon.
+
+279. *(Close le 17 octobre 2026 : forme actuelle validée, sans modification.)* **Blog : où placer « — page N » dans le title ?** Le ticket demande « le même title avec « — page N » ». Je l'ai placé **avant le nom de marque** : « Guides et conseils en rénovation énergétique — page 2 | Akelia » et « Chauffage — page 3 | Guides Akelia ». C'est la forme habituelle (la marque reste en fin de title). Préférez-vous « … | Akelia — page 2 » ?
+
+280. *(Close le 17 octobre 2026 : `aria-current="true"` validé, sans modification.)* **Blog : la catégorie en cours, sur les pages 2 et suivantes, porte `aria-current="true"` et non `"page"`.** Sur `/blog/chauffage/page/3`, le lien « Chauffage » de la barre mène à `/blog/chauffage`, qui n'est pas la page affichée. `aria-current="page"` y serait faux pour les lecteurs d'écran. Il porte donc `aria-current="true"` (« élément en cours dans un ensemble »), avec **exactement le même style** (fond plein bleu nuit). Sur la page 1, c'est bien `aria-current="page"`. D'accord ?
+
+281. *(Réglé le 17 octobre 2026 : l'article à la une est retiré de la liste paginée de /blog. Voir « Blog : article à la une retiré de la liste de /blog ».)* **Blog : l'article mis en avant apparaît aussi plus loin dans la liste.** L'article « à la une » (`installer-des-panneaux-solaires-est-il-toujours-rentable-…`, 1er juillet 2026) n'est pas parmi les 12 plus récents : il n'est donc **pas répété sur la page 1**. Il figure à sa place chronologique, en page 2, pour que la liste de /blog contienne bien les 101 articles. S'il devenait un jour l'un des 12 plus récents, il serait retiré de la grille de la page 1 (11 cartes + la grande), pour éviter de l'afficher deux fois sur la même page. Cela vous convient-il ?
+
+282. **⚠️ /aides-renovation : contradictions entre le texte fourni et `src/data/aides.ts` (à trancher avant mise en ligne).** Le texte est repris mot pour mot, mais il contredit sur plusieurs points les données du simulateur, vérifiées le 8 octobre 2026 (guide Anah de septembre 2026, décret n° 2026-822) :
+    - **MaPrimeRénov' par geste** : selon `aides.ts`, depuis le 1er septembre 2026, seuls le chauffage décarboné (pompes à chaleur air/eau et géothermiques, réseau de chaleur), l'audit et la dépose de cuve à fioul sont financés. Le texte liste encore l'isolation, les fenêtres simple vitrage, la VMC double flux, les poêles et les chauffe-eau. Résultat : sur la même page, le simulateur répond « non » pour l'isolation par geste et le texte dit « oui » ;
+    - **MaPrimeRénov' par geste** : `aides.ts` exclut les revenus supérieurs (profil Rose). Le texte ne le dit pas (le profil Rose reste valable pour le Parcours Accompagné) ;
+    - **Éco-PTZ** : `aides.ts` indique un remboursement sur 15 ans (20 ans seulement pour 50 000 €). « Ce qu'il faut retenir » dit « jusqu'à 50 000 € sur une durée de 20 ans », ce qui reste juste pour le plafond de 50 000 € ;
+    - **Éco-PTZ, assainissement non collectif, 10 000 €** : ce plafond n'est pas dans le barème Anah de `aides.ts`. Je l'ai ajouté depuis le texte, sans source ;
+    - **Prime CEE, « plus de 7 500 € »** : aucune source officielle. Le simulateur n'affiche volontairement aucun montant CEE. Le montant est ajouté à `aides.ts` (`ceeMontantMisEnAvant`) avec la mention « NON CONFIRMÉ » ;
+    - **Climatisations réversibles** : `aides.ts` les dit à 5,5 % « depuis le 1er septembre 2026 », sans critères ; le texte parle de l'« Été 2026 », avec des critères.
+    - **« Montants vérifiés le 19 octobre 2026 »** : la date est affichée en bas de page, comme demandé. **Je n'ai fait aucune vérification sur une source officielle ce jour-là.** Tant que les points ci-dessus ne sont pas tranchés, cette mention promet plus qu'elle ne garantit. Qui vérifie, et faut-il corriger le texte ou `aides.ts` ?
+283. **/aides-renovation : le texte collé s'arrête avant la fin.** La section « Les aides locales » n'a pas de « Comment en bénéficier ? » : le texte s'arrête sur « Cumul : … plafond de financement global. ». Le ticket demande pourtant les quatre sous-parties pour chaque aide. La sous-partie n'est **pas** affichée (rien inventé). L'ancienne page Webflow (`Données webflow/ancien test /www.akelia.fr/aides-renovation-energetique.html`) en avait une, en trois points : sites officiels (mairie, métropole, département), ANIL/ADIL, conseiller France Rénov'. Faut-il la reprendre telle quelle, ou fournir un autre texte ?
+284. **/aides-renovation : climatisations réversibles, trois critères et non quatre.** Le ticket annonce « quatre critères ». Le texte en donne trois : la classe énergétique (A++ en mono-split **ou** A+ en multi-split), la connexion Wi-Fi et les normes F-Gas. Présenter quatre critères laisserait croire qu'il faut à la fois A++ et A+. L'encadré montre donc **trois puces**, la première avec ses deux branches. D'accord ?
+285. **/aides-renovation : h1.** Le ticket donne « Tout savoir sur les aides à la rénovation énergétique ». Le texte fourni dit « Tout savoir sur les aides à la rénovation énergétique : le guide complet ». J'ai repris le texte, au mot près. Faut-il garder la forme courte ?
+286. **/aides-renovation : petits écarts de forme dans « Ce qu'il faut retenir ».** Les montants viennent de `aides.ts` et sont mis en forme par `euros()` et `pourcent()` (`src/utils/texte.ts`). Résultat : « TVA 5.5% » devient « TVA 5,5 % », comme partout ailleurs dans le texte. Les espaces des montants sont insécables. Les émojis ✅ et ⚠️ sont remplacés par des icônes. D'accord ?
+287. **/aides-renovation : textes ajoutés, absents du texte fourni.** Titres « Ce qui se cumule avec quoi », « Les démarches, dans l’ordre », « À lire aussi » ; libellés « Se cumule avec », « Exception », « Point de non-retour », « Délai : plusieurs semaines à plusieurs mois » ; libellés du bandeau (« TVA à taux réduit », « MaPrimeRénov’ », « Prime CEE », « Éco-PTZ »). Phrase sur Akelia, à la fin des aides locales : « L’artisan du collectif monte avec vous votre dossier de demande d’aides. Akelia, elle, ne verse aucune aide et n’est pas un organisme public. » Ces textes sont-ils à valider ?
+288. **/aides-renovation : « Nouveauté Été 2026 » déplacée.** Dans le texte, ce passage figure dans la liste « Chauffage et Eau Chaude », entre les pompes à chaleur et les chaudières. Il est affiché en encadré **après** les vignettes de ce groupe, pour ne pas couper la grille en deux. D'accord ?
+289. **/aides-renovation : six illustrations à livrer**, dans `src/assets/illustrations/` : `aides-entete.png`, `aides-tva.png`, `aides-eco-ptz.png`, `aides-cee.png`, `aides-maprimerenov.png` et `aides-locales.png`. Aucune n'existe : rien ne s'affiche, et il ne reste aucun emplacement vide. Dès qu'un fichier est déposé, il apparaît sans toucher au code. Format conseillé : PNG à fond transparent. L'en-tête est affiché sur 384px au plus. Les illustrations de section le sont sur 112 à 144px, et masquées sous 480px.
+290. **/aides-renovation : le lien « Akelia, le collectif d'artisans locaux » mène à `/qui-sommes-nous`, qui n'existe pas** (même lien que dans les articles, voir la question 217). Le texte d'origine disait « En savoir plus sur Akelia le collectif d'artisans locaux » ; j'ai suivi le libellé du ticket.
+291. **/aides-renovation : textes de moins de 18px qui restent.** Tous sont des éléments de navigation ou des doublons décoratifs, aucun n'est du texte courant :
+    - fil d'Ariane et liens du sommaire (16px, composants communs aux articles) ;
+    - surtitres (13,6px, classe `surtitre` de la charte) ;
+    - pastilles des cumuls et légende des couleurs des pastilles (16px, masquées aux lecteurs d'écran : la phrase dessous dit la même chose) ;
+    - date et « Lire la suite » des cartes d'article (14,4px, `CarteArticle.astro`).
+    Faut-il les passer à 18px ?
+292. *(Contournée le 19 octobre 2026 : les cartes pointent provisoirement vers les catégories du blog, libellé « Voir les guides → ». **À REBASCULER vers /solutions/… quand ces pages existeront**, comme la question 277. Voir « /qui-sommes-nous : en-tête, rythme et entrée artisans ».)* **⚠️ /qui-sommes-nous : les quatre cartes « domaines d'expertise » mènent à des pages inexistantes (404).** Les adresses sont lues dans le menu (`src/data/menu.ts`), comme demandé. Les trois rubriques n'ont pas de page d'accueil propre : chaque carte pointe donc vers la **première solution de sa rubrique**.
+    - « Isoler votre enveloppe » → `/solutions/isolation-thermique-toiture-comble` ;
+    - « Chauffer & Climatiser » → `/solutions/climatisation-reversible-pac-air-air`. ⚠️ C'est la première du menu, mais un choix discutable pour une carte « Chauffer » ;
+    - « Devenir Autonome » → `/solutions/panneaux-photovoltaiques` ;
+    - « Rénover Globalement » → `/solutions/renovation-energetique-globale`.
+    **Aucune page `/solutions/…` n'existe encore** : les quatre répondent 404, exactement comme les liens du menu. Faut-il créer des pages de rubrique (par exemple `/solutions/isolation`), ou masquer ces liens en attendant ?
+293. **Pages /ville/<ville> à recréer.** L'ancien site avait dix pages de secteur : Paris, Lyon, Marseille, Toulouse, Bordeaux, Lille, Nantes, Nice, Strasbourg et Montpellier (`/ville/<ville>`). Ce seraient les vraies cibles de « Découvrir les artisans de mon secteur » (en-tête de /qui-sommes-nous) et de « Trouver mon artisan local » (bandeau de fin). **En attendant, les deux liens pointent vers /devis**, via la constante `LIEN_ARTISANS_SECTEUR` de la page : une seule ligne à changer. Faut-il refaire ces pages, et sous quelle adresse ?
+294. **Incohérence de distance : 30 km ou 30 minutes ?** /qui-sommes-nous dit « à moins de 30 km » (`distanceMaxKm`, `src/data/collectif.ts`). La section Collectif de l'accueil dit « À moins de 30 minutes », un libellé écrit en dur dans `Collectif.astro`. Laquelle est juste ? Une fois tranché, l'accueil pourra lire `collectif.ts`.
+295. **« Note Google certifiée »** (critère « Preuve sociale » du texte fourni) : Google ne certifie pas les notes. Le mot « certifiée » peut être vu comme une allégation trompeuse, et la note minimale porte déjà ce risque (d'où la mention obligatoire). Faut-il écrire « vérifiée » ou « Note Google de 4,5/5 minimum » ?
+296. **Le h1 de /qui-sommes-nous** (« La force d’un réseau national, le sérieux d’un artisan local. ») est **identique au h2 de la section Collectif de l'accueil**. Ce n'est pas gênant pour le référencement (un h2 sur une autre page), mais la phrase se lit deux fois en parcourant le site. On garde ?
+297. **/devis : « note minimale exigée » passe de 16 à 18px.** La rangée étoiles + note + mention est désormais un composant commun (`NoteMinimale.astro`), en texte courant : la mention obligatoire gagne en lisibilité. D'accord ?
+298. **Netteté de `collectif.png` sur écran haute résolution.** Le fichier source fait 1800px de large. À 1440px, l'en-tête l'affiche sur 1272px :
+    - écran standard (×1) : le navigateur charge la variante de 1280px, l'image est nette ;
+    - écran haute résolution (×2) : il faudrait 2544px ; le navigateur charge la plus grande variante possible (1800px, le fichier source), soit 1,42 pixel d'image par pixel CSS. Elle sera un peu moins piquante sur Mac Retina ou iPad.
+    Pouvez-vous fournir `collectif.png` en **2600px de large** ou plus ? Les variantes se mettront à jour seules, sans toucher au code.
+299. **Ancienne adresse `/entreprise`.** Le pied de page pointait vers `/entreprise` (« Rejoindre le collectif »), sans doute l'adresse de l'ancien site. Il pointe désormais vers `/rejoindre-le-collectif`. Faut-il une redirection 301 de `/entreprise` vers `/rejoindre-le-collectif` (une ligne dans `astro.config.mjs`), pour ne pas perdre d'éventuels liens entrants ?
+300. *(En grande partie réglée le 19 octobre 2026 : la FAQ « Combien coûte le partenariat ? » et le tableau comparatif disent ni droit d'entrée, ni redevance, un prix par rendez-vous ou un budget publicitaire piloté. Restent à préciser, si vous le souhaitez : durée d'engagement et conditions de sortie.)* **/rejoindre-le-collectif : rien sur les conditions pour l'artisan.** Cotisation, commission, durée d'engagement, exclusivité : c'est la première question qu'un artisan se posera. La page n'en dit rien, faute d'information. À fournir ?
+301. **/rejoindre-le-collectif : la mention sur les données est celle de /devis, mot pour mot**, comme demandé. Elle dit « au sujet de votre projet », alors qu'un artisan envoie une candidature. Faut-il écrire « au sujet de votre candidature » ?
+302. *(En partie sans objet depuis le 19 octobre 2026 : la page est refaite avec le texte fourni, et le bandeau porte le texte du ticket, sans note Google.)* **/rejoindre-le-collectif et bandeau « Vous êtes artisan ? » : textes corrigés, à valider** (détail dans la section du 19 octobre, § 4). J'ai retiré les promesses qu'on ne peut pas tenir à coup sûr :
+    - « elle a sa place dans le collectif » devient « présentez-la : nous étudions chaque candidature ». Il n'y a qu'une place par métier et par secteur : elle peut être prise ;
+    - j'ai ajouté l'assurance décennale, qui fait partie des critères d'entrée ;
+    - aucun volume de chantiers ni délai de réponse n'est promis.
+303. *(Mise à jour du 19 octobre 2026, 2e version : la section du formulaire est maintenant bleu nuit.)* *(Réglée pour /rejoindre-le-collectif : la section du formulaire est désormais blanche. Reste /devis.)* **Pied de page collé au fond crème sur /rejoindre-le-collectif (et déjà sur /devis).** Les deux pages ont un fond crème, comme le pied de page : rien ne les sépare. Faut-il un filet ou un fond différent pour le pied de page ?
+304. *(Toujours ouverte. Depuis le 19 octobre 2026, le parcours est la colonne « Ce qui se passe ensuite », à droite du formulaire.)* **/rejoindre-le-collectif, « Le parcours » : un délai par étape rassurerait beaucoup.** Le texte n'en donne aucun : les quatre intitulés sont affichés seuls (Dépôt de candidature → Entretien → Réservation du secteur → Lancement de l'acquisition). Pouvez-vous donner un ordre de grandeur pour chaque étape, par exemple « réponse sous 48 h », « entretien dans la semaine » ?
+305. *(Réglée le 19 octobre 2026 : champ supprimé.)* **/rejoindre-le-collectif : le formulaire demande encore la « Note Google actuelle ».** Le ticket demande à la fois « aucune mention de note sur la page » et « formulaire inchangé ». J'ai suivi la seconde consigne : le champ (facultatif) est conservé, et c'est la seule mention de note de la page. Mais la page dit que la note n'est pas un critère : la demander peut laisser croire le contraire. Faut-il retirer ce champ ?
+306. *(Réglée le 19 octobre 2026 : le critère est retiré et devient une phrase à part sous les critères. Voir « /rejoindre-le-collectif : critère « Créateur d’entreprise » ».)* **/rejoindre-le-collectif : le critère « Créateur d’entreprise : Qui a les capacités et souhaite se développer rapidement. »** est repris mot pour mot. Deux remarques :
+    - la phrase n'a pas de sujet (« Qui a… ») ;
+    - surtout, elle s'accorde mal avec l'introduction (« des entreprises structurées et reconnues sur leur territoire ») et avec les deux critères précédents (RGE à jour, structure équipée). Un créateur d'entreprise est-il vraiment éligible, et à quelles conditions ?
+307. *(En partie réglée : le prix est désormais expliqué dans la FAQ. Reste la promesse de « flux régulier », voir la question 309.)* **/rejoindre-le-collectif : promesses à confirmer.** « Un flux régulier de rendez-vous pré-qualifiés » et « Nous vous trouvons des projets qualifiés » sont des engagements de résultat. Rien sur la page n'en fixe le volume ni le prix : la question 300 (cotisation, commission, engagement) devient centrale sur une page de vente. Un artisan qui candidate voudra le savoir avant l'entretien.
+308. **/rejoindre-le-collectif : `rejoindre-collectif.png` à livrer**, dans `src/assets/illustrations/`. C'est la seule illustration de la page : à droite du titre à partir de 992px, sous le bouton en dessous. Tant qu'il manque, rien ne s'affiche et il ne reste aucun emplacement vide (vérifié). Mise en page testée avec une copie provisoire de `collectif.png`, retirée ensuite : captures `captures/rejoindre-le-collectif/entete-avec-image-provisoire-{375,1024,1440}.png`. Format conseillé : PNG à fond transparent, 1400px de large au moins, sujet pensé pour un fond bleu nuit (la colonne fait environ 520px de large à 1440px).
+309. **/rejoindre-le-collectif : « un flux régulier de rendez-vous » et formule « prix par rendez-vous ».** L'introduction promet un flux **régulier**. Si l'artisan paie au rendez-vous, il voudra savoir combien de rendez-vous par mois il peut attendre, ou à défaut si un volume minimum est garanti. Faut-il nuancer (« un flux de rendez-vous ») ou donner un ordre de grandeur ?
+310. **/rejoindre-le-collectif : le tableau comparatif généralise.** Il ne nomme personne : ce sont des modèles, pas des entreprises, comme demandé. Mais des cases comme « la plateforme fixe les prix », « marge prise sur le chantier » ou « contact souvent partagé » restent des affirmations sur des pratiques de marché. Elles doivent être exactes pour la plupart des acteurs de chaque modèle : la publicité comparative doit rester objective et vérifiable. Une relecture par quelqu'un qui connaît ces modèles de l'intérieur serait prudente.
+311. **/rejoindre-le-collectif : seuil des deux colonnes de la candidature, 992px ou 1024px ?** Vous avez demandé 1024px. J'ai repris le seuil `lg:` du site, qui vaut **992px** (`--breakpoint-lg`, global.css) : c'est celui de /devis, dont le commentaire dit pourtant « à partir de 1024px ». Entre 992 et 1023px, la page affiche donc déjà les deux colonnes (formulaire de 520px environ, étiquettes sur une ligne). Si vous voulez exactement 1024px, il faut le changer sur les deux pages, ou ajouter un seuil propre à ces deux formulaires.
+312. **/rejoindre-le-collectif : « Vous êtes ici » ne peut pas être « en petit ».** La règle des 18px minimum l'empêche. La mention est donc à 18px (`text-corps`), comme le libellé de l'étape. Elle s'en distingue par la graisse (normale au lieu de semi-gras) et par la couleur (orange clair `action-300`, 8,00:1). Si vous voulez qu'elle soit plus discrète, il faudrait la passer en 16px : c'est une exception à la règle à valider.
+313. **/solutions/pompe-a-chaleur-air-eau : contradictions de chiffres à trancher.** Je n'ai rien changé : chaque valeur est affichée telle quelle. Détail et emplacements dans « Pages solutions : le gabarit », § 5.
+    - **Économie d'énergie** : « 3 à 4 fois » (en-tête, points forts, performances, « +70 % ») contre « 4 à 5 fois moins d'énergie que les autres systèmes » (Notre avis).
+    - **Rentabilité** : « Rentabilité immédiate » (points forts) contre 5 à 6 ans avec aides et 9 à 10 ans sans aides (caractéristiques, cas n° 1).
+    - **Aides** : « plus de 11 000 € » (en-tête) et « CEE ≃ 6 500 € », « MaPrimeRénov’ ≃ 5 000 € » (caractéristiques) contre `aides.ts`. Pour la CEE, `aides.ts` dit « montant variable » ; pour MaPrimeRénov’, il donne 5 000 € au plus pour une PAC air-eau, réservés aux revenus très modestes, et 0 € pour les revenus supérieurs. Le simulateur de la même page affiche les montants de `aides.ts`.
+    - **« Le système le mieux doté en aides »** (inconvénients) : d'après `aides.ts`, la PAC géothermique est mieux aidée (MaPrimeRénov’ jusqu'à 11 000 € contre 5 000 €).
+314. **/solutions/pompe-a-chaleur-air-eau : affirmations chiffrées sans justification dans le texte.** Faut-il les garder, les sourcer ou les retirer ?
+    - « Plus de 200 000 installations par an » (chiffre clé de l'en-tête) : ni source ni année.
+    - « Indice de réparabilité : 69/100 » : l'astérisque renvoyait à une note absente. L'indice officiel français est noté sur 10 : un « 69/100 » risque d'être pris pour lui.
+    - « Coût d'installation ≃ 90 à 130 € / m² » : on ne sait pas de quels m² il s'agit (surface habitable ?).
+    - « Compresseur : 2 000 à 4 000 € en moyenne ».
+    - « L'électricité est actuellement deux fois plus chère » : plus chère que quoi ? Probablement le gaz.
+    - « COP de 2 même à −20 °C ».
+    - « Pièces non garanties au-delà de 10 ans » ; « des appareils qui coûtent une dizaine de milliers d'euros ».
+    - Cas n° 3 (géothermie) : le « COP identique à +10 °C et à −20 °C » et la « rentabilité record sur quelques années », qui contredit « la plus rentable à long terme » juste au-dessus.
+    - Affirmations absolues sans chiffre : « il n'existe pas de chauffage plus écologique », « vous ne trouverez tout simplement pas mieux ». Elles sont discutables face à la géothermie, et l'impact environnemental de la page est noté B, pas A.
+315. **/solutions/pompe-a-chaleur-air-eau : deux affirmations qui se contredisent sans chiffre.**
+    - « Il n'y a aucune région en France où une pompe à chaleur n'est pas concurrentielle » (Notre avis) contre « Région à étudier : sinon, les solutions biomasse ou gaz restent plus intéressantes » (carte).
+    - Le simulateur, pré-coché sur « Chauffage », annonce MaPrimeRénov’ « jusqu'à 11 000 € ». C'est le plafond de la PAC géothermique : pour une PAC air-eau, c'est 5 000 €. Le simulateur ne distingue pas les deux. Faut-il ajouter une précision sous le simulateur sur les pages PAC, ou une option dans `aides.ts` ?
+316. **/solutions/pompe-a-chaleur-air-eau : couleurs de la carte des régions.** Sur la carte de l'ancien site, **orange = optimale, rouge = intéressante, vert = à étudier**. Le rouge et le vert y disent donc l'inverse de ce qu'ils évoquent, et ce sont justement les deux couleurs que les daltoniens confondent. J'ai ajouté les régions en toutes lettres dans la légende, lues sur la carte (« Ouest, Centre et Bassin parisien »…), et décrit la carte dans son texte alternatif. Faut-il redessiner les cartes des pages solutions avec une palette fixe par niveau ? Vérifiez aussi le découpage des régions que j'ai lu.
+317. **/solutions/… : images en basse définition.** L'image d'en-tête fait 516 × 387 px, la carte 450 × 484 px, les 8 illustrations d'étapes 300 × 300 px. Elles ne sont jamais agrandies (affichées à leur taille au plus), mais elles restent petites sur grand écran. Avez-vous les originaux en plus grand ?
+318. **/solutions/pompe-a-chaleur-air-eau : le h1 « Votre allié confort ! » ne contient pas le nom de la solution.** Le nom est dans le surtitre et le `<title>`. Pour le référencement, un h1 du type « Pompe à chaleur air-eau : votre allié confort » serait plus fort. Faut-il en faire une règle des 21 pages ? Le sous-titre « Économique et écologique » de l'ancienne page n'a pas de champ dans le type : il n'est pas repris.
+319. **ParcoursAkelia : délais.** L'ancien bloc disait « rappel sous 24 heures (hors week-ends et jours fériés) » et « date d'intervention sous deux semaines ». J'ai repris « 24 à 48 heures », comme /devis et le bas des articles, et retiré les deux semaines : ce délai est intenable pour une isolation par l'extérieur. Est-ce le bon choix ?
+320. **Pages solutions : textes de moins de 18 px venus des composants communs.** Le contenu propre de la page est entièrement à 18 px ou plus. Restent en dessous, comme sur toutes les autres pages du site :
+    - les surtitres (`surtitre`, 13,6 px en majuscules : nom de la solution, « Votre projet », catégories des cartes) ;
+    - le fil d'Ariane, les liens du sommaire et les petits textes d'aide du simulateur (16 px) ;
+    - la date et « Lire la suite » des cartes d'articles (14,4 px).
+
+    Faut-il les passer à 18 px sur tout le site ?
+
+
+
+
+
+
 
 
 
@@ -6105,7 +6321,7 @@ Toutes les illustrations sont converties en WebP, en plusieurs largeurs, et char
 
 Réponses aux questions 221, 222, 224 (en partie), 225, 226 et 227, et à la question 213 pour la phrase du Hero. Questions ouvertes : **n° 223 (image de partage), 228, 229, 230 et 231**, ainsi que 216 (téléphone, adresse) pour les données structurées.
 
-**Commit : voir le point 10.**
+**Commit : `fac748d` (point 10).**
 
 ### 1. Suppressions validées (question 221)
 
@@ -6193,4 +6409,1695 @@ Commentaire mis à jour : `cas-neuf` ne renvoie plus à `vert-800`.
 - Captures pleine page : `captures/nettoyage-seo/1280-pleine-page.png` (7 998px de haut) et `375-pleine-page.png` (11 186px). Toutes les sections s'affichent normalement après les suppressions.
 - Aucune erreur dans la console, aucun défilement horizontal (largeur de défilement = largeur d'écran).
 - Captures du chargement des Cas types en 3G lente : `375-cas-types-attente-3g.png` (fond neutre) et `375-cas-types-charge-3g.png`.
-- Commit « Nettoyage et SEO » : identifiant ci-dessous.
+- Commit « Nettoyage et SEO » : **`fac748d`** (`fac748db11e0fc1854763b27e4551348650bc6f6`). Cette ligne a été ajoutée après le commit.
+
+## Favicon : lettre A à la place du losange (16 octobre 2026)
+
+Demande : remplacer le losange (dessiné d'après une description, il ne correspond à aucun logo) par la lettre A, plus reconnaissable. Cette section remplace le dessin décrit au point 5 de « Vérification et nettoyage de la page d'accueil ».
+
+### Ce qui a été fait
+
+- **`public/favicon.svg`** (réécrit) : carré 32 × 32, coins arrondis à 6, fond **orange action-500** (#f0920f, conservé). **A majuscule bleu nuit nuit-900** (#1d2b36), centré, de 5,5 à 26,5 en hauteur : **21 unités sur 32, soit 65 %**, et 20 unités de large.
+  - **Tracé vectoriel** (`<path>` avec `fill-rule="evenodd"`), aucune balise texte : le rendu ne dépend d'aucune police.
+  - **Graisse épaisse, formes simples** : sommet plat de 5 unités, jambages de 5 unités à l'horizontale (environ 4,7 en épaisseur réelle), barre de 3,5 unités, évidement triangulaire au-dessus de la barre. Angles vifs, sans empattement.
+- **`public/apple-touch-icon.png`** (refait) : 180 × 180, même dessin, **carré plein sans arrondi**, sans transparence (fond orange).
+- **`public/favicon.ico`** (refait) : 32 × 32, même dessin (PNG encapsulé dans l'ICO).
+- **Rendu** : les deux images sont produites à partir du SVG avec `sharp` (déjà présent dans `node_modules`), donc strictement identiques au SVG. Le script de génération n'a pas été ajouté au projet.
+- **Couleur** : bleu nuit gardé, comme demandé : 6,1:1 sur l'orange, contre 2,2:1 pour le blanc.
+- `src/layouts/Layout.astro` : commentaire mis à jour (« lettre A bleu nuit » au lieu de « losange bleu nuit »). Déclarations des icônes inchangées.
+
+### Vérification
+
+- Aperçu en barre d'onglets simulée, icône à **16px** : `captures/favicon/onglets-16px.png` (taille réelle) et `captures/favicon/onglets-16px-zoom3.png` (agrandi 3 fois, sans lissage). Icône seule à 16px agrandie 10 fois : `captures/favicon/icone-16px-zoom10.png`.
+- Constat : **le A se lit nettement à 16px**. Les deux jambages, la barre et le petit évidement triangulaire restent distincts (l'évidement fait environ 2px de large à cette taille). Le carré orange ressort entre les onglets gris.
+- `favicon.ico` vérifié en extrayant son image : c'est bien le A.
+- ⚠️ La barre d'onglets est **simulée** (image composée), pas une capture d'un vrai navigateur : le lissage d'un navigateur réel peut différer légèrement.
+
+### Points à arbitrer
+
+- La question 231 (logo officiel pour les données structurées) reste ouverte : `apple-touch-icon.png`, désormais le A, sert toujours de logo provisoire dans le balisage LocalBusiness.
+
+## Clé Web3Forms (16 octobre 2026)
+
+Demande : installer la vraie clé Web3Forms à la place de `YOUR_ACCESS_KEY_HERE`, la ranger à un seul endroit, puis tester les deux formulaires. Questions ouvertes : **n° 232 à 234**.
+
+### Ce qui a été fait
+
+- **Nouveau fichier `src/data/web3forms.ts`** : il contient `CLE_WEB3FORMS` (`08e77810-e615-4993-8675-2212b8e486e0`) et `ADRESSE_WEB3FORMS` (`https://api.web3forms.com/submit`). C'est le **seul endroit** à modifier si la clé change.
+  - J'ai choisi une constante plutôt qu'une variable d'environnement. La clé Web3Forms n'est pas un secret : elle figure de toute façon dans le HTML de la page (champ caché `access_key`). Une variable d'environnement compliquerait le déploiement (variable à déclarer chez l'hébergeur) sans rien protéger.
+- **`src/pages/devis.astro`** : importe la clé (`value={CLE_WEB3FORMS}`) et l'adresse d'envoi.
+- **`src/components/SimulateurEstimation.astro`** : importe la clé. La constante locale et l'avertissement « valeur d'exemple » sont supprimés. **`src/scripts/simulateur-estimation.ts`** importe l'adresse d'envoi.
+- `YOUR_ACCESS_KEY_HERE` n'apparaît plus nulle part dans `src/`. Après `astro build`, la clé est présente dans `dist/index.html` et `dist/devis/index.html`.
+
+### Vérifications
+
+| Point | /devis | Simulateur (estimation) |
+|---|---|---|
+| Piège anti-robots `botcheck` | ✅ présent, case masquée (`display: none`) | ✅ présent, case masquée (`display: none`, hors tabulation) |
+| Sujet (`subject`) | « Nouvelle demande de devis sur Akelia » | « Demande d'estimation des aides (simulateur Akelia) » |
+| Nom d'expéditeur (`from_name`) | **« Akelia Devis »** (avant : « Akelia Contact ») | « Akelia Simulateur » |
+| Message de succès | « Merci ! Votre demande a bien été envoyée. Nos experts reviendront vers vous très vite. » | « Merci ! Votre demande a bien été envoyée. Un artisan du collectif vous recontacte très vite. » |
+| Erreur renvoyée par Web3Forms | « Votre demande n'a pas pu être envoyée. Veuillez réessayer dans quelques minutes. » | idem |
+| Serveur injoignable | « Impossible de joindre le serveur. Veuillez vérifier votre connexion et réessayer. » | idem |
+
+- **Nom d'expéditeur modifié** : « Akelia Contact » ne disait pas d'où venait la demande. Il devient « Akelia Devis », pour faire pendant à « Akelia Simulateur ». Sujets et expéditeurs sont maintenant distincts et explicites.
+- **Message d'erreur modifié (les deux formulaires)** : auparavant, le message renvoyé par Web3Forms s'affichait tel quel, en anglais (par exemple « Invalid access key »). Le visiteur voit désormais toujours la phrase française ci-dessus. Le message d'origine part dans la console (`console.error('Web3Forms :', …)`) pour le diagnostic. J'avais d'abord ajouté « ou nous appeler directement », puis je l'ai retiré : le numéro de téléphone n'est pas encore fourni (pied de page, « À FOURNIR »).
+- **Échec simulé** (réponse 400 « Invalid access key » imposée dans le navigateur de test) : le message français s'affiche sur les deux formulaires. Captures : `captures/web3forms/devis-echec.png`, `captures/web3forms/simulateur-echec.png`.
+
+### ⚠️ Test d'envoi réel : impossible depuis le Codespace
+
+- Envoi réel tenté depuis Chromium (Playwright), sur /devis puis dans le simulateur (parcours complet : statut, code postal 31000, travaux, résultat, « Obtenir vos aides réelles »). Données de test : nom ou prénom « TEST Claude (à ignorer) », e-mail boyernathan.tls@gmail.com, téléphone 06 00 00 00 00.
+- **Résultat : les deux envois sont bloqués**, et **aucun mail n'est parti**. Console : « Access to fetch at 'https://api.web3forms.com/submit' […] blocked by CORS policy ». Le visiteur voit « Impossible de joindre le serveur… » (captures `devis-reel.png` et `simulateur-reel.png`).
+- **Cause** : la même requête faite avec `curl` reçoit un 403 de Web3Forms : « This method is not allowed. Use our API in client side or contact support with server IP address (Pro plan is required) ». Web3Forms traite l'IP du Codespace (centre de données Azure) comme un serveur. La réponse de refus n'ayant pas d'en-tête CORS, le navigateur ne peut pas la lire.
+- **Conséquence** : je ne peux confirmer ni le message de succès réel, ni l'acceptation par Web3Forms. Le code est le même que lors de l'échec simulé, et la clé est bien envoyée. Le test est à refaire depuis un navigateur sur une connexion ordinaire (question 232).
+
+### Données hors Union européenne
+
+- **Web3Forms est exploité par une société établie en Inde, hors UE.** Toutes les données saisies dans les deux formulaires transitent par ce service : nom ou prénom, e-mail, téléphone, ainsi que le type de travaux et le message pour /devis. **Il faudra le mentionner dans la politique de confidentialité** (question 233). La mention figure aussi en commentaire dans `src/data/web3forms.ts`.
+
+## Pied de page : contact, médiation, phrase sous le logo (16 octobre 2026)
+
+Fichier modifié : `src/components/Footer.astro`. Questions ouvertes : **n° 235 à 237**. ⚠️ **La consigne reçue était coupée au point 4** (« Équilibre des colonnes ») : seuls les points 1 à 3 ont été faits (question 235).
+
+### 1. Colonne « Nous contacter »
+
+- Lignes « Téléphone : à venir » et « E-mail : à venir » **supprimées**.
+- Les constantes **`TELEPHONE` et `EMAIL` sont gardées**, avec leur mécanisme. Dès que l'une d'elles est renseignée, sa ligne (lien `tel:` ou `mailto:`) réapparaît sous « Nous contacter ». Si les deux valent `null`, aucune liste vide n'est produite.
+- Le titre « Nous contacter » (`<h2>`) est remplacé par un **lien vers /devis**, même libellé, avec la classe commune `lien` des liens de navigation : 44px de haut minimum (mesuré : 44px), même style au survol (vert-600, souligné) et même contour de focus (bleu nuit, 2px). Capture du focus : `captures/pied-de-page/corrections-focus-1280.png`.
+- « Nous retrouver » et le lien YouTube : inchangés.
+- Point à arbitrer : le lien n'est pas en gras et sa ligne de texte est un peu plus basse que les titres des autres colonnes (question 236).
+
+### 2. Médiation de la consommation : supprimée
+
+- Ligne « Médiation de la consommation : à venir » et constante `MEDIATEUR` **supprimées**.
+- **Précision à retenir, pour que la question ne soit pas reposée** : **Akelia ne contractualise pas avec le client final.** Le contrat de travaux est conclu **entre le particulier et l'artisan**. L'obligation d'adhérer à un médiateur de la consommation pèse donc **sur l'artisan**, pas sur Akelia. Le site d'Akelia n'a pas à afficher de médiateur. Cette précision figure aussi en commentaire en tête de `Footer.astro`.
+
+### 3. Phrase sous le logo
+
+- Avant : « Le collectif d'artisans locaux de la rénovation énergétique. »
+- Après : « **Le collectif d'artisans locaux de l'efficience énergétique.** »
+- Raison : l'activité dépasse la rénovation (construction neuve, production d'énergie, bornes de recharge).
+
+### Autres textes qui réduisent l'activité à la « rénovation » (NON modifiés, à trancher)
+
+Recherche dans `src/` (pages, composants, données). Seuls les textes visibles ou lus par les moteurs de recherche sont listés.
+
+| # | Fichier | Texte actuel | Où il apparaît | Remarque |
+|---|---|---|---|---|
+| a | `src/pages/index.astro`, l. 42 | « Rénovation énergétique : artisans locaux et aides \| Akelia » | Titre de l'onglet et de Google, page d'accueil | Le plus visible. Attention au référencement : « rénovation énergétique » est la requête la plus recherchée, « efficience énergétique » l'est beaucoup moins. |
+| b | `src/pages/index.astro`, l. 43 | « Rénovation énergétique avec l'artisan Akelia le plus proche : isolation, chauffage, solaire. […] » | Description sous le lien dans Google | Même remarque. |
+| c | `src/pages/index.astro`, l. 31 | « Collectif d'artisans locaux de la rénovation énergétique : isolation, chauffage, solaire. […] » | Données structurées (LocalBusiness) | Formulation identique à l'ancienne phrase du pied de page : candidat évident. |
+| d | `src/pages/index.astro`, l. 32 | `knowsAbout: 'Rénovation énergétique'` | Données structurées | Pourrait devenir une liste (rénovation énergétique, construction neuve, production d'énergie, bornes de recharge). |
+| e | `src/pages/mentions-legales.astro`, l. 7 | « Consultez les mentions légales d'Akelia, spécialiste de la rénovation énergétique. » | Description Google | |
+| f | `src/pages/devis.astro`, l. 7 | « Demande de devis gratuit \| Akelia Rénovation Énergétique » | Titre de l'onglet | « Akelia Rénovation Énergétique » y est présenté comme un nom. |
+| g | `src/pages/devis.astro`, l. 8 | « Obtenez un devis gratuit et personnalisé pour vos travaux de rénovation énergétique : pompe à chaleur, isolation, panneaux solaires. » | Description Google | |
+| h | `src/pages/services/index.astro`, l. 39 | « Nos Services de Rénovation Énergétique \| Akelia » | Titre de l'onglet, page Services | |
+| i | `src/pages/blog/index.astro`, l. 12 | « Blog & Conseils Rénovation Énergétique \| Akelia » | Titre de l'onglet, page Blog | |
+| j | `src/components/MethodeEtapes.astro`, l. 120 | « Le secret d'une rénovation rentable : faire les choses dans l'ordre » | Titre de la section Méthode | Sans « énergétique », mais la méthode décrite vise surtout la rénovation. |
+| k | `src/components/Header.astro` l. 178, `Footer.astro` l. 37 | « Aides rénovation » (lien vers `/aides-renovation`) | Menu et pied de page | Les aides (MaPrimeRénov'…) concernent bien la rénovation : à garder probablement. |
+
+**Non listés, car corrects tels quels** : « Rénovation énergétique globale » (formulaire /devis, l. 75, et carte « Rénovation Énergétique Globale » de `services/index.astro`, l. 27) et le lien « Rénovation globale » du menu et du Hero, qui désignent une prestation précise. Également les noms officiels de dispositifs régionaux dans `src/data/aides.ts`, et `src/pages/test-charte.astro`, page de test.
+
+### Vérification
+
+- Captures : `captures/pied-de-page/corrections-1280.png`, `corrections-800.png`, `corrections-375.png`.
+- Hauteur du pied de page : 457px à 1280px, 648px à 800px, 1 033px à 375px. Aucune erreur dans la console.
+
+## /devis : choix du type de projet (16 octobre 2026)
+
+Fichier modifié : `src/pages/devis.astro`. Questions ouvertes : **n° 238 à 240**.
+
+### Liste déroulante remplacée par de grandes cases
+
+- **Décision** : la liste déroulante (`<select>`) est remplacée par des **boutons radio en grandes cases**, entièrement cliquables. Raison : les options d'une liste déroulante native ne peuvent pas être mises en valeur (ni filet, ni fond fiables selon le navigateur), et leur hauteur n'est pas réglable, donc les 44px ne peuvent pas être garantis. C'est le même modèle que les choix du simulateur (`SimulateurQuestions.astro`).
+- **Ordre** :
+  1. Rénovation globale
+  2. Construction neuve
+  3. Petite phrase « Ou un équipement en particulier : » (*rédigée par Claude, à valider*), puis : Isolation, Pompe à chaleur, Panneaux photovoltaïques, Fenêtres et volets, Chauffe-eau, Borne de recharge, Climatisation réversible, Je ne sais pas encore, **Autre projet** (question 238).
+- **Disposition** : 2 colonnes à partir de 640px, 1 colonne en dessous. Les deux projets principaux forment une rangée à part, au-dessus des services.
+- **Choix obligatoire** : `required` sur le groupe. Sans choix, le navigateur bloque l'envoi et affiche son message (vérifié : aucun envoi).
+- **Clavier** : modèle radio standard. Tab entre dans le groupe, les flèches changent de choix, le contour de focus bleu nuit entoure la case.
+
+### Mise en valeur des deux projets principaux
+
+| Élément | Services | Rénovation globale, Construction neuve |
+|---|---|---|
+| Filet | 1px `texte-doux` (7,11:1 sur blanc) | **2px bleu nuit `nuit-900`** (12,9:1 sur leur fond) |
+| Fond | blanc | **orange pâle `action-50`** |
+| Texte | normal | **semi-gras** ; `texte` sur `action-50` : **14,56:1** |
+| Coché | cadre vert-600 2px (filet + `ring` de 1px, sans décalage), fond `vert-50`, semi-gras | idem (cadre vert-600 2px, fond `vert-50`) |
+
+- Contraste du cadre coché : vert-600 sur vert-50, **5,59:1** (plus de 3:1 requis pour un élément graphique). Texte coché : 14,41:1.
+- **Zone cliquable** : chaque case mesure **56px de haut** (305 × 56 à 1280px, 293 × 56 à 375px), pour 44px demandés.
+- Aucune nouvelle couleur : uniquement des jetons existants.
+
+### Transmission dans l'e-mail
+
+- Le champ s'appelle **« Type de projet »** (attribut `name`). Web3Forms reprend ce nom tel quel dans le corps du mail : la ligne lue sera « Type de projet : Construction neuve ». Avant, le champ s'appelait `service`.
+- **Le sujet inclut le projet** : « **Demande de devis Akelia : Construction neuve** » (ajouté par le script au moment de l'envoi). L'ancien sujet fixe « Nouvelle demande de devis sur Akelia » reste dans le HTML, en secours si le script ne s'exécute pas.
+- **Contrôle du contenu envoyé** (requête interceptée dans le navigateur de test, aucun envoi réel) :
+  ```
+  access_key = 08e77810-e615-4993-8675-2212b8e486e0
+  subject = Demande de devis Akelia : Construction neuve
+  from_name = Akelia Devis
+  name = Test
+  email = t@exemple.fr
+  phone = 0600000000
+  Type de projet = Construction neuve
+  message =
+  ```
+  Le message de succès s'affiche ensuite normalement.
+- **Réception réelle non vérifiée** : Web3Forms bloque le Codespace (question 239).
+
+### Vérification
+
+- Captures pleine page : `captures/devis/projet-1280.png` et `captures/devis/projet-375.png`. Détail du choix (Construction neuve cochée, survol de Borne de recharge) : `captures/devis/projet-coche-1280.png`. Focus clavier : `captures/devis/projet-focus-1280.png`.
+- Pas de défilement horizontal (largeur de défilement = largeur d'écran, à 1280 et 375px). Aucune erreur dans la console.
+- La barre sombre visible au milieu de la capture à 375px est la **barre d'outils du serveur de développement Astro**, absente du site publié.
+- À 375px, les 11 cases empilées allongent le formulaire d'environ 650px.
+- Mise à jour de la liste « Rénovation énergétique » (question 237) : l'option « Rénovation énergétique globale » de /devis n'existe plus, elle s'appelle désormais « Rénovation globale ».
+
+## État des lieux des pages (16 octobre 2026)
+
+Demande : faire le point sur les 8 pages, **sans rien modifier**. Aucun fichier du site n'a été touché. Seuls ce compte rendu et les captures ont été écrits. Questions ouvertes : **n° 241 à 245**.
+
+Captures : `captures/etat-des-lieux/<page>-1280.png` et `<page>-375.png` (pleine page, barre d'outils Astro retirée). Pages : `accueil`, `devis`, `services`, `aides-renovation` (1280 seulement : page vide), `mentions-legales`, `blog`, `blog-article`, `test-charte`.
+
+### Constats communs
+
+- **En-tête et pied de page** : toutes les pages sauf /aides-renovation et /test-charte utilisent `Layout.astro`, donc l'en-tête et le pied de page refaits. Ils sont à jour.
+- **Liens morts présents sur toutes ces pages** (en-tête et pied de page) : les **21 pages `/solutions/…`** du menu (isolation, PAC, chauffe-eau, photovoltaïque, borne, rénovation globale, construction neuve…), **/qui-sommes-nous** (3 liens par page), **/entreprise** (« Rejoindre le collectif ») et **/politique-confidentialite**. S'y ajoute **/aides-renovation**, qui existe mais est cassée (3 liens par page).
+- **Pages qui pointent vers chaque page** (en-tête et pied de page compris) :
+
+| Page | Liens entrants |
+|---|---|
+| /devis | toutes les pages (bouton de l'en-tête, pied de page, « Nous contacter ») ; 14 liens sur l'accueil |
+| /services | **pied de page seulement** (absente du menu de l'en-tête) ; 2 liens sur l'accueil |
+| /aides-renovation | toutes les pages (menu, pied de page) ; 3 liens sur l'accueil |
+| /mentions-legales | pied de page de toutes les pages |
+| /blog | toutes les pages (menu « Blog et conseils », pied de page) ; 4 liens sur l'accueil |
+| /blog/comprendre-pompe-a-chaleur | /blog et l'accueil (section articles) |
+| /test-charte | aucune |
+
+- **Pages d'avant la refonte** : /devis (hors choix du projet), /services, /mentions-legales, /blog et l'article reprennent le style du premier jet. Elles utilisent bien les couleurs de la charte (renommées : `texte`, `texte-doux`, `vert-600`, `creme`…), mais pas ses **jetons de mise en page et de typographie** : `max-w-7xl`, `max-w-3xl`, `px-4 sm:px-6 lg:px-8` au lieu de `max-w-site` et `px-gouttiere` ; `text-3xl sm:text-4xl`, `text-xl`, `text-sm`, `text-xs` au lieu de `text-h1`, `text-h3`, `text-corps`. Du texte à 14px et 12px, sous les 16px minimum de la charte. Toutes s'adaptent au téléphone, sans défilement horizontal (vérifié à 375px).
+- **Image de partage** : toujours absente (`/images/og-default.jpg` n'existe pas, question 117).
+
+### /devis
+
+1. **Contenu** : titre « Demandez votre devis gratuit », phrase d'introduction, formulaire (nom, e-mail, téléphone, type de projet en 11 cases, détails du projet, bouton). Environ 80 mots hors formulaire. Hauteur : 1 916px à 1280px, 2 881px à 375px. **Contenu réel** ; l'envoi est relié à Web3Forms.
+2. **Visuel** : carte blanche sur fond crème. Choix du projet refait aujourd'hui selon la charte. Le reste date d'avant la refonte : étiquettes en 14px (`text-sm`), titre `text-3xl/4xl`, **bouton d'envoi vert-600** alors que l'action principale du site est orange (`action-500`, comme « Obtenir un devis »), messages d'erreur en couleurs Tailwind par défaut (`rose-50`, `rose-800`) et non `alerte-*`. Pas de message d'erreur sous chaque champ : ce sont les bulles du navigateur (le formulaire du simulateur a des messages en toutes lettres). Responsive : oui.
+3. **Liens** : aucun lien propre à la page (en-tête et pied de page seulement).
+4. **SEO** : title « Demande de devis gratuit | Akelia Rénovation Énergétique » ; description « Obtenez un devis gratuit et personnalisé pour vos travaux de rénovation énergétique : pompe à chaleur, isolation, panneaux solaires. » **Spécifiques** à la page (voir la question 237, « rénovation énergétique »).
+5. **Manque** : mention d'information RGPD sous le formulaire (le simulateur en a une), avec lien vers la politique de confidentialité et mention du transfert hors UE (question 233) ; bouton orange ; étiquettes en 16px ; messages d'erreur par champ ; noms de champs en français (question 240) ; « 24 à 48 heures » à confirmer.
+
+### /services
+
+1. **Contenu** : titre « Nos Services », une phrase, **5 cartes** (Systèmes de Chauffage, Chauffe-eau Écologique, Production d'Électricité, Rénovation Énergétique Globale, Voitures Électriques). Chaque carte a une ligne de description et un lien « Demander un devis pour ce service → ». Environ 110 mots. 1 313px à 1280px, 2 682px à 375px. **Contenu provisoire** (premier jet généré) : aucune image, descriptions d'une ligne, « bornes de recharge ultra-rapides » discutable pour un domicile.
+2. **Visuel** : **avant la refonte**. Cartes blanches génériques, majuscules à chaque mot (« Systèmes de Chauffage »), titres `text-xl`. Les liens de carte font **36px de haut** (moins des 44px requis) en 14px. Responsive : oui (3, 2 puis 1 colonne).
+3. **Liens** : 5 × /devis, tous sans le type de projet (le formulaire ne se pré-remplit pas). Rien vers les pages `/solutions/…` du menu.
+4. **SEO** : title « Nos Services de Rénovation Énergétique | Akelia » ; description « Découvrez l'ensemble des solutions Akelia : pompes à chaleur, chauffe-eau thermodynamique, panneaux photovoltaïques et bornes pour véhicules électriques. » Spécifiques.
+5. **Manque** : la page fait doublon avec le menu à 3 rubriques et les 21 pages `/solutions/…` prévues, dont les catégories sont différentes (5 ici, 3 rubriques dans le menu). Isolation, menuiseries et construction neuve sont absentes. À refaire entièrement, ou à supprimer au profit des pages solutions.
+
+### /aides-renovation
+
+1. **Contenu** : **vide et cassé**. Le fichier ne contient que « --- » puis « // ================================= » : l'en-tête de code n'est jamais fermé. La page affiche ce texte brut en haut à gauche, police par défaut du navigateur, sans en-tête ni pied de page.
+2. **Visuel** : aucun (HTML de 55 octets, sans CSS). Capture : `aides-renovation-1280.png`.
+3. **Liens** : aucun. **Liens entrants : toutes les pages** (menu « Aides rénovation », pied de page, accueil). C'est le lien cassé le plus visible du site.
+4. **SEO** : **aucun title, aucune description, aucune balise robots**. Google pourrait l'indexer en l'état.
+5. **Manque** : tout. Le contenu existe en partie ailleurs : `src/data/aides.ts` contient toutes les aides (nationales, régionales) utilisées par le simulateur. Question 241.
+
+### /mentions-legales
+
+1. **Contenu** : 4 parties (Présentation du site, Hébergement, Propriété intellectuelle, Données personnelles et RGPD). Environ 170 mots. 1 714px à 1280px, 2 725px à 375px. **Contenu provisoire et juridiquement insuffisant** : « Siège social : France », « SAS au capital variable » (non vérifié), directeur de la publication « Direction de la communication Akelia » (il faut une personne physique), hébergeur non nommé (« infrastructures cloud »), pas de SIREN ou RCS, « Dernière mise à jour : Février 2025 ». Elle présente Akelia comme « experte en rénovation et efficacité énergétique ». Question 243.
+2. **Visuel** : avant la refonte, mais sobre et lisible (carte blanche sur crème, titres `text-xl`, date en 14px). Responsive : oui.
+3. **Liens** : aucun propre à la page. contact@akelia.fr est écrit en texte, sans lien.
+4. **SEO** : title « Mentions Légales | Akelia » ; description « Consultez les mentions légales d'Akelia, spécialiste de la rénovation énergétique. » Spécifiques.
+5. **Manque** : les informations légales (question 243) ; la partie RGPD devrait renvoyer vers une vraie politique de confidentialité (page absente, lien du pied de page en 404) et mentionner Web3Forms (question 233).
+
+### /blog
+
+1. **Contenu** : titre « Nos guides & conseils », une phrase, **une seule carte d'article**. Environ 60 mots. 1 350px à 1280px, 1 837px à 375px. **Provisoire** : un seul article, lui-même provisoire (voir ci-dessous).
+2. **Visuel** : avant la refonte. La catégorie s'affiche **sous son nom technique** : « SYSTEME-DE-CHAUFFAGE » (sans accent, avec tirets). Description de la carte en 14px, date et « Lire l'article » en **12px** ; « Lire l'article » ne fait que **16px de haut**. L'image de couverture est un aplat bleu pâle uni. Responsive : oui.
+3. **Liens** : 2 × /blog/comprendre-pompe-a-chaleur.
+4. **SEO** : title « Blog & Conseils Rénovation Énergétique | Akelia » ; description « Guides, aides financières (MaPrimeRénov', CEE) et conseils techniques pour réussir votre transition énergétique. » Spécifiques.
+5. **Manque** : de vrais articles ; libellés lisibles pour les catégories (6 sont prévues dans `content.config.ts`) ; tailles de texte et zones cliquables de la charte ; page vide de secours s'il n'y a aucun article.
+
+### /blog/[slug] (un seul article : /blog/comprendre-pompe-a-chaleur)
+
+1. **Contenu** : « Comprendre le fonctionnement d'une Pompe à Chaleur en 2025 » : lien retour, titre, date (15 janvier 2025), catégorie, image, un intertitre, un paragraphe, une liste de 3 points, une phrase finale. Environ 100 mots. 1 728px à 1280px, 2 377px à 375px. **Provisoire** (question 244) ; image de couverture **unie** (1 200 × 675, une seule couleur).
+2. **Visuel** : **gabarit défaillant**. Le texte de l'article utilise les classes `prose`, mais le module Tailwind correspondant (`@tailwindcss/typography`) **n'est pas installé** : ces classes n'ont aucun effet. Conséquences visibles :
+   - l'intertitre h2 de l'article fait **54px**, plus grand que le titre de la page (h1 à 36px) ; le h3 fait 38px ;
+   - la **liste n'a plus de puces**, et il n'y a pas d'espace entre les paragraphes et les intertitres ;
+   - « Retour aux articles » ne fait que 20px de haut, en 14px.
+
+   Responsive : oui.
+3. **Liens** : /blog (retour). Pages entrantes : /blog et l'accueil.
+4. **SEO** : title construit (« <titre de l'article> | Blog Akelia ») et description reprise de l'article : **spécifiques**, générés à partir du contenu. Type `article` et image de partage : la couverture.
+5. **Manque** : styles du texte d'article (installer le module typographique ou écrire les styles), affichage de la vidéo prévu dans le schéma mais non branché, libellé de catégorie, appel à l'action en fin d'article (devis ou simulateur), vrai contenu.
+
+### /test-charte
+
+- **À quoi elle sert** : page de vérification de la charte. Elle affiche toutes les couleurs du bloc `@theme` de `global.css`, les tailles de texte, les graisses, les arrondis, les ombres et des exemples de boutons. Elle n'utilise pas `Layout.astro` (ni en-tête, ni pied de page). 5 090px à 1280px, 7 341px à 375px.
+- **Indexation** : elle porte `<meta name="robots" content="noindex, nofollow">` et **aucune page n'y renvoie**. Google ne devrait donc pas l'indexer, mais **elle est accessible à quiconque connaît l'adresse**. Son commentaire dit : « PAGE TEMPORAIRE : à supprimer avant la mise en ligne ».
+- Elle n'est plus à jour : les couleurs ajoutées depuis (argile, brume, lichen, bruyère et leurs teintes foncées, couleurs des cas types, action-800, vert-100…) n'y figurent pas.
+- **Recommandation : la supprimer avant la mise en ligne** (question 242). Elle n'a plus d'utilité maintenant que la charte est appliquée sur l'accueil.
+
+### Recommandation par page
+
+| Page | Recommandation | En bref |
+|---|---|---|
+| / (accueil) | Acceptable en l'état | Déjà traitée ; reste les liens morts communs. |
+| /devis | **À compléter** | Formulaire fonctionnel ; mention RGPD, bouton orange, tailles de texte, erreurs par champ. |
+| /services | **À refaire entièrement** (ou supprimer) | Contenu générique, catégories incohérentes avec le menu. |
+| /aides-renovation | **À refaire entièrement** — urgent | Page cassée, liée depuis toutes les pages. |
+| /mentions-legales | **À compléter** | Informations légales obligatoires manquantes. |
+| /blog | **À compléter** | Gabarit à aligner sur la charte, catégories lisibles, vrais articles. |
+| /blog/[slug] | **À refaire** (gabarit) et contenu à remplacer | Styles d'article cassés (`prose` sans module), article provisoire. |
+| /test-charte | **À supprimer** | Page de travail, publique bien que non indexée. |
+
+Pages **manquantes** liées depuis le site : /qui-sommes-nous, /entreprise, /politique-confidentialite et les 21 pages `/solutions/…`.
+
+## /devis : refonte de la page (17 octobre 2026)
+
+Fichier modifié : `src/pages/devis.astro` (réécrit). Questions ouvertes : **n° 246 à 254**. Réglée : **240** (noms des champs en français). Captures : `captures/devis-refonte/`.
+
+### 1. Mise en page
+
+- **Titre** : « Demandez votre devis gratuit » (`text-h2` sur téléphone, `text-h1` à partir de 768px, comme le titre du simulateur). **Sous-titre** : « Un artisan du collectif vous rappelle sous 24 à 48 heures. » (`text-chapeau`).
+- **Conteneur** : `max-w-site`, `px-gouttiere`, `py-scene` (`md:py-scene-large`), fond crème. En-tête et pied de page complets (Layout).
+- **À partir de 1024px** : deux colonnes 60 / 40 (`3fr / 2fr`). À gauche, le formulaire sur une carte blanche ; à droite, la réassurance. **En dessous de 1024px** : formulaire, puis réassurance.
+- La carte du formulaire ne s'étire pas à la hauteur de la colonne de droite (`self-start`) : sinon, après l'envoi, la confirmation restait dans une grande carte blanche vide (défaut vu sur la première capture, corrigé).
+
+### 2. Champs, dans l'ordre
+
+| # | Champ | Obligatoire | Nom envoyé | Détail |
+|---|---|---|---|---|
+| 1 | Type de projet | oui, au moins un | `Type de projet` | **Cases à cocher**, mêmes grandes cases qu'avant (56px). Ordre inchangé : Rénovation globale, Construction neuve, « Ou un équipement en particulier : », puis les 9 entrées (question 246). « Je ne sais pas encore » est exclusif (question 247). |
+| 2 | Précisions sur votre projet (facultatif) | non | `Précisions` | Zone de texte, consigne adaptée (point 3). |
+| 3 | Nom | oui | `Nom` | `autocomplete="name"` |
+| 4 | Téléphone | oui | `Téléphone` | 10 chiffres au moins, espaces acceptés (même règle que le simulateur). |
+| 5 | Code postal | oui | `Code postal` | 5 chiffres exactement, clavier numérique. |
+| 6 | Adresse (facultatif) | non | `Adresse` | |
+| 7 | E-mail (facultatif) | non | `E-mail` | Vérifié seulement s'il est rempli. |
+| 8 | Vous êtes (facultatif) | non | `Vous êtes` | Boutons radio : Propriétaire occupant, Propriétaire bailleur, Locataire. 3 colonnes à partir de 640px (1 colonne entre 1024 et 1279px, où la colonne du formulaire est étroite). |
+
+- Les champs obligatoires n'ont plus d'astérisque : seuls les facultatifs portent « (facultatif) », en gris (`texte-doux`), comme demandé.
+- **Supprimé** : le champ e-mail obligatoire d'avant (il devient facultatif), les placeholders d'exemple (« Ex: Jean Dupont »…).
+
+### 3. Consigne adaptée du champ « Précisions »
+
+- Affichée **sous l'étiquette** (`<p id="consigne-precisions">`, reliée au champ par `aria-describedby`), jamais en placeholder.
+- Groupes : Rénovation globale et Construction neuve → « Année de construction, surface, mode de chauffage actuel, travaux déjà réalisés… » ; Isolation, Fenêtres et volets → « Surface concernée, type de murs, isolation déjà en place… » ; Pompe à chaleur, Chauffe-eau, Climatisation réversible → « Surface à chauffer, mode de chauffage actuel, nombre de pièces… » ; Panneaux photovoltaïques → « Orientation et surface du toit, consommation annuelle… » ; Borne de recharge → « Type de véhicule, emplacement souhaité, distance au tableau électrique… ».
+- Rien de coché, groupes différents, « Je ne sais pas encore » ou « Autre projet » → « Décrivez votre projet en quelques mots. » Exception pour plusieurs cases d'un même groupe : question 248.
+- **Sans JavaScript** : la consigne générique est écrite dans le HTML, elle reste affichée.
+- Vérifié dans le navigateur, pour chaque groupe (voir « Vérification »).
+
+### 4. Colonne de réassurance
+
+- Titre (h2) « Ce qui se passe ensuite », puis les 3 étapes fournies, numérotées **dans le style de « Fonctionnement »** : pastille blanche cerclée d'orange, chiffre bleu nuit, filet orange entre les pastilles, texte `text-corps` en `nuit-700`. « Étape N : » est lu par les lecteurs d'écran.
+- Encart distinct : cadre bleu nuit de 2px sur fond blanc, titre (h3) « Comment nous choisissons nos artisans », texte « Nous ne retenons que des entreprises notées 4,3 ou plus, certifiées RGE et assurées. »
+- **Illustration `devis.png`** : le fichier est présent dans `src/assets/illustrations/` (déposé le 17 octobre 2026). Recadrée automatiquement sur sa zone dessinée (`zoneDessinee`), 384px de large au plus, centrée, optimisée en WebP. **Si le fichier manque, rien n'est affiché** (aucun emplacement vide). Texte alternatif vide : question 253.
+
+### 5. Après l'envoi
+
+- En cas de succès, le formulaire est **masqué** (`hidden`) et le bloc de confirmation prend sa place, dans la même carte : coche verte (`succes-600` sur `succes-50`), « **Merci, votre demande est partie.** » (h2), « L'artisan Akelia le plus proche de chez vous vous rappelle sous 24 à 48 heures. »
+- Le **focus** est placé sur ce bloc (`tabindex="-1"`), qui est aussi ramené au milieu de l'écran. La colonne de réassurance reste affichée.
+- En cas d'échec : message en toutes lettres au-dessus du bouton (cadre `alerte-700`, fond `alerte-50`), focus dessus, formulaire conservé. Textes inchangés : « Votre demande n'a pas pu être envoyée. Veuillez réessayer dans quelques minutes. » / « Impossible de joindre le serveur. Veuillez vérifier votre connexion et réessayer. »
+
+### 6. Corrections de style
+
+- **Bouton d'envoi orange** `action-500` (survol `action-600`), texte noir, 56px de haut : identique au bouton du simulateur.
+- **Étiquettes en 18px** (`text-corps`, gras ; mesuré : 18px). Plus aucun `text-sm` sur la page.
+- **Messages d'erreur sous chaque champ**, en toutes lettres, rouge foncé `alerte-700` en gras (`role="alert"`) ; le champ fautif prend un cadre rouge de 2px (`aria-invalid`). Le focus va au premier champ en erreur. L'erreur d'un champ s'efface dès qu'on le corrige. Plus de couleurs `rose-*`.
+  - « Choisissez au moins un type de projet. » · « Indiquez votre nom. » · « Indiquez un numéro de téléphone (10 chiffres). » · « Indiquez un code postal de 5 chiffres, par exemple 31000. » · « Indiquez une adresse e-mail valide, par exemple jean.dupont@exemple.fr, ou laissez ce champ vide. » (*rédigés par Claude, sur le modèle du simulateur*)
+- Le script désactive les bulles du navigateur (`novalidate` ajouté par le script). Sans JavaScript, ces bulles restent le seul contrôle (question 252).
+- Jetons de la charte : `max-w-site`, `px-gouttiere`, `py-scene`, `text-corps`, `text-h2/h1/h3/h4`, `text-chapeau`, `rounded-bloc`, `shadow-legere`.
+
+### 7. Mention sur les données
+
+Sous le bouton, comme dans le simulateur, en texte courant : « Vos coordonnées servent uniquement à vous recontacter au sujet de votre projet. Elles ne sont ni revendues ni utilisées à d'autres fins. Vous pouvez demander leur suppression à tout moment. Pour en savoir plus, consultez notre politique de confidentialité. » ⚠️ **Le lien /politique-confidentialite mène à une page qui n'existe pas encore** (question 249).
+
+### 8. Envoi (Web3Forms)
+
+- Les cases cochées sont réunies **sur une seule ligne**, séparées par des virgules : « Type de projet : Rénovation globale, Pompe à chaleur, Borne de recharge ». Elles ne partent pas en plusieurs champs du même nom, que Web3Forms pourrait mal afficher.
+- **Sujet** : « Demande de devis Akelia : » suivi des projets choisis. Le sujet fixe « Nouvelle demande de devis sur Akelia » reste dans le HTML pour l'envoi sans JavaScript.
+- Champs vides retirés, `replyto` ajouté si un e-mail est saisi (question 251).
+- **Contenu intercepté dans le navigateur de test** (réponse de Web3Forms simulée, **aucun envoi réel**), dans l'ordre :
+  ```
+  access_key     = 08e77810-e615-4993-8675-2212b8e486e0
+  subject        = Demande de devis Akelia : Rénovation globale, Pompe à chaleur, Borne de recharge
+  from_name      = Akelia Devis
+  Type de projet = Rénovation globale, Pompe à chaleur, Borne de recharge
+  Précisions     = Maison de 1975, 120 m², chaudière fioul.
+  Nom            = TEST Claude
+  Téléphone      = 06 00 00 00 00
+  Code postal    = 31000
+  E-mail         = test@exemple.fr
+  Vous êtes      = Propriétaire occupant
+  replyto        = test@exemple.fr
+  ```
+  (Adresse laissée vide : non envoyée. `botcheck` non cochée : non envoyée.)
+
+### 9. Vérification (Chromium, serveur de développement)
+
+- **Captures** : `captures/devis-refonte/vide-1280.png`, `vide-375.png` (formulaire vide) ; `envoye-1280.png`, `envoye-375.png` (après l'envoi) ; `erreurs-1280.png` (envoi à vide) ; `rempli-1280.png` ; `focus-1280.png`. Le bandeau d'en-tête qui apparaît au milieu de certaines captures pleine page vient de la capture elle-même : l'en-tête reste collé en haut de l'écran pendant le défilement.
+- **Le message remplace bien le formulaire** : après l'envoi, le formulaire est `hidden` (affichage `none`) à 1280 et 375px, le focus est sur `devis-confirmation`, et la colonne de réassurance est toujours visible.
+- **Envoi à vide** : 4 messages s'affichent (type de projet, nom, téléphone, code postal), pas d'erreur sur l'e-mail facultatif, et le focus va sur la première case de projet. Aucun envoi.
+- **Consignes** : chaque groupe affiche son texte. Isolation + Fenêtres → texte « enveloppe » ; + Pompe à chaleur → générique ; « Autre projet » → générique. Cocher « Je ne sais pas encore » décoche les autres cases.
+- **Parcours clavier** (Tab depuis la première case) : les 11 cases de projet une à une, Précisions, Nom, Téléphone, Code postal, Adresse, E-mail, groupe « Vous êtes » (un seul arrêt, flèches pour changer), bouton « Envoyer ma demande », lien « politique de confidentialité », puis le pied de page. La touche Espace coche une case. Contour de focus bleu nuit visible sur chaque case et chaque champ.
+- **Pas de défilement horizontal** à 1280 et 375px. Aucune erreur dans la console. Hauteur de la page : 2 713px à 1280px, 5 448px à 375px (formulaire vide).
+- `astro check` non lancé : le paquet `@astrojs/check` n'est pas installé (son installation demandait une confirmation interactive).
+- Envoi réel non testé : Web3Forms bloque le Codespace (question 254).
+
+## /devis : exclusivité des choix et encart (17 octobre 2026)
+
+Fichier modifié : `src/pages/devis.astro`. Questions ouvertes : **n° 255 et 256**. Réglée : **247**. Mise à jour : **248**. Captures : `captures/devis-exclusivite/`.
+
+### 1. Règle d'exclusivité des cases « Type de projet »
+
+**Principe** : soit un projet d'ensemble, soit un ou plusieurs équipements, jamais les deux.
+
+- Chaque case porte une nature (`data-nature`) : `ensemble` (Rénovation globale, Construction neuve), `equipement` (les 7 équipements **et « Autre projet »**, question 255), `exclusif` (Je ne sais pas encore).
+- Règle appliquée par le script quand une case est **cochée** : toutes les autres cases sont décochées, **sauf** si la case cochée et l'autre case sont deux équipements. Cela donne exactement :
+  - Rénovation globale et Construction neuve s'excluent l'une l'autre ;
+  - cocher l'une d'elles décoche tous les équipements et « Je ne sais pas encore » ;
+  - cocher un équipement décoche les deux projets d'ensemble et « Je ne sais pas encore » ;
+  - les équipements se cumulent entre eux ;
+  - « Je ne sais pas encore » décoche tout le reste.
+- Décocher une case ne touche pas aux autres.
+- Le décochage est immédiat et visible (le cadre vert disparaît), **sans message**.
+- **Sans JavaScript** : les cases restent librement cochables. On peut donc envoyer « Rénovation globale » et « Isolation » ensemble. C'est acceptable, comme vous l'avez indiqué. La règle est aussi décrite en commentaire en tête du fichier.
+
+### 2. Consigne du champ « Précisions »
+
+Aucun changement de code nécessaire : la consigne se calcule toujours d'après les cases réellement cochées, après application de la règle.
+- Un projet d'ensemble ne peut plus être combiné : il affiche toujours « Année de construction, surface, mode de chauffage actuel, travaux déjà réalisés… ».
+- Entre équipements : même groupe → consigne du groupe (Isolation + Fenêtres → « Surface concernée… » ; Pompe à chaleur + Chauffe-eau + Climatisation → « Surface à chauffer… ») ; groupes différents → générique (Isolation + Pompe à chaleur, Panneaux + Borne) ; avec « Autre projet » → générique.
+- « Je ne sais pas encore » seul, ou plus rien de coché → générique.
+
+### 3. Encart « Comment nous choisissons nos artisans »
+
+- **Constat** : il était **présent** dans le code et dans le HTML rendu (question 256). En revanche, il était **peu distinct** des étapes : fond blanc, cadre bleu nuit fin, même taille de texte que les étapes, rien qui le signale comme un argument plutôt qu'une étape.
+- **Correction appliquée** :
+  - **fond bleu nuit plein** (`nuit-900`), texte blanc : 14,47:1 ;
+  - **icône de bouclier coché, orange** (`action-500`, 6,1:1 sur bleu nuit, plus de 3:1 requis pour une icône), à la place d'un numéro : décorative, ignorée des lecteurs d'écran ;
+  - **écart de 3,5rem** au-dessus (2,5rem avant), ombre légère.
+- Contenu inchangé : titre h3 « Comment nous choisissons nos artisans », texte « Nous ne retenons que des entreprises notées 4,3 ou plus, certifiées RGE et assurées. »
+- Captures de la colonne de réassurance : `captures/devis-exclusivite/reassurance-1280.png` et `reassurance-375.png`. L'encart est visible et se détache nettement des trois étapes.
+
+### 4. Vérification (Chromium, serveur de développement)
+
+**Toutes les paires** : pour chacune des 11 cases A, puis chacune des 10 autres cases B, on coche A puis B et on relève les cases cochées. **110 combinaisons, 0 écart** avec la règle attendue :
+
+| On coche A, puis B | Résultat |
+|---|---|
+| projet d'ensemble, puis l'autre projet d'ensemble | seul B reste coché |
+| projet d'ensemble, puis équipement (ou « Autre projet ») | seul l'équipement reste coché |
+| projet d'ensemble, puis « Je ne sais pas encore » | seul « Je ne sais pas encore » reste coché |
+| équipement, puis projet d'ensemble | seul le projet d'ensemble reste coché |
+| équipement, puis autre équipement | **les deux restent cochés** |
+| équipement, puis « Je ne sais pas encore » | seul « Je ne sais pas encore » reste coché |
+| « Je ne sais pas encore », puis n'importe quelle case | seule cette case reste cochée |
+
+**Scénarios plus longs** (cases cochées ⇒ consigne affichée) :
+- Isolation → Fenêtres → Rénovation globale ⇒ Rénovation globale seule ; consigne « Année de construction… ».
+- Pompe à chaleur → Chauffe-eau → Climatisation ⇒ les trois ; « Surface à chauffer… ».
+- Isolation → Pompe à chaleur → Borne → Je ne sais pas encore ⇒ Je ne sais pas encore seule ; générique.
+- Je ne sais pas encore → Isolation ⇒ Isolation seule ; « Surface concernée… ».
+- Autre projet → Isolation ⇒ les deux ; générique. Autre projet → Rénovation globale ⇒ Rénovation globale seule.
+- Rénovation globale cochée puis décochée ⇒ plus rien de coché ; générique.
+
+**Clavier** (Tab pour se déplacer, Espace pour cocher) : même comportement qu'à la souris. Espace sur Rénovation globale coche la case ; Tab, Espace sur Construction neuve décoche Rénovation globale ; Tab, Espace sur Isolation décoche Construction neuve ; Espace sur Isolation, Tab, Espace sur Pompe à chaleur laisse les deux cochés ; Maj+Tab jusqu'à Rénovation globale, Espace : seule elle reste. **Le focus reste sur la case où l'on a appuyé** : le décochage des autres ne le déplace pas. La consigne se met à jour à chaque fois.
+
+**Contenu envoyé après la nouvelle règle** (requête interceptée, aucun envoi réel ; on a cliqué Rénovation globale, puis Isolation, puis Pompe à chaleur) :
+```
+access_key     = 08e77810-e615-4993-8675-2212b8e486e0
+subject        = Demande de devis Akelia : Isolation, Pompe à chaleur
+from_name      = Akelia Devis
+Type de projet = Isolation, Pompe à chaleur
+Nom            = TEST Claude
+Téléphone      = 06 00 00 00 00
+Code postal    = 31000
+```
+Rénovation globale, décochée par le clic sur Isolation, n'est pas envoyée. Confirmation affichée à la place du formulaire. Aucune erreur dans la console.
+
+## /devis : encart de sélection et netteté de l'illustration (17 octobre 2026)
+
+Fichier modifié : `src/pages/devis.astro`. Questions ouvertes : **n° 257 et 258**. Mises à jour : **253** et **256** (sans objet). Captures : `captures/devis-encart/reassurance-1280.png` et `reassurance-375.png` (écran haute résolution simulé, ×2).
+
+### 1. Encart « sélection des artisans » refait
+
+- **Contenu, dans cet ordre à l'écran** :
+  - une rangée de **5 étoiles pleines orange** (`action-500`), 28px chacune ;
+  - à droite, **« 4,5 »** en très grand, très gras (`text-display`, poids 900 : **76,8px à 1280px, 44,8px à 375px**) ;
+  - sous les étoiles : **« note minimale exigée »**, en 16px semi-gras, blanc ;
+  - en dessous, en texte courant (18px), centré : « Nous ne retenons dans le collectif que des entreprises notées 4,5 ou plus, certifiées RGE et assurées. »
+- **Style** : fond bleu nuit plein (`nuit-900`), tout centré, ombre légère, 3,5rem sous les étapes. Rien à voir avec les pastilles numérotées au-dessus.
+- **« note minimale exigée » : obligatoire.** Elle évite que la note soit prise pour une moyenne d'avis clients. Elle est en **16px**, le minimum de la charte, et non en 14px, pour rester lisible. En semi-gras, blanc sur bleu nuit : 14,5:1. La raison est écrite en commentaire dans le code, pour que personne ne la supprime.
+- **Lecteurs d'écran** :
+  - les étoiles sont décoratives (`aria-hidden`) ;
+  - le code place « 4,5 » avant « note minimale exigée » (`flex-row-reverse` remet les étoiles à gauche à l'écran) ;
+  - lecture vérifiée (arbre d'accessibilité) : titre « Comment nous choisissons nos artisans » (masqué à l'écran, question 258), « 4,5 », « note minimale exigée », puis la phrase.
+- **Seuil** : 4,5 au lieu de 4,3 (question 257).
+
+**Contrastes de l'encart** (fond `nuit-900` #1d2b36, calcul WCAG) :
+
+| Élément | Couleur | Contraste | Seuil requis |
+|---|---|---|---|
+| « 4,5 », « note minimale exigée », phrase | blanc #ffffff | **14,47:1** | 4,5:1 (texte), 7:1 visé sur le site |
+| Étoiles (décoratives) | orange `action-500` #f0920f | **6,08:1** | 3:1 (élément graphique) |
+| Encart sur le fond de page | `nuit-900` sur `creme` #f7f4ee | ≈ 13,2:1 | — |
+
+### 2. Illustration floue : cause et correction
+
+**Diagnostic** :
+- **Fichier source** : `devis.png`, **2048 × 2048px**, fond transparent. **Zone dessinée** : 813 × 1794px seulement (le personnage n'occupe que 40 % de la largeur).
+- Le recadrage automatique remplit le cadre avec la zone dessinée. L'image entière est donc affichée **2,52 fois plus large que le cadre** : pour un cadre de 384px, l'image faisait **967px de large** à l'écran.
+- Or l'attribut `sizes` annonçait **384px**, la largeur du cadre. Le navigateur choisissait donc une variante d'environ **400px** (800px sur écran 2x) et l'**étirait 2,4 à 2,5 fois** : c'était la cause du flou.
+- Variantes générées avant : 400, 600 et 800px seulement.
+
+**Correction** :
+- `sizes` est désormais **calculé d'après le recadrage** : largeur du cadre × (largeur du fichier ÷ largeur de la zone dessinée). Cela donne `(min-width: 1024px) 726px, 565px`. Le calcul se refait seul si le fichier est remplacé.
+- **Variantes WebP** : 600, 900, 1 200, 1 600 et 2 048px (vérifiées dans `dist/` après `astro build` : 22 à 104 ko).
+- **Taille d'affichage réduite** : cadre de **288 × 635px** à partir de 1024px (au lieu de 384 × 847) et de **224 × 494px** en dessous. Le personnage est très haut (rapport 1 : 2,2) : à 384px de large, il dépassait 840px de haut.
+- **Définition suffisante, sans agrandissement** : le dessin fait 813px de large dans le fichier. Il faut 576px sur un écran 2x à 288px, 672px sur un téléphone 3x à 224px. Seul un écran 3x en grand format (rare) demanderait 864px, soit 6 % d'agrandissement, invisible. **Le fichier source suffit, inutile de le regénérer** pour ces tailles. Pour l'afficher plus grand, il faudrait un fichier où le personnage occupe plus de place (moins de marge transparente) ou une image plus grande.
+
+**Mesures dans le navigateur** (variante réellement chargée) :
+
+| Écran | Cadre affiché | Image entière à l'écran | Variante WebP chargée | Pixels nécessaires |
+|---|---|---|---|---|
+| 1280px, écran classique (1x) | 288 × 635px | 726px | **900w** | 726 |
+| 1280px, haute résolution (2x) | 288 × 635px | 726px | **1600w** | 1 452 |
+| 375px, téléphone 2x | 224 × 494px | 564px | **1200w** | 1 129 |
+| 375px, téléphone 3x | 224 × 494px | 564px | **2048w** | 1 693 |
+
+Dans tous les cas, la variante chargée est **au moins aussi large** que ce qu'affiche l'écran : plus aucun agrandissement, l'image est nette (voir les captures en ×2).
+
+### 3. Vérification
+
+- Captures ×2 de la colonne de réassurance à 1280 et 375px : encart et illustration visibles et nets.
+- Encart : 462px de large à 1280px, 335px à 375px. Étoiles, « 4,5 » et « note minimale exigée » tiennent sur une rangée à 375px.
+- `astro build` sans erreur. Aucune erreur dans la console.
+
+## Blog : import des 102 articles Webflow et gabarit d'article (17 octobre 2026)
+
+Questions ouvertes : **n° 259 à 268**. Captures : `captures/blog-articles/`.
+
+### 1. Lecture préalable (constats)
+
+- Collections : **`src/content.config.ts`** (pas de `src/content/config.ts`). Ancien schéma en anglais (`title`, `pubDate`, `category`…), incompatible avec les 102 fichiers.
+- `src/content/blog/` : 102 articles + l'article de démonstration `comprendre-pompe-a-chaleur.md` et son image `pompe-a-chaleur.jpg`. `src/assets/blog/` : 116 images.
+- `Layout.astro` accepte : `title`, `description`, `image` (chemin, rendu absolu avec akelia.fr), `canonicalURL`, `type` (`website` | `article`), et un emplacement `head` pour les balises propres à la page (JSON-LD).
+- Jetons `@theme` relevés : couleurs `nuit-900/700`, `action-50/500/600/800`, `vert-50/100/400/600`, `creme`, `creme-fonce`, `fond`, `texte`, `texte-doux`, `texte-inverse`, `succes-*`, `alerte-*`… ; tailles `text-display`, `text-chapeau`, `text-h1` à `text-h4`, `text-titre`, `text-corps` (18px), `text-petit`, `text-legende` ; espacements `gouttiere`, `scene`, `scene-large`, `section`, `bloc` ; `max-w-site` ; `rounded-bloc`, `rounded-pilule` ; ombres `legere`, `carte`, `elevee` ; points de rupture **sm 480px, md 768px, lg 992px** (voir la question 267).
+- Frontmatter réel des articles (3 relus) : conforme au schéma du ticket. Le chapeau est un bloc de texte d'un seul paragraphe (aucun gras dans les chapeaux). Les 18 figures sont du **HTML brut** dans le Markdown.
+
+### 2. Route déplacée
+
+- `src/pages/blog/[slug].astro` → **`src/pages/post/[slug].astro`** (`git mv`, réécrit). `src/pages/blog/index.astro` reste à `/blog`.
+- Article de démonstration **supprimé**, ainsi que son image `pompe-a-chaleur.jpg` (rien d'autre ne l'utilisait).
+- Liens vers les articles mis à jour : accueil (`ArticleList.astro`) et `/blog` pointent désormais vers `/post/<slug>`. Adresse construite à un seul endroit : `urlArticle()` dans `src/utils/blog.ts`.
+
+### 3. Module typographique
+
+- `npm install -D @tailwindcss/typography` (0.5.20) : **seule dépendance ajoutée**. Déclaré dans `global.css` par `@plugin "@tailwindcss/typography";`, juste après `@import "tailwindcss";`.
+- Le gabarit applique **`prose prose-lg`** : corps de 18px sur tous les écrans (le réglage de base du module, 16px, était sous le minimum de la charte).
+
+**Correspondance retenue, jetons `@theme` → variables du module** (toutes en `var(--color-…)`, aucune valeur en dur) :
+
+| Variable du module | Jeton | Contraste sur blanc | Remarque |
+|---|---|---|---|
+| `--tw-prose-body` | `texte` | 16,34:1 | texte courant |
+| `--tw-prose-headings` | `texte` | 16,34:1 | titres |
+| `--tw-prose-lead` | `texte` | 16,34:1 | |
+| `--tw-prose-links` | `nuit-900` | 14,47:1 | liens soulignés ; `vert-600` au survol. **vert-600 écarté pour les liens : 6,34:1, sous les 7:1 du site** |
+| `--tw-prose-bold` | `texte` | 16,34:1 | |
+| `--tw-prose-counters` | `texte-doux` | 7,11:1 | numéros des listes |
+| `--tw-prose-bullets` | `vert-600` | 6,34:1 | puces (décoratives) |
+| `--tw-prose-hr` | `creme-fonce` | 1,23:1 | séparateur décoratif |
+| `--tw-prose-quotes` | `texte` | 16,34:1 | citations |
+| `--tw-prose-quote-borders` | `action-500` | — | filet de citation (décoratif) |
+| `--tw-prose-captions` | `texte-doux` | 7,11:1 | légendes des figures |
+| `--tw-prose-code`, `--tw-prose-pre-code` | `texte` | 16,34:1 | |
+| `--tw-prose-pre-bg` | `creme` | — | fond des blocs de code |
+| `--tw-prose-th-borders` | `texte-doux` | 7,11:1 | filet sous l'en-tête des tableaux |
+| `--tw-prose-td-borders` | `creme-fonce` | 1,23:1 | filets entre lignes (discrets, décoratifs) |
+
+Compléments dans `global.css` (section « TYPOGRAPHIE DES ARTICLES DE BLOG ») : liens soulignés avec contour de focus bleu nuit ; figures (image arrondie, jamais agrandie, centrée ; légende 16px centrée) ; cadre défilant des tableaux (filet `creme-fonce`, en-tête sur fond `creme`, largeur minimale 32rem, contour de focus).
+
+**Mesures dans le navigateur** (version de production) :
+
+| | 375px | 1440px |
+|---|---|---|
+| h1 (titre de l'article) | 35px | 48px |
+| h2 | 30px | 30px |
+| h3 | 24px | 24px |
+| h4 | 20px | 20px |
+| Corps | **18px** | **18px** |
+| Chapeau | 20px | 20px |
+| Largeur de la colonne | 335px | **540px** |
+| Caractères par ligne (mesurés) | 43 à 44 | **70 à 71** |
+
+Hiérarchie h1 > h2 > h3 > h4 respectée (c'était l'inverse avant). Colonne : **60ch** (65ch donnait 76 à 77 caractères par ligne). Débordement horizontal de la page : 0px sur les trois articles, aux deux largeurs.
+
+### 4. Schéma de la collection
+
+Remplacé par celui du ticket, champ pour champ. Seul écart : `z` est importé de **`astro/zod`**, et non de `astro:content`, car cet import est **obsolète dans Astro 7.3** (il sera supprimé dans une version future). Les 102 fichiers passent la validation.
+
+### 5. Catégories en toutes lettres
+
+- **`src/data/categories-blog.ts`** : table `CATEGORIES_BLOG` du ticket et fonction **`libelleCategorie(identifiant)`**, qui renvoie « Conseils » pour un identifiant inconnu.
+- Utilisée partout où une catégorie s'affiche : surtitre des cartes (accueil, /blog, articles liés), fil d'Ariane, étiquette de l'article, `article:section`.
+- **Vérifié sur les 108 pages compilées** : aucun identifiant technique dans le texte visible. Le mot « chauffe-eau » n'apparaît que dans son sens ordinaire (menu, textes). Surtitres et fils d'Ariane n'affichent que : Chauffage, Rénovation énergétique, Conseils, Production d'énergie, Mobilité électrique, Eau chaude sanitaire.
+
+### 6. Utilitaires
+
+- **`src/utils/texte.ts`** : `grasEnHtml()` (code du ticket : HTML neutralisé, puis `**…**` → `<strong>`) et `dateEnFrancais()` (« 6 janvier 2025 », « **1er** juin 2026 », lue en UTC pour ne pas reculer d'un jour).
+- **`src/utils/blog.ts`** : `urlArticle()`, `articlesPublies()` (brouillons exclus, du plus récent au plus ancien), `articlesLies()`.
+- **`src/utils/plugins-markdown.mjs`** : deux plugins du moteur Markdown (voir le point 8).
+
+### 7. Gabarit d'article (`src/pages/post/[slug].astro`)
+
+De haut en bas, dans une colonne de 60ch centrée :
+1. **Fil d'Ariane** `<nav aria-label="Fil d'Ariane">` : Accueil › Blog › catégorie. Liens de 44px de haut.
+2. **Surtitre de catégorie**, **h1** (`titre`), puis « Publié le **<time>** » et, si `dateMaj`, « · Mis à jour le **<time>** ».
+3. **Chapeau** en `text-chapeau` (20px), normal, aligné à gauche.
+4. **Vidéo OU couverture**, jamais les deux :
+   - vidéo : `<iframe loading="lazy">` sur **youtube-nocookie.com** (pas de cookie YouTube avant lecture), titre « Vidéo : <titre> », conteneur à `aspect-ratio: videoProportion`. Les vidéos plus hautes que du 16:9 (1:1 et 5:4) sont plafonnées à **420px** et centrées. Mesuré sur l'article VMC : 420 × 420px à 1440px, 335 × 335px à 375px ;
+   - couverture : `<Image>` avec `imageAlt`, `loading="eager"`, `fetchpriority="high"`, WebP de 400 à 1 400px, `sizes` réglé sur la colonne (540px).
+5. **« En bref »** (94 articles) : encart vert pâle (`vert-50`), filet vert de 6px à gauche, coins arrondis, titre h2 « En bref » (20px, très gras), liste à puces vertes, chaque ligne passée dans `grasEnHtml`. Texte : 14,41:1.
+6. **Corps** : `<Content />` dans `prose prose-lg max-w-none`.
+7. **Sources** (si présentes) : h2 « Sources », liste de liens. Les liens externes portent `rel="nofollow noopener" target="_blank"` et la mention « (nouvel onglet) » pour les lecteurs d'écran. Les liens internes (`/…`) n'ont ni l'un ni l'autre (vérifié dans le HTML produit).
+8. **Appel à l'action** vers /devis : bloc bleu nuit, surtitre orange, bouton orange, dans le style de la section Collectif de l'accueil (textes : question 264).
+9. **Articles liés** (« À lire aussi », fond crème, 3 cartes) : les 3 plus récents de la même catégorie, sans l'article courant ni les brouillons, complétés au besoin par les articles d'importance la plus élevée. Ils utilisent la **carte de l'accueil**, sortie dans `src/components/CarteArticle.astro` (rendu identique). Deux retouches sur cette carte : son image devient décorative (`alt=""`, puisque le titre de la carte suit juste en dessous), et « Lire la suite » précise le titre de l'article aux lecteurs d'écran.
+
+`getStaticPaths` part de `articlesPublies()` : **101 pages**, le brouillon est exclu.
+
+### 8. Tableaux et figures : le moteur Markdown d'Astro 7
+
+- Astro 7 utilise un nouveau moteur Markdown, **Sätteri**. Les plugins rehype classiques demanderaient d'installer `@astrojs/markdown-remark`. J'ai donc écrit **deux plugins au format Sätteri**, sans dépendance (`src/utils/plugins-markdown.mjs`, déclarés dans `astro.config.mjs`, question 266) :
+  - **tableaux** : chaque `<table>` est enveloppé dans `<div class="tableau-defilant" role="region" tabindex="0" aria-label="Tableau">`. Sur téléphone, c'est ce cadre qui défile, pas la page. Mesuré à 375px : cadre de 333px, tableaux de 512 et 661px qui défilent dedans, page sans débordement ;
+  - **images des figures** : ⚠️ **elles étaient cassées**. Les `<img src="../../assets/blog/…">` écrits en HTML ne passaient pas par Astro et pointaient vers une adresse inexistante. Le plugin les déclare comme images locales : Astro les optimise alors comme les images Markdown (WebP, largeur et hauteur). Il faut pour cela l'option **`features: { rawHtml: true }`**, qui fait lire le HTML du Markdown comme de vraies balises. Vérifié : **0 image introuvable** sur les 108 pages.
+- Taille d'affichage des figures : question 263.
+
+### 9. SEO de la page d'article (généré par le gabarit)
+
+- `<title>` : `titreSeo` s'il existe, sinon `titre` (sans suffixe « | Akelia », comme demandé). Description : `description`.
+- Canonique : `https://akelia.fr/post/<slug>`, sans barre finale (question 262).
+- Open Graph et Twitter : titre, description, **image de couverture optimisée en JPEG de 1 200px**, en adresse absolue (`https://akelia.fr/_astro/….jpg`). Plus `article:published_time`, `article:modified_time` et `article:section`.
+- **JSON-LD Article** : headline, description, image, datePublished, dateModified (`dateMaj`, sinon date de publication), author et publisher (Organisation Akelia), mainEntityOfPage.
+- **JSON-LD VideoObject** si `videoYoutube` : name, description, thumbnailUrl (miniature YouTube et couverture), uploadDate (date de publication), embedUrl (youtube-nocookie). Présent sur les **8** articles vidéo.
+- Les `<` des textes sont neutralisés dans le JSON-LD (un titre ne peut pas fermer la balise `<script>`).
+- Vérifié sur les 101 pages : toutes ont le JSON-LD Article et l'image de partage optimisée.
+
+### 10. Autres fichiers adaptés
+
+- `src/components/ArticleList.astro` (accueil) : nouveaux champs, brouillons exclus, carte commune.
+- `src/pages/blog/index.astro` : adaptée **a minima** au nouveau schéma (cartes communes, `/post/…`, catégories lisibles, brouillons exclus). Sa refonte est un ticket à part.
+
+### 11. Vérification
+
+- **`npm run build` : sans erreur ni avertissement**, 108 pages, dont **101 pages d'articles**.
+- Articles examinés à 375 et 1440px (version de production, `astro preview`) :
+  - **tableaux** : `/post/chauffage-le-plus-ecologique-comparatif-co2-pm-et-nox-2026`, à la place du brouillon (question 259) : 4 tableaux lisibles, défilant dans leur cadre sur téléphone ;
+  - **figures** : `/post/quelles-sont-les-regions-adaptees-aux-pompes-a-chaleur` : deux cartes (430 et 450px, 335px sur téléphone), légendes plus petites, grises, centrées. Les trois paragraphes « Région optimale / intéressante / … » sous la carte sont du texte gras normal ;
+  - **vidéo verticale sans texte** : `/post/lerreur-que-tout-le-monde-fait-avec-sa-vmc-video` : la page ne paraît pas cassée (fil d'Ariane, titre, dates, chapeau, vidéo carrée centrée de 420px, appel à l'action, 3 articles liés). Pas d'encart « En bref » (l'article n'en a pas).
+- **Liens internes** : 6 vrais clics d'article à article dans le corps des textes, tous en 200 sur la bonne page. Contrôle de tous les liens des 108 pages : **tous les liens `/post/…` mènent à une page existante**. Liens morts restants : ceux de l'en-tête et du pied de page (pages `/solutions/…`, `/qui-sommes-nous`, `/entreprise`, `/politique-confidentialite`, déjà connus) et 2 liens dans les articles (question 261).
+- Aucune erreur dans la console.
+- Captures : `captures/blog-articles/` : `tableau-375.png`, `tableau-1440.png`, `figure-375.png`, `figure-1440.png`, `video-375.png`, `video-1440.png` (pleine page) ; `zoom-tableau-*.png`, `zoom-figure-*.png`, `zoom-enbref-*.png` (détails). Sur les détails, l'en-tête collé en haut de l'écran recouvre parfois le haut de la zone capturée.
+
+### 12. Reste à faire sur le blog
+
+- **Ticket suivant (non commencé, comme demandé)** : refonte de la page /blog et filtres par catégorie ; remontée automatique d'articles par thème sur les pages solutions ; sitemap.xml et robots.txt.
+- Décider du brouillon (question 259) et de la barre finale selon l'hébergeur (question 262).
+- Corriger ou rediriger les 2 liens internes morts (question 261) ; prévoir des redirections pour les autres anciennes adresses Webflow hors `/post/`, s'il y en a.
+- Contenu : intertitres h3 de 11 articles, lignes-titres de « En bref », relecture des coquilles (question 265).
+- Images de figure en meilleure définition, si elles doivent remplir la colonne (question 263).
+- Données structurées : ajouter le logo d'Akelia à `publisher` (question 231 : aucun logo fourni) ; un `BreadcrumbList` pour le fil d'Ariane pourrait suivre.
+- Image de partage par défaut du site, toujours absente (`/images/og-default.jpg`, question 117). Les articles, eux, ont la leur.
+- `test-charte` ne montre pas les styles des articles (sans importance si la page est supprimée, question 242).
+
+## Blog : largeur de lecture, sommaire et cartes cliquables (17 octobre 2026)
+
+Fichiers modifiés : `src/pages/post/[slug].astro`, `src/components/CarteArticle.astro`, `src/styles/global.css`, `src/layouts/Layout.astro` (une classe). Questions ouvertes : **n° 269 à 271**. Captures : `captures/blog-lecture/`.
+
+### 1. Lecture préalable
+
+- Carte d'article : **`src/components/CarteArticle.astro`**, la seule. Elle sert à l'accueil (`ArticleList.astro`), à /blog et aux articles liés.
+- En-tête collant (`#site-header`, `sticky top-0`), **mesuré dans le navigateur** : **73px sous 1280px** (une ligne), **122px à partir de 1280px** (la 2e ligne du menu apparaît à `xl:`). Un décalage fixe de 7rem aurait été faux sous 1280px. Les deux valeurs sont dans une variable unique, **`--hauteur-entete`** (`global.css`, `@layer base`), qu'utilisent le décalage des ancres et la position du sommaire collant. ⚠️ À mettre à jour si l'en-tête change de hauteur.
+- Rappel : `lg:` vaut **992px** dans cette charte (question 267).
+
+### 2. Largeur de lecture : trois zones
+
+- **Zone 1, en-tête** : conteneur de 56rem centré, contenu aligné à gauche. Fil d'Ariane, catégorie, h1 (30 caractères par ligne au plus), dates, chapeau (60ch au plus), puis la vidéo ou la couverture (jusqu'à 896px de large, `sizes` mis à jour, variantes jusqu'à 1 800px).
+- **Zone 2, corps** : conteneur de 72rem. À partir de 992px, grille `16rem | 1fr`, 3rem d'écart. Colonne de droite plafonnée à **70ch**, calculés à 20px, soit **700px**. En dessous de 992px : une colonne. Sans sommaire : une seule colonne centrée de 70ch.
+- **Zone 3, articles liés** : inchangée.
+- **Taille du texte** : `prose prose-lg lg:prose-xl` : **18px** sur téléphone et tablette, **20px** à partir de 992px. Titres à partir de 992px : h2 36px, h3 30px, h4 25px (h1 48px). Tableaux : 16px, puis 18px.
+
+**Mesures (version de production)** :
+
+| Article | 375px | 1024px | 1440px |
+|---|---|---|---|
+| quel-systeme-de-chauffage-est-le-plus-rentable… (sommaire) | 335px, 18px | **680px**, 20px | **700px**, 20px |
+| quelles-sont-les-regions-adaptees… (sommaire) | 335px, 18px | **680px**, 20px | **700px**, 20px |
+| lerreur-que-tout-le-monde-fait-avec-sa-vmc-video (sans sommaire) | 335px, 18px | 700px, 20px | 700px, 20px |
+
+À 1440px, la colonne de texte mesure **700px** (fourchette demandée : 680 à 740px). À 375px : toute la largeur moins les gouttières de 20px. À 1024px avec sommaire : 680px (la colonne est limitée par la place disponible). Débordement horizontal : **0px** partout.
+
+### 3. Sommaire
+
+- Titres : `const { Content, headings } = await render(article)`, puis seulement les **h2** (`depth === 2`). Lien vers `#${titre.slug}`. Sommaire affiché à partir de **3** entrées, sinon ni sommaire ni colonne de gauche (questions 269 et 271).
+- **Ordinateur (à partir de 992px)** : `<aside>` à gauche, dont le bloc intérieur est **collant** (`top: hauteur de l'en-tête + 1,5rem`, soit 97px sous 1280px et 146px au-delà) et plafonné à la hauteur de l'écran (`max-h: 100vh − en-tête − 3rem`, défilement interne si besoin). Contenu :
+  - `<nav aria-label="Sommaire de l'article">`, titre « Sommaire » en surtitre gris (petites majuscules espacées) ;
+  - `<ol>` sans numéros, filet crème à gauche, liens en 16px, `texte-doux` (7,11:1). Les intitulés passent à la ligne sans être tronqués. Chaque lien fait au moins **44px** de haut ;
+  - **partie en cours** : `aria-current="location"` sur le lien, d'où texte `texte`, gras, **trait orange** (`action-500`) à gauche, par-dessus le filet crème ;
+  - puis le **petit appel à l'action** : bouton orange pleine largeur « Demander un devis » (/devis) et lien discret « Akelia, le collectif d'artisans locaux » (/qui-sommes-nous, ⚠️ page inexistante pour l'instant).
+- **Téléphone et tablette (sous 992px)** : `<details>` **replié**, juste après « En bref ». Intitulé « Sommaire », **chevron de la charte** (celui du menu mobile, qui pivote à l'ouverture ; flèche du navigateur masquée), fond crème une fois ouvert. Le petit appel à l'action n'y figure pas (question 270).
+- **Suivi de la lecture** (script de la page, chargé seulement si l'article a un sommaire) :
+  - un **IntersectionObserver** surveille les h2 du corps, dans la zone qui va du haut de l'écran jusqu'à la « ligne de lecture » (bas de l'en-tête + 2rem) ;
+  - à chaque entrée ou sortie d'un titre, la partie active est recalculée : c'est le dernier h2 passé au-dessus de la ligne ;
+  - aucun défilement détourné, aucune animation : seul l'attribut `aria-current` change ;
+  - l'observateur est recréé si la fenêtre change de taille (la hauteur de l'en-tête change à 1280px) ; `scrollend` recalcule en fin de défilement.
+  - **Deux défauts trouvés et corrigés pendant la vérification** :
+    1. les id des titres gardent leurs accents (« systèmes »), que `lien.hash` renvoie encodés : la comparaison se fait maintenant sur l'identifiant décodé ;
+    2. avec une simple ligne surveillée, un défilement doux rapide la « sautait », et le lien actif restait sur la partie précédente. La zone surveillée va désormais du haut de l'écran à la ligne.
+- **Décalage des ancres** : `.prose :is(h2, h3) { scroll-margin-top: calc(var(--hauteur-entete) + 1rem) }`.
+- **« Réduire les animations »** : `<html>` portait `scroll-smooth`, et la règle CSS de secours était écrasée par cette classe. Elle devient **`motion-safe:scroll-smooth`** (`Layout.astro`) : plus de défilement doux pour ceux qui l'ont désactivé, **sur tout le site**. Le lien actif continue d'être mis en valeur.
+
+### 4. Carte d'article entièrement cliquable (`CarteArticle.astro`)
+
+- Le **seul lien** est celui du titre. Son pseudo-élément `after:absolute after:inset-0` couvre la carte (`relative` sur `<article>`). Le lecteur d'écran n'annonce que le titre, et le texte reste sélectionnable (`user-select: auto`, vérifié).
+- « Lire la suite → » devient un `<span>` (masqué aux lecteurs d'écran), simple mention visuelle.
+- **Survol de la carte** (`group-hover`) ou **focus clavier** (`focus-within` / `group-focus-within`) : ombre `shadow-carte`, titre en `vert-600`, image légèrement agrandie, « Lire la suite » souligné.
+- **Contour de focus porté par la carte entière** : `has-focus-visible:outline-2 outline-offset-2 outline-nuit-900`. Le contour propre au lien est retiré (`outline-none`), puisque c'est la carte qui le porte.
+- Aucun autre lien dans la carte. Règle notée en commentaire : tout lien ajouté devra porter `relative z-10`.
+- Un seul composant, modifié une fois : l'accueil, /blog et les articles liés en profitent.
+
+### 5. Vérification
+
+- `npm run build` : sans erreur ni avertissement, **108 pages, dont 101 articles**.
+- **Sommaire, 22 clics** (5 et 6 entrées, à 1440px et 1024px, avec et sans « réduire les animations ») : **chaque titre s'arrête 16px sous l'en-tête** (138px pour un en-tête de 122px, 89px pour 73px), jamais caché. Le lien cliqué devient la partie active.
+- **Défilement à la main** : le lien actif suit (aucun avant le premier h2, puis chaque partie à son passage).
+- Sommaire du téléphone : replié au chargement ; ouvert puis cliqué, le titre arrive à 89px, sous l'en-tête de 73px.
+- `scroll-behavior` mesuré : `smooth` par défaut, `auto` avec « réduire les animations ».
+- **Figures** (article des régions) : cartes de 430 et 450px à 1024 et 1440px (taille réelle), 335px à 375px. Légendes en 16px sur la largeur de la colonne, centrées.
+- **Tableaux** : à 375px, cadres de 333px qui défilent (tableaux de 512 et 661px) ; à 1024 et 1440px, 698px, un seul défile encore (746px). Page jamais plus large que l'écran.
+- **Article vidéo** : pas de colonne de gauche ni de sommaire, une colonne centrée de 700px, grand appel à l'action en fin d'article avec le lien vers le collectif.
+- **/blog, clics** sur une carte : sur l'image, dans le vide à droite du titre, sur la date, sur le résumé, sur « Lire la suite » : **5 sur 5 mènent au bon article**.
+- **/blog, touche Tab** : 49 arrêts sur des cartes en 60 pressions, **un seul arrêt par carte**, **tous avec un contour visible** (2px plein, bleu nuit) sur la carte entière, ombre et titre vert. Capture : `blog-focus-clavier.png`.
+- Captures : `long-*.png`, `figure-*.png`, `video-*.png` (375, 1024, 1440, pleine page) ; `sommaire-collant-1440.png`, `sommaire-collant-1024.png`, `sommaire-mobile-ouvert-375.png`, `tableau-375.png`, `tableau-1440.png`, `carte-survol.png`, `blog-focus-clavier.png`.
+
+### 6. Articles sans sommaire (6)
+
+**Vidéo seule, aucun titre (6)** :
+- `lerreur-que-tout-le-monde-fait-avec-sa-vmc-video`
+- `les-plus-grosses-erreurs-quand-on-fait-des-travaux-de-renovation-energetique`
+- `peut-on-chauffer-toute-la-france-au-bois-video`
+- `pourquoi-la-moisissure-sinstalle-chez-vous-et-comment-la-stopper-video`
+- `prix-du-kwh-quelle-energie-est-la-moins-chere-en-2026-video`
+- `quel-systeme-de-chauffage-a-le-meilleur-rendement`
+
+**Mise à jour du 17 octobre 2026** : les **11 articles « aucun h2 »** et les **16 articles « un ou deux h2 seulement »** relevés ici n'étaient pas un choix éditorial mais un **défaut de conversion** (les titres de niveau 2 qui introduisaient directement un sous-titre de niveau 3 étaient supprimés). Les fichiers ont été remplacés : ces 27 articles ont désormais un sommaire. Question 269 réglée. Détail : « Blog : vérification des titres h2 restaurés ».
+
+## Blog : vérification des titres h2 restaurés (17 octobre 2026)
+
+Contexte : les 102 fichiers de `src/content/blog/` ont été remplacés ; la conversion précédente supprimait les h2 suivis directement d'un h3. Ticket de **vérification** : **aucun code modifié**. Questions ouvertes : **n° 272 à 275**. Questions 265 (premier point) et 269 réglées. Captures : `captures/blog-sommaire-h2/`.
+
+### 1. Contenu livré
+
+- 614 lignes `##` au total (463 avant), 1 493 `###`. Comparaison avec l'ancienne version (`akelia-blog-102-articles.zip`) : frontmatter identique, 116 images inchangées. Différences autres que les h2 : question 275.
+
+### 2. Compilation
+
+- `npm run build` : **108 pages, dont 101 articles**, sans erreur ni avertissement.
+`*-1440.png` (sommaire collant avec partie active, h2 et h3 visibles) et `*-375-sommaire.png` (sommaire du téléphone ouvert) pour les trois articles ; `geothermique-collant-1024x600.png`, `-1024x700.png`, `-1024x768.png`, `-1024x900.png`.
+
+## Blog : correctifs 272, 273 et 274 (17 octobre 2026)
+
+Fichiers modifiés : `src/content/blog/*.md` (réimport v3), `astro.config.mjs`, `src/utils/plugins-markdown.mjs`, `src/styles/global.css`, `src/pages/post/[slug].astro`. Questions 272, 273 et 274 réglées ; nouvelle question **n° 276** (coquille). Captures : `captures/blog-correctifs-272-274/`.
+
+### 1. Réimport des articles (question 273)
+
+- `rm src/content/blog/*.md` puis `unzip -o akelia-blog-102-articles-v3.zip -d .`. Avant d'écraser, comparaison avec l'archive : mêmes 102 noms, **frontmatter identique**. Les deux fichiers de `scripts/` (aussi dans l'archive) sont **identiques** aux nôtres. Toujours 614 h2.
+- **Cause du débordement : la conversion, pas le contenu.** L'ancienne conversion aplatissait les 18 schémas dessinés en caractères (8 articles) sur une seule ligne de code en ligne. Ce sont maintenant de vrais blocs de code (```` ``` ````). Plus aucune ligne de code en ligne ne contient ces dessins.
+- **Coloration syntaxique désactivée** (`markdown.syntaxHighlight: false`, `astro.config.mjs`). Constat mesuré : Astro passait les blocs dans Shiki, thème **github-dark**, avec un **fond #24292e en style en ligne**. Impossible d'avoir le fond crème sans `!important`. Les seuls blocs de code du blog sont des schémas en texte brut : la coloration ne servait à rien. Les blocs sortent maintenant en `<pre><code>` simples.
+- **Nouveau plugin `schemasDefilants`** (`plugins-markdown.mjs`) : chaque `<pre>` reçoit `role="region" tabindex="0" aria-label="Schéma"`, comme les tableaux, pour défiler au clavier (Shiki ajoutait `tabindex="
+### 3. Articles avec et sans sommaire (pages compilées)
+
+- **95 avec sommaire, 6 sans**. Les 6 sans sont **exactement** les 6 articles vidéo attendus (liste dans « Blog : largeur de lecture… », partie 6). Aucun article inattendu.
+
+### 4. Trois articles qui n'avaient pas de sommaire
+
+Mesures dans Chromium (version de production, `astro preview`), à 1440 × 900 et 375 × 812 :
+
+| Article | h2 / entrées | h3 | Sommaire = h2 de la page | Hiérarchie (corps) | Suivi au défilement | Clics |
+|---|---|---|---|---|---|---|
+| `renovation-thermique-reussir-lite-et-les-ponts-thermiques` | 5 / 5 | 10 | oui (ordre, texte, ancre) | h1 > h2 > h3, aucun saut | 59 et 92 positions, 0 erreur | 1440 : 5/5 à 138px (en-tête 122px). 375 : 2/5 à 89px, **3/5 à 111px** (question 272) |
+| `pompe-a-chaleur-geothermique-tout-ce-que-vous-devez-savoir` | 7 / 7 | 20 | oui | h1 > h2 > h3, aucun saut | 69 et 104 positions, 0 erreur | 1440 : 7/7 à 138px. 375 : 7/7 à 89-90px (en-tête 73px) |
+| `comprendre-les-differences-entre-dpe-audit-energetique-et-etude-thermique` | 7 / 7 | 22 | oui | h1 > h2 > h3, aucun saut | 62 et 87 positions, 0 erreur | 1440 : 7/7 à 138-139px. 375 : 7/7 à 89-90px |
+
+- **Hiérarchie à l'écran** : h1 48px > h2 36px > h3 30px à 1440 ; h1 35px > h2 30px > h3 24px à 375. Un seul h1 par page.
+- **Suivi de lecture** : défilement par pas de 250px du haut au bas de la page ; à chaque pas, le lien actif est bien le dernier h2 passé sous la ligne de lecture (aucun avant le premier h2).
+- **Clics** : le titre s'arrête 16px sous l'en-tête, jamais dessous. Le lien cliqué devient actif à la fin du défilement doux (sur les longs trajets, ce défilement prend jusqu'à 1,5 à 3 s). Exception : question 272.
+- **Débordement horizontal** : 0 sur l'article géothermie et l'article DPE ; **+88px / +605px sur l'article ITE**, à cause d'un tableau en dessin de caractères (question 273, défaut antérieur).
+
+### 5. Bloc collant à 1024px (géothermie, 7 entrées)
+
+| Écran | Haut du bloc | Bas du bloc | Contenu | Défilement interne |
+|---|---|---|---|---|
+| 1024 × 900 | 97px | 701px | 604px | non, tout tient |
+| 1024 × 768 | 97px | 701px | 604px | non, tout tient |
+| 1024 × 700 | 97px | 676px | 604px | oui : lien « collectif » coupé |
+| 1024 × 600 | 97px | 576px | 604px | oui : bouton « Demander un devis » sous le pli |
+
+Le bloc ne dépasse jamais l'écran. Il faut au moins **725px** de haut pour tout voir sans défilement interne (question 274).
+
+### 6. Recensements sur les 101 articles
+
+- **Intitulés du sommaire qui changent de nombre de lignes en gras** (question 272), à 375px (19 articles) : `chauffage-le-plus-ecologique-comparatif-co2-pm-et-nox-2026`, `chauffe-eau-electrique-vs-thermodynamique-…`, `comment-ameliorer-simplement-le-dpe-dun-logement-avec-un-chauffe-eau-thermodynamique`, `comment-regler-la-temperature-dune-pompe-a-chaleur-avec-la-loi-deau`, `electricite-ou-gaz-comment-choisir-…` (3 entrées), `est-il-interessant-de-remplacer-sa-chaudiere-a-fioul-…`, `gestionnaire-denergie-hems-…`, `installer-des-panneaux-solaires-est-il-toujours-rentable-…`, `isolation-thermique-ete-et-hiver-quel-est-le-meilleur-materiau-…`, `mon-systeme-de-chauffage-est-il-compatible-…`, `ou-installer-sa-pompe-a-chaleur-…`, `pompe-a-chaleur-air-air-vs-air-eau-…`, `pourquoi-la-vmc-est-le-parent-pauvre-…`, `quel-systeme-de-chauffage-pour-un-plancher-chauffant`, `renovation-thermique-reussir-lite-et-les-ponts-thermiques` (2 entrées), `rentabilite-des-pompes-a-chaleur-…`, `solaire-en-copropriete-…`, `tout-savoir-sur-les-pompes-a-chaleur-hybrides-…`, `v2l-v2h-v2g-…`. À 1440px : 18 articles, sans effet sur le texte.
+- **Débordement horizontal** : 4 articles à 375px, 1 à 1440px (question 273). Tous les autres : 0.
+
+### 7. Captures (`captures/blog-sommaire-h2/`)
+
+0"`, qui disparaissait avec lui). Note technique : avec Sätteri, les nœuds sont en lecture seule. Il faut un `ctx.setProperty(nœud, 'role', …)` **par attribut** ; remplacer `properties` d'un bloc ne fait rien.
+- ⚠️ **Cache d'Astro** : après une modification d'un plugin Markdown, `npm run build` réutilise le rendu en cache des articles inchangés (`node_modules/.astro/data-store.json` et `.astro/data-store.json`). Il a fallu supprimer ces deux fichiers pour que le plugin s'applique. À savoir pour toute modification future des plugins.
+- **Styles des schémas** (`global.css`, section typographique, juste avant les tableaux), commentaire en place :
+  - `overflow-x: auto`, `white-space: pre`, `overflow-wrap: normal`, `word-break: normal`, redits explicitement (une coupure détruirait le dessin) ;
+  - police à chasse fixe (`--font-mono` de Tailwind), **15px** quelle que soit la taille du texte, interligne 1,5 ;
+  - fond `creme`, texte `texte`, filet `creme-fonce`, coins `--radius-bloc`, contour de focus bleu nuit.
+
+**Mesures** (Chromium, version de production) :
+- **18 schémas sur 8 articles**, tous à **15px**, police `ui-monospace`, fond `rgb(247, 244, 238)` (crème), `overflow-x: auto`, `white-space: pre`, `overflow-wrap: normal`.
+- À **375px** : cadre de 333px, les 18 défilent dans leur cadre (contenu de 544 à 1 075px). À **1440px** : cadre de 698px, 11 défilent (contenu jusqu'à 1 075px), 7 tiennent entiers.
+- **Clavier** : Tab jusqu'au schéma, flèche droite ×3 : le cadre défile de 120px.
+- **Débordement horizontal de la page : 0px sur les 101 articles, à 375 et à 1440px.** Cela inclut les 4 articles relevés à la question 273, dont l'article ITE, qui débordait de 605px (375) et 88px (1440).
+
+### 2. Pas de gras sur l'entrée active, sous 992px (question 272)
+
+- `[slug].astro` : la constante commune `classesLienSommaire` n'a plus `aria-[current=location]:font-bold`. Une nouvelle constante, `classesLienSommaireOrdinateur`, l'ajoute. Elle sert **seulement** dans la colonne de gauche (992px et plus). Le commentaire demandé est placé au-dessus de cette constante.
+- Sur téléphone et tablette, l'entrée active est signalée par la couleur `texte` (au lieu de `texte-doux`) et par le trait orange.
+
+**Mesures** : chaque entrée cliquée après retour en haut de page, sommaire du téléphone ouvert.
+
+| Article | 375px (en-tête 73px) | 1440px (en-tête 122px) |
+|---|---|---|
+| `renovation-thermique-reussir-lite-et-les-ponts-thermiques` | **5/5 à 89px**, lien actif juste, graisse 400 | 5/5 à 138px, graisse 700 |
+| `electricite-ou-gaz-comment-choisir-…` | **6/6 à 89px**, graisse 400 | 6/6 à 138px, graisse 700 |
+| `quel-systeme-de-chauffage-pour-un-plancher-chauffant` | **9/9 à 89px**, graisse 400 | 9/9 à 138px, graisse 700 |
+
+Une entrée qui devient active ne change plus de hauteur (0 cas sur les trois articles, aux deux largeurs).
+
+### 3. Bloc collant : seule la liste défile (question 274)
+
+- `[slug].astro` : le bloc collant devient une **colonne flexible** (`flex flex-col`). Sa hauteur maximale ne change pas (écran − en-tête − 3rem), mais il **ne défile plus lui-même** :
+  - le `<nav>` est une colonne flexible avec `min-h-0` ;
+  - le titre « Sommaire » et le bloc d'appel à l'action ont `shrink-0` ;
+  - c'est la **liste `<ol>`** qui porte `overflow-y: auto` et `min-h-0`, plutôt que le `<nav>` entier : ainsi le titre « Sommaire » reste fixe, comme sur le schéma du ticket.
+
+  Commentaire en place, avec la raison du `min-h-0`.
+- **Dégradés** : classe `sommaire-defilant` (`global.css`), technique « ombres de défilement » en CSS seul. Deux caches couleur `fond` suivent le contenu ; deux ombres légères (`nuit-900` à 18 %) restent fixées au cadre. L'ombre du haut n'apparaît qu'après un défilement, celle du bas que s'il reste des entrées ; rien quand tout tient.
+- Effet de bord : le `pr-2` du bloc (place pour la barre de défilement) a disparu, donc la liste est un peu plus large. Sur les trois articles mesurés, aucun intitulé ne change plus de nombre de lignes en gras à 1440px.
+
+**Mesures** sur `pompe-a-chaleur-geothermique-tout-ce-que-vous-devez-savoir` (7 entrées), 1024px de large :
+
+| Écran | Bloc | Liste | Entrées entières visibles | Bouton « Demander un devis » | Lien « collectif » |
+|---|---|---|---|---|---|
+| 1024 × 900 | 97–693px | 404px, ne défile pas | 7 | 589–637px, entier | 649–693px, entier |
+| 1024 × 768 | 97–693px | 404px, ne défile pas | 7 | entier | entier |
+| 1024 × 700 | 97–676px | 387px, **défile** | 6 | 572–620px, **entier** | 632–676px, entier |
+| 1024 × 600 | 97–576px | 287px, **défile** | 4 | 472–520px, **entier** | 532–576px, entier |
+| 1024 × 500 | 97–476px | 187px, **défile** | 3 | 372–420px, **entier** | 432–476px, entier |
+
+Le bloc ne déborde jamais lui-même. Captures : `collant-1024x*.png`, et `collant-1024x600-milieu.png` (liste défilée à mi-course, avec les dégradés en haut et en bas).
+
+### 4. Vérification finale
+
+- `npm run build` : **108 pages, dont 101 articles**, sans erreur ni avertissement.
+- **95 articles avec sommaire, 6 sans** : les 6 articles vidéo, inchangés.
+- **Débordement horizontal : 0px sur les 101 articles, à 375 et 1440px.**
+- Captures (`captures/blog-correctifs-272-274/`) : `schema-ite-375.png`, `schema-ite-375-clavier.png`, `schema-ite-1440.png`, `sommaire-mobile-actif-375.png`, `collant-1024x900.png` à `collant-1024x500.png`, `collant-1024x600-milieu.png`.
+
+## Blog : page d'entrée, pages de catégorie et pagination (17 octobre 2026)
+
+Questions 259 et 261 réglées. Nouvelles questions : **n° 277 à 281**. Captures : `captures/blog-listes/`.
+
+### 1. Fichiers
+
+| Fichier | Rôle |
+|---|---|
+| `src/data/categories-blog.ts` | Table des catégories : `libelle`, **`adresse`** (courte), **`description`** (chapeau et méta-description), dans l'ordre de la barre. Nouvelles fonctions **`urlCategorie(id)`** (→ `/blog/chauffage`) et **`categorieDepuisAdresse('chauffage')`** (→ `systeme-de-chauffage`). Commentaire : **« page » est une adresse réservée**. Un garde-fou fait échouer la compilation si une catégorie prend « page » ou si deux catégories ont la même adresse. |
+| `src/utils/blog.ts` | `ARTICLES_PAR_PAGE` (12), **`urlListeBlog(categorie, numero)`** (seule fabrique des adresses de liste), `pagesDeListe()` (pages statiques à partir de `paginate()`), `articleALaUne()`. |
+| `src/utils/seo.ts` (nouveau) | `jsonLdTexte()` (sorti du gabarit d'article) et `filArianeJsonLd()` (JSON-LD BreadcrumbList). |
+| `src/pages/blog/[...page].astro` (nouveau) | **Une seule route** pour /blog, /blog/page/N, /blog/<catégorie> et /blog/<catégorie>/page/N. |
+| `src/pages/blog/index.astro` | **Supprimé** (remplacé par la route ci-dessus). |
+| `src/components/BarreCategories.astro` (nouveau) | Barre des sept liens. |
+| `src/components/Pagination.astro` (nouveau) | Précédent / numéros / Suivant. |
+| `src/components/CarteArticleUne.astro` (nouveau) | Grande carte de l'article mis en avant. `CarteArticle.astro` n'est **pas modifié**. |
+| `src/components/FilAriane.astro` (nouveau) | Fil d'Ariane commun aux articles et aux listes. |
+| `src/layouts/Layout.astro` | Nouvelle prop **`indexable`** (par défaut `true`) : `false` donne `<meta name="robots" content="noindex, follow">`. |
+| `src/pages/post/[slug].astro` | Fil d'Ariane via `FilAriane.astro` ; **la catégorie y devient un lien** vers sa page ; **JSON-LD BreadcrumbList** ajouté. |
+| 2 articles | Liens morts corrigés (partie 6). |
+
+### 2. Routage
+
+- `paginate()` d'Astro ne sait produire que `/blog/2` (paramètre `[...page]`) ou `/blog/1` (paramètre `[page]`), jamais `/blog/chauffage/page/2`. Solution retenue : une route à paramètre « reste » unique, **`[...page]`**, qui reçoit tout ce qui suit /blog (`chauffage/page/2`). `pagesDeListe()` appelle `paginate()` (découpage par 12, numéros, total), puis remplace le paramètre et les adresses `page.url` (current, prev, next, first, last) par celles de `urlListeBlog()`. Le paramètre doit s'appeler `page` : `paginate()` l'exige.
+- Adresses sans barre finale, comme les articles (même remarque d'hébergement que la question 262).
+- Aucune adresse de catégorie écrite en dur : tout passe par `urlCategorie()` et `urlListeBlog()`.
+
+### 3. Pages
+
+- **/blog, page 1** : pas de fil d'Ariane. h1 « Guides et conseils ». Chapeau rédigé par moi : « Pompes à chaleur, isolation, solaire, aides financières : les guides des artisans Akelia pour préparer vos travaux et faire baisser vos factures. » (sert aussi de méta-description : **à relire**). Puis la barre des catégories, l'article à la une, les 12 cartes et la pagination.
+- **/blog, pages 2 à 9** : fil d'Ariane « Accueil › Blog › Page N », mention « Page N sur 9 » sous le chapeau, pas d'article à la une.
+- **Catégories** : fil d'Ariane « Accueil › Blog › Chauffage » (sur les pages suivantes, Chauffage devient un lien, puis « Page N »). h1 = libellé, chapeau = description. Pas d'article à la une.
+- **En-tête** sur fond crème, liste sur fond blanc. Conteneur `max-w-site`, gouttières de la charte.
+- **Barre des catégories** : pilules (`rounded-pilule`), 44px de haut, libellé et nombre (« Chauffage 58 », le nombre étant lu « 58 articles »). Catégorie en cours : fond plein `nuit-900`, texte blanc. Sous 768px, la barre défile dans son cadre ; **à partir de 768px, elle passe à la ligne** (les sept liens font 1 279px : ils ne tiennent pas sur une ligne, même dans les 1 250px du site).
+- **Article à la une** : le plus récent d'importance 5, aujourd'hui `installer-des-panneaux-solaires-est-il-toujours-rentable-…`. Carte pleine largeur, image au-dessus sous 768px, à gauche à partir de 768px. Entièrement cliquable, avec le même principe que les petites cartes. Titre en h2 (les cartes de la grille aussi).
+- **Grille** : 1, 2 (768px), 3 (992px) colonnes, `CarteArticle.astro` inchangé (titres en h2).
+- **Pagination** (`<nav aria-label="Pagination">`) : liens de 44 × 44px au moins. Page en cours : texte sur fond bleu nuit, `aria-current="page"`, **pas un lien**. Les numéros affichés sont la première page, la dernière, la page en cours et ses voisines, avec des points de suspension pour les trous :
+  - à partir de 480px : « ← Précédent 1 … 4 [5] 6 … 9 Suivant → » ;
+  - sur téléphone : « ← 1 … [5] … 9 → ». « Précédent » et « Suivant » sont réduits à leur flèche, le mot restant lu par les lecteurs d'écran. Sinon la barre ne tient pas dans 335px avec des cibles de 44px.
+  - Pas de page précédente ou suivante : case vide de même taille, pour garder les numéros centrés.
+  - **Une seule page : pas de pagination du tout** (vérifié sur Eau chaude, Mobilité électrique, Production d'énergie et Conseils).
+
+### 4. SEO
+
+| Page | title | robots | canonique | prev / next | BreadcrumbList |
+|---|---|---|---|---|---|
+| /blog | Guides et conseils en rénovation énergétique \| Akelia | index, follow | /blog | next | non |
+| /blog/page/2 | Guides et conseils en rénovation énergétique — page 2 \| Akelia | **noindex, follow** | /blog/page/2 | prev + next | non |
+| /blog/chauffage | Chauffage \| Guides Akelia | index, follow | /blog/chauffage | next | Accueil › Blog › Chauffage |
+| /blog/chauffage/page/3 | Chauffage — page 3 \| Guides Akelia | **noindex, follow** | elle-même | prev + next | idem |
+| /blog/eau-chaude | Eau chaude sanitaire \| Guides Akelia | index, follow | elle-même | aucun | Accueil › Blog › Eau chaude sanitaire |
+| article | (inchangé) | index, follow | (inchangé) | — | **Accueil › Blog › catégorie › titre de l'article** (nouveau) |
+
+- Méta-description des catégories = leur description (vérifiée dans le HTML).
+- Pas de CollectionPage ni d'ItemList.
+- Position de « — page N » : question 279.
+
+### 5. Liens vers le blog
+
+- En-tête (« Blog et conseils »), pied de page (« Blog ») et accueil (« Tous les articles ») pointaient déjà vers `/blog` : rien à changer.
+- **Aucune adresse de catégorie technique** (`systeme-de-chauffage`, `voiture-electrique`, `chauffe-eau`, `autre`…) dans les liens des 127 pages compilées (recherche faite).
+- Ajout : dans chaque article, la catégorie du fil d'Ariane est désormais un lien vers sa page (101 nouveaux liens internes vers les catégories).
+
+### 6. Liens morts corrigés dans les articles
+
+- `pompe-a-chaleur-et-chauffe-eau-quelles-sont-les-meilleurs-solutions-pour-la-production-deau-chaude.md` : `/installation-dun-chauffe-eau-thermodynamique` → `/post/chauffe-eau-electrique-vs-thermodynamique-quel-choix-pour-votre-maison`. ⚠️ Le ticket nommait le fichier `…-pour-votre-logement.md`, qui n'existe pas. Le vrai nom finit par `…-pour-la-production-deau-chaude.md` ; c'est le seul fichier qui contenait ce lien.
+- `quelles-sont-les-regions-adaptees-aux-pompes-a-chaleur.md` : `/solutions/climatisation-reversible-pac-air-air` → `/post/pompe-a-chaleur-air-air-vs-air-eau-guide-complet-pour-faire-le-bon-choix`. **À rebasculer vers la page solution quand elle existera** (question 277).
+- Les deux articles cibles existent et sont publiés.
+
+### 7. Vérification
+
+**Compilation** : `npm run build`, sans erreur ni avertissement, **127 pages** :
+
+| Pages | Nombre |
+|---|---|
+| Articles (/post/…) | 101 |
+| /blog et /blog/page/2 à /9 | 9 |
+| Pages 1 des catégories | 6 |
+| Pages suivantes des catégories (Chauffage 2 à 5, Rénovation énergétique 2) | **5** (et non 9 : question 278) |
+| Pages du site : /, /aides-renovation, /devis, /mentions-legales, /services, /test-charte | 6 |
+| **Total** | **127** |
+
+**Mesures dans le navigateur** (Chromium, version de production), à 375, 768 et 1440px, sur /blog, /blog/page/5, /blog/chauffage, /blog/chauffage/page/3 et /blog/eau-chaude :
+- **Débordement horizontal : 0px** partout.
+- ⚠️ **Défaut trouvé et corrigé pendant la vérification** : la page débordait de **867px à 375px** (474px à 768px). Les textes « sr-only » (« articles ») de la barre sont en position absolue ; le cadre défilant n'étant pas positionné, ils en sortaient. Corrigé par `relative` sur le cadre (commentaire en place).
+- **Barre** : à 375px, cadre de 375px pour 1 279px de contenu, elle défile ; à 768 et 1440px, passage à la ligne. Liens de 44px. Catégorie en cours sur fond `rgb(29, 43, 54)` (nuit-900), `aria-current="page"` en page 1, `"true"` au-delà (question 280).
+- **Grille** : 1 colonne à 375px, 2 à 768px, 3 à 1440px. Cartes par page : 12, sauf /blog/page/9 (5) et /blog/eau-chaude (2).
+- **Article à la une** : seulement sur la page 1 de /blog ; image au-dessus à 375px, à gauche à 768 et 1440px.
+- **Pagination**, page en cours entre crochets :
+  - à 375px : « ← [1] 9 → », « ← 1 [5] 9 → » (avec « … » visuels) ;
+  - à 768px et plus : « Précédent 1 4 [5] 6 9 Suivant ».
+
+  Aucun élément sous 44px. La page en cours n'est jamais un lien. **Absente** sur /blog/eau-chaude.
+- **Parcours par « Suivant »**, en cliquant jusqu'à la dernière page de chaque liste :
+  - **/blog/chauffage** : 5 pages, **58 cartes, 58 uniques, 0 doublon**. Toutes les cartes de la page 5 portent bien « Chauffage » ;
+  - **/blog** : 9 pages, **101 cartes, 101 uniques, 0 doublon** (plus l'article à la une en page 1, présent aussi en page 2, question 281) ;
+  - Rénovation énergétique 21 (2 pages), Conseils 11, Production d'énergie 6, Mobilité électrique 3, Eau chaude 2 : 0 doublon ;
+  - **la réunion des six catégories est identique aux 101 articles de /blog**.
+- **Clavier sur /blog**, Tab depuis le h1, à 375 et 1440px : **barre ×7 → article à la une ×1 → cartes ×12 (un arrêt par carte) → pagination** (2 arrêts à 375px, 3 à 1440px) → pied de page. **Contour de 2px bleu nuit à chaque arrêt**, sur la carte entière pour les cartes. À 375px, le cadre de la barre défile tout seul jusqu'au lien qui reçoit le focus (862px pour « Mobilité électrique »).
+- **Liens morts** : 12 945 liens internes (et ancres) vérifiés sur les 127 pages. **0 lien mort**, hors pages encore absentes : `/solutions/…` (21 adresses du menu), `/qui-sommes-nous`, `/entreprise`, `/politique-confidentialite`.
+- Captures (`captures/blog-listes/`) : `<page>-<largeur>.png` et `<page>-<largeur>-entiere.png` pour les 5 pages aux 3 largeurs ; `barre-focus-375.png`.
+
+## Blog : article à la une retiré de la liste de /blog (17 octobre 2026)
+
+Question 281 réglée ; questions 277, 279 et 280 closes sans modification.
+
+- **Problème** : l'article à la une s'affichait en grande carte en haut de la page 1 de /blog, puis réapparaissait dans la grille de la page 2, à sa place chronologique.
+- **Correction** (`src/utils/blog.ts`, `pagesDeListe()`) : pour la liste générale (sans catégorie), l'article renvoyé par `articleALaUne()` est retiré de la liste passée à `paginate()`. Un commentaire explique pourquoi. Les pages de catégorie ne changent pas : l'article y garde sa place chronologique.
+- `src/pages/blog/[...page].astro` : la précaution précédente (retirer l'article de la grille de la page 1 s'il s'y trouvait) devient inutile et est supprimée ; la grille affiche `page.data` tel quel.
+- La barre des catégories affiche toujours « Tous les articles 101 » : c'est le nombre d'articles du blog, l'article à la une compris.
+
+**Vérification** :
+- `npm run build` : sans erreur ni avertissement, **127 pages** (inchangé). /blog : **9 pages** (8 × 12 + 4) ; `/blog/page/9` compte **4 cartes**.
+- Parcours de /blog en cliquant « Suivant » jusqu'au bout : **100 cartes, 100 uniques, 0 doublon**. L'article à la une (`installer-des-panneaux-solaires-est-il-toujours-rentable-…`) n'apparaît dans **aucune** grille de /blog.
+- Catégories inchangées : Chauffage 58 (5 pages), Rénovation énergétique 21 (2 pages), Conseils 11, Production d'énergie 6, Mobilité électrique 3, Eau chaude 2. Aucun doublon. L'article à la une figure toujours dans **Production d'énergie**, sa catégorie. La réunion des six catégories compte 101 articles, soit les 100 de la liste de /blog plus l'article à la une.
+
+
+## /aides-renovation : création de la page (19 octobre 2026)
+
+Question 241 réglée. **Questions ouvertes : n° 282 à 291** (« Questions en attente de réponse »). ⚠️ La question 282 est à trancher avant la mise en ligne : le texte fourni contredit sur plusieurs points les données vérifiées du simulateur, et la page affiche « Montants vérifiés le 19 octobre 2026 » sans qu'aucune vérification sur source officielle ait été faite ce jour-là.
+
+### 1. Déroulé
+- **Texte absent du ticket** : le ticket annonçait le texte en fin de message, mais il n'y figurait pas. Question posée ; le texte a été collé ensuite et repris **mot pour mot**. Il s'arrête avant le « Comment en bénéficier ? » des aides locales (question 283).
+- L'ancien fichier (40 caractères, en-tête jamais fermé) est remplacé entièrement.
+
+### 2. Fichiers
+| Fichier | Changement |
+|---|---|
+| `src/pages/aides-renovation.astro` | Page réécrite (7 zones, voir § 3). |
+| `src/components/Sommaire.astro` | **Nouveau.** Sommaire sorti de `post/[slug].astro` : forme `colonne` (collante, 992px et plus, avec un emplacement pour l'appel à l'action) et forme `replie` (`<details>`, sous 992px), pastille de couleur en option, script de suivi de la lecture. Le script suit les titres visés par les liens, où qu'ils soient dans la page, au lieu des seuls h2 du corps d'article. |
+| `src/pages/post/[slug].astro` | Utilise `Sommaire.astro` ; plus de sommaire ni de script en double. Rendu inchangé (vérifié, § 5). |
+| `src/components/Simulateur.astro` | **Nouveau.** Le simulateur seul : message sans JavaScript, `SimulateurQuestions.astro` et démarrage des scripts. |
+| `src/components/SimulateurAides.astro` | Section de l'accueil : utilise `Simulateur.astro`. Rendu inchangé. |
+| `src/components/aides/Icone.astro`, `Encadre.astro`, `Vignettes.astro`, `Etapes.astro` | **Nouveaux.** Ce sont, dans l'ordre : les pictogrammes au trait, les encadrés « À noter », « Attention », « Vigilance » et « L'avantage », la grille de vignettes de travaux et les étapes numérotées (style /devis). |
+| `src/utils/blog.ts` | **Nouveau : `articlesPertinents(publies, motsCles, nombre, exclure)`** (§ 4). |
+| `src/utils/texte.ts` | Nouveaux : `euros()` (« 11 000 € ») et `pourcent()` (« 5,5 % »). |
+| `src/data/aides.ts` | Nouvelle partie « CHIFFRES MIS EN AVANT SUR LA PAGE /aides-renovation » (ci-dessous). |
+| `src/styles/global.css` | 4 couleurs des profils MaPrimeRénov' ; classe `ancre-sommaire` (décalage des ancres sous l'en-tête, hors articles). |
+
+**Ajouts dans `src/data/aides.ts`**, tous commentés :
+- `dateVerificationPage = '2026-10-19'` : affichée en bas de page, « Montants vérifiés le 19 octobre 2026. » ;
+- `tauxTva` : `reduit` 5,5 et `intermediaire` 10. **Le 10 % est un ajout** : il n'existait pas dans le fichier ;
+- `mprGesteMax` : **lu** dans l'aide `maprimerenov-geste`, qui vaut 11 000 € (rien d'ajouté) ;
+- `mprAmpleurTauxMax = 80` : **ajout**. Le taux n'existait qu'en commentaire ;
+- `ceeMontantMisEnAvant = 7500` : **ajout**, repris du texte, **NON CONFIRMÉ** (question 282). Le simulateur, lui, n'affiche toujours aucun montant CEE ;
+- `ecoPtzMax` : **lu** dans l'aide `eco-ptz`, qui vaut 50 000 € (rien d'ajouté) ;
+- `plafondsEcoPtz` : les 6 plafonds, avec leurs libellés du texte. **Ajout** : la ligne « Assainissement non collectif, 10 000 € » n'est pas dans le barème Anah (question 282).
+
+### 3. La page, de haut en bas
+1. **En-tête** : fil d'Ariane, h1, les deux paragraphes. L'illustration `aides-entete.png` se place à droite à partir de 768px, au-dessus en dessous ; elle est absente pour l'instant, donc une seule colonne sans emplacement vide. Dessous, le **bandeau des 4 chiffres clés**, lus dans `aides.ts` : 5,5 % · jusqu'à 11 000 € · plus de 7 500 € · jusqu'à 50 000 €. Il compte 2 colonnes sur téléphone et 4 à partir de 768px.
+2. **Simulateur** sur fond crème, titre « Estimez vos aides en trois questions » (`Simulateur.astro`, le même que l'accueil).
+3. **Ce qu'il faut retenir** : l'encart vert du blog, en plus large, sur deux colonnes à partir de 768px. La **mise en garde** est détachée dessous : fond alerte-50, filet rouge de 2px, icône. Le sommaire replié (sous 992px) vient juste après.
+4. **Ce qui se cumule avec quoi** : une carte par aide (1, 2 puis 3 colonnes), avec une légende des couleurs. Les pastilles (fond pâle, point foncé, nom écrit) sont décoratives : la phrase du ticket est écrite dessous. Le **Parcours Accompagné** se détache : fond orange pâle, filet orange en tirets, étiquette « Exception », pastille CEE barrée.
+5. **Frise des démarches** : 7 étapes, verticale sous 992px, horizontale au-delà. L'étape 4 a une pastille orange pleine et l'étiquette « Point de non-retour ». « Ne signez aucun devis avant cette étape. » s'affiche en bandeau d'alerte : entre les étapes 4 et 5 en vertical ; en horizontal, sous la frise, à cheval sur les colonnes 4 et 5, avec un trait rouge en tirets à la frontière. Les étapes 6 et 7 portent « Délai : plusieurs semaines à plusieurs mois ».
+6. **Les cinq aides**, dans l'ordre du texte. À partir de 992px, le sommaire collant est à gauche : 5 entrées avec une pastille de couleur (pas d'émoji), puis « Contacter votre artisan » (vers /devis) et « Akelia, le collectif d'artisans locaux ». Chaque aide comporte :
+   - un bandeau de titre (fond pâle et filet de sa couleur, h2) ;
+   - les sous-parties en h3 ;
+   - les travaux en vignettes : 2 colonnes, puis 3 à partir de 768px ;
+   - « Comment en bénéficier » en étapes numérotées, style /devis ;
+   - les encadrés sortis du texte.
+   
+   Les cas particuliers :
+   - **TVA** : encadré des climatisations réversibles, avec les critères en liste et la conséquence « 20 % sur le matériel » / « 10 % sur la pose » en gros, sur fond d'alerte ;
+   - **MaPrimeRénov'** : les deux parcours en deux blocs, et les 4 profils en pastilles colorées ;
+   - **Éco-PTZ** : plafonds en tableau léger, lus dans `aides.ts`.
+   
+   La phrase sur Akelia termine la section des aides locales.
+7. **À lire aussi** : 4 cartes (`CarteArticle.astro`) ; puis l'appel à l'action de fin d'article ; puis « Montants vérifiés le 19 octobre 2026. ».
+
+**Couleurs des sections** : prises dans la charte, avec la teinte foncée pour les pastilles, filets et icônes, et la teinte pâle pour les fonds.
+- TVA : brume ;
+- Éco-PTZ : lichen ;
+- CEE : argile ;
+- MaPrimeRénov' : vert ;
+- aides locales : bruyère.
+
+**SEO** :
+- title « Aides rénovation énergétique 2026 : le guide complet | Akelia » ;
+- description propre à la page (le taux de TVA y est lu dans `aides.ts`) ;
+- canonique `https://akelia.fr/aides-renovation` ;
+- `index, follow` ;
+- fil d'Ariane « Accueil › Aides rénovation » et JSON-LD BreadcrumbList ;
+- pas de FAQPage.
+
+### 4. `articlesPertinents()` (src/utils/blog.ts)
+Elle est écrite pour resservir telle quelle sur les 21 pages /solutions/…, sans aucun champ à remplir dans les articles.
+- **Recherche** : chaque mot-clé est cherché dans le titre (6 points), la description (2) et le chapeau (1). Les accents et les majuscules sont ignorés, et le mot-clé doit commencer un mot.
+- **Comptage** : la présence compte, pas le nombre d'occurrences. Un long chapeau qui répète un mot ne l'emporte donc pas sur un titre qui le contient.
+- **Tri** : score décroissant, puis importance, puis date (le plus récent d'abord). Un article sans aucun point est exclu.
+
+Mots-clés de la page : MaPrimeRénov, CEE, certificats d'économies d'énergie, prime énergie, éco-prêt, éco-PTZ, prêt à taux zéro, Anah, aides financières.
+
+Résultat : **les 4 articles attendus, en tête**. Dans l'ordre : CEE (22 points), Éco-PTZ (19), contrôles de l'Anah (9), MaPrimeRénov' (9). Le suivant n'a que 6 points. ℹ️ Le slug du 4e article cité dans le ticket est tronqué : le vrai est `tout-savoir-sur-les-controles-de-lanah-apres-travaux-de-renovation-energetique`.
+
+### 5. Vérification
+- **`npm run build`** : sans erreur ni avertissement, 127 pages. `dist/aides-renovation/index.html` fait 140 Ko : la page n'est plus un fichier cassé.
+- **375, 768, 1024 et 1440px** (Chromium) :
+  - **débordement horizontal 0px** aux 4 largeurs ;
+  - **aucune cible cliquable sous 44px** ;
+  - texte courant à 18px ou plus. Exceptions, toutes de navigation ou décoratives : question 291.
+  
+  Captures dans `captures/aides-renovation/` : `aides-<largeur>.png` (page entière) et `<zone>-<largeur>.png`.
+- **Simulateur, même saisie sur l'accueil et sur la page** : propriétaire occupant, 31000, chauffage et isolation. **Résultats identiques au caractère près** (comparaison du texte : `true`). Captures : `simulateur-accueil.png` et `simulateur-aides.png`. Le résultat obtenu :
+  - MaPrimeRénov' par geste : Oui, jusqu'à 11 000 € ;
+  - rénovation d'ampleur : Sous conditions, jusqu'à 32 000 € ;
+  - CEE : Oui ;
+  - Éco-PTZ : Oui, jusqu'à 50 000 € ;
+  - TVA à 5,5 % : Oui ;
+  - Occitanie et Haute-Garonne : À vérifier.
+- **Sommaire** : à 1440, 1024 et 375px, chaque lien amène son titre **16px sous l'en-tête collant**, et l'entrée cliquée devient l'entrée active (`aria-current`). Le bloc collant tient à 146px du haut à 1440px et à 97px à 1024px. Le même test sur un article (MaPrimeRénov', 7 entrées) donne le même résultat : l'extraction du composant n'a rien cassé.
+- **Montants du bandeau** : `grep` sur la page ne trouve **aucune** occurrence de `11000`, `7500`, `50000` ni `50 000`. Le bandeau n'utilise que `pourcent(tauxTva.reduit)`, `euros(mprGesteMax)`, `euros(ceeMontantMisEnAvant)` et `euros(ecoPtzMax)`, et les plafonds de l'Éco-PTZ que `plafondsEcoPtz`. Les seules occurrences restantes de « 11 000 », « 7 500 », « 5,5 » et « 80 % » sont dans les **paragraphes rédigés**, comme le prévoit le ticket.
+- **Contrastes (WCAG)** :
+  - profils MaPrimeRénov' : Bleu #1f4e9c, texte blanc **7,99:1** ; Jaune #f5c518, texte foncé **10,02:1** (en blanc, il ne ferait que 1,63:1) ; Violet #6a3d9a, texte blanc **7,64:1** ; Rose #f6b8cf, texte foncé **9,86:1** ;
+  - couleurs des sections, teinte foncée sur blanc et texte sur teinte pâle : brume 6,27:1 et 11,65:1 ; lichen 6,13:1 et 12,76:1 ; argile 5,80:1 et 12,19:1 ; vert 6,34:1 et 14,41:1 ; bruyère 6,21:1 et 11,88:1. Les teintes foncées ne portent jamais de texte, seulement des pastilles, filets et icônes (3:1 exigé) ;
+  - encadrés et alertes : texte sur alerte-50 13,58:1 ; texte sur action-50 14,56:1 ; texte sur orange (« Point de non-retour ») 6,87:1, en gras.
+
+## /qui-sommes-nous : création de la page (19 octobre 2026)
+
+La page n'existait pas : liée depuis le menu, le tiroir mobile et le pied de page de toutes les pages, elle répondait 404. Elle est créée à l'adresse de l'ancien site. Le texte fourni est repris **mot pour mot**. **Questions ouvertes : n° 292 à 297.** ⚠️ Les quatre cartes « domaines d'expertise » mènent à des 404 (question 292).
+
+### 1. Fichiers
+| Fichier | Changement |
+|---|---|
+| `src/pages/qui-sommes-nous.astro` | **Nouveau.** 6 sections (§ 2). |
+| `src/data/collectif.ts` | **Nouveau.** `noteMinimale = 4.5` (seuil, pas une moyenne), `distanceMaxKm = 30`, `noteEnTexte` (« 4,5 »). |
+| `src/components/NoteMinimale.astro` | **Nouveau.** Étoiles orange, note en très grand et « note minimale exigée » (obligatoire), sortis de /devis. |
+| `src/pages/devis.astro` | Utilise `NoteMinimale.astro`. La phrase « notées 4,5 ou plus » lit `noteEnTexte`. La mention passe de 16 à 18px (question 297). |
+| `src/data/menu.ts` | **Nouveau.** Données du menu (`menuSolutions`, `liensDirects`, `liensSecondaires`) sorties de `Header.astro`, pour que la page lise les adresses des rubriques au lieu de les recopier. Le menu est inchangé. |
+| `src/components/Header.astro` | Importe ses données depuis `src/data/menu.ts`. |
+| `src/components/aides/Icone.astro` | 4 icônes de plus : `technicien`, `repere`, `prix`, `valorisation`. |
+| `src/components/Footer.astro` | Commentaire : /qui-sommes-nous n'est plus une page manquante. |
+
+### 2. La page
+1. **En-tête** (blanc) :
+   - fil d'Ariane, h1, accroche en `text-chapeau` (la note y est lue dans `collectif.ts`) ;
+   - bouton orange « Obtenir mon devis » (/devis) et lien souligné « Découvrir les artisans de mon secteur » (/devis, provisoire, question 293) ;
+   - `collectif.png` à droite à partir de 768px, sous le texte en dessous, recadré sur sa zone dessinée ; rien s'il manque.
+2. **Le concept** (crème) :
+   - surtitre, h2, colonne plafonnée à 70 caractères, texte à 20px à partir de 768px ;
+   - les deux phrases-clés en gras bleu nuit, avec un surligneur orange pâle sur le bas des lettres : pas d'encadré, pas de soulignement qu'on prendrait pour un lien. Texte sur le surlignage : 10,07:1.
+3. **Les quatre engagements** (blanc) : grille de 1 colonne, puis 2 à partir de 768px, avec de grands écarts (56px, puis 80px). Ni cadre ni fond de carte. Chaque engagement a une icône au trait dans une pastille vert pâle, un h3 et un paragraphe. Les 30 km sont lus dans `collectif.ts`.
+4. **L'exigence du réseau** : bloc bleu nuit arrondi. À gauche, le h2, l'introduction et les trois critères (intitulé en gras, coche orange) ; à droite à partir de 992px, `NoteMinimale` dans un cadre fin.
+5. **Les domaines d'expertise** (crème) : 4 cartes de 1, 2 puis 4 colonnes, entièrement cliquables (même technique que `CarteArticle.astro`). Chaque carte montre une icône, le titre (le lien), la phrase, le détail entre parenthèses et « Voir les solutions → ». Adresses lues dans `src/data/menu.ts` (question 292).
+6. **Bandeau de conclusion** : bleu nuit, pleine largeur, h2, les deux phrases et le bouton orange « Trouver mon artisan local » (/devis, provisoire, question 293).
+
+**SEO** :
+- title « Collectif d'artisans RGE en rénovation énergétique | Akelia » ;
+- description propre, qui lit 30 km et 4,5 dans `collectif.ts` ;
+- canonique `https://akelia.fr/qui-sommes-nous` ;
+- `index, follow` ;
+- fil d'Ariane « Accueil › Qui sommes-nous » et JSON-LD BreadcrumbList ;
+- pas de sommaire.
+
+### 3. Vérification
+- **`npm run build`** : sans erreur ni avertissement. `/qui-sommes-nous/index.html` est généré.
+- **Depuis le menu et le pied de page** (accueil, 1440px), un clic sur « Qui sommes-nous » mène à `/qui-sommes-nous` : **HTTP 200**, avec le bon h1.
+- **375, 768, 1024 et 1440px** (Chromium) :
+  - **débordement horizontal 0px** ;
+  - toutes les cibles font 44px ou plus. Les titres des 4 cartes d'expertise ne mesurent que 28px de haut, mais leur zone cliquable couvre toute la carte (253 à 320px de haut), vérifié aux coins et au centre de chaque carte ;
+  - texte courant à 18px ou plus. Seuls restent plus petits le fil d'Ariane (16px), le surtitre (13,6px) et les libellés du méga-menu (14,4px), tous existants.
+  
+  Captures : `captures/qui-sommes-nous/page-<largeur>.png`.
+- **Contrastes** :
+  - bloc bleu nuit et bandeau de fin : texte blanc sur nuit-900 **14,47:1** ; étoiles et coches orange sur nuit-900 **6,08:1** (éléments non textuels, 3:1 exigé) ;
+  - bouton orange (texte foncé) **6,87:1** ;
+  - texte secondaire sur blanc 7,11:1 ;
+  - icônes vert-600 sur vert-50 5,59:1.
+- **Liens d'expertise** : les quatre répondent **404** (aucune page `/solutions/…` n'existe, question 292). Les liens vers `/` et `/devis` répondent 200.
+- **Note 4,5 et 30 km**, source unique `src/data/collectif.ts` :
+  - `grep` sur `src/` (hors articles) : plus aucune occurrence de « 4,5 » ni de « 30 km » dans le texte affiché. Il ne reste que des commentaires et des rapports de contraste (« 14,5:1 ») ;
+  - lecteurs de ces valeurs : `NoteMinimale.astro` (/devis et /qui-sommes-nous), la phrase sous la note sur /devis, l'accroche, l'engagement « réactivité locale », le critère « Preuve sociale » et la description SEO ;
+  - pages construites : `text-display leading-none">4,5` sur /devis comme sur /qui-sommes-nous, et une mention « note minimale exigée » sur chacune.
+
+## /qui-sommes-nous : en-tête, rythme et entrée artisans (19 octobre 2026)
+
+**Questions ouvertes : n° 298 à 303** (nouvelles) ; 293, 294, 295 et 296 restent ouvertes ; la 292 est contournée provisoirement.
+
+### 1. En-tête refait
+- **Bandeau crème pleine largeur** (d'un bord à l'autre de l'écran) ; le texte reste dans `max-w-site`.
+- **h1 en `text-display` à partir de 992px** (`text-h1` en dessous). Les deux appels à l'action restent sous le texte, avant l'image.
+- **`collectif.png` sous le texte**, sur la largeur de la colonne (1200px au plus). Il déborde légèrement, comme sur l'accueil : 120 % de la colonne sous 768px, 106 % au-delà. La section porte `overflow-x-clip` : pas de défilement horizontal. La petite vignette de droite est supprimée.
+- **Alignement : les deux ont été essayés.** Captures `captures/qui-sommes-nous/entete-gauche-{375,1024,1440}.png` et `entete-centre-{375,1024,1440}.png`. **Retenu : centré à partir de 768px, aligné à gauche en dessous.** Sur ordinateur, le texte centré s'équilibre au-dessus du grand bandeau symétrique, comme la section Collectif de l'accueil. Sur téléphone, six lignes de chapeau centrées se lisent mal. Le réglage est la constante `ALIGNEMENT_ENTETE` de la page.
+- **`sizes` recalculé** : l'image s'affiche trois fois plus large qu'avant. Valeur : `(min-width: 1280px) 1272px, (min-width: 768px) calc((100vw - 2.5rem) * 1.06), calc((100vw - 2.5rem) * 1.2)`. Variantes générées : 640, 960, 1280, 1600 et 1800px (1800 = largeur du fichier, rien au-delà). La zone dessinée couvre toute la largeur du fichier : le recadrage n'agrandit pas l'image horizontalement.
+- **Variante réellement chargée** (largeur mesurée du fichier téléchargé, Chromium) :
+
+| Écran | Variante chargée | Largeur affichée | Pixels d'image par pixel CSS |
+|---|---|---|---|
+| 1440px, ×1 | 1280px | 1272px | 1,01 : **nette** |
+| 1440px, ×2 | 1800px (la plus grande) | 1272px (2544px écran) | 1,42 : limite du fichier source (question 298) |
+| 1024px, ×1 | 1280px | 1043px | 1,23 |
+| 375px, ×3 | 1280px | 402px (1206px écran) | 3,18 |
+
+### 2. Bandeau de chiffres (sous l'en-tête, fond blanc)
+Trois chiffres lus dans `src/data/collectif.ts` :
+- « 4,5 / 5 », note minimale exigée ;
+- « 30 km », votre artisan au plus loin ;
+- « 1 seul », artisan par métier et par secteur.
+
+Mise en forme : nombre très gros, libellé dessous, filet orange à gauche. 1 colonne sous 480px, 3 au-delà.
+
+### 3. Rythme
+- **Fonds, de haut en bas** : crème (en-tête), blanc (chiffres), crème (concept), blanc (engagements), **bleu nuit** (exigence, devenue une section pleine largeur), crème (domaines), crème foncé (artisans), **bleu nuit** (conclusion). La suite demandée « blanc / crème / blanc / bleu nuit / crème / bleu nuit » s'applique à partir du bandeau de chiffres.
+- **Engagements numérotés 01 à 04** : en très gros (80 puis 96px), orange à 25 %, derrière le titre. Les numéros sont décoratifs (`aria-hidden`), et la liste est un `<ol>`.
+- **Concept** : 2rem entre les paragraphes (`space-y-8`).
+- **Espacement vertical des sections : +25 %** (4,5rem devient 5,625rem, 7,5rem devient 9,375rem).
+
+### 4. Entrée pour les artisans
+- **Bandeau « Vous êtes artisan ? »**, entre les domaines et la conclusion. Fond crème foncé (texte 13,3:1) et bouton **bleu nuit** (texte blanc 14,47:1) au lieu d'orange : on voit tout de suite qu'il ne s'adresse pas au même lecteur. Texte corrigé (question 302) : « Nous ne retenons qu’une seule entreprise par métier et par secteur. Si la vôtre est certifiée RGE, assurée en décennale, notée 4,5/5 ou plus sur Google et qu’elle pose avec ses propres équipes, présentez-la : nous étudions chaque candidature. » Le nombre et la note sont lus dans `collectif.ts`.
+- **Nouvelle page `/rejoindre-le-collectif`** (`src/pages/rejoindre-le-collectif.astro`), sur la disposition de /devis :
+  - fil d'Ariane « Accueil › Qui sommes-nous › Rejoindre le collectif » et BreadcrumbList ;
+  - h1 « Rejoindre le collectif Akelia », puis un chapeau : « Vous êtes artisan de la rénovation énergétique ? Présentez votre entreprise : nous revenons vers vous pour étudier votre candidature. » ;
+  - à droite (1024px et plus), les **critères d'entrée** dans un bloc bleu nuit (intro et 3 critères lus dans `collectif.ts`, les mêmes que /qui-sommes-nous, mot pour mot). Dessous, **« Ce que le collectif vous apporte »**, trois points tirés du texte existant, sans promesse de volume :
+    - « Des achats mutualisés : la force du réseau vous permet d’acheter vos matériaux au meilleur prix. » ;
+    - « La gestion des aides de l’État : le collectif met en commun ses outils pour monter les dossiers d’aides de vos clients (MaPrimeRénov’, CEE…). » ;
+    - « Des chantiers, sans commerciaux : les demandes de devis des particuliers de votre secteur vous arrivent directement, sans intermédiaire, et sans concurrence d’une autre entreprise du collectif sur votre métier. ».
+- **Formulaire** : même mécanique Web3Forms que /devis. Sans JavaScript, le navigateur vérifie les champs puis poste le formulaire. Avec JavaScript :
+  - messages d'erreur en toutes lettres sous chaque champ ;
+  - envoi en arrière-plan ;
+  - la confirmation remplace le formulaire.
+  
+  Champs : entreprise, contact, téléphone, code postal et métier (obligatoires) ; note Google (facultative, de 0 à 5, virgule acceptée) et message (facultatif). Sujet propre : « Candidature artisan Akelia : <métier>, <entreprise> (<code postal>) » ; expéditeur « Akelia Candidature artisan ». La mention sur les données est celle de /devis (question 301).
+- **Pied de page** : le lien existant « Rejoindre le collectif » (colonne Navigation) pointait vers `/entreprise` (404). Il pointe désormais vers `/rejoindre-le-collectif` (question 299).
+- `src/data/web3forms.ts` : commentaire mis à jour (trois formulaires).
+
+### 5. Liens d'expertise provisoires
+Les quatre cartes pointent vers les catégories du blog. Les adresses sont données par `urlCategorie()`, jamais écrites en dur :
+- Isoler votre enveloppe : `/blog/renovation-energetique` ;
+- Chauffer & Climatiser : `/blog/chauffage` ;
+- Devenir Autonome : `/blog/production-energie` ;
+- Rénover Globalement : `/blog/renovation-energetique`.
+
+Le libellé devient « Voir les guides → ». **À REBASCULER vers les pages /solutions/… quand elles existeront** (même point que la question 277). Les adresses définitives sont dans `src/data/menu.ts` : première solution de chaque rubrique, et « Rénovation globale ».
+
+### 6. Propositions de texte : toutes retenues
+| Où | Ancien texte | Nouveau texte |
+|---|---|---|
+| Accroche | « Akelia est le collectif qui redonne le pouvoir aux véritables entreprises artisanales. Fini les intermédiaires et les plateformes déshumanisées. Passez en direct avec un expert de votre région, noté 4,5/5 minimum, pour une rénovation performante et un investissement rentable. » | « Akelia est le collectif qui redonne le pouvoir aux vraies entreprises artisanales. Pas d’intermédiaire, pas de plateforme : vous parlez directement à un artisan de votre région, noté 4,5/5 minimum. » |
+| Titre section 3 | « Ce que notre collectif change pour votre maison » | « Ce que ça change, concrètement » |
+| Titre section 5 | « Une maîtrise complète de votre performance énergétique » | « De l’isolation à l’autonomie » |
+| 2e engagement | « Une réactivité locale (à moins de 30 km) » | « Votre artisan est à moins de 30 km » |
+
+### 7. `src/data/collectif.ts`
+Ajouts :
+- `parMetierEtSecteur` : `nombre` 1 et ses formes « 1 seul », « un seul », « une seule », à changer ensemble ;
+- `introCriteres` : la phrase « Nous ne gardons qu’un seul expert… », construite avec `parMetierEtSecteur` ;
+- `criteresEntree` : les 3 critères, la note y est lue.
+
+Ces données sont lues par /qui-sommes-nous (bandeau de chiffres, section exigence, bandeau artisans) et par /rejoindre-le-collectif (critères, description SEO).
+
+### 8. Vérification
+- **`npm run build`** : sans erreur ni avertissement. `/rejoindre-le-collectif/index.html` est générée.
+- **Le bouton « Rejoindre le collectif »** de /qui-sommes-nous mène à `/rejoindre-le-collectif` : HTTP 200.
+- **Liens internes depuis /qui-sommes-nous** :
+  - **contenu de la page : 6 liens, 0 en erreur** ;
+  - en-tête du site : 21 liens /solutions/… en 404, communs à tout le site (pages pas encore créées) ;
+  - pied de page : 1 lien en 404, `/politique-confidentialite`, commun à tout le site.
+- **375, 768, 1024 et 1440px**, sur les deux pages : **débordement horizontal 0px**. Texte courant à 18px ou plus. Restent plus petits le fil d'Ariane (16px), le surtitre (13,6px) et le méga-menu (14,4px), comme avant. Éléments de moins de 44px de haut, tous justifiés :
+  - les titres des cartes d'expertise : leur zone cliquable couvre toute la carte ;
+  - les étiquettes de champ : le champ dessous fait 56px, comme sur /devis ;
+  - le lien « politique de confidentialité » : il est dans une phrase, et les liens en ligne sont exemptés (WCAG 2.5.8).
+  
+  Captures : `captures/qui-sommes-nous/page-<largeur>.png` et `captures/rejoindre-le-collectif/page-<largeur>.png`.
+- **Formulaire de candidature** (Chromium, requête interceptée, **aucun envoi réel**) :
+  - envoi à vide : 5 messages d'erreur, aucune requête, focus sur « Nom de l’entreprise » ;
+  - envoi rempli : `POST https://api.web3forms.com/submit` avec `access_key` (08e77810…), `subject` = « Candidature artisan Akelia : Chauffagiste, Thermique Garonne SARL (31000) », `from_name` = « Akelia Candidature artisan », Entreprise, Contact, Téléphone, Code postal, Métier, Note Google = 4,8, Message ;
+  - la confirmation s'affiche et le formulaire est masqué.
+  
+  Le sujet de /devis reste « Demande de devis Akelia : … » (champ caché : « Nouvelle demande de devis sur Akelia »).
+- **« 4,5 », « 30 km », « un seul / une seule / 1 seul »** : `grep` sur `src/pages` et `src/components` ne les trouve plus dans aucun texte affiché, seulement dans des commentaires. La seule occurrence restante, la description SEO de /rejoindre-le-collectif, a été corrigée pour lire `parMetierEtSecteur.feminin`. Toutes les valeurs viennent de `src/data/collectif.ts` (`noteMinimale = 4.5`, `distanceMaxKm = 30`, `parMetierEtSecteur`).
+
+## /rejoindre-le-collectif : la page de vente (19 octobre 2026)
+
+La page minimale devient une page de vente destinée aux entreprises du bâtiment. Le texte fourni est repris **mot pour mot**, et les émojis sont remplacés par des icônes de la charte. Le formulaire est **inchangé** ; il passe en bas de page. **Questions ouvertes : n° 304 à 307.** Les 300 et 301 restent ouvertes, la 302 est en partie sans objet, la 303 est réglée pour cette page.
+
+### 1. Fichiers
+| Fichier | Changement |
+|---|---|
+| `src/pages/rejoindre-le-collectif.astro` | Page refaite (8 sections, § 2). Le formulaire et son script sont repris **à l'identique**, sans retouche. Le bloc bleu nuit des critères et le bloc « Ce que le collectif vous apporte » sont supprimés : le premier est développé en section 5, le second n'est pas dans le texte fourni. |
+| `src/components/SchemaPartenaire.astro` | **Nouveau.** Schéma de fonctionnement en SVG (§ 3). |
+| `src/data/collectif.ts` | `criteresEntree` et `introCriteres` ne servent plus qu'à /qui-sommes-nous (commentaire « ne pas fusionner »). Nouvelle fonction `majuscule()` (« un seul » → « Un seul »). Rien d'autre ne change : `noteMinimale` est toujours lu par /devis et par « L'élite de l'artisanat local ». |
+| `src/pages/qui-sommes-nous.astro` | Bandeau « Vous êtes artisan ? » : nouveau texte, sans la note. « une seule » est toujours lu dans `collectif.ts`. |
+| `src/components/FilAriane.astro` | Option `fond="sombre"` : liens blancs (14,47:1), séparateurs blancs à 75 % (décoratifs), contour de focus blanc. |
+| `src/components/aides/Vignettes.astro` | Option `colonnes="1-2"` : 1 colonne sur téléphone, 2 à partir de 768px, nom du métier plus grand (20px, gras) et précision dessous (18px, texte secondaire). |
+| `src/components/aides/Icone.astro` | 2 icônes de plus : `calendrier` et `plan`. |
+| `src/styles/global.css` | **Nouvelle couleur `action-300` (#f7b455)** : orange clair réservé au texte sur fond bleu nuit, à 8,00:1 contre 6,08:1 pour l'orange principal. |
+
+### 2. La page, de haut en bas
+1. **En-tête bleu nuit**, pour qu'on distingue au premier coup d'œil une page B2B :
+   - fil d'Ariane clair, h1 (`text-display` à partir de 992px) ;
+   - **juste dessous, la phrase « Tout en restant 100 % maître de vos prix, de vos devis et de vos marges. »** en `text-chapeau`, semi-gras, orange clair `action-300` ;
+   - l'introduction, puis les 3 arguments sur 3 colonnes à partir de 768px, chacun avec son icône orange clair : calendrier, étiquette de prix, repère ;
+   - le bouton orange « Devenir partenaire », qui mène à `#candidature`.
+2. **Schéma de fonctionnement** (blanc) : `SchemaPartenaire.astro`.
+3. **Les règles du jeu ont changé** (crème) :
+   - les 3 constats, numérotés 01 à 03 comme les engagements de /qui-sommes-nous (orange à 25 %, derrière le titre) ;
+   - **la phrase de bascule sort des blocs** : pleine largeur, 24 à 36px, gras bleu nuit, sous un filet orange de 4px.
+4. **Fonctionnement** (blanc) : le paragraphe, puis « Tout en garantissant » et 3 cartes à filet orange en haut (Zéro sous-traitance, Exclusivité territoriale, Liberté de fonctionnement).
+5. **Pour qui ?** (crème) :
+   - la phrase d'introduction ;
+   - **Critères d'éligibilité** : les 4 du texte, chacun avec son icône, **aucune note Google**. Ils sont rangés dans la page (`criteresEligibilite`), pas dans `collectif.ts` : ils ne servent qu'ici ;
+   - **Métiers éligibles** : les 5 métiers en vignettes (1, puis 2 colonnes), le métier en titre et la précision entre parenthèses dessous.
+6. **Le parcours** (blanc) : 4 étapes dans le style de la Méthode de l'accueil. Pastille numérotée cerclée de la couleur de l'étape (bruyère, argile, lichen, brume), carte blanche à filet de la même couleur, ombre, icône. Verticale sous 992px, horizontale au-delà. **Aucun délai** : le texte n'en donne pas (question 304).
+7. **FAQ** (crème) : 3 `<details>`, le premier ouvert, chevron de la charte. Le texte affiché et le JSON-LD `FAQPage` sont tirés **du même tableau** `faq` : ils ne peuvent pas diverger.
+8. **Déposer votre candidature** (blanc) : `id="candidature"` avec le décalage sous l'en-tête collant (classe `ancre-sommaire`), titre, puis le formulaire inchangé dans une colonne de 48rem. Le fond blanc détache enfin le pied de page crème.
+
+**« Un seul / une seule … par corps de métier »** (argument « Exclusivité de secteur », 2e réponse de la FAQ) : la forme écrite est lue dans `parMetierEtSecteur` (`collectif.ts`).
+
+**SEO** :
+- title « Devenir partenaire : artisans RGE en rénovation énergétique | Akelia » ;
+- description tournée vers l'artisan ;
+- canonique `https://akelia.fr/rejoindre-le-collectif`, `index, follow` ;
+- fil d'Ariane et BreadcrumbList inchangés ;
+- **JSON-LD FAQPage** pour les 3 questions. Pas de Product ni d'Offer.
+
+### 3. Le schéma de fonctionnement (`SchemaPartenaire.astro`)
+- **SVG dessiné à la main**, avec du vrai texte : il reste net à toutes les tailles. Chaque case est un `<g data-temps="1…4">`, prêt pour une animation future.
+- **Temps 1 et 2 (Akelia)** : cases bleu nuit, texte blanc (14,47:1).
+- **Temps 3 et 4 (l'artisan)** : nettement détachés, après un trait vertical en tirets et un écart double. Cases orange pâle à filet orange épais, texte foncé (14,56:1). La flèche qui franchit la séparation est orange.
+- **Mention « Aucun intermédiaire entre vous et le client »** sous une accolade orange qui embrasse les temps 3 et 4.
+- **Deux dessins** : horizontal à partir de 992px, vertical en dessous. Le vertical mesure 340 unités de large. À 375px il s'affiche sur 335px : texte courant 19 unités = **18,7px**, titres 23 unités = 22,7px.
+- **Lecteurs d'écran** : dessins masqués (`aria-hidden`) et remplacés par une liste ordonnée `sr-only` qui reprend les quatre temps et la mention.
+- Captures : `captures/rejoindre-le-collectif/schema-375.png` (×2) et `schema-1440.png`.
+
+### 4. Vérification
+- **`npm run build`** : sans erreur ni avertissement.
+- **Formulaire** (Chromium, requête interceptée, **aucun envoi réel**) :
+  - envoi à vide : 5 erreurs, aucune requête, focus sur « Nom de l’entreprise » ;
+  - envoi rempli : `POST https://api.web3forms.com/submit`, **même sujet qu'avant** : « Candidature artisan Akelia : Chauffagiste, Thermique Garonne SARL (31000) ». Autres champs : `from_name` « Akelia Candidature artisan », Entreprise, Contact, Téléphone, Code postal, Métier, Note Google = 4,8, Message ;
+  - la confirmation s'affiche et le formulaire est masqué.
+- **Bouton « Devenir partenaire »** : il mène à `#candidature`. Le champ « Nom de l’entreprise » arrive **sous** l'en-tête collant :
+  - à 375px : en-tête jusqu'à 73px, titre à 137px, champ de 310 à 366px ;
+  - à 1440px : en-tête jusqu'à 122px, titre à 202px, champ de 381 à 437px.
+- **375, 768, 1024 et 1440px** : **débordement horizontal 0px** sur /rejoindre-le-collectif et /qui-sommes-nous. Texte courant à 18px ou plus. Seuls restent plus petits le fil d'Ariane (16px), le surtitre (13,6px) et le méga-menu, comme sur tout le site. Les éléments sous 44px sont les étiquettes de champ (champs de 56px), le lien dans la mention sur les données (lien en ligne, exempté) et les titres des cartes de /qui-sommes-nous (carte entière cliquable).
+- **Contrastes de l'en-tête bleu nuit** :
+  - h1, introduction et arguments en blanc : 14,47:1 (arguments à 90 % : plus de 11:1) ;
+  - **phrase orange en `action-300` : 8,00:1**. L'orange principal ne faisait que 6,08:1 : conforme AA, mais sous les 7:1 visés pour le texte ;
+  - icônes `action-300` : 8,00:1 ;
+  - bouton orange : texte foncé 6,87:1.
+- **FAQ** :
+  - au chargement, seule la première question est ouverte ;
+  - au clavier (Entrée, Entrée, Espace sur chaque question), elle se referme et les deux autres s'ouvrent ;
+  - JSON-LD `FAQPage` = texte affiché, **identique au caractère près** pour les 3 questions et les 3 réponses (comparaison faite dans la page) ;
+  - types JSON-LD de la page : BreadcrumbList et FAQPage.
+- **Recherches (`grep`)** :
+  - « 4,5 » : plus aucune occurrence dans le texte des pages ni des composants (restent des commentaires et des rapports de contraste) ;
+  - « un seul / une seule … par métier / corps de métier » : seulement dans deux commentaires ;
+  - mentions de « note » dans le texte visible de /rejoindre-le-collectif : **une seule**, l'étiquette du champ facultatif « Note Google actuelle » du formulaire conservé (question 305).
+- **Bandeau de /qui-sommes-nous** (page construite) : « Vous êtes artisan ? Nous ne retenons qu’une seule entreprise par métier et par secteur. Si la vôtre est certifiée RGE, assurée en décennale et qu’elle pose avec ses propres équipes, présentez-la : nous étudions chaque candidature. »
+
+## /rejoindre-le-collectif : la page de vente, 2e version (19 octobre 2026)
+
+Ticket révisé. Il complète la version précédente : illustration de l'en-tête, nouvelle section « En quoi c'est différent » avec tableau comparatif, fonctionnement réécrit, 4e question de FAQ (le prix), champ « Note Google » supprimé et fonds réordonnés. Le texte fourni est repris **mot pour mot**, et **aucun concurrent n'est nommé**.
+
+**Questions** :
+- 300, 303 et 307 : en grande partie réglées ;
+- 305 : réglée ;
+- 304 (délais du parcours) et 306 (« Créateur d'entreprise ») : toujours ouvertes ;
+- 308 à 310 : nouvelles.
+
+### 1. Ce qui change
+| Où | Changement |
+|---|---|
+| En-tête (bleu nuit) | **`rejoindre-collectif.png`** à droite du texte à partir de 992px, sous le bouton en dessous (`order-last`). Les arguments et le bouton passent sous la grille, sur toute la largeur. Fichier absent : rien, une seule colonne (vérifié : aucune image hors celles du menu dans la page construite). `sizes` calculé sur la zone dessinée (≈ 520px à 1280px et plus, 44vw de 992 à 1279px, pleine largeur en dessous). |
+| **3. En quoi c'est différent** (crème, nouvelle) | Surtitre « En quoi c’est différent », h2 « Ni une plateforme, ni une agence de leads, ni une franchise. », le tableau, puis la ligne « Vous restez une entreprise indépendante, avec un canal d’acquisition en plus. » en grand (24 à 36px, gras, filet orange). Détail au § 2. |
+| 4. Règles du jeu | Fond blanc (au lieu de crème). |
+| 5. Fonctionnement | Fond crème. Paragraphe remplacé par les **deux paragraphes réécrits** du texte (mutualisation ; aides). |
+| 6. Pour qui ? | Fond blanc ; pastilles des icônes en vert pâle. |
+| 7. Parcours | Fond crème. Toujours **aucun délai** (question 304). |
+| 8. FAQ | Fond blanc, **4 questions** (« Combien coûte le partenariat ? » ajoutée en 2e position, comme dans le texte), cartes crème. JSON-LD FAQPage tiré du même tableau. |
+| 9. Candidature | Fond **bleu nuit** : il referme la page comme l'en-tête l'ouvre et se détache du pied de page crème. Titre blanc. **Champ « Note Google » supprimé**, ainsi que son contrôle dans le script. Restent : entreprise, contact, téléphone, code postal, métier (obligatoires) et message (facultatif). Sujet inchangé : « Candidature artisan Akelia : <métier>, <entreprise> (<code postal>) ». |
+
+Inchangés depuis la version précédente, et conformes au ticket :
+- le bandeau « Vous êtes artisan ? » de /qui-sommes-nous (texte vérifié dans la page construite) ;
+- les deux listes de critères séparées ;
+- `noteMinimale`, lu par /devis et par « L'élite de l'artisanat local » ;
+- le schéma SVG ;
+- l'ancre `#candidature` ;
+- le SEO (title, description, canonique, BreadcrumbList, FAQPage ; ni Product ni Offer).
+
+### 2. Le tableau comparatif
+- **Données** : un seul tableau `comparatif` (7 lignes × 4 modèles) dans la page, qui alimente les deux rendus. Texte du ticket mot pour mot. « — » est annoncé « sans objet » aux lecteurs d'écran.
+- **À partir de 992px** : vrai `<table>`, avec un titre réservé aux lecteurs d'écran (`<caption>`), des en-têtes de colonnes (`th scope="col"`) et des en-têtes de lignes (`th scope="row"`). **Colonne Akelia détachée** : en-tête orange plein, cellules sur fond orange pâle, filets orange de 3px sur les côtés et en bas, texte en semi-gras. Les autres colonnes sont en texte secondaire. Le tableau est enveloppé dans un cadre `overflow-x-auto`, comme les tableaux des articles. À 1024 et 1440px, il tient en largeur : rien ne défile (vérifié).
+- **Sous 992px** : **une carte par modèle**, 1 colonne puis 2 à partir de 768px. Chaque ligne devient une paire libellé / valeur (`<dl>`). **La carte Akelia vient en dernier**, en pleine largeur, avec un fond orange pâle, un filet orange de 3px, une ombre et une coche.
+- **Défilement horizontal** à 375, 768, 1024 et 1440px : **aucun**. Les seuls éléments comptés par le test étaient des textes `sr-only` de 1px. Captures : `captures/rejoindre-le-collectif/comparatif-{375,768,1024,1440}.png` (375px en ×2).
+
+### 3. Vérification
+- **`npm run build`** : sans erreur ni avertissement.
+- **Formulaire** (Chromium, requête interceptée, **aucun envoi réel**) :
+  - envoi à vide : 5 erreurs, aucune requête, focus sur « Nom de l’entreprise » ;
+  - envoi rempli : `POST https://api.web3forms.com/submit` avec `access_key` (08e77810…), `subject` = « Candidature artisan Akelia : Chauffagiste, Thermique Garonne SARL (31000) », `from_name` = « Akelia Candidature artisan », Entreprise, Contact, Téléphone, Code postal, Métier, Message. **Plus de champ Note Google** ;
+  - la confirmation s'affiche et le formulaire est masqué.
+- **« Devenir partenaire »** : le champ « Nom de l’entreprise » arrive sous l'en-tête collant, à 311px pour un en-tête de 73px (375px de large), à 382px pour un en-tête de 122px (1440px de large).
+- **375, 768, 1024 et 1440px** : **débordement horizontal 0px**. Cibles et textes comme avant : étiquettes au-dessus de champs de 56px, lien en ligne, fil d'Ariane 16px, surtitre 13,6px.
+- **Schéma à 375px** : texte à 18,7px (capture `schema-375.png`).
+- **Contrastes** :
+  - en-tête bleu nuit : blanc 14,47:1 ; **phrase orange en `action-300` 8,00:1** ; bouton orange, texte foncé 6,87:1 ;
+  - **colonne Akelia du tableau** : texte sur orange pâle **14,56:1**, en-tête texte foncé sur orange plein **6,87:1** (20px gras, gros texte) ;
+  - coche de la carte Akelia (`action-800`) 4,88:1 (non textuel) ;
+  - le filet orange sur blanc (2,38:1) est décoratif : la colonne se distingue aussi par son fond ;
+  - autres colonnes : 7,11:1 ;
+  - titre du formulaire, blanc sur bleu nuit : 14,47:1.
+- **FAQ** :
+  - au chargement, seule la 1re question est ouverte ;
+  - au clavier (Entrée, Espace, Entrée, Espace sur chaque question), elle se referme et les 3 autres s'ouvrent ;
+  - **JSON-LD FAQPage = texte affiché, identique pour les 4 questions et les 4 réponses** ;
+  - types JSON-LD : BreadcrumbList et FAQPage.
+- **Recherches** :
+  - mot « note » dans la page construite (texte visible et JSON-LD) : **aucune occurrence** ;
+  - **37 noms d'acteurs du marché** recherchés (énergéticiens, plateformes de travaux, enseignes, franchises de menuiserie) : **aucun trouvé**.
+- **Bandeau « Vous êtes artisan ? »** de /qui-sommes-nous : « Nous ne retenons qu’une seule entreprise par métier et par secteur. Si la vôtre est certifiée RGE, assurée en décennale et qu’elle pose avec ses propres équipes, présentez-la : nous étudions chaque candidature. » (« une seule » est lu dans `collectif.ts`).
+
+## /rejoindre-le-collectif : critère « Créateur d’entreprise » (19 octobre 2026)
+
+**Question 306 réglée.** Ce 4e critère décrivait un profil, pas une garantie. Il contredisait aussi l'introduction placée juste au-dessus : « des entreprises structurées et reconnues sur leur territoire ».
+
+### 1. Ce qui change (`src/pages/rejoindre-le-collectif.astro`, section « Pour qui ? »)
+- **Critères d'éligibilité : 3 au lieu de 4.** Garanties légales, Capacité d’exécution et Engagement qualité, textes inchangés. `criteresEligibilite[3]` est retiré. L'icône `avantage` est **conservée** : elle sert encore à l'étape 4 du parcours (« Lancement de l’acquisition ») et aux encadrés « L'avantage » (`Encadre.astro`, /aides-renovation).
+- **Mise en page** : les critères ne sont plus dans une colonne à côté des métiers. Ils forment une grille de **3 cartes**, 1 colonne sur téléphone et 3 à partir de 768px : pastille d'icône vert pâle, intitulé en h4, texte dessous. Les « Métiers éligibles » passent dessous, sur toute la largeur (vignettes 1 puis 2 colonnes, inchangées).
+- **Phrase pour les créateurs**, juste sous les critères et avant « Métiers éligibles » (constante `CREATEURS` dans la page) : « **Vous créez votre entreprise ?** Présentez-vous quand même : nous étudions les candidatures de structures récentes qui ont les capacités de se développer vite. »
+  - simple paragraphe, ni carte ni alerte : filet orange de 4px à gauche, début en gras ;
+  - 18px sur téléphone, 20px à partir de 768px ;
+  - plafonnée à 62 caractères par ligne.
+
+### 2. Vérification
+- **`npm run build`** : sans erreur ni avertissement.
+- **Grille des 3 critères** (Chromium) :
+  - 375px : 1 colonne, cartes de 335px ;
+  - 768px : 3 colonnes de 227 × 308px ;
+  - 1024px : 3 colonnes de 312 × 245px ;
+  - 1440px : 3 colonnes de 387 × 245px.
+  
+  À partir de 768px, les trois cartes sont **sur une seule rangée, à la même hauteur**. **Débordement horizontal 0px** aux 4 largeurs.
+- **Contrastes sur le fond de section (blanc)** :
+  - texte de la phrase : **16,34:1** ;
+  - **filet en `action-600` (#d17f08) : 3,11:1**, au-dessus du seuil de 3:1 des éléments graphiques. L'orange principal `action-500` n'aurait fait que 2,38:1 : c'est pourquoi je ne l'ai pas utilisé.
+- Captures : `captures/rejoindre-le-collectif/pour-qui-{375,768,1024,1440}.png`.
+
+## /rejoindre-le-collectif : le parcours rejoint le formulaire (19 octobre 2026)
+
+La section « Le parcours » disparaît. Ses 4 étapes deviennent la colonne « Ce qui se passe ensuite », à droite du formulaire de candidature, sur le modèle de la colonne de réassurance de /devis. **La page passe de 8 à 7 sections**, plus le schéma placé sous l'en-tête. **Questions ouvertes : n° 304 (toujours ouverte), 311 et 312** (« Questions en attente de réponse »).
+
+### 1. Ce qui change (`src/pages/rejoindre-le-collectif.astro`)
+- **Section « Le parcours » supprimée**, avec son commentaire.
+  - `parcours` devient une simple liste de 4 libellés, inchangés : Dépôt de candidature · Entretien · Réservation du secteur · Lancement de l’acquisition.
+  - Les icônes et les quatre couleurs d'étape (bruyère, argile, lichen, brume) sont abandonnées.
+- **« Déposer votre candidature »** (bleu nuit) :
+  - le conteneur passe de 48rem à la largeur du site (`max-w-site`) ;
+  - **deux colonnes à partir de `lg:`**, même grille que /devis : `minmax(0,3fr)` pour le formulaire, `minmax(0,2fr)` pour le parcours, soit 60/40, avec un écart de 3,5rem. ⚠️ `lg:` vaut 992px, pas 1024px : voir la question 311 ;
+  - en dessous de ce seuil : le formulaire d'abord, le parcours ensuite (ordre du code) ;
+  - **le formulaire n'a pas changé** : mêmes champs, même script, même sujet ;
+  - la carte blanche garde `self-start` : après l'envoi, elle se réduit à la confirmation (300px de haut à 1440px) au lieu de s'étirer.
+- **Le parcours** (`<aside>`) : titre h3 « Ce qui se passe ensuite » en blanc, puis une `<ol>` verticale. Ni carte, ni ombre, ni fond.
+  - Les pastilles font 40px, cerclées de 2px d'orange `action-500`, avec le chiffre en blanc.
+  - Un filet vertical de 2px les relie, en `action-500` plein. Sur /devis, il est à 60 % d'opacité : ici, la transparence l'aurait fondu dans le bleu nuit.
+  - Les libellés sont en blanc, semi-gras, `text-corps` (18px).
+  - **Étape 1** : pastille orange pleine, chiffre foncé, et à côté la mention « Vous êtes ici » en `action-300`, graisse normale (voir la question 312). L'élément de liste porte `aria-current="step"`. Les lecteurs d'écran entendent « Étape 1 : Dépôt de candidature, Vous êtes ici ».
+  - **Aucun délai** (question 304).
+- **FAQ : blanc → crème.** Sans la section crème du parcours, « Pour qui ? » (blanc) aurait été suivie de la FAQ (blanc). Ses `<details>` passent en conséquence de crème à blanc (filet `creme-fonce` conservé). Suite des fonds vérifiée dans le navigateur :
+  - **bleu nuit · blanc · crème · blanc · crème · blanc · crème · bleu nuit**, puis le pied de page crème ;
+  - jamais deux sections de même couleur côte à côte.
+- **Commentaire d'en-tête de la page** mis à jour (liste des sections).
+- **`Icone.astro` : aucune suppression.** Les icônes de l'ancien parcours servent encore ailleurs :
+  - `audit` : critères de la page, /aides-renovation, `methode.ts` ;
+  - `technicien` : critères de la page, /qui-sommes-nous ;
+  - `repere` : arguments de l'en-tête, /qui-sommes-nous ;
+  - `avantage` : `Encadre.astro`.
+
+  `calendrier` et `plan` n'étaient pas utilisées par le parcours : elles servent aux arguments de l'en-tête et aux métiers.
+- L'ancre `#candidature` et la classe `ancre-sommaire` sont inchangées.
+
+### 2. Vérification
+- **`npm run build`** : sans erreur.
+- **Envoi intercepté** (Chromium, requête vers Web3Forms détournée, **aucun envoi réel**). Contenu reçu :
+  ```
+  access_key  08e77810-e615-4993-8675-2212b8e486e0
+  subject     Candidature artisan Akelia : chauffagiste, Test SARL (31000)
+  from_name   Akelia Candidature artisan
+  Entreprise  Test SARL
+  Contact     Jean Test
+  Téléphone   0612345678
+  Code postal 31000
+  Métier      chauffagiste
+  Message     Message de test
+  ```
+  `botcheck` n'est pas envoyé (case non cochée). Le sujet a la même forme qu'avant.
+- **Après l'envoi** : le formulaire est masqué et la confirmation s'affiche à sa place. **La colonne du parcours reste affichée.**
+- **Bouton « Devenir partenaire »** (1440px) : le bas de l'en-tête collant est à 122px. Le haut du champ « Nom de l’entreprise » est à 420px : **il est sous l'en-tête, pas caché dessous**.
+- **Aux 4 largeurs** :
+
+  | Largeur | Disposition | Carte du formulaire | Parcours | Champ Téléphone |
+  |---|---|---|---|---|
+  | 375px | parcours sous le formulaire | 335px | 335px | 293px |
+  | 768px | parcours sous le formulaire | 728px | 728px | 311px |
+  | 1024px | côte à côte | 557px | 371px | 225px |
+  | 1440px | côte à côte | 692px | 462px | 293px |
+
+  - **Débordement horizontal : 0px** aux 4 largeurs.
+  - **Aucune cible de moins de 44px** dans la section. Seule exception : le lien « politique de confidentialité », qui est un lien dans une phrase (exempté), comme sur /devis.
+  - **Aucun texte de moins de 18px** dans la section candidature et la FAQ.
+- **À 1024px, rien n'est comprimé** : toutes les étiquettes tiennent sur une ligne (31,5px de haut, comme aux autres largeurs). Téléphone et code postal restent côte à côte, à 225px chacun, ce qui suffit pour 10 chiffres et 5 chiffres. Les champs gardent 56px de haut.
+- **Contrastes sur bleu nuit (`nuit-900`, #1d2b36)** :
+  - pastilles cerclées et filet `action-500` : **6,08:1** (3:1 exigé pour un élément non textuel) ;
+  - texte blanc (libellés, chiffres, titre) : **14,47:1** (7:1 visé) ;
+  - « Vous êtes ici » en `action-300` : **8,00:1** ;
+  - chiffre foncé (`texte`) sur la pastille orange pleine : **6,87:1**.
+- Captures : `captures/rejoindre-le-collectif/candidature-{375,768,1024,1440}.png` et `candidature-apres-envoi-1440.png`.
+
+## Pages solutions : le gabarit, sur la PAC air-eau (19 octobre 2026)
+
+Une seule page construite, à valider avant les autres : **/solutions/pompe-a-chaleur-air-eau**. Questions ouvertes : **n° 313 à 320** (« Questions en attente de réponse »). ⚠️ Les contradictions de chiffres (313) et les chiffres sans justification (314) sont **affichés tels quels**, en attente de votre choix.
+
+### 1. Périmètre : les 21 adresses du menu et leur état
+
+Les adresses sont celles de l'ancien site, sans changement (`src/data/menu.ts`). Le ticket parle de 20 pages : le menu compte 21 adresses, parce que « Rénovation globale » et « Construction neuve » sont des liens directs.
+
+| Adresse | Rubrique | Ancien site | État au 19 octobre 2026 |
+|---|---|---|---|
+| /solutions/pompe-a-chaleur-air-eau | Pompes à chaleur | existe | **fait (gabarit)** |
+| /solutions/climatisation-reversible-pac-air-air | Pompes à chaleur | existe | à porter |
+| /solutions/pac-geothermique | Pompes à chaleur | existe | à porter |
+| /solutions/isolation-thermique-toiture-comble | Isolation | existe | à porter |
+| /solutions/isolation-thermique-par-linterieur-iti | Isolation | existe | à porter |
+| /solutions/isolation-thermique-par-l-exterieur-ite | Isolation | existe | à porter |
+| /solutions/menuiseries-fenetres-volets | Menuiseries | existe | à porter (sans `region`) |
+| /solutions/ventilation-vmc-simple-et-double-flux | Ventilation | existe | à porter |
+| /solutions/chaudiere-gaz-condensation | Chaudières | existe | à porter |
+| /solutions/chaudiere-biomasse-bois-ou-pellets | Chaudières | existe | à porter |
+| /solutions/panneaux-photovoltaiques | Production d'électricité | existe | à porter |
+| /solutions/renovation-energetique-globale | lien direct | existe | à porter ⚠️ hors méga-menu : le contrôle de rubrique du gabarit devra l'accepter |
+| /solutions/poele-a-granules-ou-a-bois | Appoint | n'existe pas | à écrire |
+| /solutions/radiateurs | Appoint | n'existe pas | à écrire |
+| /solutions/chauffe-eau-electrique | Eau chaude sanitaire | n'existe pas | à écrire |
+| /solutions/chauffe-eau-thermodynamique | Eau chaude sanitaire | n'existe pas | à écrire |
+| /solutions/chauffe-eau-solaire | Eau chaude sanitaire | n'existe pas | à écrire |
+| /solutions/borne-de-recharge | Borne de recharge | n'existe pas | à écrire |
+| /solutions/batterie | Système de gestion | n'existe pas | à écrire |
+| /solutions/thermostat-et-domotique | Système de gestion | n'existe pas | à écrire |
+| /solutions/construction-neuve | lien direct | n'existe pas | à écrire ⚠️ même remarque que la rénovation globale |
+
+Vérifié : la PAC air-eau répond 200 ; les 20 autres adresses du menu répondent 404, comme prévu.
+
+### 2. Architecture
+
+- **Un gabarit** : `src/pages/solutions/[slug].astro`. Il crée une page par fichier de `src/data/solutions/` (sauf `type.ts`).
+- **Un fichier de données par solution**, avec un type partagé : `src/data/solutions/type.ts`, et `src/data/solutions/pompe-a-chaleur-air-eau.ts`.
+- **Images** dans `src/assets/solutions/<slug>/`.
+- **Contrôles à la construction**, qui arrêtent le build avec un message clair :
+  - le nom du fichier doit être le slug ;
+  - l'adresse doit exister dans `menu.ts` ;
+  - la rubrique doit être le titre du groupe du méga-menu.
+- **Écarts au type du ticket** (justifiés dans `type.ts`) :
+  - `nomDefini` (« la pompe à chaleur air-eau ») et `questionPourVous` : les titres s'accordent avec le nom, le gabarit ne peut pas le deviner ;
+  - `introPourVous`, facultatif ;
+  - les performances ont une `precision` sous la valeur (« Excellent rendement ») ;
+  - les zones de région ont une `couleur` (celle de la carte) et des `regions` (texte), pour ne pas reposer sur la couleur seule ;
+  - `icone` est typé avec les noms d'`Icone.astro`, et `equipementSimulateur` avec les valeurs du simulateur.
+- **Textes mis en forme** (avis, cas, zones) : une ligne « - » donne un élément de liste, `**gras**` met en gras, `[lien](/adresse)` crée un lien interne. Le découpage est fait par `blocsDeTexte()` dans `src/utils/texte.ts`, et l'affichage par `TexteMisEnForme.astro`.
+
+**Nouveaux composants**
+- `src/components/ParcoursAkelia.astro` : « Comment ça se passe avec Akelia », 4 étapes en h3, texte générique (« votre projet », « votre installation », jamais « appareil »).
+- `src/components/solutions/EchelleAkelia.astro` : la phrase sur l'échelle Akelia, identique partout.
+- `src/components/solutions/TravauxSolution.astro` : les parcours de travaux. Avec un seul parcours, pas d'onglets.
+- `src/components/solutions/TexteMisEnForme.astro`.
+
+**Composants modifiés**
+- **`Sommaire.astro`** :
+  - entrées de second niveau (`niveau: 2`, en retrait) ;
+  - un titre visé qui n'est pas affiché (onglet inactif) est ignoré par le suivi ;
+  - l'événement `sommaire:maj` relance le calcul de la partie active.
+- **`Simulateur.astro` et `SimulateurQuestions.astro`** : prop `travauxPrecoches`. « Recommencer » remet la case cochée, puisque c'est l'état d'origine du formulaire.
+- **`FilAriane.astro`** : seule la dernière étape porte `aria-current="page"`. Une rubrique sans page peut ainsi figurer au milieu, en texte simple.
+- **`Icone.astro`** : 3 icônes ajoutées (`feuille`, `son`, `engrenage`).
+
+**Onglets des travaux** : même modèle que les Cas types de l'accueil.
+- Rôles W3C tablist / tab / tabpanel.
+- Navigation au clavier : flèches, Début, Fin ; un seul onglet dans l'ordre de tabulation.
+- Onglet actif plein (bleu nuit), inactifs au filet.
+- Je n'ai **pas** refactorisé `CasTypes.astro` pour le partager : son script est mêlé aux couleurs de section et au chargement différé des illustrations de l'accueil. Seul le principe est repris.
+- Sans JavaScript, les parcours s'affichent les uns sous les autres.
+- Un clic du sommaire sur « Neuf » active l'onglet avant de descendre. La page ouverte directement sur `#travaux-neuf` affiche aussi le bon onglet.
+
+### 3. La page, de haut en bas
+
+1. **En-tête (crème)** :
+   - fil d'Ariane « Accueil › Pompes à chaleur › Pompe à chaleur air-eau » ; la rubrique n'a pas de page, le JSON-LD BreadcrumbList la saute ;
+   - surtitre, h1, 4 arguments à coche verte, bouton « Obtenir un devis » ;
+   - image et carte blanche du chiffre clé à cheval sur son bas : à droite à partir de 992 px, dessous en dessous.
+2. **Corps (blanc)** : à partir de 992 px, sommaire collant à gauche (bouton devis, lien collectif). « En bref » (encart vert des articles), puis le sommaire replié sur téléphone et tablette.
+3. **Tout ce que vous devez savoir** :
+   - points forts (filet vert) et inconvénients (filet orange foncé) côte à côte dès 768 px ;
+   - caractéristiques en paires libellé / valeur ;
+   - 4 indicateurs de performance : échelle A à G dessinée, jauge sur 5 pour la complexité, puis la phrase de l'échelle Akelia ;
+   - « Est-ce adapté à votre bien ? » (4 cartes à icône) ;
+   - « Est-ce adapté à votre région ? » : carte et légende. Le bloc entier disparaît si `region` manque.
+4. **Les travaux à réaliser** : onglets Rénovation / Neuf. Chaque parcours commence par un h3 et son niveau de difficulté en grand (note, jauge, qualificatif), puis ses 4 étapes numérotées et illustrées :
+   - sous 768 px, une étape par ligne, image à gauche ;
+   - 2 colonnes jusqu'à 1279 px ;
+   - 4 colonnes au-delà.
+5. **Notre avis** : 4 sous-parties en vrais h3.
+6. **Est-elle faite pour chez vous ?** : introduction, puis 5 cas en h3 « Cas n° X — … » avec une pastille numérotée bleu nuit.
+7. **Les aides pour ce projet** : le simulateur, « Chauffage » pré-coché, puis le lien vers /aides-renovation.
+8. **Comment ça se passe avec Akelia** (`ParcoursAkelia`).
+9. **FAQ** : `faq` est vide, donc **ni titre ni JSON-LD FAQPage** (vérifié dans le HTML : un seul JSON-LD, le BreadcrumbList).
+10. **À lire aussi (crème)** : 3 articles choisis par `articlesPertinents()` avec les mots-clés « air-eau », « air/eau », « pompe à chaleur », « plancher chauffant » et « loi d’eau ». Sortie actuelle :
+    - « Pompe à chaleur ou chaudière pour un plancher chauffant » ;
+    - « Régler la température avec la loi d’eau » ;
+    - « Quels radiateurs sont compatibles avec une PAC air-eau ».
+
+    L'ancienne liste de liens « Les questions que vous vous posez » n'est pas reprise telle quelle : c'est cette section qui la remplace.
+11. **Appel à l'action final (bleu nuit)**, même texte que le bas des articles.
+
+Suite des fonds : crème · blanc · crème · bleu nuit · pied de page crème.
+
+### 4. Corrections faites d'autorité
+
+**Titres**
+- H2 « Tout ce que vous devez savoir sur la Pompe à chaleur **air-air** » devient « … sur la pompe à chaleur air-eau ».
+- « Impacts environnementales » devient « Impact environnemental ».
+- « Autonomie énergétique » devient « **Économie d’énergie** ».
+- « Rentabilité immédiates » devient « Rentabilité immédiate ».
+- « Pertinent même par grand froid » devient « Pertinente… » (la PAC).
+- « Cas N°3 », « Cas N°5 » deviennent « Cas n° 3 », « Cas n° 5 », sur le même modèle que les autres.
+- « Passoires thermique » devient « Passoires thermiques ».
+- « Logements non équipés d'émetteur hydraulique (ex radiateur électrique) » devient « Logements sans émetteurs hydrauliques (radiateurs électriques, par exemple) ».
+- « Travaux d'installation de l'unité intérieur » devient « Installation de l'unité intérieure… ».
+- « Etude thermique » devient « Étude thermique ».
+
+**Fautes de frappe et d'orthographe**
+- rafraichissement → rafraîchissement
+- éléctricité decarbonné → électricité décarbonée
+- disponibilitées → disponibilité
+- notamment dû au cout → notamment en raison du coût
+- extérieure / intérieure → extérieur / intérieur (un espace)
+- conccurentiel → concurrentielle
+- region ou une pompe → région où une pompe
+- autre solution → autres solutions
+- deux fois plus cher → plus chère
+- taxe → taxes
+- appareilles → appareils
+- coutent → coûtent
+- future → futur
+- constructions neuves → construction neuve
+- certain modèle permette → certains modèles permettent
+- permet également produire → permet également de produire
+- reste plus intéressante → restent plus intéressantes
+- Surement → Sûrement
+- intéressant → intéressante (la PAC)
+- peu économe → peu économes
+- double point final supprimé
+- espace manquante après « sonores : »
+- CO2 → CO₂
+- °C avec espace insécable
+
+**Autres corrections**
+- Émojis remplacés par des icônes de la charte (☀️, 💶, 🟢…).
+- Astérisque orpheline de « Indice de réparabilité* » retirée (question 314).
+- Lien « Consultez notre page dédiée à la géothermie », qui n'avait pas de lien : relié à /solutions/pac-geothermique, en 404 pour l'instant.
+
+**Textes alternatifs**
+- L'image d'en-tête « … adossé à une maison » devient « Unité extérieure d’une pompe à chaleur air-eau fixée sur la façade d’une maison ».
+- Les 8 étapes sont décrites d'après ce que montre l'image (par exemple « Chaufferie après le démontage de l’ancienne chaudière, avec la cuve à fioul et un diable »).
+- La carte est décrite avec ses régions.
+- Les icônes (« Icon… ») ne sont pas reprises : elles sont remplacées par des icônes décoratives.
+
+**ParcoursAkelia** : texte rendu générique. « Votre appareil » devient « votre installation », et « Notre équipe vient installer votre appareil » devient « L’équipe de l’artisan réalise les travaux ». Délais : question 319. Les 4 photos de l'ancien bloc ne sont pas reprises : elles montrent une pompe à chaleur et des tenues d'une entreprise nommée.
+
+**Rédigé par nous, sans aucun chiffre** : « En bref » (5 lignes tirées de la page), les textes alternatifs, le titre et la description SEO (l'ancienne page n'avait pas de description), et les régions de la légende, lues sur la carte.
+
+### 5. Contradictions de chiffres relevées (rien tranché)
+
+| Sujet | Valeur | Où |
+|---|---|---|
+| Économie d'énergie | « Produit 3 à 4 fois plus d’énergie qu’elle n’en consomme » | En-tête, argument 1 |
+| | « Divisez vos factures par 3 ou 4 » | Points forts, « Rentabilité immédiate » |
+| | « +70 % », « 3 à 4 fois moins d’énergie consommée » | Performances, Économie d'énergie |
+| | « Elle consomme **4 à 5 fois** moins d’énergie que les autres systèmes » | Notre avis, « Pourquoi c’est la solution de référence ? », Économique |
+| Rentabilité | « Rentabilité **immédiate** » | Points forts |
+| | « Avec aides ≃ 5 à 6 ans, sans aides ≃ 9 à 10 ans » | Caractéristiques, Temps moyen pour rentrer dans ses frais |
+| | « Investissement rentabilisé en 9 ou 10 ans, sans aides » | Cas n° 1 |
+| Aides | « plus de 11 000 € d’aides » | En-tête, argument 4 |
+| | « CEE ≃ 6 500 € », « MaPrimeRénov’ ≃ 5 000 € » (total 11 500 €) | Caractéristiques |
+| | CEE « montant variable » ; MaPrimeRénov’ PAC air-eau 5 000 € au plus, et 0 € pour les revenus supérieurs | `src/data/aides.ts`, affiché par le simulateur de la page |
+| | « le système le mieux doté en aides » | Inconvénients, mais la PAC géothermique est mieux aidée d'après `aides.ts` |
+
+Le délai de rentabilité (5-6 ans / 9-10 ans) est cohérent entre les caractéristiques et le cas n° 1 ; c'est « immédiate » qui le contredit. Les chiffres sans justification sont listés à la question 314.
+
+### 6. Vérification
+
+- **`npm run build`** : sans erreur. La page est générée à /solutions/pompe-a-chaleur-air-eau.
+- **Menu** : 200 pour la PAC air-eau, 404 pour les 20 autres adresses (attendu).
+- **375, 768, 1024 et 1440 px** :
+  - débordement horizontal 0 px ;
+  - aucune cible de moins de 44 px dans la page, sauf les boutons radio du simulateur (24 px), dont la cible réelle est l'étiquette entière (56 px) ;
+  - contenu propre de la page à 18 px au moins. Les composants communs en dessous sont listés à la question 320.
+- **Étapes des travaux** : à 375 px, sur 2 colonnes, « raccordement » se coupait en plein mot. Corrigé (une étape par ligne sous 768 px, plus de césure automatique).
+- **Onglets au clavier** : flèche droite, flèche gauche (en boucle), Fin, Début, flèches bas et haut fonctionnent. Le focus suit, un seul onglet est à `tabindex=0`, et Tab mène au panneau.
+- **Simulateur** :
+  - la case « Chauffage » est cochée à l'arrivée (sur l'accueil : aucune case) ;
+  - avec la même saisie (propriétaire occupant, 31000, chauffage), le **résultat est identique au caractère près** à celui de l'accueil ;
+  - « Recommencer » laisse la case cochée.
+- **Sommaire (1440 px)** : pour chacune des 7 entrées testées, le titre s'arrête à 138 px, sous l'en-tête (bas à 122 px), et l'entrée devient active. « Neuf » et « Rénovation » activent leur onglet. Le suivi au défilement fonctionne aussi. Une ouverture directe sur `#travaux-neuf` affiche l'onglet Neuf.
+- **FAQ vide** : ni titre « Questions fréquentes », ni JSON-LD FAQPage.
+- **Captures** : `captures/solutions/pac-air-eau-{375,768,1024,1440}.png`. Les 4 images de l'onglet « Neuf », masqué, ne se chargent qu'à son ouverture.
+
+### 7. Pour les pages suivantes
+
+1. Copier `src/data/solutions/pompe-a-chaleur-air-eau.ts` sous le nom du slug.
+2. Remplir le fichier, déposer les images dans `src/assets/solutions/<slug>/`.
+3. Laisser `faq: []` tant que vous n'avez pas écrit les questions.
+4. Pour « Rénovation globale » et « Construction neuve », qui ne sont pas dans le méga-menu, le contrôle de rubrique du gabarit devra être élargi aux `liensDirects`.
+
+## Diagnostic « toutes les pages sont vides » (19 octobre 2026)
+
+**Résultat : je n'ai pas pu reproduire le symptôme. Aucune correction n'est faite.**
+
+### 1. Préproduction (`rm -rf .astro node_modules/.astro dist`, `npm run build`, `astro preview`)
+- **Build** : code de sortie 0, 130 pages, aucun avertissement ni erreur dans le journal.
+- **HTML produit complet** :
+  - `dist/index.html` : 171 Ko ;
+  - `dist/devis/index.html` : 57 Ko ;
+  - `dist/solutions/pompe-a-chaleur-air-eau/index.html` : 122 Ko.
+- **Affichage dans Chromium** (/, /devis, /solutions/pompe-a-chaleur-air-eau) : pages pleines (5 515, 2 046 et 13 744 caractères de texte visibles), `body` et `main` visibles, feuilles CSS chargées. **Console : aucune erreur, aucun avertissement, aucune requête en échec.** La capture de l'accueil est normale.
+
+### 2. Serveur de développement
+- Un `astro dev` lancé hors de cette session tournait sur le port 4321 (terminal pts/2, démarré à 19 h 28). Je ne l'ai pas arrêté.
+- Les 3 pages y répondent 200 avec un HTML complet (326 Ko, 187 Ko et 249 Ko), et s'affichent pleines dans Chromium, sans erreur en console.
+- ⚠️ J'ai exécuté le `rm -rf .astro node_modules/.astro dist` demandé **pendant** que ce serveur tournait. S'il affiche des pages vides depuis, le redémarrer.
+
+### 3. Les pistes du ticket
+- **Contrôles de construction** : ils sont dans `getStaticPaths()` de `src/pages/solutions/[slug].astro`. Ils ne s'exécutent donc qu'une fois, à la génération des chemins, et seulement pour /solutions/…, pas au rendu des autres pages. Une erreur arrêterait le build avec un message, et le build passe.
+- **`Icone.astro`** : les icônes sont lues dans un objet typé. Un nom inconnu casserait la vérification de types, pas le rendu, et les 3 nouvelles icônes sont bien définies.
+- **`global.css` et `Layout.astro` : pas touchés** par le ticket des pages solutions. Leur diff (201 lignes et 12 lignes) date de tickets antérieurs.
+- **`Sommaire.astro`** : niveau 2 et événement `sommaire:maj` testés, sans effet sur l'affichage.
+- `Sommaire`, `Simulateur`, `FilAriane` et `Icone` sont des fichiers **non suivis par git** (`??`) : `git diff` ne peut pas montrer ce qui a changé. Le dernier commit (`fac748d`) ne les contient pas.
+
+### 4. Pourquoi le build est passé
+D'après ce que j'ai observé, il est passé parce que les pages ne sont pas vides, en préproduction comme en développement.
+
+### 5. Contrôle ajouté : vérification du site produit
+- **Fichier** : `scripts/verifier-build.mjs`.
+- **Lancement** : automatiquement par `npm run build`, dont le script devient `astro build && node scripts/verifier-build.mjs` dans `package.json`.
+- **Pages témoins** : /, /devis, /aides-renovation, /blog et /solutions/pompe-a-chaleur-air-eau.
+- **Le build échoue (code 1)** si l'une d'elles :
+  - manque ;
+  - pèse moins de 20 000 octets (/devis, la plus légère, en fait environ 57 000) ;
+  - n'a pas de `<main>`, de `<h1>` ou de feuille de style.
+- **Vérifié** :
+  - build normal : « ✓ 5 pages témoins complètes », code 0 ;
+  - /devis remplacée par `<html></html>` : 4 problèmes listés, code 1 (fichier restauré ensuite).
+- **Limite** : ce contrôle détecte un HTML vide ou tronqué. Il ne voit pas une page complète que le CSS ou un script masquerait à l'écran. Pour cela, il faudrait un test dans un navigateur (Playwright).
+
+### Questions en attente de réponse (diagnostic)
+- **D1.** Sur quelle adresse et dans quel navigateur voyez-vous les pages vides ? Une capture ou le contenu de la console m'aideraient.
+- **D2.** Le problème persiste-t-il après un redémarrage du serveur de développement (`astro dev stop`, puis `astro dev --background`) et un rechargement forcé (Ctrl+Maj+R) ?
+
+---
+
+## Commit « Pages aides, qui-sommes-nous, rejoindre-le-collectif, gabarit solutions » (20 octobre 2026)
+
+- Tout le travail en cours a été ajouté (`git add -A`) puis poussé sur `origin/main`, **sauf** les trois archives `akelia-blog-102-articles*.zip` (≈ 700 Ko chacune, à la racine) : ce sont des livraisons sources du blog, déjà extraites dans `src/content/` et `src/assets/blog/`. Elles restent sur le disque, hors commit.
+- Relu avant validation : la clé Web3Forms (`src/data/web3forms.ts`) part dans le dépôt ; elle n'est pas un secret (prévue pour figurer dans le HTML). `captures/` reste ignoré par `.gitignore`.
+
+### Questions en attente de réponse (commit)
+
+- Faut-il ajouter `*.zip` au `.gitignore`, ou supprimer ces archives du disque ?

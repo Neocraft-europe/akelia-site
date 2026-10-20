@@ -11,13 +11,10 @@
 // Données envoyées : prénom, e-mail, téléphone. Rien d'autre : les réponses
 // au simulateur ne sont pas jointes.
 //
-// ⚠️ CLÉ WEB3FORMS : la valeur ci-dessous est la même valeur d'exemple que
-// sur la page /devis (« YOUR_ACCESS_KEY_HERE »). Tant qu'elle n'est pas
-// remplacée par la vraie clé du compte Web3Forms d'Akelia, l'envoi échoue
-// et le message d'erreur s'affiche.
+// Clé Web3Forms : src/data/web3forms.ts (commune avec /devis).
 // =========================================================================
 
-const cleWeb3Forms = 'YOUR_ACCESS_KEY_HERE';
+import { CLE_WEB3FORMS } from '../data/web3forms';
 
 // Champs du formulaire : grands (56px), filet gris foncé de 1px (texte-doux,
 // 7:1 : le champ reste bien repérable) ; 2px rouges en cas d'erreur.
@@ -56,7 +53,7 @@ const classesErreurChamp = 'mt-1 text-corps font-semibold text-alerte-700 empty:
       toutes lettres sous chaque champ par le script. */}
   <form data-estimation-formulaire novalidate class="mt-6">
     {/* Champs techniques Web3Forms (identiques à /devis, sauf le sujet) */}
-    <input type="hidden" name="access_key" value={cleWeb3Forms} />
+    <input type="hidden" name="access_key" value={CLE_WEB3FORMS} />
     <input type="hidden" name="subject" value="Demande d'estimation des aides (simulateur Akelia)" />
     <input type="hidden" name="from_name" value="Akelia Simulateur" />
     {/* Piège à robots : case invisible que seuls les robots cochent */}

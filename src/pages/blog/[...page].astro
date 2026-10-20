@@ -1,0 +1,150 @@
+---
+// =========================================================================
+// PAGES DE LISTE DU BLOG (src/pages/blog/[...page].astro)
+// -------------------------------------------------------------------------
+// Une seule route pour toutes les listes d'articles (17 octobre 2026) :
+//   /blog                         tous les articles, page 1
+//   /blog/page/2 … /blog/page/9   suite
+//   /blog/chauffage               une catégorie, page 1
+//   /blog/chauffage/page/2 …      suite
+// Le paramètre « reste » [...page] reçoit tout ce qui suit /blog
+// (« chauffage/page/2 ») ; il doit s'appeler « page » pour paginate().
+// Adresses : urlListeBlog() et urlCategorie(), jamais écrites en dur.
+// 12 articles par page (paginate() d'Astro) ; pages statiques, sans
+// JavaScript.
+//
+// DE HAUT EN BAS :
+//   - fil d'Ariane (sauf sur /blog, page de premier niveau) ;
+//   - h1 et chapeau : « Guides et conseils » sur /blog, le libellé et la
+//     description de la catégorie sinon ;
+//   - barre des catégories (BarreCategories.astro) ;
+//   - page 1 de /blog seulement : l'article mis en avant
+//     (CarteArticleUne.astro), le plus récent d'importance 5, absent de
+//     toutes les grilles de /blog (100 articles paginés) ;
+//   - grille de cartes (CarteArticle.astro) : 1, 2 (768px), 3 (992px)
+//     colonnes ;
+//   - pagination (Pagination.astro), absente s'il n'y a qu'une page.
+//
+// SEO :
+//   - title « Guides et conseils en rénovation énergétique | Akelia » ou
+//     « <Libellé> | Guides Akelia », avec « — page N » à partir de la 2 ;
+//   - pages 2 et suivantes : noindex, follow (navigation, pas contenu) ;
+//   - canonique vers l'adresse de la page elle-même ;
+//   - <link rel="prev"> et <link rel="next"> dans une même suite ;
+//   - JSON-LD BreadcrumbList sur les pages de catégorie. Pas de
+//     CollectionPage ni d'ItemList (choix du ticket).
+// =========================================================================
+
+import type { GetStaticPaths, Page } from 'astro';
+import Layout from '../../layouts/Layout.astro';
+import CarteArticle from '../../components/CarteArticle.astro';
+import CarteArticleUne from '../../components/CarteArticleUne.astro';
+import BarreCategories from '../../components/BarreCategories.astro';
+import FilAriane from '../../components/FilAriane.astro';
+import Pagination from '../../components/Pagination.astro';
+import { CATEGORIES_BLOG, IDENTIFIANTS_CATEGORIES, urlCategorie, type CategorieBlog } from '../../data/categories-blog';
+import { articlesPublies, articleALaUne, pagesDeListe, urlListeBlog, type Article } from '../../utils/blog';
+import { filArianeJsonLd, jsonLdTexte } from '../../utils/seo';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const publies = await articlesPublies(); // brouillons exclus, du plus récent au plus ancien
+  return [
+    ...pagesDeListe(paginate, publies),
+    ...IDENTIFIANTS_CATEGORIES.flatMap((id) =>
+      pagesDeListe(paginate, publies.filter((a) => a.data.categorie === id), id),
+    ),
+  ];
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<Article>;
+  categorie?: CategorieBlog;
+}
+
+const { page, categorie } = Astro.props;
+const numero = page.currentPage;
+const publies = await articlesPublies();
+const SITE = Astro.site ?? new URL('https://akelia.fr');
+
+// --- Textes ----------------------------------------------------------------
+const fiche = categorie ? CATEGORIES_BLOG[categorie] : undefined;
+const titreH1 = fiche?.libelle ?? 'Guides et conseils';
+const chapeau =
+  fiche?.description ??
+  "Pompes à chaleur, isolation, solaire, aides financières : les guides des artisans Akelia pour préparer vos travaux et faire baisser vos factures.";
+const suffixePage = numero > 1 ? ` — page ${numero}` : '';
+const titrePage = fiche
+  ? `${fiche.libelle}${suffixePage} | Guides Akelia`
+  : `Guides et conseils en rénovation énergétique${suffixePage} | Akelia`;
+
+// --- Fil d'Ariane ------------------------------------------------------------
+// /blog : aucun. /blog/page/N : Accueil › Blog › Page N.
+// /blog/chauffage : Accueil › Blog › Chauffage.
+// /blog/chauffage/page/N : Accueil › Blog › Chauffage › Page N.
+const filAriane: { libelle: string; href?: string }[] = [
+  { libelle: 'Accueil', href: '/' },
+  { libelle: 'Blog', href: urlListeBlog(undefined) },
+];
+if (categorie) filAriane.push({ libelle: titreH1, href: urlCategorie(categorie) });
+if (numero > 1) filAriane.push({ libelle: `Page ${numero}` });
+filAriane[filAriane.length - 1].href = undefined; // la page courante n'est pas un lien
+const avecFilAriane = categorie !== undefined || numero > 1;
+
+// JSON-LD BreadcrumbList : pages de catégorie (Accueil › Blog › catégorie).
+const jsonLdFilAriane =
+  categorie &&
+  filArianeJsonLd(
+    [
+      { nom: 'Accueil', url: '/' },
+      { nom: 'Blog', url: urlListeBlog(undefined) },
+      { nom: titreH1, url: urlCategorie(categorie) },
+    ],
+    SITE,
+  );
+
+// --- Article mis en avant (page 1 de /blog seulement) ----------------------
+// Il est retiré de la liste paginée de /blog (pagesDeListe(),
+// src/utils/blog.ts) : il n'apparaît dans aucune grille de /blog.
+const aLaUne = !categorie && numero === 1 ? articleALaUne(publies) : undefined;
+---
+
+<Layout
+  title={titrePage}
+  description={chapeau}
+  canonicalURL={new URL(page.url.current, SITE).href}
+  indexable={numero === 1}
+>
+  <Fragment slot="head">
+    {page.url.prev && <link rel="prev" href={new URL(page.url.prev, SITE).href} />}
+    {page.url.next && <link rel="next" href={new URL(page.url.next, SITE).href} />}
+    {jsonLdFilAriane && <script type="application/ld+json" set:html={jsonLdTexte(jsonLdFilAriane)} />}
+  </Fragment>
+
+  {/* EN-TÊTE : fond crème, h1, chapeau, barre des catégories */}
+  <div class="bg-creme">
+    <div class="mx-auto max-w-site px-gouttiere pt-8 pb-10 md:pt-12 md:pb-12">
+      {avecFilAriane && <FilAriane etapes={filAriane} />}
+      <h1 class:list={['text-h1 text-balance text-texte', avecFilAriane && 'mt-6']}>{titreH1}</h1>
+      <p class="mt-4 max-w-[60ch] text-chapeau text-texte">{chapeau}</p>
+      {numero > 1 && <p class="mt-3 text-base text-texte-doux">Page {numero} sur {page.lastPage}</p>}
+      <div class="mt-8">
+        <BarreCategories publies={publies} categorie={categorie} numero={numero} />
+      </div>
+    </div>
+  </div>
+
+  {/* ARTICLES */}
+  <div class="bg-fond">
+    <div class="mx-auto max-w-site px-gouttiere py-12 md:py-16">
+      {aLaUne && (
+        <div class="mb-12">
+          <CarteArticleUne article={aLaUne} />
+        </div>
+      )}
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {page.data.map((article) => <CarteArticle article={article} niveauTitre="h2" />)}
+      </div>
+      <Pagination page={page} />
+    </div>
+  </div>
+</Layout>

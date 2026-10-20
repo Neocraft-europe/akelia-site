@@ -1,0 +1,130 @@
+---
+// =========================================================================
+// COMPOSANT : SCHÉMA DE FONCTIONNEMENT DU PARTENARIAT
+// (src/components/SchemaPartenaire.astro)
+// -------------------------------------------------------------------------
+// /rejoindre-le-collectif, section 2 (19 octobre 2026). Dessiné en SVG (et
+// non en image) : il contient du texte, il reste net à toutes les tailles,
+// et il pourra être animé (chaque case est un <g data-temps="1…4">).
+//
+// QUATRE TEMPS : Akelia capte la demande → Akelia la qualifie → vous
+// recevez le rendez-vous → vous signez et facturez EN DIRECT.
+// - Temps 1 et 2 (la part d'Akelia) : cases bleu nuit, texte blanc
+//   (14,47:1).
+// - Temps 3 et 4 (la part de l'artisan) : nettement détachés, après un
+//   trait vertical en tirets et un écart plus grand ; cases orange pâle,
+//   filet orange épais, texte foncé (14,56:1).
+// - Sous les temps 3 et 4, une accolade et la mention « Aucun
+//   intermédiaire entre vous et le client ».
+//
+// DEUX DESSINS : horizontal à partir de 992px (lg), vertical en dessous.
+// Le vertical a une boîte de 340 unités de large : à 375px d'écran (335px
+// affichés), 1 unité ≈ 1px, le texte de 19 unités s'affiche à 18,7px.
+// Les dessins sont décoratifs pour les lecteurs d'écran (aria-hidden) : la
+// liste ordonnée sr-only qui les précède dit la même chose en toutes
+// lettres.
+// =========================================================================
+
+// Textes des quatre temps, découpés en lignes pour le dessin horizontal
+// (cases étroites) ; le dessin vertical les remet sur une ligne.
+const temps = [
+  { qui: 'Akelia', action: ['capte la', 'demande'], precision: ['(publicité,', 'visibilité)'] },
+  { qui: 'Akelia', action: ['qualifie la', 'demande'], precision: ['(projet, budget,', 'éligibilité)'] },
+  { qui: 'Vous', action: ['recevez le', 'rendez-vous'], precision: ['(exclusif sur', 'votre secteur)'] },
+  { qui: 'Vous', action: ['signez et facturez', 'EN DIRECT'], precision: ['(vos prix,', 'vos marges)'] },
+];
+const MENTION = 'Aucun intermédiaire entre vous et le client';
+
+// Dessin horizontal : cases de 200 × 210, 40 d'écart (flèche), 80 entre
+// les temps 2 et 3 (trait de séparation).
+const H = { l: 200, h: 210, y: 20, x: [0, 240, 520, 760] };
+// Dessin vertical : cases de 296 × 130, 44 d'écart, 70 entre 2 et 3.
+const V = { x: 34, l: 296, h: 130, y: [0, 174, 374, 548] };
+
+const artisan = (i: number) => i >= 2;
+const classesCase = (i: number) => (artisan(i) ? 'fill-action-50 stroke-action-500' : 'fill-nuit-900');
+const classesTexte = (i: number) => (artisan(i) ? 'fill-texte' : 'fill-texte-inverse');
+---
+
+<div>
+  {/* Version texte, pour les lecteurs d'écran */}
+  <ol class="sr-only">
+    {temps.map((t) => (
+      <li>{t.qui} {t.action.join(' ')} {t.precision.join(' ')}</li>
+    ))}
+    <li>{MENTION}.</li>
+  </ol>
+
+  {/* ===== HORIZONTAL (992px et plus) ===== */}
+  <svg viewBox="-4 0 968 330" class="hidden h-auto w-full lg:block" aria-hidden="true" font-family="inherit">
+    {/* Séparation entre la part d'Akelia et celle de l'artisan */}
+    <line x1="480" y1="0" x2="480" y2="250" class="stroke-texte-doux" stroke-width="2" stroke-dasharray="6 6" />
+
+    {temps.map((t, i) => (
+      <g data-temps={i + 1}>
+        <rect x={H.x[i]} y={H.y} width={H.l} height={H.h} rx="10" class={classesCase(i)} stroke-width={artisan(i) ? 4 : 0} />
+        <text x={H.x[i] + H.l / 2} y={H.y + 48} text-anchor="middle" font-size="25" font-weight="900" class={classesTexte(i)}>{t.qui}</text>
+        {t.action.map((ligne, n) => (
+          <text x={H.x[i] + H.l / 2} y={H.y + 88 + n * 26} text-anchor="middle" font-size="20" font-weight={ligne === 'EN DIRECT' ? 900 : 600} class={classesTexte(i)}>{ligne}</text>
+        ))}
+        {t.precision.map((ligne, n) => (
+          <text x={H.x[i] + H.l / 2} y={H.y + 156 + n * 24} text-anchor="middle" font-size="19" class={classesTexte(i)}>{ligne}</text>
+        ))}
+      </g>
+    ))}
+
+    {/* Flèches entre les cases */}
+    {[0, 1, 2].map((i) => {
+      const debut = H.x[i] + H.l + 6;
+      const fin = H.x[i + 1] - 6;
+      const y = H.y + H.h / 2;
+      return (
+        <g class={i === 1 ? 'stroke-action-500' : 'stroke-nuit-900'} stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d={`M${debut} ${y}H${fin}`} />
+          <path d={`M${fin - 9} ${y - 9}L${fin} ${y}L${fin - 9} ${y + 9}`} />
+        </g>
+      );
+    })}
+
+    {/* Accolade sous les temps 3 et 4, et la mention */}
+    <path d={`M${H.x[2]} 252v14H${H.x[3] + H.l}v-14`} class="stroke-action-500" stroke-width="3" fill="none" />
+    <text x={(H.x[2] + H.x[3] + H.l) / 2} y="306" text-anchor="middle" font-size="21" font-weight="700" class="fill-texte">{MENTION}</text>
+  </svg>
+
+  {/* ===== VERTICAL (sous 992px) ===== */}
+  <svg viewBox="0 0 340 760" class="mx-auto h-auto w-full max-w-[26rem] lg:hidden" aria-hidden="true" font-family="inherit">
+    {/* Séparation entre la part d'Akelia et celle de l'artisan */}
+    <line x1="0" y1="339" x2="340" y2="339" class="stroke-texte-doux" stroke-width="2" stroke-dasharray="6 6" />
+
+    {temps.map((t, i) => (
+      <g data-temps={i + 1}>
+        <rect x={V.x} y={V.y[i] + 2} width={V.l} height={V.h} rx="10" class={classesCase(i)} stroke-width={artisan(i) ? 4 : 0} />
+        <text x={V.x + V.l / 2} y={V.y[i] + 40} text-anchor="middle" font-size="23" font-weight="900" class={classesTexte(i)}>{t.qui}</text>
+        <text x={V.x + V.l / 2} y={V.y[i] + 76} text-anchor="middle" font-size="19" font-weight="600" class={classesTexte(i)}>
+          {t.action[1] === 'EN DIRECT' ? (
+            <>{t.action[0]} <tspan font-weight="900">{t.action[1]}</tspan></>
+          ) : t.action.join(' ')}
+        </text>
+        <text x={V.x + V.l / 2} y={V.y[i] + 108} text-anchor="middle" font-size="19" class={classesTexte(i)}>{t.precision.join(' ')}</text>
+      </g>
+    ))}
+
+    {/* Flèches entre les cases */}
+    {[0, 1, 2].map((i) => {
+      const x = V.x + V.l / 2;
+      const debut = V.y[i] + V.h + 8;
+      const fin = V.y[i + 1] - 6;
+      return (
+        <g class={i === 1 ? 'stroke-action-500' : 'stroke-nuit-900'} stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d={`M${x} ${debut}V${fin}`} />
+          <path d={`M${x - 9} ${fin - 9}L${x} ${fin}L${x + 9} ${fin - 9}`} />
+        </g>
+      );
+    })}
+
+    {/* Accolade à gauche des temps 3 et 4, et la mention dessous */}
+    <path d={`M26 ${V.y[2] + 2}H12V${V.y[3] + V.h + 2}H26`} class="stroke-action-500" stroke-width="3" fill="none" />
+    <text x="170" y="718" text-anchor="middle" font-size="20" font-weight="700" class="fill-texte">Aucun intermédiaire</text>
+    <text x="170" y="744" text-anchor="middle" font-size="20" font-weight="700" class="fill-texte">entre vous et le client</text>
+  </svg>
+</div>

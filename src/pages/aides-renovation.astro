@@ -1,2 +1,742 @@
 ---
-// =================================
+// =========================================================================
+// PAGE « TOUT SAVOIR SUR LES AIDES À LA RÉNOVATION ÉNERGÉTIQUE »
+// (src/pages/aides-renovation.astro)
+// -------------------------------------------------------------------------
+// Réécrite entièrement le 19 octobre 2026 (l'ancien fichier, cassé, ne
+// contenait qu'un en-tête jamais fermé). Texte fourni le 19 octobre 2026,
+// repris MOT POUR MOT : seule la mise en forme est de nous. Détail et
+// écarts signalés : inventaire-charte.md, « /aides-renovation : création
+// de la page ».
+//
+// DE HAUT EN BAS :
+//   1. en-tête : fil d'Ariane, h1, introduction, illustration
+//      aides-entete.png à droite (768px et plus) ; bandeau des 4 chiffres
+//      clés ;
+//   2. le simulateur (Simulateur.astro, le même que sur l'accueil), sur
+//      fond crème ;
+//   3. « Ce qu'il faut retenir » : les deux familles d'aides, puis la mise
+//      en garde sur fond d'alerte ;
+//   4. ce qui se cumule avec quoi : une carte par aide ;
+//   5. la frise des démarches (horizontale à partir de 992px) ;
+//   6. les cinq aides, avec à gauche (992px et plus) le sommaire collant
+//      (Sommaire.astro, comme les articles) ; en dessous de 992px, le
+//      sommaire replié suit « Ce qu'il faut retenir » ;
+//   7. articles liés (articlesPertinents, src/utils/blog.ts), appel à
+//      l'action, date de vérification des montants.
+//
+// MONTANTS : tout montant MIS EN AVANT (bandeau, « Ce qu'il faut
+// retenir », plafonds de l'Éco-PTZ) vient de src/data/aides.ts. Les
+// chiffres cités au fil du texte rédigé restent dans le texte.
+//
+// ILLUSTRATIONS (src/assets/illustrations/) : aides-entete.png,
+// aides-tva.png, aides-eco-ptz.png, aides-cee.png, aides-maprimerenov.png,
+// aides-locales.png. Tant qu'un fichier manque, rien n'est affiché (pas
+// d'emplacement vide).
+//
+// SEO : title et description propres, canonique /aides-renovation, page
+// indexable, fil d'Ariane et JSON-LD BreadcrumbList. Pas de FAQPage.
+// =========================================================================
+
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import FilAriane from '../components/FilAriane.astro';
+import Sommaire from '../components/Sommaire.astro';
+import Simulateur from '../components/Simulateur.astro';
+import CarteArticle from '../components/CarteArticle.astro';
+import Icone from '../components/aides/Icone.astro';
+import Encadre from '../components/aides/Encadre.astro';
+import Vignettes from '../components/aides/Vignettes.astro';
+import Etapes from '../components/aides/Etapes.astro';
+import {
+  tauxTva,
+  mprGesteMax,
+  mprAmpleurTauxMax,
+  ceeMontantMisEnAvant,
+  ecoPtzMax,
+  plafondsEcoPtz,
+  dateVerificationPage,
+} from '../data/aides';
+import { illustration } from '../data/illustrations';
+import { articlesPublies, articlesPertinents } from '../utils/blog';
+import { filArianeJsonLd, jsonLdTexte } from '../utils/seo';
+import { euros, pourcent, dateEnFrancais } from '../utils/texte';
+
+const SITE = Astro.site ?? new URL('https://akelia.fr');
+const ADRESSE = '/aides-renovation';
+
+// --- SEO -----------------------------------------------------------------
+const titrePage = 'Aides rénovation énergétique 2026 : le guide complet | Akelia';
+const description = `Aides à la rénovation énergétique 2026 : TVA à ${pourcent(tauxTva.reduit)}, Éco-PTZ, prime CEE, MaPrimeRénov' et aides locales. Conditions, cumuls, démarches, et un simulateur pour estimer vos aides.`;
+const filAriane = [{ libelle: 'Accueil', href: '/' }, { libelle: 'Aides rénovation' }];
+const jsonLd = filArianeJsonLd([
+  { nom: 'Accueil', url: '/' },
+  { nom: 'Aides rénovation', url: ADRESSE },
+], SITE);
+
+// --- Couleurs des cinq aides ---------------------------------------------
+// Une couleur de la charte par aide (teintes des étapes de la Méthode, et
+// le vert). Version FONCÉE : pastilles, filets, icônes (5,8:1 à 6,3:1 sur
+// blanc). Version PÂLE : fonds (texte 11,6:1 à 14,4:1 dessus).
+const COULEURS = {
+  tva: { fonce: 'bg-brume-fonce', texte: 'text-brume-fonce', pale: 'bg-brume', bord: 'border-brume-fonce' },
+  'eco-ptz': { fonce: 'bg-lichen-fonce', texte: 'text-lichen-fonce', pale: 'bg-lichen', bord: 'border-lichen-fonce' },
+  cee: { fonce: 'bg-argile-fonce', texte: 'text-argile-fonce', pale: 'bg-argile', bord: 'border-argile-fonce' },
+  mpr: { fonce: 'bg-vert-600', texte: 'text-vert-600', pale: 'bg-vert-50', bord: 'border-vert-600' },
+  locales: { fonce: 'bg-bruyere-fonce', texte: 'text-bruyere-fonce', pale: 'bg-bruyere', bord: 'border-bruyere-fonce' },
+} as const;
+type CleAide = keyof typeof COULEURS;
+const NOMS_COURTS: Record<CleAide, string> = {
+  tva: 'TVA réduite',
+  'eco-ptz': 'Éco-PTZ',
+  cee: 'CEE',
+  mpr: 'MaPrimeRénov’',
+  locales: 'Aides locales',
+};
+
+// --- Les cinq sections (ordre du texte) ----------------------------------
+// `sommaire` : libellé court du sommaire (ticket du 19 octobre 2026) ;
+// `titre` : titre h2, mot pour mot, sans l'émoji d'origine.
+const sections: { cle: CleAide; id: string; sommaire: string; titre: string; image: string }[] = [
+  { cle: 'tva', id: 'tva-reduite', sommaire: 'La TVA à taux réduit', titre: 'La TVA à taux réduit : un coup de pouce immédiat', image: 'aides-tva.png' },
+  { cle: 'eco-ptz', id: 'eco-ptz', sommaire: 'L’Éco-PTZ', titre: "L'Éco-Prêt à Taux Zéro (Eco-PTZ)", image: 'aides-eco-ptz.png' },
+  { cle: 'cee', id: 'prime-cee', sommaire: 'La prime CEE', titre: "Prime énergie ou Certificats d'Economie d'Energie (CEE)", image: 'aides-cee.png' },
+  { cle: 'mpr', id: 'maprimerenov', sommaire: 'MaPrimeRénov’', titre: 'MaPrimeRénov’ : L’aide phare de l’État', image: 'aides-maprimerenov.png' },
+  { cle: 'locales', id: 'aides-locales', sommaire: 'Les aides locales', titre: 'Les aides locales : des coups de pouce de proximité', image: 'aides-locales.png' },
+];
+const section = Object.fromEntries(sections.map((s) => [s.cle, { ...s, img: illustration(s.image) }])) as Record<
+  CleAide,
+  (typeof sections)[number] & { img: ReturnType<typeof illustration> }
+>;
+// Pastille de couleur devant chaque entrée du sommaire (à la place des
+// émojis du texte d'origine).
+const entreesSommaire = sections.map((s) => ({ id: s.id, texte: s.sommaire, pastille: COULEURS[s.cle].fonce }));
+
+const imageEntete = illustration('aides-entete.png');
+
+// --- Zone 1 : bandeau des chiffres clés (tout vient de aides.ts) -----------
+const chiffresCles = [
+  { avant: '', valeur: pourcent(tauxTva.reduit), libelle: 'TVA à taux réduit', cle: 'tva' as CleAide },
+  { avant: 'jusqu’à', valeur: euros(mprGesteMax), libelle: 'MaPrimeRénov’', cle: 'mpr' as CleAide },
+  { avant: 'plus de', valeur: euros(ceeMontantMisEnAvant), libelle: 'Prime CEE', cle: 'cee' as CleAide },
+  { avant: 'jusqu’à', valeur: euros(ecoPtzMax), libelle: 'Éco-PTZ', cle: 'eco-ptz' as CleAide },
+];
+
+// --- Zone 3 : « Ce qu'il faut retenir » ------------------------------------
+// Texte mot pour mot ; les montants mis en avant sont lus dans aides.ts.
+const sansCondition = [
+  { cle: 'tva' as CleAide, titre: `TVA ${pourcent(tauxTva.reduit)} :`, texte: "applicable sur le matériel et la pose de travaux d'isolation, certains systèmes de chauffage (y compris les climatisations réversibles sous conditions strictes) et de production d'eau chaude sanitaire (ECS)." },
+  { cle: 'tva' as CleAide, titre: `TVA ${pourcent(tauxTva.intermediaire)} :`, texte: 'sur certains radiateurs à inertie.' },
+  { cle: 'eco-ptz' as CleAide, titre: 'Eco-PTZ :', texte: `prêt à taux zéro jusqu'à ${euros(ecoPtzMax)} sur une durée de 20 ans.` },
+];
+const sousCondition = [
+  { cle: 'cee' as CleAide, titre: "Certificats d'Economie d'Energie (CEE) / Prime énergie :", texte: `Plus de ${euros(ceeMontantMisEnAvant)} de prime versés par un fournisseur d'énergie pour les travaux les plus performants.` },
+  { cle: 'mpr' as CleAide, titre: "MaPrimeRénov' :", texte: `Aide principale de l'État allant jusqu'à ${euros(mprGesteMax)} par geste, et jusqu'à ${pourcent(mprAmpleurTauxMax)} du devis pris en charge pour des rénovations globales.` },
+  { cle: 'locales' as CleAide, titre: 'Aides locales :', texte: 'conditions définies par le donateur (voir votre région, votre département, votre métropole).' },
+];
+
+// --- Zone 4 : ce qui se cumule avec quoi (texte du ticket, mot pour mot) --
+const cumuls: { aide: string; cle: CleAide; avec: CleAide[]; texte: string; exception?: boolean }[] = [
+  { aide: 'TVA réduite', cle: 'tva', avec: ['eco-ptz', 'cee', 'mpr', 'locales'], texte: 'toutes les autres' },
+  { aide: 'Éco-PTZ', cle: 'eco-ptz', avec: ['tva', 'cee', 'mpr', 'locales'], texte: 'toutes les autres (c’est un prêt, pas une subvention)' },
+  { aide: 'CEE', cle: 'cee', avec: ['mpr', 'locales'], texte: 'MaPrimeRénov’ geste par geste, aides locales' },
+  { aide: 'MaPrimeRénov’ geste par geste', cle: 'mpr', avec: ['cee', 'locales'], texte: 'CEE, aides locales' },
+  { aide: 'MaPrimeRénov’ Parcours Accompagné', cle: 'mpr', avec: ['locales'], texte: 'aides locales — les CEE sont déjà intégrés au montant versé, pas de cumul à part', exception: true },
+  { aide: 'Aides locales', cle: 'locales', avec: ['mpr', 'cee'], texte: 'MaPrimeRénov’ et CEE, dans la limite d’un plafond de financement global' },
+];
+
+// --- Zone 5 : la frise des démarches -----------------------------------------
+const frise: { texte: string; nonRetour?: boolean; delai?: boolean }[] = [
+  { texte: 'Audit énergétique ou DPE (recommandé)' },
+  { texte: 'Comparer les offres et choisir son fournisseur CEE' },
+  { texte: 'Déposer les demandes d’aides' },
+  { texte: 'Attendre l’accord', nonRetour: true },
+  { texte: 'Signer le devis et lancer les travaux' },
+  { texte: 'Envoyer les justificatifs', delai: true },
+  { texte: 'Recevoir les versements', delai: true },
+];
+
+// --- MaPrimeRénov' : les quatre profils de revenus -------------------------
+// Contrastes : bleu et violet avec texte blanc (7,99:1 et 7,64:1), jaune et
+// rose avec texte foncé (10,02:1 et 9,86:1). Voir global.css.
+const profilsMpr = [
+  { nom: 'Bleu', revenus: 'très modeste', classes: 'bg-mpr-bleu text-texte-inverse' },
+  { nom: 'Jaune', revenus: 'modeste', classes: 'bg-mpr-jaune text-texte' },
+  { nom: 'Violet', revenus: 'intermédiaire', classes: 'bg-mpr-violet text-texte-inverse' },
+  { nom: 'Rose', revenus: 'supérieur', classes: 'bg-mpr-rose text-texte' },
+];
+
+// --- Zone 7 : articles liés --------------------------------------------------
+// Mots-clés précis : chaque aide par son nom, et l'Anah (contrôles).
+const articlesLies = articlesPertinents(
+  await articlesPublies(),
+  ['MaPrimeRénov', 'CEE', "certificats d'économies d'énergie", 'prime énergie', 'éco-prêt', 'éco-PTZ', 'prêt à taux zéro', 'Anah', 'aides financières'],
+  4,
+);
+
+// --- Classes communes ----------------------------------------------------------
+// Titre h2 d'une aide : décalé sous l'en-tête collant (ancre-sommaire).
+const classesH2Aide = 'ancre-sommaire text-h3 text-balance text-texte';
+const classesH3 = 'mt-12 text-[1.5rem] leading-tight font-black text-texte md:text-[1.75rem]';
+const classesParagraphe = 'mt-4 max-w-[70ch] text-corps text-texte';
+const classesBoutonDevis =
+  'flex min-h-12 w-full items-center justify-center rounded-bloc bg-action-500 px-4 text-base font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900';
+const classesLienCollectif =
+  'mt-3 flex min-h-11 items-center justify-center text-center text-base text-texte-doux underline underline-offset-4 hover:text-nuit-900 focus-visible:outline-2 focus-visible:outline-nuit-900';
+---
+
+<Layout title={titrePage} description={description} canonicalURL={new URL(ADRESSE, SITE).href}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={jsonLdTexte(jsonLd)} />
+  </Fragment>
+
+  {/* ===== ZONE 1 : EN-TÊTE ===== */}
+  <header class="bg-fond">
+    <div class="mx-auto max-w-[calc(72rem+2*var(--spacing-gouttiere))] px-gouttiere pt-8 pb-12 md:pt-12 md:pb-16">
+      <FilAriane etapes={filAriane} />
+
+      {/* Illustration à droite à partir de 768px, au-dessus en dessous
+          (order). Absente : une seule colonne, sans emplacement vide. */}
+      <div class:list={['mt-6 grid gap-8', imageEntete && 'md:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] md:items-center lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]']}>
+        <div class="min-w-0 md:order-1">
+          <h1 class="max-w-[24ch] text-h1 text-balance text-texte">Tout savoir sur les aides à la rénovation énergétique : le guide complet</h1>
+          <div class="mt-6 max-w-[62ch] space-y-4 text-chapeau text-texte">
+            <p>Entre l’envolée des prix de l’énergie et le souhait d’améliorer son confort thermique, la rénovation énergétique est sur toutes les lèvres. Mais soyons réalistes : cela a un coût qui peut vite devenir un frein.</p>
+            <p>Heureusement, la France dispose d’un arsenal d’aides financières capable d'alléger considérablement la facture. Entre les incontournables MaPrimeRénov’ et primes CEE, les subventions locales ou encore les avantages fiscaux comme la TVA à 5,5 %, il est parfois difficile de s'y retrouver. Ce guide vous aide à identifier les dispositifs cumulables et les conditions pour en profiter.</p>
+          </div>
+        </div>
+        {imageEntete && (
+          <Image
+            src={imageEntete}
+            alt=""
+            widths={[320, 480, 640, 800]}
+            sizes="(min-width: 992px) 384px, (min-width: 768px) 320px, calc(100vw - 2.5rem)"
+            format="webp"
+            loading="eager"
+            class="mx-auto h-auto w-full max-w-sm md:order-2"
+          />
+        )}
+      </div>
+
+      {/* BANDEAU DES CHIFFRES CLÉS : lus dans src/data/aides.ts, jamais
+          écrits ici. 2 colonnes sur téléphone, 4 à partir de 768px.
+          Nombre très gros (insécable), libellé dessous ; petit trait de la
+          couleur de l'aide. */}
+      <dl class="mt-10 grid grid-cols-2 gap-x-4 gap-y-8 border-t border-creme-fonce pt-8 md:grid-cols-4">
+        {chiffresCles.map((chiffre) => (
+          <div class="flex min-w-0 flex-col">
+            <dt class="order-2 mt-1 flex items-center gap-2 text-corps text-texte-doux">
+              <span aria-hidden="true" class:list={['size-3 shrink-0 rounded-full', COULEURS[chiffre.cle].fonce]}></span>
+              {chiffre.libelle}
+            </dt>
+            <dd class="order-1">
+              {chiffre.avant && <span class="block text-corps font-semibold text-texte-doux">{chiffre.avant}</span>}
+              <span class="block text-[clamp(1.75rem,6.5vw,3.25rem)] leading-none font-black whitespace-nowrap text-texte">{chiffre.valeur}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </header>
+
+  {/* ===== ZONE 2 : LE SIMULATEUR, TOUT DE SUITE ===== */}
+  <section aria-labelledby="simulateur-titre" class="bg-creme">
+    <div class="mx-auto max-w-[calc(48rem+2*var(--spacing-gouttiere))] px-gouttiere py-scene">
+      <h2 id="simulateur-titre" class="ancre-sommaire text-h2 text-balance text-texte">Estimez vos aides en trois questions</h2>
+      <div class="mt-8">
+        <Simulateur />
+      </div>
+    </div>
+  </section>
+
+  <div class="bg-fond">
+    {/* ===== ZONE 3 : CE QU'IL FAUT RETENIR ===== */}
+    <section aria-labelledby="retenir-titre" class="mx-auto max-w-[calc(72rem+2*var(--spacing-gouttiere))] px-gouttiere pt-scene">
+      <div class="rounded-bloc border-l-[6px] border-vert-600 bg-vert-50 p-6 sm:p-8 lg:p-10">
+        <h2 id="retenir-titre" class="text-h3 text-texte">Ce qu'il faut retenir</h2>
+        <p class="mt-4 max-w-[70ch] text-corps text-texte">Il existe plusieurs dispositifs pour réduire le coût de votre rénovation énergétique en France.</p>
+
+        <div class="mt-8 grid gap-8 md:grid-cols-2 md:gap-10">
+          {[
+            { titre: 'Aides accessibles sans condition de ressources :', lignes: sansCondition },
+            { titre: 'Aides soumises à conditions de revenus :', lignes: sousCondition },
+          ].map((colonne) => (
+            <div class="min-w-0">
+              <h3 class="flex items-start gap-3 text-h4 font-bold text-texte">
+                <Icone nom="valide" class="mt-0.5 size-7 shrink-0 text-vert-600" />
+                {colonne.titre}
+              </h3>
+              <ul class="mt-4 space-y-4">
+                {colonne.lignes.map((ligne) => (
+                  <li class="flex gap-3 text-corps text-texte">
+                    <span aria-hidden="true" class:list={['mt-2.5 size-3 shrink-0 rounded-full', COULEURS[ligne.cle].fonce]}></span>
+                    <span class="min-w-0"><strong class="font-semibold">{ligne.titre}</strong> {ligne.texte}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* MISE EN GARDE : détachée, fond d'alerte, icône. L'information la
+          plus coûteuse à ignorer de la page. Texte 13,6:1 sur alerte-50. */}
+      <div role="note" class="mt-6 flex gap-4 rounded-bloc border-2 border-alerte-700 bg-alerte-50 p-6 sm:p-8">
+        <Icone nom="alerte" class="size-9 shrink-0 text-alerte-700" />
+        <p class="min-w-0 text-h4 leading-snug font-normal text-texte">
+          <strong class="font-bold">Mise en garde :</strong> pour l'ensemble de ces aides, il faut faire les démarches avant de signer le devis de votre artisan.
+        </p>
+      </div>
+
+      {/* Sommaire replié (téléphone et tablette), comme sous « En bref »
+          dans les articles. */}
+      <Sommaire forme="replie" entrees={entreesSommaire} libelle="Sommaire des aides" class="mt-8" />
+    </section>
+
+    {/* ===== ZONE 4 : CE QUI SE CUMULE AVEC QUOI ===== */}
+    <section aria-labelledby="cumul-titre" class="mx-auto max-w-[calc(72rem+2*var(--spacing-gouttiere))] px-gouttiere pt-scene">
+      <h2 id="cumul-titre" class="text-h3 text-balance text-texte">Ce qui se cumule avec quoi</h2>
+
+      {/* Légende des couleurs */}
+      <ul class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-corps text-texte-doux" aria-label="Légende des couleurs">
+        {(Object.keys(COULEURS) as CleAide[]).map((cle) => (
+          <li class="flex items-center gap-2">
+            <span aria-hidden="true" class:list={['size-3.5 rounded-full', COULEURS[cle].fonce]}></span>
+            {NOMS_COURTS[cle]}
+          </li>
+        ))}
+      </ul>
+
+      {/* Une carte par aide. Les pastilles (décoratives : la phrase dessous
+          dit la même chose en toutes lettres) reprennent la couleur des
+          aides cumulables. Le Parcours Accompagné, l'exception, se
+          détache : fond orange pâle, filet orange en tirets, étiquette. */}
+      <ul class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {cumuls.map((carte) => (
+          <li class:list={[
+            'flex min-w-0 flex-col rounded-bloc p-5 sm:p-6',
+            carte.exception ? 'border-2 border-dashed border-action-500 bg-action-50' : 'border border-creme-fonce bg-fond',
+          ]}>
+            {carte.exception && (
+              <p class="mb-3 self-start rounded-pilule bg-nuit-900 px-3 py-1 text-corps font-bold text-texte-inverse">Exception</p>
+            )}
+            <h3 class="flex items-start gap-3 text-h4 font-bold text-texte">
+              <span aria-hidden="true" class:list={['mt-2 size-3.5 shrink-0 rounded-full', COULEURS[carte.cle].fonce]}></span>
+              {carte.aide}
+            </h3>
+            <p class="mt-3 text-corps font-semibold text-texte-doux">Se cumule avec</p>
+            <div aria-hidden="true" class="mt-2 flex flex-wrap gap-2">
+              {carte.avec.map((cle) => (
+                <span class:list={['inline-flex items-center gap-2 rounded-pilule px-3 py-1 text-base text-texte', COULEURS[cle].pale]}>
+                  <span class:list={['size-2.5 rounded-full', COULEURS[cle].fonce]}></span>
+                  {NOMS_COURTS[cle]}
+                </span>
+              ))}
+              {carte.exception && (
+                <span class="inline-flex items-center gap-2 rounded-pilule border border-dashed border-texte-doux px-3 py-1 text-base text-texte-doux line-through">
+                  CEE
+                </span>
+              )}
+            </div>
+            <p class="mt-3 text-corps text-texte">{carte.texte}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {/* ===== ZONE 5 : LA FRISE DES DÉMARCHES =====
+        Verticale sous 992px, horizontale au-delà (7 colonnes). La mise en
+        garde entre les étapes 4 et 5 est un élément de la liste : sous
+        992px, un bandeau entre les deux étapes ; au-delà, sous la frise, à
+        cheval sur les colonnes 4 et 5, avec un trait rouge en tirets à la
+        frontière (bord gauche de l'étape 5). */}
+    <section aria-labelledby="frise-titre" class="mx-auto max-w-[calc(72rem+2*var(--spacing-gouttiere))] px-gouttiere pt-scene">
+      <h2 id="frise-titre" class="text-h3 text-balance text-texte">Les démarches, dans l’ordre</h2>
+      <ol class="mt-10 lg:grid lg:grid-cols-7 lg:gap-x-2 lg:gap-y-6">
+        {frise.map((etape, index) => (
+          <>
+            <li class:list={[
+              'relative flex gap-5 pb-8 lg:row-start-1 lg:flex-col lg:items-center lg:gap-3 lg:px-1 lg:pb-0 lg:text-center',
+              index === 4 && 'lg:border-l-[3px] lg:border-dashed lg:border-alerte-700',
+            ]}>
+              {/* Trait vers l'étape suivante : vertical, puis horizontal. */}
+              {index < frise.length - 1 && (
+                <span aria-hidden="true" class:list={[
+                  'absolute top-12 bottom-2 left-5 w-0.5 -translate-x-1/2 lg:top-5 lg:bottom-auto lg:left-[calc(50%+1.75rem)] lg:h-0.5 lg:w-[calc(100%-3.5rem+0.5rem)] lg:translate-x-0',
+                  etape.nonRetour ? 'bg-alerte-700' : 'bg-action-500/60',
+                ]}></span>
+              )}
+              <span aria-hidden="true" class:list={[
+                'relative flex size-10 shrink-0 items-center justify-center rounded-pilule border-2 text-h4 font-bold',
+                etape.nonRetour ? 'border-action-500 bg-action-500 text-texte' : 'border-action-500 bg-fond text-nuit-900',
+              ]}>
+                {index + 1}
+              </span>
+              <div class="min-w-0 pt-1 lg:pt-0">
+                <p class:list={['text-corps leading-snug text-texte', etape.nonRetour && 'font-bold']}>
+                  <span class="sr-only">Étape {index + 1} : </span>{etape.texte}
+                </p>
+                {etape.nonRetour && (
+                  <p class="mt-2 inline-block rounded-pilule bg-action-500 px-3 py-0.5 text-corps font-bold text-texte">Point de non-retour</p>
+                )}
+                {etape.delai && (
+                  <p class="mt-2 text-corps leading-snug text-texte-doux">Délai : plusieurs semaines à plusieurs mois</p>
+                )}
+              </div>
+            </li>
+            {etape.nonRetour && (
+              <li class="mb-8 flex items-center gap-3 rounded-bloc border-2 border-alerte-700 bg-alerte-50 p-4 lg:col-span-2 lg:col-start-4 lg:row-start-2 lg:mb-0 lg:justify-center lg:text-center">
+                <Icone nom="alerte" class="size-7 shrink-0 text-alerte-700" />
+                <p class="text-corps font-bold text-texte">Ne signez aucun devis avant cette étape.</p>
+              </li>
+            )}
+          </>
+        ))}
+      </ol>
+    </section>
+
+    {/* ===== ZONE 6 : LES CINQ AIDES =====
+        À partir de 992px : sommaire collant à gauche (16rem), texte à
+        droite. */}
+    <div class="mx-auto max-w-[calc(72rem+2*var(--spacing-gouttiere))] px-gouttiere pt-scene pb-scene lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-12">
+      <Sommaire forme="colonne" entrees={entreesSommaire} libelle="Sommaire des aides">
+        <a href="/devis" class={classesBoutonDevis}>Contacter votre artisan</a>
+        <a href="/qui-sommes-nous" class={classesLienCollectif}>Akelia, le collectif d'artisans locaux</a>
+      </Sommaire>
+
+      <div class="min-w-0 space-y-scene">
+
+        {/* ----- LA TVA À TAUX RÉDUIT ----- */}
+        <section aria-labelledby={section.tva.id}>
+          <div class:list={['flex items-center gap-6 rounded-bloc border-l-[6px] p-6 sm:p-8', COULEURS.tva.pale, COULEURS.tva.bord]}>
+            <h2 id={section.tva.id} class:list={[classesH2Aide, 'min-w-0 flex-1']}>{section.tva.titre}</h2>
+            {section.tva.img && <Image src={section.tva.img} alt="" width={160} format="webp" loading="lazy" class="hidden h-auto w-28 shrink-0 sm:block md:w-36" />}
+          </div>
+
+          <h3 class={classesH3}>De quoi s'agit-il ?</h3>
+          <p class={classesParagraphe}>Pour alléger le coût des travaux de rénovation, l’État applique un taux de TVA réduit. Contrairement au taux normal de 20 %, la TVA à 5,5 % s’applique directement sur la facture émise par l'entreprise. Elle concerne aussi bien l'achat du matériel que la main-d'œuvre (la pose).</p>
+
+          <h3 class={classesH3}>Quels sont les travaux éligibles ?</h3>
+          <p class={classesParagraphe}>La TVA à 5,5 % est réservée aux travaux d’économie d’énergie les plus performants. Voici les principaux équipements concernés :</p>
+          <div class="mt-6">
+            <Vignettes couleur={COULEURS.tva.texte} vignettes={[
+              { icone: 'isolation', nom: 'Isolation thermique', detail: 'Murs (intérieur/extérieur), toitures, combles et planchers.' },
+              { icone: 'fenetre', nom: 'Menuiseries', detail: 'Fenêtres, parois vitrées, portes d’entrée et volets isolants.' },
+            ]} />
+            <Vignettes titre="Chauffage et Eau Chaude :" couleur={COULEURS.tva.texte} vignettes={[
+              { icone: 'pompe-a-chaleur', nom: 'Pompes à chaleur (air/eau et géothermiques).' },
+              { icone: 'bois', nom: 'Chaudières et poêles à bois ou granulés (pellets).' },
+              { icone: 'chauffe-eau', nom: 'Chauffe-eau thermodynamiques et solaires.' },
+              { icone: 'solaire', nom: 'Panneaux photovoltaïques', detail: "La TVA est réduite à 5,5 % pour les installations d'une puissance inférieure ou égale à 9 kWc." },
+            ]} />
+          </div>
+
+          {/* CLIMATISATIONS RÉVERSIBLES : condition à critères, un seul
+              manquant fait tout basculer. Critères en liste, conséquence
+              en grand sur fond d'alerte. */}
+          <div class:list={['mt-6 rounded-bloc border-2 bg-fond p-5 sm:p-6', COULEURS.tva.bord]}>
+            <div class="flex items-start gap-3">
+              <Icone nom="climatisation" class:list={['size-8 shrink-0', COULEURS.tva.texte]} />
+              <p class="min-w-0 text-corps text-texte"><strong class="font-bold">Nouveauté Été 2026 :</strong> Les climatisations réversibles (PAC air/air) bénéficient désormais de la TVA à 5,5 % (matériel et pose) à condition de respecter des critères techniques stricts :</p>
+            </div>
+            <ul class="mt-4 space-y-3 sm:pl-11">
+              {['classe énergétique A++ (chaud et froid) pour les mono-splits ou A+ pour les multi-splits,', 'système connecté en Wi-Fi,', 'et respect des normes européennes F-Gas.'].map((critere) => (
+                <li class="flex gap-3 text-corps text-texte">
+                  <Icone nom="valide" class:list={['mt-1 size-6 shrink-0', COULEURS.tva.texte]} />
+                  <span class="min-w-0">{critere}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="mt-5 rounded-bloc border-l-[6px] border-alerte-700 bg-alerte-50 p-4 text-corps text-texte">
+              Si un seul de ces critères manque, la TVA reste à <strong class="text-h4 font-black whitespace-nowrap">20 % sur le matériel</strong> et <strong class="text-h4 font-black whitespace-nowrap">10 % sur la pose</strong>.
+            </p>
+          </div>
+
+          <div class="mt-6">
+            <Vignettes titre="Autres dispositifs :" couleur={COULEURS.tva.texte} vignettes={[
+              { icone: 'ventilation', nom: 'Ventilation mécanique (VMC) double flux.' },
+              { icone: 'borne', nom: 'Bornes de recharge pour véhicules électriques.' },
+              { icone: 'audit', nom: 'Audit énergétique.' },
+              { icone: 'soleil', nom: 'Systèmes de protection solaire (uniquement en Outre-mer).' },
+            ]} />
+          </div>
+          <Encadre genre="note" mot="À noter" class="mt-6">que les radiateurs électriques à inertie profitent eux d'une TVA à 10 %.</Encadre>
+
+          <h3 class={classesH3}>Quelles sont les conditions ?</h3>
+          <p class={classesParagraphe}>Bonne nouvelle : cette aide est accessible sans condition de ressources. Pour en profiter, il suffit de respecter ces critères :</p>
+          <ul class="mt-6 max-w-[70ch] space-y-4">
+            {[
+              ['Le logement :', 'Il doit être achevé depuis plus de 2 ans. Il peut s’agir d’une résidence principale ou secondaire.'],
+              ['Le bénéficiaire :', 'Propriétaire (occupant ou bailleur), locataire, occupant à titre gratuit ou même une SCI. Mais également les copropriétés.'],
+              ['Le professionnel :', 'Les travaux et la vente de matériels doivent être facturés par un artisan. Si vous achetez le matériel vous-même, vous paierez 20 % de TVA en magasin.'],
+            ].map(([titre, texte]) => (
+              <li class="flex gap-3 text-corps text-texte">
+                <Icone nom="valide" class:list={['mt-1 size-6 shrink-0', COULEURS.tva.texte]} />
+                <span class="min-w-0"><strong class="font-semibold">{titre}</strong> {texte}</span>
+              </li>
+            ))}
+          </ul>
+
+          <h3 class={classesH3}>Comment en bénéficier ?</h3>
+          <p class={classesParagraphe}>C’est la démarche la plus simple, il suffit de faire appel à un professionnel. L'artisan applique directement le taux de 5,5 % ou de 10 % sur son devis et sa facture. Depuis le 1er janvier 2025, vous n'avez plus à transmettre l'attestation simplifiée (Cerfa n°1301-SD) ; une simple mention apposée sur le devis et la facture suffit pour justifier le taux réduit.</p>
+        </section>
+
+        {/* ----- L'ÉCO-PRÊT À TAUX ZÉRO ----- */}
+        <section aria-labelledby={section['eco-ptz'].id}>
+          <div class:list={['flex items-center gap-6 rounded-bloc border-l-[6px] p-6 sm:p-8', COULEURS['eco-ptz'].pale, COULEURS['eco-ptz'].bord]}>
+            <h2 id={section['eco-ptz'].id} class:list={[classesH2Aide, 'min-w-0 flex-1']}>{section['eco-ptz'].titre}</h2>
+            {section['eco-ptz'].img && <Image src={section['eco-ptz'].img} alt="" width={160} format="webp" loading="lazy" class="hidden h-auto w-28 shrink-0 sm:block md:w-36" />}
+          </div>
+
+          <h3 class={classesH3}>De quoi s'agit-il ?</h3>
+          <p class={classesParagraphe}>L’Éco-PTZ est un prêt dont les intérêts sont intégralement pris en charge par l’État. Il permet de financer vos travaux de rénovation énergétique sans avancer de trésorerie. Ce prêt est disponible pour la rénovation d'un bien que vous occupez déjà, mais aussi pour financer les travaux d'un logement que vous projetez d'acheter (sur justificatifs).</p>
+          <Encadre genre="note" mot="À noter :" class="mt-6 max-w-[70ch]">S'il n'y a pas d'intérêts bancaires, l'assurance emprunteur reste à votre charge. Sur une durée de 20 ans, comptez environ 2 000 € à 4 000 € d'assurance selon votre profil.</Encadre>
+          <Encadre genre="avantage" mot="L'avantage :" class="mt-4 max-w-[70ch]">Avec des taux de crédit classiques qui se situent souvent autour de 3 à 4 %, choisir un Éco-PTZ change tout. Pour un même projet, vous pouvez passer d'une mensualité de 300 € à environ 220 €, soit une économie de 80 € par mois et près de 20 000 € sur 20 ans.</Encadre>
+
+          <h3 class={classesH3}>Quels sont les travaux éligibles ?</h3>
+          <p class={classesParagraphe}>Pour bénéficier de ce prêt, les travaux doivent concerner :</p>
+          <div class="mt-6">
+            <Vignettes couleur={COULEURS['eco-ptz'].texte} vignettes={[
+              { icone: 'isolation', nom: "L'isolation thermique", detail: 'Toitures, murs extérieurs, parois vitrées (fenêtres/portes) et planchers bas.' },
+              { icone: 'chauffage', nom: "Le chauffage et l'eau chaude", detail: 'Installation de systèmes utilisant des énergies renouvelables.' },
+              { icone: 'ventilation', nom: 'La ventilation', detail: 'Systèmes de VMC économiques et performants.' },
+              { icone: 'assainissement', nom: "L'assainissement", detail: "Réhabilitation des installations d'assainissement non collectif (sous réserve qu'elles soient neutres en énergie)." },
+            ]} />
+          </div>
+
+          <h3 class={classesH3}>Quelles sont les conditions ?</h3>
+          <p class={classesParagraphe}>Il n'y a aucune condition de ressources pour obtenir un Éco-PTZ. Voici les critères à respecter :</p>
+          <ul class="mt-6 max-w-[70ch] space-y-4">
+            {[
+              ['Le logement :', "Doit être votre résidence principale (ou destinée à l'être) et être achevé depuis plus de 2 ans."],
+              ["L'artisan :", 'Il doit impérativement être certifié RGE (Reconnu Garant de l\'Environnement).'],
+              ['Le type de projet :', 'Le montant du prêt dépend du nombre de travaux réalisés :'],
+            ].map(([titre, texte]) => (
+              <li class="flex gap-3 text-corps text-texte">
+                <Icone nom="valide" class:list={['mt-1 size-6 shrink-0', COULEURS['eco-ptz'].texte]} />
+                <span class="min-w-0"><strong class="font-semibold">{titre}</strong> {texte}</span>
+              </li>
+            ))}
+          </ul>
+          {/* PLAFONDS DE L'ÉCO-PTZ : lus dans src/data/aides.ts
+              (plafondsEcoPtz), jamais écrits ici. */}
+          <ul class="mt-4 max-w-[70ch] divide-y divide-creme-fonce overflow-hidden rounded-bloc border border-creme-fonce">
+            {plafondsEcoPtz.map((plafond) => (
+              <li class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-4 py-3 text-corps text-texte sm:px-5">
+                <span class="min-w-0">{plafond.libelle} :{plafond.precision && <span class="block text-texte-doux">({plafond.precision})</span>}</span>
+                <span class="text-h4 font-black whitespace-nowrap"><span class="text-corps font-normal text-texte-doux">jusqu’à </span>{euros(plafond.montant)}</span>
+              </li>
+            ))}
+          </ul>
+
+          <h3 class={classesH3}>Comment en bénéficier ?</h3>
+          <Etapes etapes={[
+            { titre: 'Réaliser un diagnostic :', texte: "Il est fortement conseillé de s'appuyer sur un DPE ou un audit énergétique pour cibler les travaux les plus efficaces." },
+            { titre: 'Obtenir des devis :', texte: 'Contactez des artisans RGE pour obtenir des devis détaillés justifiant votre demande de prêt.' },
+            { titre: 'Contacter votre banque :', texte: "Présentez vos devis à un établissement bancaire partenaire de l'opération (la majorité des grandes banques françaises le proposent)." },
+          ]} />
+        </section>
+
+        {/* ----- LA PRIME CEE ----- */}
+        <section aria-labelledby={section.cee.id}>
+          <div class:list={['flex items-center gap-6 rounded-bloc border-l-[6px] p-6 sm:p-8', COULEURS.cee.pale, COULEURS.cee.bord]}>
+            <h2 id={section.cee.id} class:list={[classesH2Aide, 'min-w-0 flex-1']}>{section.cee.titre}</h2>
+            {section.cee.img && <Image src={section.cee.img} alt="" width={160} format="webp" loading="lazy" class="hidden h-auto w-28 shrink-0 sm:block md:w-36" />}
+          </div>
+
+          <h3 class={classesH3}>De quoi s'agit-il ?</h3>
+          <p class={classesParagraphe}>Instaurée par la loi POPE, la Prime Énergie repose sur le principe du « pollueur-payeur ». L’État impose aux fournisseurs d’énergie (EDF, Engie, TotalEnergies,...) et aux distributeurs de carburant (Leclerc, Carrefour,...) de compenser leur émission de CO2 en finançant des projets de rénovation énergétique.</p>
+          <p class={classesParagraphe}>Pour remplir leurs obligations et compenser leur empreinte carbone, ces entreprises versent des primes aux particuliers et copropriétés qui réalisent des travaux de rénovation. Le montant de cette aide varie selon les travaux effectués et le fournisseur choisi, mais elle peut atteindre plus de 7 500 € pour les gestes les plus performants des particuliers.</p>
+
+          <h3 class={classesH3}>Quels sont les travaux éligibles ?</h3>
+          <p class={classesParagraphe}>Les CEE couvrent un large éventail de travaux visant à réduire la consommation de kWh :</p>
+          <div class="mt-6">
+            <Vignettes couleur={COULEURS.cee.texte} vignettes={[
+              { icone: 'pompe-a-chaleur', nom: 'Chauffage et Eau Chaude', detail: "Remplacement d'une vieille chaudière par une pompe à chaleur (PAC), une chaudière bois ou à granulés, ou un chauffe-eau thermodynamique." },
+              { icone: 'isolation', nom: 'Isolation', detail: 'Combles, toiture, murs (intérieur ou extérieur), planchers bas et remplacement de fenêtres.' },
+              { icone: 'regulation', nom: 'Régulation', detail: 'Installation de thermostats connectés ou de programmateurs de chauffage.' },
+            ]} />
+          </div>
+
+          <h3 class={classesH3}>Quelles sont les conditions ?</h3>
+          <ul class="mt-6 max-w-[70ch] space-y-4">
+            {[
+              ['Condition de ressources :', 'Le montant varie en fonction des revenus du foyer. Le montant est en plus bonifié pour les ménages aux revenus modestes (dispositifs "Coup de pouce").'],
+              ['Le logement :', 'Il doit être achevé depuis plus de 2 ans.'],
+              ['Le professionnel :', 'Les travaux doivent être impérativement réalisés par une entreprise certifiée RGE.'],
+            ].map(([titre, texte]) => (
+              <li class="flex gap-3 text-corps text-texte">
+                <Icone nom="valide" class:list={['mt-1 size-6 shrink-0', COULEURS.cee.texte]} />
+                <span class="min-w-0"><strong class="font-semibold">{titre}</strong> {texte}</span>
+              </li>
+            ))}
+          </ul>
+
+          <h3 class={classesH3}>Comment en bénéficier ?</h3>
+          <p class={classesParagraphe}>Pour ne pas perdre votre prime, l'ordre des étapes est primordial :</p>
+          <Etapes etapes={[
+            { titre: '(Option) Réaliser un audit énergétique :', texte: "C'est le meilleur moyen de prioriser les travaux les plus rentables et de maximiser vos aides." },
+            { titre: 'Comparer et choisir un fournisseur :', texte: "Les montants varient d'un signataire à l'autre. Choisissez l'offre la plus généreuse avant de signer votre devis." },
+            { titre: 'Signer le devis et faire les travaux :', texte: "Une fois le dossier ouvert chez le fournisseur, vous pouvez engager l'artisan RGE." },
+            { titre: 'Envoyer le dossier complet :', texte: 'Après les travaux, transmettez les pièces justificatives (factures, attestation sur l\'honneur, justificatif de domicile).' },
+            { titre: 'Recevoir le paiement :', texte: 'Le règlement se fait par chèque ou virement bancaire.' },
+          ]} />
+          <Encadre genre="attention" mot="Attention :" class="mt-8 max-w-[70ch]">Le traitement administratif est parfois long. Comptez de quelques semaines à plusieurs mois pour recevoir votre remboursement.</Encadre>
+        </section>
+
+        {/* ----- MAPRIMERÉNOV' ----- */}
+        <section aria-labelledby={section.mpr.id}>
+          <div class:list={['flex items-center gap-6 rounded-bloc border-l-[6px] p-6 sm:p-8', COULEURS.mpr.pale, COULEURS.mpr.bord]}>
+            <h2 id={section.mpr.id} class:list={[classesH2Aide, 'min-w-0 flex-1']}>{section.mpr.titre}</h2>
+            {section.mpr.img && <Image src={section.mpr.img} alt="" width={160} format="webp" loading="lazy" class="hidden h-auto w-28 shrink-0 sm:block md:w-36" />}
+          </div>
+
+          <h3 class={classesH3}>De quoi s'agit-il ?</h3>
+          <p class={classesParagraphe}>C'est l'aide à la rénovation la plus célèbre. Elle est pilotée par l’Anah (Agence Nationale de l’Habitat), un organisme qui œuvre depuis 1971 pour l'amélioration du confort thermique et la lutte contre la précarité énergétique.</p>
+          <p class={classesParagraphe}>Le montant de cette aide dépend de l'ampleur du projet et prend en charge un pourcentage du devis (jusqu'à 80 % pour les foyers très modestes en rénovation globale). Elle varie selon deux critères principaux : votre niveau de revenus et le gain écologique des travaux réalisés. Les copropriétés peuvent également en bénéficier via le dispositif MaPrimeRénov’ Copropriété.</p>
+
+          <h3 class={classesH3}>Quels sont les travaux éligibles ?</h3>
+          <p class={classesParagraphe}>Il existe deux parcours distincts selon l'ampleur de votre projet :</p>
+          <div class="mt-6 rounded-bloc border border-creme-fonce p-5 sm:p-6">
+            <h4 class="text-h4 font-bold text-texte">MaPrimeRénov’ "Geste par geste" :</h4>
+            <p class="mt-2 text-corps text-texte">Pour des travaux ciblés (jusqu'à 11 000 € d'aide selon le geste), comme :</p>
+            <div class="mt-4">
+              <Vignettes couleur={COULEURS.mpr.texte} vignettes={[
+                { icone: 'pompe-a-chaleur', nom: 'Chauffage et Eau Chaude', detail: 'Pompe à chaleur (air-eau, hybride, géothermique), poêle à bois ou granulés, chauffe-eau solaire ou thermodynamique, raccordement à un réseau de chaleur.' },
+                { icone: 'isolation', nom: 'Isolation', detail: 'Murs (intérieur/extérieur), toitures, planchers.' },
+                { icone: 'fenetre', nom: 'Menuiserie', detail: 'Remplacement de fenêtres simple vitrage.' },
+                { icone: 'ventilation', nom: 'Autres', detail: 'Ventilation double flux (VMC), dépose de cuve à fioul ou audit énergétique.' },
+              ]} />
+            </div>
+          </div>
+          <div class="mt-4 rounded-bloc border border-creme-fonce p-5 sm:p-6">
+            <h4 class="text-h4 font-bold text-texte">MaPrimeRénov’ Parcours Accompagné :</h4>
+            <p class="mt-2 text-corps text-texte">Pour les rénovations d'envergure (rénovations globales) permettant un gain de classe énergétique important sur votre DPE.</p>
+            <Encadre genre="note" mot="À noter :" class="mt-4">pour ce parcours, les primes CEE sont déjà intégrées au montant perçu avec MaPrimeRénov', elles ne sont donc pas cumulables à part.</Encadre>
+          </div>
+
+          <h3 class={classesH3}>Quelles sont les conditions ?</h3>
+          <p class={classesParagraphe}>MaPrimeRénov’ est soumise à des conditions précises :</p>
+          <ul class="mt-6 max-w-[70ch] space-y-4">
+            <li class="flex gap-3 text-corps text-texte">
+              <Icone nom="valide" class:list={['mt-1 size-6 shrink-0', COULEURS.mpr.texte]} />
+              <div class="min-w-0">
+                <p><strong class="font-semibold">Les revenus :</strong> C’est l’une des rares aides indexées sur vos ressources. Il existe 4 profils de couleurs selon votre revenu fiscal de référence (RFR) et la composition de votre foyer : Bleu (très modeste), Jaune (modeste), Violet (intermédiaire) et Rose (supérieur).</p>
+                {/* Les 4 profils en pastilles (décoratives : la phrase
+                    ci-dessus les cite déjà). Contrastes dans global.css. */}
+                <ul aria-hidden="true" class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {profilsMpr.map((profil) => (
+                    <li class:list={['flex min-h-11 flex-col justify-center rounded-bloc px-3 py-2 text-center', profil.classes]}>
+                      <span class="text-corps leading-tight font-bold">{profil.nom}</span>
+                      <span class="text-corps leading-tight">{profil.revenus}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+            {[
+              ['Le logement :', "Il doit être occupé comme résidence principale (au moins 8 mois par an) et avoir été construit il y a au moins 15 ans en France métropolitaine (ou 2 ans seulement s'il s'agit du remplacement d'une chaudière au fioul)."],
+              ["L'artisan :", "Le recours à une entreprise certifiée RGE (Reconnu Garant de l'Environnement) est obligatoire."],
+              ['Localisation :', "Les plafonds de ressources sont différents si vous habitez en Île-de-France ou en province pour s'adapter au coût de la vie."],
+            ].map(([titre, texte]) => (
+              <li class="flex gap-3 text-corps text-texte">
+                <Icone nom="valide" class:list={['mt-1 size-6 shrink-0', COULEURS.mpr.texte]} />
+                <span class="min-w-0"><strong class="font-semibold">{titre}</strong> {texte}</span>
+              </li>
+            ))}
+          </ul>
+
+          <h3 class={classesH3}>Comment en bénéficier ?</h3>
+          <Etapes etapes={[
+            { titre: 'Réaliser un audit énergétique (recommandé) :', texte: 'Pour savoir quels travaux sont les plus rentables pour votre maison.' },
+            { titre: 'Créer votre compte :', texte: 'Rendez-vous sur le site officiel www.maprimerenov.gouv.fr pour lancer votre dossier.' },
+            { titre: 'Obtenir des devis :', texte: "Contactez des artisans RGE, mais ne signez rien avant d'avoir reçu la confirmation d'éligibilité de l'Anah." },
+            { titre: 'Réaliser les travaux :', texte: "Une fois le projet validé par l'Anah, signez le devis et lancez le chantier." },
+            { titre: 'Demander le paiement :', texte: 'Envoyez vos factures et justificatifs sur votre espace en ligne.' },
+          ]} />
+          <Encadre genre="attention" mot="Vigilance :" class="mt-8 max-w-[70ch]">Les délais de traitement peuvent atteindre plusieurs mois. L'Anah réalise régulièrement des contrôles (physiques ou téléphoniques) pour s'assurer de la conformité des travaux et limiter les fraudes. Soyez rigoureux sur vos documents !</Encadre>
+        </section>
+
+        {/* ----- LES AIDES LOCALES ----- */}
+        <section aria-labelledby={section.locales.id}>
+          <div class:list={['flex items-center gap-6 rounded-bloc border-l-[6px] p-6 sm:p-8', COULEURS.locales.pale, COULEURS.locales.bord]}>
+            <h2 id={section.locales.id} class:list={[classesH2Aide, 'min-w-0 flex-1']}>{section.locales.titre}</h2>
+            {section.locales.img && <Image src={section.locales.img} alt="" width={160} format="webp" loading="lazy" class="hidden h-auto w-28 shrink-0 sm:block md:w-36" />}
+          </div>
+
+          <h3 class={classesH3}>De quoi s'agit-il ?</h3>
+          <p class={classesParagraphe}>En complément des dispositifs nationaux, de nombreuses collectivités territoriales (villes, métropoles, départements et régions) ont mis en place leurs propres subventions pour encourager la rénovation énergétique sur leur territoire.</p>
+          <Encadre genre="attention" mot="Attention :" class="mt-6 max-w-[70ch]">ces aides ne sont pas obligatoires. Selon votre zone géographique, les montants et les types de travaux financés peuvent varier considérablement. Certains départements comme la Loire-Atlantique proposent des enveloppes pouvant aller jusqu'à 15 000 €, tandis que d'autres territoires comme la Haute-Garonne, l'Oise, le Calvados ou les Hauts-de-Seine disposent également de programmes spécifiques.</Encadre>
+          <p class={classesParagraphe}>Les régions (comme l'Occitanie, la Normandie, les Hauts-de-France ou PACA) proposent aussi des financements.</p>
+
+          <h3 class={classesH3}>Quels sont les travaux éligibles ?</h3>
+          <p class={classesParagraphe}>Chaque collectivité définit ses priorités. Les aides locales ciblent généralement :</p>
+          <div class="mt-6">
+            <Vignettes couleur={COULEURS.locales.texte} vignettes={[
+              { icone: 'chauffage', nom: 'Le remplacement de vieux chauffages par des systèmes renouvelables.' },
+              { icone: 'isolation', nom: "L'isolation performante (toiture, murs)." },
+              { icone: 'audit', nom: "Parfois, des audits énergétiques plus complets que ceux imposés par l'État." },
+            ]} />
+          </div>
+
+          <h3 class={classesH3}>Quelles sont les conditions ?</h3>
+          <p class={classesParagraphe}>Contrairement aux aides nationales, les critères locaux sont très spécifiques à chaque territoire :</p>
+          <ul class="mt-6 max-w-[70ch] space-y-4">
+            {[
+              ['Revenus :', 'Elles sont souvent réservées aux ménages modestes ou très modestes, mais certaines sont ouvertes à tous.'],
+              ['Critères techniques :', 'Les performances énergétiques exigées peuvent être plus strictes que les normes nationales.'],
+              ['Cumul :', "Dans la plupart des cas, ces aides sont cumulables avec MaPrimeRénov' et les CEE, dans la limite d'un plafond de financement global."],
+            ].map(([titre, texte]) => (
+              <li class="flex gap-3 text-corps text-texte">
+                <Icone nom="valide" class:list={['mt-1 size-6 shrink-0', COULEURS.locales.texte]} />
+                <span class="min-w-0"><strong class="font-semibold">{titre}</strong> {texte}</span>
+              </li>
+            ))}
+          </ul>
+
+          {/* CE QU'AKELIA EST ET N'EST PAS : une phrase, sans encart. */}
+          <p class="mt-12 max-w-[70ch] border-t border-creme-fonce pt-6 text-corps text-texte-doux">
+            L’artisan du collectif monte avec vous votre dossier de demande d’aides. Akelia, elle, ne verse aucune aide et n’est pas un organisme public.
+          </p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  {/* ===== ZONE 7 : ARTICLES LIÉS (cartes du blog) ===== */}
+  {articlesLies.length > 0 && (
+    <section aria-labelledby="lies-titre" class="bg-creme">
+      <div class="mx-auto max-w-site px-gouttiere py-scene">
+        <h2 id="lies-titre" class="text-h3 text-texte">À lire aussi</h2>
+        <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {articlesLies.map((article) => <CarteArticle article={article} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* APPEL À L'ACTION : celui de la fin des articles (bloc bleu nuit,
+      surtitre orange, bouton orange). Puis la date de vérification des
+      montants (aides.ts). */}
+  <div class="bg-fond">
+    <div class="mx-auto max-w-[calc(56rem+2*var(--spacing-gouttiere))] px-gouttiere py-scene">
+      <section aria-labelledby="cta-titre" class="rounded-bloc bg-nuit-900 px-6 py-10 text-center text-texte-inverse sm:px-10">
+        <p class="surtitre text-action-500">Votre projet</p>
+        <h2 id="cta-titre" class="mx-auto mt-3 max-w-[22ch] text-h3 text-balance">Un artisan du collectif étudie votre projet</h2>
+        <p class="mx-auto mt-4 max-w-[45ch] text-corps">Il vous rappelle sous 24 à 48 heures, se déplace gratuitement et vous remet un devis détaillé.</p>
+        <a
+          href="/devis"
+          class="mt-8 inline-flex min-h-12 items-center justify-center rounded-bloc bg-action-500 px-6 py-3 text-corps font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-texte-inverse"
+        >
+          Demander un devis gratuit
+        </a>
+        <p class="mt-4 lg:hidden">
+          <a href="/qui-sommes-nous" class="inline-flex min-h-11 items-center text-base text-texte-inverse underline underline-offset-4 hover:text-action-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-texte-inverse">Akelia, le collectif d'artisans locaux</a>
+        </p>
+      </section>
+      <p class="mt-8 text-center text-corps text-texte-doux">
+        Montants vérifiés le <time datetime={dateVerificationPage}>{dateEnFrancais(new Date(dateVerificationPage))}</time>.
+      </p>
+    </div>
+  </div>
+</Layout>

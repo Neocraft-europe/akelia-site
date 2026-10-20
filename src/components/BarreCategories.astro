@@ -1,0 +1,64 @@
+---
+// =========================================================================
+// COMPOSANT : BARRE DES CATÉGORIES DU BLOG (src/components/BarreCategories.astro)
+// -------------------------------------------------------------------------
+// Sept liens : « Tous les articles » puis les six catégories (ordre de
+// src/data/categories-blog.ts), chacun avec son nombre d'articles. De
+// vrais liens vers des pages statiques : rien ne dépend de JavaScript.
+//
+// Catégorie en cours : fond plein bleu nuit, texte blanc (14,47:1), et
+//   - aria-current="page" sur la page 1, qui est exactement la page du lien ;
+//   - aria-current="true" sur les pages 2 et suivantes : le lien mène à la
+//     page 1 de la catégorie, qui n'est pas la page affichée.
+// Liens de 44px de haut. Sur téléphone, la barre défile horizontalement
+// DANS SON CADRE (overflow-x-auto) : la page ne déborde jamais. Le
+// navigateur fait défiler le cadre jusqu'au lien qui reçoit le focus.
+// À partir de 768px, les liens passent à la ligne au lieu de défiler (les
+// sept ne tiennent pas sur une ligne, même dans les 1250px du site).
+// ⚠️ « relative » sur le cadre : les textes « sr-only » (position
+// absolue) se placent sinon par rapport à un ancêtre plus lointain,
+// échappent au cadre et font déborder la page (mesuré : +867px à 375px).
+// =========================================================================
+
+import { CATEGORIES_BLOG, IDENTIFIANTS_CATEGORIES, type CategorieBlog } from '../data/categories-blog';
+import { urlListeBlog, type Article } from '../utils/blog';
+
+export interface Props {
+  /** Tous les articles publiés (pour les nombres). */
+  publies: Article[];
+  /** Catégorie affichée ; undefined sur /blog (« Tous les articles »). */
+  categorie?: CategorieBlog;
+  /** Numéro de la page affichée. */
+  numero: number;
+}
+
+const { publies, categorie, numero } = Astro.props;
+
+const liens = [
+  { id: undefined, libelle: 'Tous les articles', nombre: publies.length },
+  ...IDENTIFIANTS_CATEGORIES.map((id) => ({
+    id,
+    libelle: CATEGORIES_BLOG[id].libelle,
+    nombre: publies.filter((a) => a.data.categorie === id).length,
+  })),
+];
+---
+
+<nav aria-label="Catégories du blog" class="relative -mx-gouttiere overflow-x-auto overscroll-x-contain px-gouttiere py-1 md:mx-0 md:overflow-visible md:px-0">
+  <ul class="flex w-max gap-2 md:w-auto md:flex-wrap">
+    {liens.map((lien) => (
+      <li>
+        <a
+          href={urlListeBlog(lien.id)}
+          aria-current={lien.id === categorie ? (numero === 1 ? 'page' : 'true') : undefined}
+          class="group inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-pilule border border-creme-fonce bg-fond px-4 text-base font-semibold text-texte hover:border-nuit-900 hover:bg-creme focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900 aria-[current]:border-nuit-900 aria-[current]:bg-nuit-900 aria-[current]:text-texte-inverse"
+        >
+          {lien.libelle}
+          <span class="text-petit font-normal tabular-nums text-texte-doux group-aria-[current]:text-texte-inverse">
+            {lien.nombre}<span class="sr-only"> articles</span>
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>

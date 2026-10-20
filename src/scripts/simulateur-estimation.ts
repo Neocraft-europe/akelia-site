@@ -17,13 +17,13 @@
 // toutes lettres sous chaque champ (comme pour les questions du simulateur).
 // =========================================================================
 
-const ADRESSE_WEB3FORMS = 'https://api.web3forms.com/submit';
+import { ADRESSE_WEB3FORMS } from '../data/web3forms';
 
 // Messages : mêmes formulations que la page /devis, adaptées à l'estimation.
 const MESSAGES = {
   envoi: 'Envoi en cours…',
   succes: 'Merci ! Votre demande a bien été envoyée. Un artisan du collectif vous recontacte très vite.',
-  erreur: "Une erreur est survenue lors de l'envoi du formulaire. Veuillez réessayer.",
+  erreur: "Votre demande n'a pas pu être envoyée. Veuillez réessayer dans quelques minutes.",
   injoignable: 'Impossible de joindre le serveur. Veuillez vérifier votre connexion et réessayer.',
   prenom: 'Indiquez votre prénom.',
   email: 'Indiquez une adresse e-mail valide, par exemple jean.dupont@exemple.fr.',
@@ -95,7 +95,9 @@ export function initialiserEstimation() {
         formulaire.reset();
       } else {
         retour.className = CLASSES_ECHEC;
-        retour.textContent = resultat.message || MESSAGES.erreur;
+        // Message de Web3Forms (en anglais) gardé pour la console seulement.
+        console.error('Web3Forms :', resultat.message);
+        retour.textContent = MESSAGES.erreur;
       }
     } catch {
       retour.className = CLASSES_ECHEC;

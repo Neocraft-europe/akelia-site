@@ -1,0 +1,54 @@
+---
+// =========================================================================
+// COMPOSANT : GRILLE DE VIGNETTES DE TRAVAUX (src/components/aides/Vignettes.astro)
+// -------------------------------------------------------------------------
+// Les listes de travaux éligibles de /aides-renovation : en liste à puces,
+// ces énumérations faisaient des murs de texte. Une vignette par poste :
+// icône (couleur de la section), nom du poste, détail dessous.
+// 2 colonnes sur téléphone, 3 à partir de 768px.
+// Texte repris mot pour mot : le nom est ce qui précède les deux-points
+// dans le texte d'origine, le détail ce qui suit.
+//
+// Colonnes étroites sur téléphone (environ 140px de texte à 375px) : une
+// coupure invisible est ajoutée après chaque « / » (« intérieur/extérieur »
+// ne se coupait pas), et overflow-wrap: anywhere garantit qu'aucun mot ne
+// déborde.
+// =========================================================================
+
+import Icone, { type NomIcone } from './Icone.astro';
+
+export interface Vignette {
+  icone: NomIcone;
+  nom: string;
+  detail?: string;
+}
+
+export interface Props {
+  vignettes: Vignette[];
+  /** Classe de couleur des icônes (« text-brume-fonce »). */
+  couleur: string;
+  /** Petit titre du groupe (« Chauffage et Eau Chaude : »). */
+  titre?: string;
+  /** Colonnes : « 2-3 » (2 sur téléphone, 3 à partir de 768px, par
+   *  défaut) ou « 1-2 » (1 puis 2 : vignettes plus larges, nom en plus
+   *  grand ; métiers de /rejoindre-le-collectif). */
+  colonnes?: '2-3' | '1-2';
+}
+
+const { vignettes, couleur, titre, colonnes = '2-3' } = Astro.props;
+const larges = colonnes === '1-2';
+const coupe = (texte: string) => texte.replace(/\//g, '/​');
+---
+
+<div class="mt-6 first:mt-0">
+  {titre && <h4 class="mb-3 text-h4 text-texte">{titre}</h4>}
+  <ul class:list={['grid gap-3 md:gap-4', larges ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-2 md:grid-cols-3']}>
+    {vignettes.map((v) => (
+      <li class="flex min-w-0 flex-col rounded-bloc border border-creme-fonce bg-fond p-3 [overflow-wrap:anywhere] hyphens-auto sm:p-4">
+        <Icone nom={v.icone} class:list={['size-8 shrink-0', couleur]} />
+        <span class:list={['mt-2 leading-snug text-texte', larges ? 'text-h4 font-bold' : 'text-corps font-semibold']}>{coupe(v.nom)}</span>
+        {v.detail && <span class="mt-1 text-corps leading-snug text-texte-doux">{coupe(v.detail)}</span>}
+      </li>
+    ))}
+  </ul>
+</div>

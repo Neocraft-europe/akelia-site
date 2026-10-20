@@ -13,6 +13,9 @@
 // (rien si le fichier manque).
 //
 // SOUS-COMPOSANTS :
+// - Simulateur.astro : le simulateur seul (message sans JavaScript,
+//   questions, résultat, démarrage des scripts), commun avec la page
+//   /aides-renovation depuis le 19 octobre 2026. Il contient :
 // - SimulateurQuestions.astro  : les 3 questions, une à la fois, et le
 //   résultat (scripts simulateur-etapes.ts et simulateur-aides.ts) ;
 // - SimulateurEstimation.astro : le formulaire de contact « Obtenir vos aides
@@ -28,7 +31,7 @@
 // =========================================================================
 
 import { Image } from 'astro:assets';
-import SimulateurQuestions from './SimulateurQuestions.astro';
+import Simulateur from './Simulateur.astro';
 import { illustration, zoneDessinee, styleCadre, styleRecadrage } from '../data/illustrations';
 
 // Bandeau 3D (format 3:1, fond transparent), recadré automatiquement sur
@@ -113,15 +116,7 @@ const zoneBandeau = await zoneDessinee('bandeau-aides.png');
             la marge le fait apparaître SOUS l'en-tête collant (73px, puis
             122px à partir de 1280px), avec 23px d'air. */}
         <h2 id="simulateur-titre" class="mb-4 scroll-mt-24 text-h3 text-texte xl:scroll-mt-36">Estimez vos aides</h2>
-        {/* Sans JavaScript : message de remplacement */}
-        <noscript>
-          <p class="rounded-bloc bg-fond p-5 text-corps text-texte shadow-carte">
-            Le simulateur a besoin de JavaScript pour fonctionner. Pour connaître les aides auxquelles vous avez droit,
-            <a href="/devis" class="font-semibold text-nuit-900 underline underline-offset-4">contactez-nous : nous étudions votre projet avec vous</a>.
-          </p>
-        </noscript>
-
-        <SimulateurQuestions />
+        <Simulateur />
       </div>
     </div>
   </div>
@@ -145,12 +140,3 @@ const zoneBandeau = await zoneDessinee('bandeau-aides.png');
     }
   }
 </style>
-
-<script>
-  // Démarre le simulateur : navigation entre les questions, puis formulaire
-  // d'estimation (voir src/scripts/).
-  import { initialiserEtapes } from '../scripts/simulateur-etapes';
-  import { initialiserEstimation } from '../scripts/simulateur-estimation';
-  initialiserEtapes();
-  initialiserEstimation();
-</script>

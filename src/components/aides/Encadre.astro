@@ -1,0 +1,42 @@
+---
+// =========================================================================
+// COMPOSANT : ENCADRÉ (src/components/aides/Encadre.astro)
+// -------------------------------------------------------------------------
+// Les encadrés « À noter », « Attention », « Vigilance » et « L'avantage »
+// de /aides-renovation, sortis du paragraphe en blocs distincts.
+// Le texte est passé tel quel, mot pour mot ; `mot` est le mot d'entrée
+// (« À noter », « Attention »…), mis en gras en tête du texte.
+// Les émojis du texte d'origine (⚠️) sont remplacés par une icône : ils
+// s'affichent différemment selon les systèmes et les lecteurs d'écran les
+// énoncent en toutes lettres.
+//
+// GENRES (contrastes du texte, tous au-dessus de 7:1) :
+//   note      : fond crème, filet bleu nuit         (texte 14,9:1)
+//   attention : fond orange pâle, filet orange      (texte 14,6:1)
+//   avantage  : fond vert pâle, filet vert          (texte 14,4:1)
+// =========================================================================
+
+import Icone from './Icone.astro';
+
+export interface Props {
+  genre: 'note' | 'attention' | 'avantage';
+  /** Mot d'entrée, en gras (« À noter », « Attention »…). */
+  mot?: string;
+  class?: string;
+}
+
+const { genre, mot, class: classes } = Astro.props;
+
+const styles = {
+  note: { bloc: 'border-nuit-700 bg-creme', icone: 'text-nuit-700', nom: 'note' as const },
+  attention: { bloc: 'border-action-500 bg-action-50', icone: 'text-action-800', nom: 'alerte' as const },
+  avantage: { bloc: 'border-vert-600 bg-vert-50', icone: 'text-vert-600', nom: 'avantage' as const },
+}[genre];
+---
+
+<div class:list={['flex gap-4 rounded-bloc border-l-[6px] p-5 sm:p-6', styles.bloc, classes]}>
+  <Icone nom={styles.nom} class:list={['mt-0.5 size-7 shrink-0', styles.icone]} />
+  <div class="min-w-0 text-corps text-texte">
+    {mot && <strong class="font-bold">{mot} </strong>}<slot />
+  </div>
+</div>

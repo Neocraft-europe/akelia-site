@@ -13,10 +13,13 @@
 // taille de texte normale (pas de petit texte pour les liens).
 //
 // ⚠️ PAGES ET INFORMATIONS EN ATTENTE (voir inventaire-charte.md) :
-// - /entreprise (Rejoindre le collectif), /qui-sommes-nous et
-//   /politique-confidentialite n'existent pas encore (liens en 404).
-// - TELEPHONE, EMAIL et MEDIATEUR : à fournir. Tant qu'ils valent null,
-//   la ligne affiche « à venir » (sans lien).
+// - /politique-confidentialite n'existe pas encore (lien en 404).
+// - TELEPHONE et EMAIL : à fournir. Tant qu'ils valent null, leur ligne
+//   n'est pas affichée ; elle apparaît dès qu'une valeur est renseignée.
+//
+// Pas de ligne « Médiation de la consommation » : Akelia ne contractualise
+// pas avec le client final (le contrat est conclu entre le particulier et
+// l'artisan), l'obligation d'adhérer à un médiateur pèse donc sur l'artisan.
 //
 // Les espaces avant « : » sont insécables.
 // =========================================================================
@@ -27,16 +30,15 @@ const currentYear = new Date().getFullYear();
 // (ex. { affichage: '05 00 00 00 00', lien: '+33500000000' }).
 const TELEPHONE: { affichage: string; lien: string } | null = null;
 const EMAIL: string | null = null;
-// Médiateur de la consommation (obligatoire pour la vente aux
-// particuliers) : nom et adresse du site du médiateur retenu.
-const MEDIATEUR: { nom: string; url: string } | null = null;
 
 const navigation = [
   { libelle: 'Services', href: '/services' },
   { libelle: 'Aides rénovation', href: '/aides-renovation' },
   { libelle: 'Blog', href: '/blog' },
   { libelle: 'Qui sommes-nous', href: '/qui-sommes-nous' },
-  { libelle: 'Rejoindre le collectif', href: '/entreprise' },
+  // Entrée des artisans (19 octobre 2026). L'ancien site utilisait
+  // /entreprise : voir inventaire-charte.md (redirection à décider).
+  { libelle: 'Rejoindre le collectif', href: '/rejoindre-le-collectif' },
 ];
 
 const legal = [
@@ -60,7 +62,7 @@ const titreColonne = 'text-base font-bold text-nuit-900';
           Akelia
         </a>
         <p class="mt-2 max-w-[32ch] text-base text-texte-doux">
-          Le collectif d'artisans locaux de la rénovation énergétique.
+          Le collectif d'artisans locaux de l'efficience énergétique.
         </p>
         <a
           href="/devis"
@@ -80,21 +82,17 @@ const titreColonne = 'text-base font-bold text-nuit-900';
         </ul>
       </nav>
 
-      {/* COLONNE 3 : coordonnées et réseaux sociaux */}
+      {/* COLONNE 3 : contact (lien vers /devis), coordonnées quand elles
+          seront connues, réseaux sociaux. « Nous contacter » est un lien
+          comme ceux de la navigation (même style, 44px, même focus). */}
       <div>
-        <h2 class={titreColonne}>Nous contacter</h2>
-        <ul class="mt-2">
-          <li>
-            {TELEPHONE
-              ? <a href={`tel:${TELEPHONE.lien}`} class={lien}>Téléphone&nbsp;: {TELEPHONE.affichage}</a>
-              : <span class="inline-flex min-h-11 items-center text-base text-texte-doux">Téléphone&nbsp;: à venir</span>}
-          </li>
-          <li>
-            {EMAIL
-              ? <a href={`mailto:${EMAIL}`} class={`${lien} break-all`}>{EMAIL}</a>
-              : <span class="inline-flex min-h-11 items-center text-base text-texte-doux">E-mail&nbsp;: à venir</span>}
-          </li>
-        </ul>
+        <a href="/devis" class={lien}>Nous contacter</a>
+        {(TELEPHONE || EMAIL) && (
+          <ul>
+            {TELEPHONE && <li><a href={`tel:${TELEPHONE.lien}`} class={lien}>Téléphone&nbsp;: {TELEPHONE.affichage}</a></li>}
+            {EMAIL && <li><a href={`mailto:${EMAIL}`} class={`${lien} break-all`}>{EMAIL}</a></li>}
+          </ul>
+        )}
 
         <h2 class={`mt-6 ${titreColonne}`}>Nous retrouver</h2>
         <ul class="mt-2 flex gap-2">
@@ -122,12 +120,6 @@ const titreColonne = 'text-base font-bold text-nuit-900';
           {legal.map(({ libelle, href }) => (
             <li><a href={href} class={lien}>{libelle}</a></li>
           ))}
-          <li>
-            {/* MÉDIATION DE LA CONSOMMATION : médiateur à fournir. */}
-            {MEDIATEUR
-              ? <a href={MEDIATEUR.url} target="_blank" rel="noopener noreferrer" class={lien}>Médiation&nbsp;: {MEDIATEUR.nom}<span class="sr-only"> (s'ouvre dans un nouvel onglet)</span></a>
-              : <span class="inline-flex min-h-11 items-center text-base text-texte-doux">Médiation de la consommation&nbsp;: à venir</span>}
-          </li>
         </ul>
       </div>
     </div>

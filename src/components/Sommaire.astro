@@ -1,0 +1,195 @@
+---
+// =========================================================================
+// COMPOSANT : SOMMAIRE (src/components/Sommaire.astro)
+// -------------------------------------------------------------------------
+// Sorti du gabarit d'article le 19 octobre 2026, pour servir aussi à la
+// page /aides-renovation (et plus tard aux pages /solutions/…).
+//
+// DEUX FORMES, à placer toutes les deux dans la page :
+// - forme="colonne" : bloc COLLANT de la colonne de gauche, à partir de
+//   992px (lg) seulement. Sous la liste, le contenu passé dans le
+//   composant (petit appel à l'action), qui reste toujours visible ;
+// - forme="replie" : <details> replié, en dessous de 992px seulement.
+//
+// `entrees` : une entrée par partie : `id` du titre visé, texte du lien,
+// et, en option, `pastille` : classe de fond (« bg-vert-600 ») d'une
+// petite pastille de couleur devant le texte (couleur de la section) ;
+// `niveau: 2` : entrée de second niveau, en retrait (parcours de travaux
+// des pages /solutions/…, 19 octobre 2026).
+//
+// SUIVI DE LA LECTURE : le script en bas met en valeur la partie en cours
+// (aria-current="location" sur le lien ; le style suit cet attribut).
+// Les titres suivis sont ceux que visent les liens du sommaire, où qu'ils
+// soient dans la page. Astro n'inclut le script qu'une fois par page, même
+// avec les deux formes. Un titre visé qui n'est pas affiché (panneau
+// d'onglet inactif) est ignoré ; un composant qui affiche ou masque des
+// titres visés envoie l'événement « sommaire:maj » sur window pour que la
+// partie active soit recalculée.
+// ANCRES : le titre visé doit porter un décalage sous l'en-tête collant
+// (scroll-margin-top, voir « Ancres du sommaire » dans global.css).
+// =========================================================================
+
+export interface EntreeSommaire {
+  id: string;
+  texte: string;
+  pastille?: string;
+  niveau?: 1 | 2;
+}
+
+export interface Props {
+  entrees: EntreeSommaire[];
+  forme: 'colonne' | 'replie';
+  /** Nom de la navigation pour les lecteurs d'écran. */
+  libelle: string;
+  /** Classes du bloc replié (marges). */
+  class?: string;
+}
+
+const { entrees, forme, libelle, class: classes } = Astro.props;
+
+// Lien du sommaire : 44px de haut au moins, retour à la ligne propre (pas
+// de troncature). Partie en cours (aria-current, posé par le script) : texte
+// plus foncé et trait orange à gauche (il recouvre le filet crème de la
+// liste, grâce à la marge négative) ; en plus, gras sur ordinateur seulement.
+const classesLien =
+  '-ml-0.5 flex min-h-11 items-center gap-3 border-l-2 border-transparent py-2 text-base leading-snug text-texte-doux hover:text-nuit-900 hover:underline aria-[current=location]:border-action-500 aria-[current=location]:text-texte focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-nuit-900';
+/* Sur téléphone, le sommaire est dans le flux, au-dessus du texte.
+   Mettre l'entrée active en gras la fait passer sur une ligne de plus sur
+   19 articles, ce qui pousse tout l'article vers le bas et décale les ancres
+   de 22px. L'entrée active est donc signalée par la couleur et le trait
+   orange, jamais par la graisse. Le gras reste sur ordinateur, où le
+   sommaire est dans une colonne à part. */
+const classesLienOrdinateur = `${classesLien} aria-[current=location]:font-bold`;
+// Retrait : 1rem au premier niveau, 2rem au second (même taille de texte).
+const retrait = (entree: EntreeSommaire) => (entree.niveau === 2 ? 'pl-8' : 'pl-4');
+---
+
+{forme === 'colonne' ? (
+  <aside aria-label="Sommaire et contact" class="hidden lg:block">
+    {/* Bloc collant en colonne flexible, plafonné à la hauteur de
+        l'écran. Si la place manque, SEULE LA LISTE DES PARTIES
+        défile : le titre « Sommaire » et l'appel à l'action gardent
+        leur hauteur naturelle (shrink-0) et restent visibles.
+        min-h-0 sur le <nav> et sur la liste : sans lui, un enfant
+        flexible refuse de rétrécir sous la taille de son contenu, et
+        le débordement repart sur le bloc entier. Dégradés en haut et
+        en bas de la liste quand il reste des entrées : classe
+        sommaire-defilant (global.css). */}
+    <div class="sticky top-[calc(var(--hauteur-entete)+1.5rem)] flex max-h-[calc(100vh-var(--hauteur-entete)-3rem)] flex-col">
+      <nav aria-label={libelle} class="flex min-h-0 flex-col">
+        <p class="surtitre shrink-0 text-texte-doux">Sommaire</p>
+        <ol class="sommaire-defilant mt-3 min-h-0 overflow-y-auto overscroll-contain border-l-2 border-creme-fonce">
+          {entrees.map((entree) => (
+            <li>
+              <a href={`#${entree.id}`} data-sommaire-lien class:list={[classesLienOrdinateur, retrait(entree)]}>
+                {entree.pastille && <span aria-hidden="true" class:list={['size-3 shrink-0 rounded-full', entree.pastille]}></span>}
+                {entree.texte}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      {Astro.slots.has('default') && (
+        <div class="mt-8 shrink-0 border-t border-creme-fonce pt-6">
+          <slot />
+        </div>
+      )}
+    </div>
+  </aside>
+) : (
+  /* SOMMAIRE SUR TÉLÉPHONE ET TABLETTE : replié par défaut, pour ne
+     pas repousser le début du texte. Chevron de la charte (celui du
+     menu mobile) à la place de la flèche du navigateur. */
+  <details class:list={['group/sommaire rounded-bloc border border-creme-fonce open:bg-creme lg:hidden', classes]}>
+    <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 rounded-bloc px-4 text-corps font-semibold text-nuit-900 focus-visible:outline-2 focus-visible:outline-nuit-900 [&::-webkit-details-marker]:hidden">
+      Sommaire
+      <svg class="size-6 shrink-0 transition-transform group-open/sommaire:rotate-180 motion-reduce:transition-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
+    </summary>
+    <nav aria-label={libelle} class="px-4 pb-4">
+      <ol class="border-l-2 border-creme-fonce">
+        {entrees.map((entree) => (
+          <li>
+            <a href={`#${entree.id}`} data-sommaire-lien class:list={[classesLien, retrait(entree)]}>
+              {entree.pastille && <span aria-hidden="true" class:list={['size-3 shrink-0 rounded-full', entree.pastille]}></span>}
+              {entree.texte}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  </details>
+)}
+
+{/* SUIVI DE LA LECTURE : met en valeur, dans le sommaire, la partie en
+    cours de lecture (aria-current="location" sur le lien ; le style suit
+    cet attribut). IntersectionObserver sur les titres visés, comme la
+    section Méthode de l'accueil. Aucun défilement détourné, aucune
+    animation : seul l'attribut du lien change. Fonctionne aussi avec
+    « réduire les animations » (seul le défilement doux des ancres est
+    alors coupé, dans global.css). */}
+<script>
+  const liens = [...document.querySelectorAll<HTMLAnchorElement>('[data-sommaire-lien]')];
+  // Identifiant visé par un lien, décodé : les id des titres gardent
+  // leurs accents (« systèmes »), que lien.hash renvoie encodés
+  // (« syst%C3%A8mes »).
+  const cible = (lien: HTMLAnchorElement) => decodeURIComponent(lien.hash.slice(1));
+  // Titres visés (une fois chacun : les deux formes du sommaire pointent
+  // vers les mêmes), dans l'ordre de la page.
+  const titres = [...new Set(liens.map(cible))]
+    .map((id) => document.getElementById(id))
+    .filter((titre): titre is HTMLElement => titre !== null)
+    .sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+
+  /** Ligne de lecture : bas de l'en-tête collant + 2rem. */
+  const ligneDeLecture = () => (document.getElementById('site-header')?.getBoundingClientRect().bottom ?? 0) + 32;
+
+  /** La partie active : le dernier titre dont le haut est passé au-dessus
+   *  de la ligne de lecture ; aucune avant le premier titre. */
+  function majPartieActive() {
+    const ligne = ligneDeLecture();
+    let active: HTMLElement | undefined;
+    for (const titre of titres) {
+      if (!titre.getClientRects().length) continue; // pas affiché (onglet inactif)
+      if (titre.getBoundingClientRect().top <= ligne + 1) active = titre;
+      else break;
+    }
+    liens.forEach((lien) => {
+      if (active && cible(lien) === active.id) lien.setAttribute('aria-current', 'location');
+      else lien.removeAttribute('aria-current');
+    });
+  }
+
+  // L'observateur surveille la zone qui va du haut de l'écran jusqu'à
+  // la ligne de lecture : il prévient chaque fois qu'un titre y entre ou en
+  // sort (défilement à la main, clic dans le sommaire, retour en
+  // arrière), et on recalcule alors la partie active. Une zone haute,
+  // et non une simple ligne : lors d'un défilement doux rapide, un titre
+  // peut sauter une ligne fine d'une image à l'autre, mais il s'arrête
+  // toujours DANS la zone. La zone dépend de la hauteur de l'en-tête
+  // (73 ou 122px) et de l'écran : l'observateur est recréé si la fenêtre
+  // change de taille. « scrollend » recalcule aussi en fin de défilement
+  // (navigateurs qui le connaissent ; sans effet ailleurs).
+  let observateur: IntersectionObserver | undefined;
+  function observer() {
+    observateur?.disconnect();
+    const ligne = Math.round(ligneDeLecture());
+    observateur = new IntersectionObserver(majPartieActive, {
+      rootMargin: `0px 0px -${Math.max(0, window.innerHeight - ligne - 1)}px 0px`,
+    });
+    titres.forEach((titre) => observateur!.observe(titre));
+    majPartieActive();
+  }
+
+  if (titres.length && 'IntersectionObserver' in window) {
+    observer();
+    window.addEventListener('scrollend', majPartieActive);
+    window.addEventListener('sommaire:maj', majPartieActive);
+    let attente: number | undefined;
+    window.addEventListener('resize', () => {
+      clearTimeout(attente);
+      attente = window.setTimeout(observer, 200);
+    });
+  }
+</script>

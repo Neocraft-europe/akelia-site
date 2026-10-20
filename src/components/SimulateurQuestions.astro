@@ -30,6 +30,15 @@
 import type { Statut, Travaux } from '../data/aides';
 import SimulateurEstimation from './SimulateurEstimation.astro';
 
+export interface Props {
+  /** Cases « Vos travaux » cochées d'avance (pages /solutions/…). Le
+   *  bouton « Recommencer » (formulaire.reset()) les remet cochées : c'est
+   *  l'état d'origine du formulaire. */
+  travauxPrecoches?: Travaux[];
+}
+
+const { travauxPrecoches = [] } = Astro.props;
+
 // Réponses proposées. Les « valeur » doivent correspondre aux types de
 // src/data/aides.ts (ne pas les modifier) ; les « libelle » sont libres.
 const optionsStatut: { valeur: Statut; libelle: string }[] = [
@@ -158,7 +167,7 @@ const classesBouton = 'hidden min-h-14 w-full items-center justify-center rounde
         <div class="mt-4 grid gap-3 sm:grid-cols-2">
           {optionsTravaux.map((option) => (
             <label class={classesChoix}>
-              <input type="checkbox" name="travaux" value={option.valeur} class={classesPastille} />
+              <input type="checkbox" name="travaux" value={option.valeur} checked={travauxPrecoches.includes(option.valeur)} class={classesPastille} />
               <span class="min-w-0 hyphens-auto">{option.libelle}</span>
             </label>
           ))}

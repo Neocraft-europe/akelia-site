@@ -1,0 +1,314 @@
+---
+// =========================================================================
+// PAGE « QUI SOMMES-NOUS » (src/pages/qui-sommes-nous.astro)
+// -------------------------------------------------------------------------
+// Créée le 19 octobre 2026, à l'adresse de l'ancien site ; en-tête refait
+// et rythme revu le même jour (2e ticket). Texte fourni le 19 octobre
+// 2026, repris mot pour mot, sauf les quatre propositions de texte du 2e
+// ticket, retenues (accroche, titres des sections 3 et 5, titre du 2e
+// engagement ; anciennes versions dans inventaire-charte.md). Détail :
+// « /qui-sommes-nous : création de la page » et « /qui-sommes-nous :
+// en-tête, rythme et entrée artisans ».
+//
+// FONDS, DE HAUT EN BAS (la page se découpe à l'œil) :
+//   1. en-tête            crème, pleine largeur, collectif.png dessous
+//   2. chiffres clés      blanc
+//   3. le concept         crème
+//   4. les engagements    blanc
+//   5. l'exigence         bleu nuit
+//   6. les domaines       crème
+//   7. vous êtes artisan  crème foncé (autre lecteur : les artisans)
+//   8. conclusion         bleu nuit
+// Espacement vertical des sections : 25 % de plus que l'accueil
+// (classesSection).
+//
+// CHIFFRES ET CRITÈRES : note minimale, distance, « un seul par métier et
+// par secteur » et critères d'entrée viennent de src/data/collectif.ts,
+// jamais écrits ici.
+// LIENS PROVISOIRES (voir inventaire-charte.md) :
+// - « Découvrir les artisans de mon secteur » et « Trouver mon artisan
+//   local » : /devis, en attendant les pages /ville/<ville> ;
+// - domaines d'expertise : catégories du blog, en attendant les pages
+//   /solutions/… (rebasculer alors vers les rubriques du menu,
+//   src/data/menu.ts).
+//
+// SEO : title et description propres, canonique, indexable, fil d'Ariane
+// et JSON-LD BreadcrumbList. Pas de sommaire : la page est courte.
+// =========================================================================
+
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import FilAriane from '../components/FilAriane.astro';
+import NoteMinimale from '../components/NoteMinimale.astro';
+import Icone from '../components/aides/Icone.astro';
+import { noteEnTexte, distanceMaxKm, parMetierEtSecteur, introCriteres, criteresEntree } from '../data/collectif';
+import { urlCategorie } from '../data/categories-blog';
+import { illustration, zoneDessinee, styleCadre, styleRecadrage } from '../data/illustrations';
+import { filArianeJsonLd, jsonLdTexte } from '../utils/seo';
+
+const SITE = Astro.site ?? new URL('https://akelia.fr');
+const ADRESSE = '/qui-sommes-nous';
+
+// --- SEO -----------------------------------------------------------------
+const titrePage = "Collectif d'artisans RGE en rénovation énergétique | Akelia";
+const description = `Akelia, collectif d'artisans RGE de la rénovation énergétique : un expert local à moins de ${distanceMaxKm} km, noté ${noteEnTexte}/5 minimum. Isolation, chauffage, énergie solaire et rénovation globale.`;
+const filAriane = [{ libelle: 'Accueil', href: '/' }, { libelle: 'Qui sommes-nous' }];
+const jsonLd = filArianeJsonLd([
+  { nom: 'Accueil', url: '/' },
+  { nom: 'Qui sommes-nous', url: ADRESSE },
+], SITE);
+
+// --- Liens vers les pages de secteur ----------------------------------------
+// ⚠️ PROVISOIRE : /devis. La vraie cible serait une page par ville
+// (/ville/<ville>, dix pages sur l'ancien site), à recréer.
+const LIEN_ARTISANS_SECTEUR = '/devis';
+
+// --- En-tête : alignement du texte ------------------------------------------
+// Les deux ont été essayés le 19 octobre 2026 (captures entete-gauche-*.png
+// et entete-centre-*.png, captures/qui-sommes-nous/). Retenu : « centre »,
+// mais à partir de 768px seulement : sur ordinateur, le texte centré
+// s'équilibre au-dessus du grand bandeau symétrique (comme la section
+// Collectif de l'accueil) ; sur téléphone, six lignes de chapeau centrées
+// se lisent mal, le texte reste aligné à gauche.
+const ALIGNEMENT_ENTETE: 'gauche' | 'centre' = 'centre';
+const centre = ALIGNEMENT_ENTETE === 'centre';
+
+// --- Illustration de l'en-tête (bandeau d'artisans de l'accueil) -----------
+// Affichée sous le texte, sur la largeur de la colonne (1200px au plus),
+// avec un léger débordement comme sur l'accueil : 120 % de la colonne
+// sous 768px, 106 % au-delà. Largeur réellement affichée (CSS) :
+//   1280px et plus : 1200 × 1,06 = 1272px ;
+//   768 à 1279px   : (100vw − 2,5rem) × 1,06 ;
+//   sous 768px     : (100vw − 2,5rem) × 1,2.
+// La zone dessinée de collectif.png couvre toute la largeur du fichier
+// (1800px) : le recadrage ne l'agrandit pas horizontalement. Variantes
+// générées jusqu'à 1800px, la largeur du fichier source (pas plus : Astro
+// n'agrandit pas). ⚠️ Sur un écran haute résolution (×2) à 1440px, il
+// faudrait 2544px : le fichier source plafonne la netteté à 1800px.
+const imageCollectif = illustration('collectif.png');
+const zoneCollectif = await zoneDessinee('collectif.png');
+const LARGEUR_MAX_IMAGE = 1200;
+
+// --- Bandeau de chiffres (lus dans collectif.ts) ---------------------------
+const chiffres = [
+  { valeur: `${noteEnTexte} / 5`, libelle: 'note minimale exigée' },
+  { valeur: `${distanceMaxKm} km`, libelle: 'votre artisan au plus loin' },
+  { valeur: parMetierEtSecteur.chiffre, libelle: 'artisan par métier et par secteur' },
+];
+
+// --- Les quatre engagements --------------------------------------------------
+const engagements = [
+  { icone: 'technicien' as const, titre: 'Des conseils de techniciens, pas de vendeurs', texte: 'Vous êtes accompagné par un expert qui maîtrise la thermique du bâtiment. L’objectif n’est pas de vous vendre l’équipement le plus cher, mais celui qui offre le meilleur Retour sur Investissement (ROI).' },
+  { icone: 'repere' as const, titre: `Votre artisan est à moins de ${distanceMaxKm} km`, texte: 'Votre artisan vit et travaille dans votre secteur. C’est la garantie d’une intervention rapide, d’une parfaite connaissance des spécificités locales, et d’un SAV toujours présent.' },
+  { icone: 'prix' as const, titre: 'Le juste prix, les aides incluses', texte: 'Grâce à la force du réseau, nos artisans achètent leurs matériaux au meilleur prix. Et parce qu’ils sont tous certifiés RGE, nous vous accompagnons pour débloquer toutes vos aides financières.' },
+  { icone: 'valorisation' as const, titre: 'Un habitat valorisé', texte: 'Au-delà des économies d’énergie, une maison bien rénovée par des professionnels reconnus se revend plus vite et plus cher. C’est mathématique.' },
+];
+
+// --- Les domaines d'expertise -----------------------------------------------
+// ⚠️ PROVISOIRE (19 octobre 2026) : les pages /solutions/… n'existent pas
+// encore. Les cartes mènent aux catégories du blog (adresses données par
+// urlCategorie). À REBASCULER vers les rubriques du menu
+// (src/data/menu.ts : première solution de chaque rubrique, et « Rénovation
+// globale ») quand elles existeront ; le libellé redeviendra « Voir les
+// solutions ».
+const domaines = [
+  { icone: 'isolation' as const, titre: 'Isoler votre enveloppe', texte: 'Ne laissez plus la chaleur s’échapper.', detail: '(Isolation intérieure/extérieure, combles, menuiseries, VMC).', href: urlCategorie('renovation-energetique') },
+  { icone: 'pompe-a-chaleur' as const, titre: 'Chauffer & Climatiser', texte: 'Le confort thermique parfait, au meilleur prix.', detail: '(Pompes à chaleur, chaudières, poêles, eau chaude).', href: urlCategorie('systeme-de-chauffage') },
+  { icone: 'solaire' as const, titre: 'Devenir Autonome', texte: 'Produisez votre propre énergie.', detail: '(Panneaux solaires, bornes de recharge, batteries, domotique).', href: urlCategorie('systeme-de-production-denergie') },
+  { icone: 'maison' as const, titre: 'Rénover Globalement', texte: 'Des projets d’ensemble pour une maison neutre en énergie.', href: urlCategorie('renovation-energetique') },
+];
+
+// --- Classes communes ----------------------------------------------------------
+// Espacement vertical des sections : 25 % de plus que les sections de
+// l'accueil (4,5rem → 5,625rem ; 7,5rem → 9,375rem).
+const classesSection = 'py-[5.625rem] md:py-[9.375rem]';
+const classesBouton =
+  'inline-flex min-h-12 items-center justify-center rounded-bloc bg-action-500 px-6 py-3 text-corps font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2';
+// Phrases-clés du concept : gras noir et surligneur orange pâle sur le bas
+// des lettres (pas un encadré, pas un soulignement qu'on prendrait pour un
+// lien). Texte sur le surlignage : 10,07:1.
+const classesPointe =
+  'font-bold text-nuit-900 box-decoration-clone bg-[linear-gradient(transparent_58%,color-mix(in_srgb,var(--color-action-500)_35%,transparent)_58%)]';
+---
+
+<Layout title={titrePage} description={description} canonicalURL={new URL(ADRESSE, SITE).href}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={jsonLdTexte(jsonLd)} />
+  </Fragment>
+
+  {/* ===== 1. EN-TÊTE : bandeau crème pleine largeur =====
+      Principe de la section Collectif de l'accueil : texte dans la largeur
+      du site, puis collectif.png en grand dessous, qui déborde légèrement
+      des gouttières (overflow-x-clip : pas de défilement horizontal).
+      h1 en text-display à partir de 992px. Les deux appels à l'action
+      restent sous le texte, avant l'image. */}
+  <header class="overflow-x-clip bg-creme">
+    <div class:list={['mx-auto max-w-site px-gouttiere pt-8 md:pt-12', !(imageCollectif && zoneCollectif) && 'pb-[5.625rem] md:pb-[9.375rem]']}>
+      <FilAriane etapes={filAriane} />
+      <div class:list={['mt-8 md:mt-12', centre && 'md:text-center']}>
+        <h1 class:list={['max-w-[20ch] text-h1 text-balance text-texte lg:text-display', centre && 'md:mx-auto']}>La force d’un réseau national, le sérieux d’un artisan local.</h1>
+        <p class:list={['mt-6 max-w-[56ch] text-chapeau text-texte', centre && 'md:mx-auto']}>
+          Akelia est le collectif qui redonne le pouvoir aux vraies entreprises artisanales. Pas d’intermédiaire, pas de plateforme : vous parlez directement à un artisan de votre région, noté {noteEnTexte}/5 minimum.
+        </p>
+        <div class:list={['mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6', centre && 'md:justify-center']}>
+          <a href="/devis" class={`${classesBouton} focus-visible:outline-nuit-900`}>Obtenir mon devis</a>
+          <a href={LIEN_ARTISANS_SECTEUR} class="inline-flex min-h-11 items-center justify-center text-corps font-semibold text-nuit-900 underline underline-offset-4 hover:text-vert-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900">
+            Découvrir les artisans de mon secteur
+          </a>
+        </div>
+      </div>
+
+      {/* ILLUSTRATION : largeur de la colonne (1200px au plus), débordement
+          de 10 % de chaque côté sous 768px, 3 % au-delà. Absente : rien,
+          et le bandeau se termine après les boutons. */}
+      {imageCollectif && zoneCollectif && (
+        <div class="mx-auto mt-10 max-w-[75rem] md:mt-14">
+          <div class="-mx-[10%] w-[120%] md:-mx-[3%] md:w-[106%]">
+            <div class="relative w-full overflow-hidden" style={styleCadre(zoneCollectif)}>
+              <Image
+                src={imageCollectif}
+                alt="Une équipe d'artisans au travail devant leur atelier : l'un charge des panneaux d'isolant dans une camionnette, un autre porte une échelle, un troisième trie des matériaux au sol."
+                widths={[640, 960, 1280, 1600, 1800].filter((l) => l <= zoneCollectif.largeur)}
+                sizes={`(min-width: 1280px) ${Math.ceil(LARGEUR_MAX_IMAGE * 1.06 * zoneCollectif.largeur / zoneCollectif.l)}px, (min-width: 768px) calc((100vw - 2.5rem) * 1.06), calc((100vw - 2.5rem) * 1.2)`}
+                format="webp"
+                loading="eager"
+                fetchpriority="high"
+                class="absolute h-auto"
+                style={styleRecadrage(zoneCollectif)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  </header>
+
+  {/* ===== 2. BANDEAU DE CHIFFRES (style de /aides-renovation) =====
+      Lus dans src/data/collectif.ts. 1 colonne sous 480px, 3 au-delà. */}
+  <section aria-label="Le collectif en chiffres" class="bg-fond">
+    <dl class="mx-auto grid max-w-site gap-x-6 gap-y-10 px-gouttiere py-14 sm:grid-cols-3 md:py-20">
+      {chiffres.map((chiffre) => (
+        <div class="flex min-w-0 flex-col border-l-4 border-action-500 pl-5">
+          <dt class="order-2 mt-2 text-corps text-texte-doux">{chiffre.libelle}</dt>
+          <dd class="order-1 text-[clamp(2.4rem,6vw,3.75rem)] leading-none font-black whitespace-nowrap text-texte">{chiffre.valeur}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  {/* ===== 3. LE CONCEPT (crème) =====
+      Colonne de lecture de 70 caractères, 2rem entre les paragraphes. */}
+  <section aria-labelledby="concept-titre" class="bg-creme">
+    <div class:list={['mx-auto max-w-[calc(70ch+2*var(--spacing-gouttiere))] px-gouttiere', classesSection]}>
+      <p class="surtitre">L’envers du décor</p>
+      <h2 id="concept-titre" class="mt-3 text-h2 text-balance text-texte">Des artisans avant tout. Pas de simples revendeurs.</h2>
+      <div class="mt-10 space-y-8 text-corps text-texte md:text-[1.25rem] md:leading-relaxed">
+        <p>Aujourd’hui, le marché de la rénovation est saturé par des entreprises purement commerciales. Leurs commerciaux vous vendent un projet, puis le sous-traitent à la chaîne. <strong class={classesPointe}>Leur vrai métier n’est pas le bâtiment : c’est le marketing.</strong></p>
+        <p>Nous avons choisi l’inverse. Akelia rassemble des entreprises avant tout artisanales. Leur ADN, c’est le chantier, la technique et l’installation.</p>
+        <p>En nous regroupant, nous mutualisons nos outils (gestion des aides de l’État, communication, achats) pour rivaliser avec ces géants commerciaux. Le résultat pour vous ? <strong class={classesPointe}>Votre budget finance l’excellence de vos matériaux et la qualité de la pose.</strong> Nulle part ailleurs.</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ===== 4. LES QUATRE ENGAGEMENTS (blanc) =====
+      Grille très aérée. Numéros 01 à 04 en très gros, orange pâle
+      (orange à 22 % : décoratif, aria-hidden), DERRIÈRE le titre. */}
+  <section aria-labelledby="engagements-titre" class="bg-fond">
+    <div class:list={['mx-auto max-w-[calc(64rem+2*var(--spacing-gouttiere))] px-gouttiere', classesSection]}>
+      <h2 id="engagements-titre" class="max-w-[24ch] text-h2 text-balance text-texte">Ce que ça change, concrètement</h2>
+      <ol class="mt-14 grid gap-y-16 md:mt-20 md:grid-cols-2 md:gap-x-20 md:gap-y-24">
+        {engagements.map((engagement, index) => (
+          <li class="min-w-0">
+            <div class="relative pt-12 md:pt-14">
+              <span aria-hidden="true" class="absolute top-0 left-0 text-[5rem] leading-none font-black text-action-500/25 select-none md:text-[6rem]">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <h3 class="relative flex items-start gap-3 text-[1.5rem] leading-tight font-black text-balance text-texte">
+                <Icone nom={engagement.icone} class="mt-0.5 size-8 shrink-0 text-vert-600" />
+                <span class="min-w-0">{engagement.titre}</span>
+              </h3>
+            </div>
+            <p class="mt-4 text-corps text-texte-doux">{engagement.texte}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {/* ===== 5. L'EXIGENCE DU RÉSEAU (bleu nuit, pleine largeur) =====
+      Contrastes sur nuit-900 : blanc 14,47:1, orange (étoiles, coches)
+      6,08:1. Deux colonnes à partir de 992px : texte et critères à
+      gauche, note à droite. Critères lus dans collectif.ts. */}
+  <section aria-labelledby="exigence-titre" class="bg-nuit-900 text-texte-inverse">
+    <div class:list={['mx-auto grid max-w-site gap-12 px-gouttiere lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:items-center lg:gap-16', classesSection]}>
+      <div class="min-w-0">
+        <h2 id="exigence-titre" class="text-h2 text-balance">L’élite de l’artisanat local</h2>
+        <p class="mt-6 max-w-[55ch] text-corps">{introCriteres}</p>
+        <ul class="mt-8 space-y-5">
+          {criteresEntree.map((critere) => (
+            <li class="flex gap-3 text-corps">
+              <Icone nom="valide" class="mt-1 size-6 shrink-0 text-action-500" />
+              <span class="min-w-0"><strong class="font-bold">{critere.titre}</strong> {critere.texte}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="rounded-bloc border border-nuit-filet px-6 py-10 text-center">
+        <NoteMinimale />
+      </div>
+    </div>
+  </section>
+
+  {/* ===== 6. LES DOMAINES D'EXPERTISE (crème) =====
+      Quatre cartes entièrement cliquables (même technique que
+      CarteArticle.astro : le titre est le seul lien, son ::after couvre
+      la carte). 1, 2 puis 4 colonnes. */}
+  <section aria-labelledby="expertise-titre" class="bg-creme">
+    <div class:list={['mx-auto max-w-site px-gouttiere', classesSection]}>
+      <h2 id="expertise-titre" class="max-w-[26ch] text-h2 text-balance text-texte">De l’isolation à l’autonomie</h2>
+      <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {domaines.map((domaine) => (
+          <li class="group relative flex min-w-0 flex-col rounded-bloc border border-creme-fonce bg-fond p-6 transition-shadow hover:shadow-carte has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-nuit-900 motion-reduce:transition-none">
+            <Icone nom={domaine.icone} class="size-10 text-vert-600" />
+            <h3 class="mt-4 text-h4 font-black text-texte group-hover:text-vert-600">
+              <a href={domaine.href} class="outline-none after:absolute after:inset-0 after:content-['']">{domaine.titre}</a>
+            </h3>
+            <p class="mt-2 text-corps text-texte">{domaine.texte}</p>
+            {domaine.detail && <p class="mt-1 text-corps text-texte-doux">{domaine.detail}</p>}
+            <span aria-hidden="true" class="mt-auto pt-4 font-semibold text-vert-600 group-hover:underline">Voir les guides&nbsp;→</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* ===== 7. VOUS ÊTES ARTISAN ? (crème foncé) =====
+      La seconde porte : elle s'adresse aux ARTISANS, pas aux
+      particuliers. Fond crème foncé (et non bleu nuit) et bouton bleu
+      nuit (et non orange) : on voit tout de suite que ce n'est pas le
+      même appel. Texte 13,3:1 sur crème foncé ; bouton blanc sur nuit
+      14,47:1. */}
+  <section aria-labelledby="artisans-titre" class="bg-creme-fonce">
+    <div class="mx-auto grid max-w-site gap-8 px-gouttiere py-16 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:gap-14 md:py-20">
+      <div class="min-w-0">
+        <h2 id="artisans-titre" class="text-h3 text-balance text-texte">Vous êtes artisan ?</h2>
+        <p class="mt-4 max-w-[62ch] text-corps text-texte">
+          Nous ne retenons qu’{parMetierEtSecteur.feminin} entreprise par métier et par secteur. Si la vôtre est certifiée RGE, assurée en décennale et qu’elle pose avec ses propres équipes, présentez-la : nous étudions chaque candidature.
+        </p>
+      </div>
+      <a href="/rejoindre-le-collectif" class="inline-flex min-h-12 items-center justify-center rounded-bloc bg-nuit-900 px-6 py-3 text-corps font-semibold text-texte-inverse shadow-legere hover:bg-nuit-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900">
+        Rejoindre le collectif
+      </a>
+    </div>
+  </section>
+
+  {/* ===== 8. BANDEAU DE CONCLUSION (bleu nuit) =====
+      Contour de focus blanc sur ce fond. */}
+  <section aria-labelledby="conclusion-titre" class="bg-nuit-900 text-texte-inverse">
+    <div class:list={['mx-auto max-w-[calc(52rem+2*var(--spacing-gouttiere))] px-gouttiere text-center', classesSection]}>
+      <h2 id="conclusion-titre" class="mx-auto max-w-[22ch] text-h2 text-balance">Confiez votre maison à ceux qui la construisent vraiment.</h2>
+      <p class="mx-auto mt-6 max-w-[55ch] text-chapeau">Trouvez l’artisan Akelia de votre secteur. Un diagnostic technique précis, un devis sans surprise, et un chantier maîtrisé de A à Z.</p>
+      <a href={LIEN_ARTISANS_SECTEUR} class={`mt-10 ${classesBouton} focus-visible:outline-texte-inverse`}>Trouver mon artisan local</a>
+    </div>
+  </section>
+</Layout>

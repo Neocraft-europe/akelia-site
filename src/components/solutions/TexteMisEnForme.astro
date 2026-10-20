@@ -1,0 +1,32 @@
+---
+// =========================================================================
+// COMPOSANT : TEXTE MIS EN FORME (src/components/solutions/TexteMisEnForme.astro)
+// -------------------------------------------------------------------------
+// Affiche un texte des fichiers src/data/solutions/ : paragraphes, listes
+// à puces (lignes « - »), **gras** et liens internes. Découpage :
+// blocsDeTexte(), src/utils/texte.ts. Texte en 18px (text-corps), 70
+// caractères par ligne au plus.
+// =========================================================================
+
+import { blocsDeTexte } from '../../utils/texte';
+
+export interface Props {
+  texte: string;
+  class?: string;
+}
+
+const { texte, class: classes } = Astro.props;
+const blocs = blocsDeTexte(texte);
+---
+
+<div class:list={['max-w-[70ch] space-y-4 text-corps text-texte', classes]}>
+  {blocs.map((bloc) =>
+    bloc.type === 'paragraphe' ? (
+      <p set:html={bloc.html} />
+    ) : (
+      <ul class="list-disc space-y-3 pl-6 marker:text-vert-600">
+        {bloc.elements.map((html) => <li set:html={html} />)}
+      </ul>
+    ),
+  )}
+</div>

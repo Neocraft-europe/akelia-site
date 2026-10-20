@@ -1,0 +1,96 @@
+---
+// =========================================================================
+// COMPOSANT : PAGINATION DES LISTES DU BLOG (src/components/Pagination.astro)
+// -------------------------------------------------------------------------
+// « Précédent », numéros de page, « Suivant », dans
+// <nav aria-label="Pagination">. Rien n'est affiché s'il n'y a qu'une page.
+// Liens de 44px au moins. La page en cours n'est pas un lien : texte sur
+// fond plein bleu nuit, aria-current="page".
+//
+// NUMÉROS AFFICHÉS : la première et la dernière page, la page en cours et
+// ses voisines ; des points de suspension pour les trous.
+//   - à partir de 480px (sm) : voisines à ±1 → « 1 … 4 5 6 … 9 » ;
+//   - sur téléphone : page en cours seule → « 1 … 5 … 9 », et
+//     « Précédent » / « Suivant » réduits à leur flèche (le mot reste lu
+//     par les lecteurs d'écran). Sinon la barre ne tient pas dans 335px
+//     avec des cibles de 44px.
+// Les deux listes de numéros sont dans le HTML ; celle qui est masquée
+// (display: none) n'est ni visible, ni lue, ni atteignable au clavier.
+// =========================================================================
+
+import type { Page } from 'astro';
+
+export interface Props {
+  page: Page<unknown>;
+}
+
+const { page } = Astro.props;
+const { currentPage: courante, lastPage: derniere } = page;
+
+/** Adresse de la page n, déduite de celle de la page 1 (page.url.first,
+ *  ou page.url.current sur la page 1) : « …/page/n » au-delà. Même forme
+ *  que urlListeBlog() (src/utils/blog.ts). */
+const base = page.url.first ?? page.url.current;
+const urlPage = (n: number) => (n === 1 ? base : `${base}/page/${n}`);
+
+/** Suite des numéros à afficher, avec « … » entre deux numéros non
+ *  consécutifs. */
+function numeros(voisines: number): (number | '…')[] {
+  const garder = new Set([1, derniere]);
+  for (let n = courante - voisines; n <= courante + voisines; n++) if (n >= 1 && n <= derniere) garder.add(n);
+  const tries = [...garder].sort((a, b) => a - b);
+  return tries.flatMap((n, i) => (i > 0 && n - tries[i - 1] > 1 ? ['…' as const, n] : [n]));
+}
+
+const listes = [
+  { classes: 'flex sm:hidden', elements: numeros(0) },
+  { classes: 'hidden sm:flex', elements: numeros(1) },
+];
+
+const classeCase = 'inline-flex min-h-11 min-w-11 items-center justify-center rounded-bloc text-base font-semibold tabular-nums';
+const classeLien = `${classeCase} border border-creme-fonce bg-fond text-nuit-900 hover:border-nuit-900 hover:bg-creme focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900`;
+---
+
+{derniere > 1 && (
+  <nav aria-label="Pagination" class="mt-12 flex items-center justify-center gap-2 sm:gap-3">
+    {/* Sans page précédente (ou suivante) : case vide de même taille,
+        pour que les numéros restent centrés d'une page à l'autre. */}
+    {page.url.prev ? (
+      <a href={page.url.prev} rel="prev" class={`${classeLien} gap-2 sm:px-4`}>
+        <span aria-hidden="true">←</span><span class="sr-only sm:not-sr-only">Précédent</span>
+      </a>
+    ) : (
+      <span aria-hidden="true" class={`${classeCase} invisible gap-2 border border-transparent sm:px-4`}>
+        <span>←</span><span class="hidden sm:inline">Précédent</span>
+      </span>
+    )}
+
+    {listes.map(({ classes, elements }) => (
+      <ol class={`${classes} items-center gap-1 sm:gap-2`}>
+        {elements.map((element) => (
+          <li>
+            {element === '…' ? (
+              <span aria-hidden="true" class="inline-flex min-h-11 w-5 items-end justify-center pb-2 text-texte-doux">…</span>
+            ) : element === courante ? (
+              <span aria-current="page" class={`${classeCase} bg-nuit-900 text-texte-inverse`}>
+                <span class="sr-only">Page </span>{element}
+              </span>
+            ) : (
+              <a href={urlPage(element)} class={classeLien}><span class="sr-only">Page </span>{element}</a>
+            )}
+          </li>
+        ))}
+      </ol>
+    ))}
+
+    {page.url.next ? (
+      <a href={page.url.next} rel="next" class={`${classeLien} gap-2 sm:px-4`}>
+        <span class="sr-only sm:not-sr-only">Suivant</span><span aria-hidden="true">→</span>
+      </a>
+    ) : (
+      <span aria-hidden="true" class={`${classeCase} invisible gap-2 border border-transparent sm:px-4`}>
+        <span class="hidden sm:inline">Suivant</span><span>→</span>
+      </span>
+    )}
+  </nav>
+)}

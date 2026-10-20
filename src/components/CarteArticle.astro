@@ -1,0 +1,82 @@
+---
+// =========================================================================
+// COMPOSANT : CARTE D'ARTICLE (src/components/CarteArticle.astro)
+// -------------------------------------------------------------------------
+// LA carte d'article du site, la seule : section des articles de l'accueil
+// (ArticleList.astro), page /blog et « À lire aussi » en bas de chaque
+// article. Carte blanche, filet crème foncé, image 16:9, catégorie en
+// surtitre, titre, description (3 lignes au plus), date et « Lire la
+// suite → ».
+// `niveauTitre` : niveau du titre de la carte selon la page (h3 par défaut).
+//
+// CARTE ENTIÈREMENT CLIQUABLE (17 octobre 2026), sans envelopper la carte
+// dans un <a> (le lecteur d'écran lirait tout d'une traite comme nom du
+// lien, et le texte ne serait plus sélectionnable) :
+// - le seul lien est celui du TITRE ; son pseudo-élément ::after, en
+//   position absolue sur toute la carte (« relative » sur <article>),
+//   étend la zone cliquable à la carte entière ;
+// - « Lire la suite → » n'est plus un lien (il serait sous la zone étendue
+//   et inatteignable) : simple mention visuelle ;
+// - survol de la carte (group-hover) OU focus clavier sur son lien
+//   (group-focus-within) : ombre, titre en vert, image légèrement agrandie ;
+// - focus clavier : le contour bleu nuit est porté par la CARTE entière
+//   (has-focus-visible), pas par le seul titre ;
+// - tout autre lien ajouté un jour dans la carte (une étiquette de
+//   catégorie cliquable, par exemple) devra porter « relative z-10 » pour
+//   passer au-dessus de la zone étendue.
+// =========================================================================
+
+import { Image } from 'astro:assets';
+import { libelleCategorie } from '../data/categories-blog';
+import { urlArticle, type Article } from '../utils/blog';
+
+export interface Props {
+  article: Article;
+  niveauTitre?: 'h2' | 'h3';
+}
+
+const { article, niveauTitre: Titre = 'h3' } = Astro.props;
+const { data } = article;
+const url = urlArticle(article);
+---
+
+{/* La carte sert de repère de position pour le lien étendu du titre.
+    « group » : la carte entière réagit au survol et au focus. */}
+<article class="group relative flex flex-col overflow-hidden rounded-bloc border border-creme-fonce bg-fond transition-shadow focus-within:shadow-carte hover:shadow-carte has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-nuit-900 motion-reduce:transition-none">
+  {/* Image décorative ici (alt vide) : le titre de la carte, juste en
+      dessous, dit déjà de quoi parle l'article. */}
+  <div class="aspect-video w-full overflow-hidden bg-creme-fonce">
+    <Image
+      src={data.image}
+      alt=""
+      width={600}
+      height={338}
+      format="webp"
+      class="h-full w-full object-cover transition-transform duration-300 group-focus-within:scale-105 group-hover:scale-105 motion-reduce:transition-none"
+      loading="lazy"
+    />
+  </div>
+
+  <div class="flex flex-1 flex-col justify-between p-5">
+    <div>
+      <span class="surtitre">{libelleCategorie(data.categorie)}</span>
+      <Titre class="mt-2 line-clamp-2 text-h4 font-black text-texte group-focus-within:text-vert-600 group-hover:text-vert-600">
+        {/* after:absolute after:inset-0 étire la zone cliquable de ce lien à
+            toute la carte, sans toucher à la structure du HTML : le lecteur
+            d'écran n'annonce que le titre, et le texte reste sélectionnable.
+            Le contour de focus est sur la carte (voir <article>). */}
+        <a href={url} class="outline-none after:absolute after:inset-0 after:content-['']">{data.titre}</a>
+      </Titre>
+      <p class="mt-2 line-clamp-3 text-corps text-texte-doux">{data.description}</p>
+    </div>
+
+    <div class="mt-4 flex min-h-11 items-center justify-between text-petit text-texte-doux">
+      <time datetime={data.datePublication.toISOString().slice(0, 10)}>
+        {data.datePublication.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' })}
+      </time>
+      {/* Mention visuelle seulement : toute la carte est déjà le lien.
+          Masquée aux lecteurs d'écran (elle n'apporte rien au titre). */}
+      <span aria-hidden="true" class="font-semibold text-vert-600 group-focus-within:underline group-hover:underline">Lire la suite&nbsp;→</span>
+    </div>
+  </div>
+</article>

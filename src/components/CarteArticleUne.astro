@@ -1,0 +1,52 @@
+---
+// =========================================================================
+// COMPOSANT : ARTICLE MIS EN AVANT (src/components/CarteArticleUne.astro)
+// -------------------------------------------------------------------------
+// Grande carte en haut de la page 1 de /blog : toute la largeur de la
+// colonne ; à partir de 768px, image à gauche et texte à droite.
+// Mêmes principes que CarteArticle.astro (la petite carte, inchangée) :
+// - un seul lien, le titre, dont le ::after couvre toute la carte ;
+// - survol ou focus clavier : ombre, titre vert, image agrandie ;
+// - contour de focus porté par la carte entière ;
+// - tout autre lien ajouté dans la carte devra porter « relative z-10 ».
+// =========================================================================
+
+import { Image } from 'astro:assets';
+import { libelleCategorie } from '../data/categories-blog';
+import { dateEnFrancais } from '../utils/texte';
+import { urlArticle, type Article } from '../utils/blog';
+
+export interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const { data } = article;
+---
+
+<article class="group relative grid overflow-hidden rounded-bloc border border-creme-fonce bg-fond transition-shadow focus-within:shadow-carte hover:shadow-carte has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-nuit-900 motion-reduce:transition-none md:grid-cols-2">
+  {/* Image décorative (alt vide) : le titre dit déjà de quoi parle l'article. */}
+  <div class="aspect-video w-full overflow-hidden bg-creme-fonce md:aspect-auto md:h-full">
+    <Image
+      src={data.image}
+      alt=""
+      widths={[400, 700, 1000]}
+      sizes="(min-width: 1250px) 605px, (min-width: 768px) 50vw, 100vw"
+      format="webp"
+      loading="eager"
+      class="h-full w-full object-cover transition-transform duration-300 group-focus-within:scale-105 group-hover:scale-105 motion-reduce:transition-none"
+    />
+  </div>
+
+  <div class="flex flex-col justify-center p-6 md:p-8 lg:p-10">
+    <p class="surtitre">À la une · {libelleCategorie(data.categorie)}</p>
+    <h2 class="mt-3 text-h3 text-balance text-texte group-focus-within:text-vert-600 group-hover:text-vert-600">
+      <a href={urlArticle(article)} class="outline-none after:absolute after:inset-0 after:content-['']">{data.titre}</a>
+    </h2>
+    <p class="mt-4 line-clamp-4 text-corps text-texte-doux">{data.description}</p>
+    <div class="mt-6 flex min-h-11 flex-wrap items-center justify-between gap-x-4 text-petit text-texte-doux">
+      <time datetime={data.datePublication.toISOString().slice(0, 10)}>{dateEnFrancais(data.datePublication)}</time>
+      <span aria-hidden="true" class="font-semibold text-vert-600 group-focus-within:underline group-hover:underline">Lire l'article&nbsp;→</span>
+    </div>
+  </div>
+</article>

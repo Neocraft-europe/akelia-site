@@ -1,0 +1,46 @@
+---
+// =========================================================================
+// COMPOSANT : LE SIMULATEUR D'AIDES, SEUL (src/components/Simulateur.astro)
+// -------------------------------------------------------------------------
+// Sorti de SimulateurAides.astro le 19 octobre 2026 : le même simulateur
+// sert sur l'accueil (SimulateurAides.astro, avec son texte d'accroche) et
+// sur la page /aides-renovation. Un seul code, un seul résultat.
+// Contient : le message sans JavaScript, le bloc des questions et du
+// résultat (SimulateurQuestions.astro, qui inclut le formulaire de
+// contact), et le démarrage des scripts.
+// Le titre de la section est posé par la page qui l'appelle.
+// ⚠️ Un seul simulateur par page : les scripts cherchent des éléments
+// uniques (data-simulateur-bloc…).
+// `travauxPrecoches` (19 octobre 2026, pages /solutions/…) : cases de la
+// question « Vos travaux » déjà cochées à l'arrivée. Le calcul ne change
+// pas : même saisie, même résultat que sur l'accueil.
+// =========================================================================
+
+import type { Travaux } from '../data/aides';
+import SimulateurQuestions from './SimulateurQuestions.astro';
+
+export interface Props {
+  travauxPrecoches?: Travaux[];
+}
+
+const { travauxPrecoches = [] } = Astro.props;
+---
+
+{/* Sans JavaScript : message de remplacement */}
+<noscript>
+  <p class="rounded-bloc bg-fond p-5 text-corps text-texte shadow-carte">
+    Le simulateur a besoin de JavaScript pour fonctionner. Pour connaître les aides auxquelles vous avez droit,
+    <a href="/devis" class="font-semibold text-nuit-900 underline underline-offset-4">contactez-nous : nous étudions votre projet avec vous</a>.
+  </p>
+</noscript>
+
+<SimulateurQuestions travauxPrecoches={travauxPrecoches} />
+
+<script>
+  // Démarre le simulateur : navigation entre les questions, puis formulaire
+  // d'estimation (voir src/scripts/).
+  import { initialiserEtapes } from '../scripts/simulateur-etapes';
+  import { initialiserEstimation } from '../scripts/simulateur-estimation';
+  initialiserEtapes();
+  initialiserEstimation();
+</script>
