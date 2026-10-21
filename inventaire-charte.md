@@ -10085,3 +10085,10 @@ Confirmée par Akelia, rien à changer.
 
 - **I1. Fusion de la branche** : la branche `sauvegarde-images-gabarit` est à fusionner dans `main`, puis à pousser sur `origin`. Le faites-vous, ou dois-je le faire ?
 - **I2. Archives `*.zip`** : toujours hors commit. Faut-il les ajouter au `.gitignore`, ou les supprimer du disque ? (Question du 20 octobre, toujours ouverte.)
+
+---
+
+## Réponses I1 et I2 : fusion, envoi sur origin, archives (21 octobre 2026)
+
+- **I1.** La branche `sauvegarde-images-gabarit` est fusionnée dans `main` en avance rapide (aucun commit de fusion, `origin/main` n'avait pas bougé). `main` est poussée sur `origin`. La sauvegarde des images existe donc aussi sur GitHub, en plus du Codespace.
+- **I2.** `*.zip` est ajouté au `.gitignore`, et les trois archives `akelia-blog-102-articles*.zip` sont **supprimées du disque**. Vérifié avant suppression : les 104 fichiers de la v3 (la version retenue) sont tous suivis par Git dans le dépôt. La question du 20 octobre est réglée.

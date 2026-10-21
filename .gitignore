@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # captures de vérification (PNG, lourdes) : gardées sur le disque, jamais commitées
 captures/
+
+# archives de livraison (contenu déjà extrait dans le dépôt) : jamais commitées
+*.zip
