@@ -194,14 +194,14 @@ Les tarifs varient en fonction du type de chaudière et de sa puissance :
 
 Bien que les aides pour les chaudières gaz aient été réduites, certaines subventions restent accessibles sous conditions :
 
-- **MaPrimeRénov’** : Réservée aux ménages modestes et très modestes pour les chaudières à biomasse ou les systèmes hybrides (couplés à une pompe à chaleur).
+- **MaPrimeRénov’** : elle ne finance plus aucune chaudière gaz, cogénération comprise, depuis le 1er janvier 2025 ; depuis le 1er septembre 2026, la chaudière biomasse et la pompe à chaleur hybride ne sont plus aidées seules non plus (seulement dans une rénovation d’ampleur).
 - **Éco-PTZ** : Prêt à taux zéro pour financer une rénovation globale, incluant une chaudière à cogénération.
 - **TVA réduite à 5,5 %** : Applicable pour l’achat et l’installation d’une chaudière à micro-cogénération, sous réserve de faire appel à un professionnel RGE.
 - **Prime énergie** : Selon les fournisseurs d’énergie, des primes peuvent être accordées pour les chaudières très performantes.
 
 **Attention** :
 
-- Depuis 2024, les chaudières gaz (y compris à cogénération) ne bénéficient plus des **Primes CEE** ni de MaPrimeRénov’ pour les ménages aisés.
+- Les chaudières gaz (y compris à cogénération) ne bénéficient plus de MaPrimeRénov’ depuis le 1er janvier 2025, quels que soient vos revenus.
 - Les aides sont souvent conditionnées à la réalisation de travaux complémentaires (isolation, changement de menuiseries, etc.).
 
 ### 3. Rentabilité à long terme
@@ -260,7 +260,7 @@ Pour choisir le système de chauffage le plus adapté à votre logement, il est 
 - **Avantages** :
   - **Écologique** : Utilise les calories présentes dans l’air, l’eau ou le sol pour chauffer le logement.
   - **Économique à l’usage** : Jusqu’à 75 % d’économies sur la facture de chauffage par rapport à une chaudière classique.
-  - **Aides financières** : Jusqu’à 16 560 € de subventions pour les modèles air-eau ou géothermiques.
+  - **Aides financières** : MaPrimeRénov’ pour les modèles air-eau ou géothermiques, selon vos revenus ([estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre)).
 - **Inconvénients** :
   - **Investissement initial élevé** : Entre 10 000 € et 20 000 €, pose incluse.
   - **Performance variable** : Moins efficace par grand froid, sauf pour les modèles géothermiques.

@@ -6,7 +6,8 @@
 // Phrase placée sous le bloc « Ses performances » des pages /solutions/…
 // IDENTIQUE sur toutes les pages (ticket du 19 octobre 2026) : elle ne
 // s'écrit qu'ici. Les notes (A à G, x / 5) ne doivent pas être prises pour
-// une étiquette énergie ou un DPE.
+// une étiquette énergie ou un DPE. Texte foncé et semi-gras depuis le 20
+// octobre 2026 (échelle colorée : la phrase doit rester bien visible).
 // =========================================================================
 
 export interface Props {
@@ -16,7 +17,7 @@ export interface Props {
 const { class: classes } = Astro.props;
 ---
 
-<p class:list={['flex gap-3 text-corps text-texte-doux', classes]}>
+<p class:list={['flex gap-3 text-corps font-semibold text-texte', classes]}>
   <svg class="mt-1 size-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
     <circle cx="12" cy="12" r="9" /><path d="M12 11v6" /><path d="M12 7.5v.5" />
   </svg>

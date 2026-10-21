@@ -52,7 +52,9 @@ import {
   tauxTva,
   mprGesteMax,
   mprAmpleurTauxMax,
-  ceeMontantMisEnAvant,
+  mprParGeste,
+  mprAmpleur,
+  tvaPacAirAir,
   ecoPtzMax,
   plafondsEcoPtz,
   dateVerificationPage,
@@ -115,12 +117,22 @@ const entreesSommaire = sections.map((s) => ({ id: s.id, texte: s.sommaire, past
 const imageEntete = illustration('aides-entete.png');
 
 // --- Zone 1 : bandeau des chiffres clés (tout vient de aides.ts) -----------
+// 20 octobre 2026 : « jusqu'à 11 000 € » n'est vrai que pour un poste et
+// un profil, que le libellé nomme désormais. La prime CEE n'a plus de
+// chiffre (aucun barème officiel en euros) : elle laisse sa place au taux
+// de la rénovation d'ampleur.
+const posteMaxMpr = mprParGeste[mprGesteMax.poste].nom.toLowerCase();
 const chiffresCles = [
   { avant: '', valeur: pourcent(tauxTva.reduit), libelle: 'TVA à taux réduit', cle: 'tva' as CleAide },
-  { avant: 'jusqu’à', valeur: euros(mprGesteMax), libelle: 'MaPrimeRénov’', cle: 'mpr' as CleAide },
-  { avant: 'plus de', valeur: euros(ceeMontantMisEnAvant), libelle: 'Prime CEE', cle: 'cee' as CleAide },
+  { avant: 'jusqu’à', valeur: euros(mprGesteMax.montant), libelle: `MaPrimeRénov’ pour une ${posteMaxMpr}, revenus très modestes`, cle: 'mpr' as CleAide },
+  { avant: 'jusqu’à', valeur: pourcent(mprAmpleurTauxMax), libelle: 'des travaux en rénovation d’ampleur, revenus très modestes', cle: 'mpr' as CleAide },
   { avant: 'jusqu’à', valeur: euros(ecoPtzMax), libelle: 'Éco-PTZ', cle: 'eco-ptz' as CleAide },
 ];
+
+// MaPrimeRénov' par geste : les postes encore aidés seuls, lus dans le
+// barème (src/data/aides.ts), et le plus petit forfait (pour « de … à … »).
+const postesGeste = Object.values(mprParGeste).filter((cas) => cas.cas === 'aide-seul');
+const forfaitMinMpr = Math.min(...postesGeste.map((cas) => (cas.cas === 'aide-seul' ? cas.forfaits.intermediaire : Infinity)));
 
 // --- Zone 3 : « Ce qu'il faut retenir » ------------------------------------
 // Texte mot pour mot ; les montants mis en avant sont lus dans aides.ts.
@@ -130,8 +142,8 @@ const sansCondition = [
   { cle: 'eco-ptz' as CleAide, titre: 'Eco-PTZ :', texte: `prêt à taux zéro jusqu'à ${euros(ecoPtzMax)} sur une durée de 20 ans.` },
 ];
 const sousCondition = [
-  { cle: 'cee' as CleAide, titre: "Certificats d'Economie d'Energie (CEE) / Prime énergie :", texte: `Plus de ${euros(ceeMontantMisEnAvant)} de prime versés par un fournisseur d'énergie pour les travaux les plus performants.` },
-  { cle: 'mpr' as CleAide, titre: "MaPrimeRénov' :", texte: `Aide principale de l'État allant jusqu'à ${euros(mprGesteMax)} par geste, et jusqu'à ${pourcent(mprAmpleurTauxMax)} du devis pris en charge pour des rénovations globales.` },
+  { cle: 'cee' as CleAide, titre: "Certificats d'Economie d'Energie (CEE) / Prime énergie :", texte: "prime versée par un fournisseur d'énergie. Il n'existe pas de barème officiel en euros : le montant dépend du fournisseur que vous choisissez." },
+  { cle: 'mpr' as CleAide, titre: "MaPrimeRénov' :", texte: `aide principale de l'État. Par geste, de ${euros(forfaitMinMpr)} à ${euros(mprGesteMax.montant)} selon le geste et vos revenus, pour ${postesGeste.length} gestes seulement (revenus supérieurs exclus) ; en rénovation d'ampleur, jusqu'à ${pourcent(mprAmpleurTauxMax)} du montant HT des travaux.` },
   { cle: 'locales' as CleAide, titre: 'Aides locales :', texte: 'conditions définies par le donateur (voir votre région, votre département, votre métropole).' },
 ];
 
@@ -156,14 +168,26 @@ const frise: { texte: string; nonRetour?: boolean; delai?: boolean }[] = [
   { texte: 'Recevoir les versements', delai: true },
 ];
 
+// --- TVA des PAC air/air : mentions obligatoires (avertissement) ------------
+// N'arrête pas la construction : signale seulement, avec la mention absente.
+{
+  const texteTva = [tvaPacAirAir.intro, ...tvaPacAirAir.conditions.flatMap((c) => [c.texte, ...(c.details ?? [])])].join(' ');
+  const absentes = tvaPacAirAir.mentionsAttendues.filter((m) => !texteTva.includes(m));
+  if (absentes.length)
+    console.warn(`⚠️ /aides-renovation, section TVA (tvaPacAirAir, src/data/aides.ts) : mention(s) absente(s) : ${absentes.join(', ')}.`);
+}
+
 // --- MaPrimeRénov' : les quatre profils de revenus -------------------------
 // Contrastes : bleu et violet avec texte blanc (7,99:1 et 7,64:1), jaune et
 // rose avec texte foncé (10,02:1 et 9,86:1). Voir global.css.
+// `droits` (20 octobre 2026) : ce que le profil ouvre. Rose : AUCUN droit
+// au parcours par geste, seulement la rénovation d'ampleur (taux lu dans
+// mprAmpleur).
 const profilsMpr = [
-  { nom: 'Bleu', revenus: 'très modeste', classes: 'bg-mpr-bleu text-texte-inverse' },
-  { nom: 'Jaune', revenus: 'modeste', classes: 'bg-mpr-jaune text-texte' },
-  { nom: 'Violet', revenus: 'intermédiaire', classes: 'bg-mpr-violet text-texte-inverse' },
-  { nom: 'Rose', revenus: 'supérieur', classes: 'bg-mpr-rose text-texte' },
+  { nom: 'Bleu', revenus: 'très modeste', classes: 'bg-mpr-bleu text-texte-inverse', droits: 'par geste et en rénovation d’ampleur' },
+  { nom: 'Jaune', revenus: 'modeste', classes: 'bg-mpr-jaune text-texte', droits: 'par geste et en rénovation d’ampleur' },
+  { nom: 'Violet', revenus: 'intermédiaire', classes: 'bg-mpr-violet text-texte-inverse', droits: 'par geste et en rénovation d’ampleur' },
+  { nom: 'Rose', revenus: 'supérieur', classes: 'bg-mpr-rose text-texte', droits: `aucun droit par geste ; ${pourcent(mprAmpleur.taux.superieur)} en rénovation d’ampleur` },
 ];
 
 // --- Zone 7 : articles liés --------------------------------------------------
@@ -242,7 +266,7 @@ const classesLienCollectif =
   {/* ===== ZONE 2 : LE SIMULATEUR, TOUT DE SUITE ===== */}
   <section aria-labelledby="simulateur-titre" class="bg-creme">
     <div class="mx-auto max-w-[calc(48rem+2*var(--spacing-gouttiere))] px-gouttiere py-scene">
-      <h2 id="simulateur-titre" class="ancre-sommaire text-h2 text-balance text-texte">Estimez vos aides en trois questions</h2>
+      <h2 id="simulateur-titre" class="ancre-sommaire text-h2 text-balance text-texte">Estimez vos aides en quatre questions</h2>
       <div class="mt-8">
         <Simulateur />
       </div>
@@ -431,24 +455,37 @@ const classesLienCollectif =
             ]} />
           </div>
 
-          {/* CLIMATISATIONS RÉVERSIBLES : condition à critères, un seul
-              manquant fait tout basculer. Critères en liste, conséquence
-              en grand sur fond d'alerte. */}
+          {/* POMPES À CHALEUR AIR/AIR : trois conditions, une seule
+              manquante fait tout basculer. Conditions en liste, conséquence
+              en grand sur fond d'alerte.
+              TEXTE ET RÉFÉRENCES : tvaPacAirAir (src/data/aides.ts), texte
+              d'Akelia du 20 octobre 2026 (arrêté du 13 juillet 2026, arrêté
+              correctif du 14 août 2026 À CONFIRMER SUR LÉGIFRANCE, taux de
+              repli vérifié dans le BOFiP). Mentions obligatoires
+              contrôlées à la construction (avertissement). */}
           <div class:list={['mt-6 rounded-bloc border-2 bg-fond p-5 sm:p-6', COULEURS.tva.bord]}>
             <div class="flex items-start gap-3">
               <Icone nom="climatisation" class:list={['size-8 shrink-0', COULEURS.tva.texte]} />
-              <p class="min-w-0 text-corps text-texte"><strong class="font-bold">Nouveauté Été 2026 :</strong> Les climatisations réversibles (PAC air/air) bénéficient désormais de la TVA à 5,5 % (matériel et pose) à condition de respecter des critères techniques stricts :</p>
+              <p class="min-w-0 text-corps text-texte">{tvaPacAirAir.intro}</p>
             </div>
             <ul class="mt-4 space-y-3 sm:pl-11">
-              {['classe énergétique A++ (chaud et froid) pour les mono-splits ou A+ pour les multi-splits,', 'système connecté en Wi-Fi,', 'et respect des normes européennes F-Gas.'].map((critere) => (
+              {tvaPacAirAir.conditions.map((condition) => (
                 <li class="flex gap-3 text-corps text-texte">
                   <Icone nom="valide" class:list={['mt-1 size-6 shrink-0', COULEURS.tva.texte]} />
-                  <span class="min-w-0">{critere}</span>
+                  <div class="min-w-0">
+                    <p>{condition.texte}</p>
+                    {condition.details && (
+                      <ul class="mt-2 list-disc space-y-2 pl-6">
+                        {condition.details.map((detail) => <li>{detail}</li>)}
+                      </ul>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>
+            <p class="mt-4 text-corps font-semibold text-texte sm:pl-11">{tvaPacAirAir.dateDuDevis}</p>
             <p class="mt-5 rounded-bloc border-l-[6px] border-alerte-700 bg-alerte-50 p-4 text-corps text-texte">
-              Si un seul de ces critères manque, la TVA reste à <strong class="text-h4 font-black whitespace-nowrap">20 % sur le matériel</strong> et <strong class="text-h4 font-black whitespace-nowrap">10 % sur la pose</strong>.
+              {tvaPacAirAir.repli.debut} <strong class="text-h4 font-black whitespace-nowrap">{tvaPacAirAir.repli.fourniture}</strong> et <strong class="text-h4 font-black whitespace-nowrap">{tvaPacAirAir.repli.pose}</strong>. {tvaPacAirAir.repli.fin}
             </p>
           </div>
 
@@ -546,7 +583,7 @@ const classesLienCollectif =
 
           <h3 class={classesH3}>De quoi s'agit-il ?</h3>
           <p class={classesParagraphe}>Instaurée par la loi POPE, la Prime Énergie repose sur le principe du « pollueur-payeur ». L’État impose aux fournisseurs d’énergie (EDF, Engie, TotalEnergies,...) et aux distributeurs de carburant (Leclerc, Carrefour,...) de compenser leur émission de CO2 en finançant des projets de rénovation énergétique.</p>
-          <p class={classesParagraphe}>Pour remplir leurs obligations et compenser leur empreinte carbone, ces entreprises versent des primes aux particuliers et copropriétés qui réalisent des travaux de rénovation. Le montant de cette aide varie selon les travaux effectués et le fournisseur choisi, mais elle peut atteindre plus de 7 500 € pour les gestes les plus performants des particuliers.</p>
+          <p class={classesParagraphe}>Pour remplir leurs obligations et compenser leur empreinte carbone, ces entreprises versent des primes aux particuliers et copropriétés qui réalisent des travaux de rénovation. Le montant de cette aide varie selon les travaux effectués et le fournisseur choisi : il n’existe pas de barème officiel en euros. L’État fixe des volumes d’économies d’énergie, et chaque fournisseur fixe sa prime.</p>
 
           <h3 class={classesH3}>Quels sont les travaux éligibles ?</h3>
           <p class={classesParagraphe}>Les CEE couvrent un large éventail de travaux visant à réduire la consommation de kWh :</p>
@@ -561,7 +598,7 @@ const classesLienCollectif =
           <h3 class={classesH3}>Quelles sont les conditions ?</h3>
           <ul class="mt-6 max-w-[70ch] space-y-4">
             {[
-              ['Condition de ressources :', 'Le montant varie en fonction des revenus du foyer. Le montant est en plus bonifié pour les ménages aux revenus modestes (dispositifs "Coup de pouce").'],
+              ['Condition de ressources :', 'Le montant varie en fonction des revenus du foyer. Le montant est en plus bonifié pour les ménages aux revenus modestes (dispositifs "Coup de pouce"). Depuis le 1er septembre 2026, le « Coup de pouce Chauffage » est réservé aux pompes à chaleur disposant d’un agrément officiel.'],
               ['Le logement :', 'Il doit être achevé depuis plus de 2 ans.'],
               ['Le professionnel :', 'Les travaux doivent être impérativement réalisés par une entreprise certifiée RGE.'],
             ].map(([titre, texte]) => (
@@ -598,20 +635,24 @@ const classesLienCollectif =
           <h3 class={classesH3}>Quels sont les travaux éligibles ?</h3>
           <p class={classesParagraphe}>Il existe deux parcours distincts selon l'ampleur de votre projet :</p>
           <div class="mt-6 rounded-bloc border border-creme-fonce p-5 sm:p-6">
+            {/* 20 octobre 2026 : depuis le 1er septembre 2026, CINQ gestes
+                seulement. Liste et montants lus dans mprParGeste
+                (src/data/aides.ts), jamais écrits ici. */}
             <h4 class="text-h4 font-bold text-texte">MaPrimeRénov’ "Geste par geste" :</h4>
-            <p class="mt-2 text-corps text-texte">Pour des travaux ciblés (jusqu'à 11 000 € d'aide selon le geste), comme :</p>
-            <div class="mt-4">
-              <Vignettes couleur={COULEURS.mpr.texte} vignettes={[
-                { icone: 'pompe-a-chaleur', nom: 'Chauffage et Eau Chaude', detail: 'Pompe à chaleur (air-eau, hybride, géothermique), poêle à bois ou granulés, chauffe-eau solaire ou thermodynamique, raccordement à un réseau de chaleur.' },
-                { icone: 'isolation', nom: 'Isolation', detail: 'Murs (intérieur/extérieur), toitures, planchers.' },
-                { icone: 'fenetre', nom: 'Menuiserie', detail: 'Remplacement de fenêtres simple vitrage.' },
-                { icone: 'ventilation', nom: 'Autres', detail: 'Ventilation double flux (VMC), dépose de cuve à fioul ou audit énergétique.' },
-              ]} />
-            </div>
+            <p class="mt-2 text-corps text-texte">Depuis le 1er septembre 2026, cinq gestes seulement sont aidés seuls, de {euros(forfaitMinMpr)} à {euros(mprGesteMax.montant)} selon le geste et vos revenus. Les ménages aux revenus supérieurs n’y ont pas droit.</p>
+            <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+              {postesGeste.map((cas) => cas.cas === 'aide-seul' && (
+                <li class="flex gap-3 rounded-bloc bg-fond p-4 text-corps text-texte">
+                  <Icone nom="valide" class:list={['mt-1 size-6 shrink-0', COULEURS.mpr.texte]} />
+                  <span class="min-w-0"><strong class="font-semibold">{cas.nom}</strong> : de {euros(cas.forfaits.intermediaire)} à {euros(cas.forfaits['tres-modeste'])}{cas.condition && <span class="block text-texte-doux">{cas.condition}</span>}</span>
+                </li>
+              ))}
+            </ul>
+            <Encadre genre="note" mot="Les autres travaux restent aidés en rénovation d’ampleur :" class="mt-4">isolation, fenêtres et menuiseries, ventilation, poêles et chaudières au bois ou aux granulés, chauffe-eau thermodynamiques, solaire thermique et hybride (sauf en outre-mer, où il reste aidé par geste) ne sont plus aidés seuls depuis le 1er septembre 2026. La chaudière gaz n’est plus financée depuis le 1er janvier 2025, et la climatisation réversible (pompe à chaleur air-air) ne l’a jamais été.</Encadre>
           </div>
           <div class="mt-4 rounded-bloc border border-creme-fonce p-5 sm:p-6">
             <h4 class="text-h4 font-bold text-texte">MaPrimeRénov’ Parcours Accompagné :</h4>
-            <p class="mt-2 text-corps text-texte">Pour les rénovations d'envergure (rénovations globales) permettant un gain de classe énergétique important sur votre DPE.</p>
+            <p class="mt-2 text-corps text-texte">Pour les rénovations d'envergure (rénovations globales) permettant un gain de classe énergétique important sur votre DPE : de {pourcent(mprAmpleur.taux.superieur)} à {pourcent(mprAmpleur.taux['tres-modeste'])} du montant HT des travaux selon vos revenus, pour un logement classé E, F ou G, avec un gain d’au moins 2 classes et au moins deux gestes d’isolation. Seul parcours ouvert aux revenus supérieurs.</p>
             <Encadre genre="note" mot="À noter :" class="mt-4">pour ce parcours, les primes CEE sont déjà intégrées au montant perçu avec MaPrimeRénov', elles ne sont donc pas cumulables à part.</Encadre>
           </div>
 
@@ -621,14 +662,16 @@ const classesLienCollectif =
             <li class="flex gap-3 text-corps text-texte">
               <Icone nom="valide" class:list={['mt-1 size-6 shrink-0', COULEURS.mpr.texte]} />
               <div class="min-w-0">
-                <p><strong class="font-semibold">Les revenus :</strong> C’est l’une des rares aides indexées sur vos ressources. Il existe 4 profils de couleurs selon votre revenu fiscal de référence (RFR) et la composition de votre foyer : Bleu (très modeste), Jaune (modeste), Violet (intermédiaire) et Rose (supérieur).</p>
+                <p><strong class="font-semibold">Les revenus :</strong> C’est l’une des rares aides indexées sur vos ressources. Il existe 4 profils de couleurs selon votre revenu fiscal de référence (RFR) et la composition de votre foyer : Bleu (très modeste), Jaune (modeste), Violet (intermédiaire) et Rose (supérieur). <strong class="font-semibold">Le profil Rose n’ouvre aucun droit au parcours par geste</strong> : il est aidé seulement en rénovation d’ampleur, à hauteur de {pourcent(mprAmpleur.taux.superieur)} du montant HT des travaux.</p>
                 {/* Les 4 profils en pastilles (décoratives : la phrase
-                    ci-dessus les cite déjà). Contrastes dans global.css. */}
+                    ci-dessus les cite déjà, droits compris). Contrastes
+                    dans global.css. */}
                 <ul aria-hidden="true" class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
                   {profilsMpr.map((profil) => (
                     <li class:list={['flex min-h-11 flex-col justify-center rounded-bloc px-3 py-2 text-center', profil.classes]}>
                       <span class="text-corps leading-tight font-bold">{profil.nom}</span>
                       <span class="text-corps leading-tight">{profil.revenus}</span>
+                      <span class="mt-1 text-corps leading-tight">{profil.droits}</span>
                     </li>
                   ))}
                 </ul>
@@ -723,7 +766,7 @@ const classesLienCollectif =
       <section aria-labelledby="cta-titre" class="rounded-bloc bg-nuit-900 px-6 py-10 text-center text-texte-inverse sm:px-10">
         <p class="surtitre text-action-500">Votre projet</p>
         <h2 id="cta-titre" class="mx-auto mt-3 max-w-[22ch] text-h3 text-balance">Un artisan du collectif étudie votre projet</h2>
-        <p class="mx-auto mt-4 max-w-[45ch] text-corps">Il vous rappelle sous 24 à 48 heures, se déplace gratuitement et vous remet un devis détaillé.</p>
+        <p class="mx-auto mt-4 max-w-[45ch] text-corps">Il vous rappelle sous 48 heures, se déplace gratuitement et vous remet un devis détaillé.</p>
         <a
           href="/devis"
           class="mt-8 inline-flex min-h-12 items-center justify-center rounded-bloc bg-action-500 px-6 py-3 text-corps font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-texte-inverse"

@@ -1,0 +1,42 @@
+---
+// =========================================================================
+// ICÔNE : ISOLATION (src/components/icones-solutions/BienIsolation.astro)
+// -------------------------------------------------------------------------
+// 21 octobre 2026. « Est-ce adapté à votre bien ? », page pompe à chaleur
+// air-eau. Dessin propre : trois flèches empilées portant A, B et C,
+// remplies en vert, jaune et rouge clair (classes d'un DPE). L'une des
+// DEUX icônes en couleur (avec PerfEfficacite) : contour et lettres en
+// currentColor, teintes claires pour que la lettre reste lisible.
+// Décorative (aria-hidden) : le texte de la condition porte le sens.
+// =========================================================================
+
+import { TRAIT, VIEWBOX } from './trait';
+
+export interface Props {
+  /** Côté en pixels. */
+  taille?: number;
+  class?: string;
+}
+
+const { taille = 88, class: classes } = Astro.props;
+const HAUTEUR = 4.6;
+/** Flèche n : de x = 3 à x = 13 + 4n, hauteur 4,6, pas de 6. */
+const fleches = [
+  { lettre: 'A', couleur: '#7cc47f' },
+  { lettre: 'B', couleur: '#ffd84d' },
+  { lettre: 'C', couleur: '#f4a09a' },
+].map((f, n) => {
+  const y = 3.2 + n * 6;
+  const bout = 13 + n * 4;
+  return { ...f, y, points: `3,${y} ${bout - 2},${y} ${bout},${y + HAUTEUR / 2} ${bout - 2},${y + HAUTEUR} 3,${y + HAUTEUR}` };
+});
+---
+
+<svg aria-hidden="true" class:list={['shrink-0', classes]} width={taille} height={taille} viewBox={VIEWBOX} fill="none" stroke="currentColor" stroke-width={TRAIT} stroke-linecap="round" stroke-linejoin="round">
+  {fleches.map((f) => (
+    <>
+      <polygon points={f.points} fill={f.couleur} />
+      <text x="4.6" y={f.y + HAUTEUR / 2} dominant-baseline="central" fill="currentColor" stroke="none" font-size="3.4" font-weight="800">{f.lettre}</text>
+    </>
+  ))}
+</svg>

@@ -12,7 +12,7 @@ enBref:
   - "L'air intérieur d'un logement mal ventilé peut s'avérer jusqu'à neuf fois plus pollué que l'air extérieur."
   - "Une ventilation défaillante ou absente pèse lourdement dans le bilan thermique, représentant environ vingt pour cent des déperditions de chaleur à égalité avec l'isolation des murs."
   - "L'augmentation de l'étanchéité des enveloppes du bâtiment, encouragée par les réglementations comme la RE2020, piège l'humidité et les polluants si aucun flux mécanique régulé n'est mis en œuvre."
-  - "Les dispositifs d'aide publique, tels que MaPrimeRénov' et les certificats d'économies d'énergie, permettent de financer l'installation conjointe de systèmes de ventilation performants."
+  - "Les dispositifs d'aide publique, tels que les certificats d'économies d'énergie, et MaPrimeRénov' dans une rénovation d'ampleur, permettent de financer l'installation conjointe de systèmes de ventilation performants."
 sources:
   - libelle: "conseils-thermiques.org"
     lien: "https://conseils-thermiques.org/contenu/vmc_simple_flux.php"
@@ -94,7 +94,7 @@ L'air neuf entrant, capté en façade, traverse cet échangeur et se trouve pré
 
 ### Mobiliser les aides publiques pour intégrer la ventilation aux travaux globaux
 
-Pour inverser la tendance et faire de la ventilation un réflexe incontournable, les pouvoirs publics et les organismes de financement ont progressivement structuré des dispositifs d'accompagnement. Des aides financières significatives, telles que MaPrimeRénov' pour les logements de plus de quinze ans ou les primes attribuées au titre des certificats d'économies d'énergie, prennent désormais en charge une partie des investissements liés à l'installation de systèmes de ventilation performants.
+Pour inverser la tendance et faire de la ventilation un réflexe incontournable, les pouvoirs publics et les organismes de financement ont progressivement structuré des dispositifs d'accompagnement. Des aides financières, telles que les primes attribuées au titre des certificats d'économies d'énergie, ou MaPrimeRénov' dans une rénovation d'ampleur (la ventilation n'est plus aidée seule depuis le 1er septembre 2026), prennent en charge une partie des investissements liés à l'installation de systèmes de ventilation performants.
 
 Cependant, ces aides sont trop souvent conditionnées à des bouquets de travaux globaux ou sous-utilisées par les particuliers qui ignorent leur éligibilité. Les professionnels de la rénovation énergétique, qu'il s'agisse des auditeurs énergétiques, des conseillers France Rénov' ou des artisans labellisés RGE, ont la responsabilité morale et technique d'imposer la ventilation comme un lot indissociable de tout chantier d'isolation ou de changement de système de chauffage. Il est impératif d'abandonner l'approche cloisonnée des corps de métier pour adopter une vision systémique du bâtiment.
 

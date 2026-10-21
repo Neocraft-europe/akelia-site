@@ -12,7 +12,7 @@ enBref:
   - "Ne changez jamais votre chauffage en premier ! Pour réussir une rénovation, il faut respecter la logique : **Isoler (garder la chaleur) ➔ Ventiler (assainir) ➔ Chauffer (produire).**"
   - "**Étape 0 : L'Audit Énergétique**"
   - "Indispensable pour connaître les points faibles de votre maison."
-  - "Aide MaPrimeRénov' jusqu'à **500 €**."
+  - "Aide MaPrimeRénov' possible pour l'audit, si un geste de travaux est réalisé en même temps."
   - "**Priorité 1 : L'Isolation (L'enveloppe)**"
   - "**Toiture (30% des pertes) :** Le plus rentable."
   - "**Murs (25% des pertes) :** La clé de voûte (ITE ou ITI)."
@@ -66,7 +66,7 @@ Les résultats d'un audit énergétique vous fournissent un rapport détaillé q
 
 ### Aides pour réaliser un audit énergétique
 
-À noter que certaines aides financières peuvent couvrir une partie du coût d'un audit énergétique. Par exemple, MaPrimeRénov' peut prendre en charge jusqu'à 50% du montant de l'audit, dans la limite de 500 €. Cette aide est accessible sous conditions de ressources et pour les logements construits depuis plus de 15 ans. De plus, certaines collectivités locales proposent également des subventions pour encourager la réalisation d'audits énergétiques. N'hésitez pas à vous renseigner auprès de votre mairie ou de votre conseiller France Rénov' pour connaître les aides disponibles dans votre région.
+À noter que certaines aides financières peuvent couvrir une partie du coût d'un audit énergétique. Par exemple, MaPrimeRénov' aide l'audit énergétique (hors obligation réglementaire) une seule fois par logement, et seulement si au moins un geste de travaux est réalisé en même temps. Son montant dépend de vos revenus, les revenus supérieurs n'y ont pas droit : [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre). L'aide concerne les logements construits depuis plus de 15 ans. De plus, certaines collectivités locales proposent également des subventions pour encourager la réalisation d'audits énergétiques. N'hésitez pas à vous renseigner auprès de votre mairie ou de votre conseiller France Rénov' pour connaître les aides disponibles dans votre région.
 
 ## Priorité 1 : Assurer la ventilation du bien
 

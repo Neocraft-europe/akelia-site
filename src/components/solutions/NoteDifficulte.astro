@@ -1,0 +1,66 @@
+---
+// =========================================================================
+// COMPOSANT : NOTE DE DIFFICULTÉ SUR 5 (src/components/solutions/NoteDifficulte.astro)
+// -------------------------------------------------------------------------
+// 20 octobre 2026 (refonte des pages solutions). « 2,5/5 — moyen », écrit
+// dans la couleur de son niveau (src/utils/echelle.ts), avec une jauge de
+// cinq segments colorés du vert au rouge, remplie jusqu'à la note.
+// DEUX EMPLACEMENTS, ET DEUX SEULEMENT : la tuile « Complexité des
+// travaux » des performances, et l'en-tête de chaque parcours de travaux.
+// Jamais par étape.
+// La note et le mot sont toujours écrits : la couleur ne porte jamais seule
+// l'information. Jauge décorative (aria-hidden).
+// EN LIGNE (`enLigne`, 21 octobre 2026, en-tête des parcours de travaux) :
+// la jauge PUIS la note et le mot, sur une seule ligne, en 20px : rien
+// d'empilé (l'intitulé « Niveau de difficulté » est placé avant par
+// l'appelant).
+// =========================================================================
+
+import { FONDS_DIFFICULTE, couleurEchelle, motDifficulte, noteEnTexte } from '../../utils/echelle';
+
+export interface Props {
+  /** 1 à 5, demi-points acceptés. */
+  note: number;
+  /** Compteur au défilement (performances seulement). */
+  compteur?: boolean;
+  /** Jauge, puis note et mot, sur une ligne (en-tête des parcours). */
+  enLigne?: boolean;
+  class?: string;
+}
+
+const { note, compteur = false, enLigne = false, class: classes } = Astro.props;
+const couleur = couleurEchelle(note);
+/** Remplissage de chacun des 5 segments (0 à 1). */
+const segments = [0, 1, 2, 3, 4].map((i) => Math.max(0, Math.min(1, note - i)));
+---
+
+{enLigne ? (
+  <span class:list={['inline-flex flex-wrap items-center gap-x-3 gap-y-1', classes]}>
+    <span aria-hidden="true" class="flex gap-1">
+      {segments.map((remplissage, i) => (
+        <span class="relative h-2.5 w-8 overflow-hidden rounded-full border border-creme-fonce bg-fond">
+          <span class:list={['absolute inset-y-0 left-0', FONDS_DIFFICULTE[i]]} style={`width: ${remplissage * 100}%`}></span>
+        </span>
+      ))}
+    </span>
+    <span class="text-h4 leading-none font-bold whitespace-nowrap tabular-nums" style={`color: ${couleur}`}>
+      {noteEnTexte(note)}<span aria-hidden="true">/5 — </span><span class="sr-only"> sur 5, </span>{motDifficulte(note)}
+    </span>
+  </span>
+) : (
+<span class:list={['inline-flex flex-col gap-2', classes]}>
+  <span class="flex flex-wrap items-baseline gap-x-2 leading-none" style={`color: ${couleur}`}>
+    <span class="text-[2.25rem] font-black whitespace-nowrap tabular-nums">
+      <span data-compteur={compteur ? '' : undefined}>{noteEnTexte(note)}</span><span aria-hidden="true" class="text-h4 font-bold">/5</span><span class="sr-only"> sur 5</span>
+    </span>
+    <span class="text-h4 font-bold whitespace-nowrap"><span aria-hidden="true">— </span>{motDifficulte(note)}</span>
+  </span>
+  <span aria-hidden="true" class="flex gap-1">
+    {segments.map((remplissage, i) => (
+      <span class="relative h-2.5 w-8 overflow-hidden rounded-full border border-creme-fonce bg-fond">
+        <span class:list={['absolute inset-y-0 left-0', FONDS_DIFFICULTE[i]]} style={`width: ${remplissage * 100}%`}></span>
+      </span>
+    ))}
+  </span>
+</span>
+)}

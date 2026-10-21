@@ -9,78 +9,123 @@
 // site, où ce bloc était copié de la page PAC sur toutes les autres).
 //
 // Repris de l'ancien bloc « Réalisez vos projets avec un artisan local
-// Akelia », corrigé :
-//   - délai de rappel : « 24 à 48 heures », comme /devis et le bas des
-//     articles (l'ancien texte disait « sous 24 heures, hors week-ends et
-//     jours fériés ») ;
+// Akelia », corrigé (19 octobre 2026 ; textes raccourcis le 21 octobre) :
+//   - délai de rappel : « sous 48 heures » depuis le 21 octobre 2026, comme
+//     /devis, l'appel final et le bas des articles (« 24 à 48 heures »
+//     avant ; l'ancien texte disait « sous 24 heures, hors week-ends et
+//     jours fériés »). Délai à confirmer par Akelia avant la mise en ligne ;
 //   - « date d'intervention sous deux semaines » retirée : impossible à
 //     promettre pour tous les chantiers (question en attente) ;
 //   - « nous » remplacé par « l'artisan » : c'est lui qui signe et réalise.
 // Les 4 photos de l'ancien bloc ne sont pas reprises : elles montrent une
 // pompe à chaleur et des tenues d'une entreprise nommée.
 //
-// Style des étapes de /devis : pastille cerclée d'orange, filet orange.
+// ESCALIER DESCENDANT (21 octobre 2026, remplace l'escalier montant du
+// 20 octobre : cartes de hauteurs différentes, textes trop longs, flèches
+// qui remontaient) :
+// - à partir de 992px : quatre cartes de MÊME TAILLE, de haut à gauche vers
+//   bas à droite (sens de la lecture), chacune décalée d'un quart de sa
+//   hauteur.
+//   Mécanique : grille de 4 colonnes et 7 rangées égales (1fr) ; la carte n
+//   commence à la rangée n et en couvre 4. Les rangées prennent toutes la
+//   hauteur de la carte la plus remplie divisée par 4 : les quatre cartes
+//   ont donc la même hauteur AU PIXEL PRÈS, et le décalage vaut
+//   exactement un quart de carte, sans hauteur écrite en dur (une hauteur
+//   fixe en rem déborderait à 992px, où les colonnes sont étroites ;
+//   solution validée par Akelia le 21 octobre 2026) ;
+// - en dessous : colonne verticale numérotée ; rangées égales (1fr) :
+//   mêmes hauteurs, là aussi.
+// TRAIT ET PASTILLES (troisième passe, 21 octobre 2026 : les flèches entre
+// les cartes faisaient « diaporama », elles sont supprimées) :
+// - UN SEUL trait continu, 2px, action-300, sans pointe, du centre de la
+//   pastille 1 à celui de la pastille 4, PASSANT DERRIÈRE les cartes (il
+//   se voit dans les écarts) ; en diagonale à partir de 992px, vertical en
+//   dessous. Les centres des pastilles sont alignés (même place dans des
+//   cartes de même taille, décalées régulièrement) : un seul segment suffit.
+//   Position calculée en pourcentage de la grille, sans mesure en
+//   JavaScript : départ à 2,5rem + 1px (marge + demi-pastille + bordure),
+//   arrivée 3 colonnes et 3 quarts de carte plus loin ;
+// - PASTILLES PLEINES posées sur ce trait (fond action-500, chiffre foncé,
+//   6,87:1) : ce sont elles qui portent la progression.
+// ANIMATION (AnimationScenes.astro, comportement de l'accueil) : chaque
+// carte est une data-scene-etape (fondu et 40px de montée, 0,7 s, 150 ms
+// d'écart entre cartes arrivées ensemble) ; le trait se dessine de haut en
+// bas (stroke-dashoffset, pathLength 1) pendant leur arrivée, dès que la
+// première est visible (global.css, « TRAIT DES ÉTAPES »). Tout se rejoue au
+// retour, après une sortie complète de la bande. « Réduire les
+// animations » : rien ne bouge, trait entier.
+// Balisage <ol> : le décalage est PUREMENT CSS (placement dans la grille),
+// un lecteur d'écran reçoit les étapes dans l'ordre.
+// TEXTES : une phrase de 20 mots au plus par étape (avertissement à la
+// construction au-delà). Textes du ticket du 21 octobre 2026.
 // =========================================================================
+
+import { nombreDeMots } from '../utils/texte';
 
 export interface Props {
   /** id du titre h2 (ancre du sommaire). */
   id: string;
+  /** Étape 4 propre à la page (H13, 21 octobre 2026) : titre et texte qui
+   *  remplacent « Suivi et aides » (le titre est facultatif). */
+  etapeSuivi?: { titre?: string; texte: string };
 }
 
-const { id } = Astro.props;
+const { id, etapeSuivi } = Astro.props;
 
 const etapes = [
+  { titre: 'Estimation et devis', texte: 'Estimez vos aides en ligne ou demandez un devis : un artisan vous rappelle sous 48 heures.' },
+  { titre: 'Visite technique', texte: 'Un technicien vérifie la faisabilité sur place et valide le devis avec vous.' },
+  { titre: 'Installation', texte: 'L’équipe réalise les travaux dans le respect des normes de qualité et de sécurité.' },
+  // Étape 4 : texte commun par défaut, SURCHARGEABLE par page (H13) : le
+  // contrat d'entretien n'a pas de sens pour une isolation ou des
+  // menuiseries.
   {
-    titre: 'Estimation et devis',
-    paragraphes: [
-      'Estimez vos aides depuis notre site ou faites une demande de devis. L’artisan Akelia le plus proche de chez vous vous rappelle sous 24 à 48 heures.',
-      'Selon la complexité de votre projet, une visite gratuite chez vous est nécessaire pour établir un devis précis.',
-    ],
-  },
-  {
-    titre: 'Visite technique et validation de la commande',
-    paragraphes: [
-      '**Évaluation sur place** : un technicien vient vérifier la faisabilité de votre projet et s’assurer que le devis correspond à vos besoins.',
-      '**Validation du devis** : une fois le devis signé, l’artisan fixe avec vous la date d’intervention.',
-    ],
-  },
-  {
-    titre: 'Installation et travaux',
-    paragraphes: [
-      'L’équipe de l’artisan réalise les travaux dans le respect des normes de qualité et de sécurité.',
-    ],
-  },
-  {
-    titre: 'Suivi, maintenance et aides financières',
-    paragraphes: [
-      '**Entretien** : si votre installation en demande un, l’artisan vous propose un contrat de maintenance pour assurer son bon fonctionnement et sa longévité.',
-      '**Aides financières** : il vous accompagne pour obtenir les aides et subventions auxquelles votre projet ouvre droit.',
-    ],
+    titre: etapeSuivi?.titre ?? 'Suivi et aides',
+    texte: etapeSuivi?.texte ?? 'L’artisan vous accompagne pour obtenir vos aides et vous propose un contrat d’entretien.',
   },
 ];
 
-/** **gras** → <strong>, sur un texte écrit ici (pas de contenu externe). */
-const gras = (texte: string) => texte.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-semibold">$1</strong>');
+// AVERTISSEMENT (la construction continue) : 20 mots au plus par étape.
+const MOTS_ETAPE = 20;
+for (const etape of etapes) {
+  const mots = nombreDeMots(etape.texte);
+  if (mots > MOTS_ETAPE)
+    console.warn(`⚠️ src/components/ParcoursAkelia.astro : l'étape « ${etape.titre} » fait ${mots} mots, ${MOTS_ETAPE} au plus.\n   « ${etape.texte} »`);
+}
+
+/** Placement de la carte n dans la grille de l'escalier (classes écrites en
+ *  entier pour Tailwind). */
+const PLACEMENT = [
+  'lg:col-start-1 lg:row-start-1',
+  'lg:col-start-2 lg:row-start-2',
+  'lg:col-start-3 lg:row-start-3',
+  'lg:col-start-4 lg:row-start-4',
+];
 ---
 
 <section aria-labelledby={id}>
-  <h2 id={id} class="ancre-sommaire text-h2 text-balance text-texte">Comment ça se passe avec Akelia</h2>
-  <ol class="mt-10">
-    {etapes.map((etape, index) => (
-      <li class="relative flex gap-5 pb-10 last:pb-0">
-        {index < etapes.length - 1 && (
-          <span aria-hidden="true" class="absolute top-12 bottom-2 left-5 w-0.5 -translate-x-1/2 bg-action-500/60"></span>
-        )}
-        <span aria-hidden="true" class="flex size-10 shrink-0 items-center justify-center rounded-pilule border-2 border-action-500 bg-fond text-h4 font-bold text-nuit-900">
-          {index + 1}
-        </span>
-        <div class="min-w-0 pt-1">
-          <h3 class="text-h4 font-bold text-texte"><span class="sr-only">Étape {index + 1} : </span>{etape.titre}</h3>
-          <div class="mt-2 max-w-[70ch] space-y-2 text-corps text-texte">
-            {etape.paragraphes.map((p) => <p set:html={gras(p)} />)}
+  <h2 id={id} class="ancre-sommaire text-h2 text-balance text-texte">Votre projet, étape par étape</h2>
+  <div data-etapes class="relative mt-10">
+    {/* TRAIT CONTINU, derrière les cartes (premier dans le code, les cartes
+        positionnées passent dessus). Vertical sous 992px, diagonal ensuite. */}
+    <svg aria-hidden="true" data-trait-etapes class="absolute top-[calc(2.5rem+1px)] left-[2.5rem] h-[calc(75%+1.125rem)] w-0.5 overflow-visible text-action-300 lg:hidden" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="1" y1="0" x2="1" y2="100%" pathLength="1" />
+    </svg>
+    <svg aria-hidden="true" data-trait-etapes class="absolute top-[calc(2.5rem+1px)] left-[calc(2.5rem+1px)] hidden h-[calc(300%/7)] w-[calc(75%+1.5rem)] overflow-visible text-action-300 lg:block xl:w-[calc(75%+1.875rem)]" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="0" y1="0" x2="100%" y2="100%" pathLength="1" />
+    </svg>
+    <ol class="relative grid auto-rows-fr gap-y-6 lg:grid-cols-4 lg:grid-rows-[repeat(7,minmax(0,1fr))] lg:gap-x-8 lg:gap-y-0 xl:gap-x-10">
+      {etapes.map((etape, index) => (
+        <li data-scene-etape class:list={['relative flex min-w-0 gap-4 rounded-bloc border border-creme-fonce bg-fond p-5 shadow-legere lg:row-span-4 lg:flex-col lg:gap-3', PLACEMENT[index]]}>
+          <span aria-hidden="true" class="flex size-10 shrink-0 items-center justify-center rounded-pilule bg-action-500 text-h4 font-bold text-texte">
+            {index + 1}
+          </span>
+          <div class="min-w-0 pt-1 lg:pt-0">
+            <h3 class="text-h4 font-bold text-balance text-texte"><span class="sr-only">Étape {index + 1} : </span>{etape.titre}</h3>
+            <p class="mt-1 text-corps leading-normal text-texte">{etape.texte}</p>
           </div>
-        </div>
-      </li>
-    ))}
-  </ol>
+        </li>
+      ))}
+    </ol>
+  </div>
 </section>

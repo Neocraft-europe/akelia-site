@@ -126,11 +126,11 @@ Le remplacement d'une chaudière à fioul par une pompe à chaleur peut représe
 
 ### MaPrimeRénov'
 
-MaPrimeRénov' est une aide financière mise en place par l'Agence nationale de l'habitat (ANAH) pour encourager les travaux de rénovation énergétique. Elle peut couvrir une partie significative des coûts d'installation d'une pompe à chaleur. Les montants varient en fonction des revenus du ménage et du type de travaux réalisés. Pour une pompe à chaleur, l'aide peut aller jusqu'à 11 000 euros, selon les conditions d'éligibilité.
+MaPrimeRénov' est une aide financière mise en place par l'Agence nationale de l'habitat (ANAH) pour encourager les travaux de rénovation énergétique. Elle peut couvrir une partie significative des coûts d'installation d'une pompe à chaleur. Les montants varient en fonction des revenus du ménage et du type de travaux réalisés. Pour une pompe à chaleur air/eau ou géothermique, c'est un forfait qui dépend de vos revenus : [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
 
 ### Coup de pouce Chauffage
 
-Le dispositif "Coup de pouce Chauffage" fait partie des Certificats d'Économies d'Énergie (CEE) et vise à encourager le remplacement des anciennes chaudières par des équipements plus performants. Cette aide peut atteindre jusqu'à 4 000 euros pour l'installation d'une pompe à chaleur, en fonction des ressources du ménage. Elle est cumulable avec MaPrimeRénov'.
+Le dispositif "Coup de pouce Chauffage" fait partie des Certificats d'Économies d'Énergie (CEE) et vise à encourager le remplacement des anciennes chaudières par des équipements plus performants. Depuis le 1er septembre 2026, il est réservé aux pompes à chaleur disposant d'un agrément officiel ; son montant dépend du fournisseur choisi et des ressources du ménage. Il est cumulable avec MaPrimeRénov'.
 
 ### Certificats d'Économies d'Énergie (CEE)
 

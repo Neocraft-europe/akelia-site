@@ -11,7 +11,7 @@ enBref:
   - "Le **chauffe-eau électrique** (cumulus) est imbattable sur le prix à l'achat, mais c'est un gouffre énergétique. Le **chauffe-eau thermodynamique (CET)** est un investissement plus lourd, mais c'est **la solution la plus économique à long terme** : il divise vos factures d'eau chaude par 3 grâce à sa mini pompe à chaleur intégrée."
   - "**Le match de l'usage et du coût :**"
   - "**Électrique :** Prix d'achat faible (100 € à 1 500 €). *Point faible :* Facture annuelle élevée (env. 600 € pour 4 personnes) et aucune aide financière."
-  - "**Thermodynamique :** Prix d'achat élevé (2 000 € à 4 500 €). **Atout majeur :** Facture annuelle divisée par trois (env. 170 €). Il est rentable en 4 à 6 ans grâce aux économies et aux aides (MaPrimeRénov', CEE)."
+  - "**Thermodynamique :** Prix d'achat élevé (2 000 € à 4 500 €). **Atout majeur :** Facture annuelle divisée par trois (env. 170 €). Il est rentable en 4 à 6 ans grâce aux économies et aux aides (prime CEE, TVA à 5,5 %)."
   - "**Le match de l'installation et de l'espace :**"
   - "**Électrique :** Très compact, il se glisse partout (placard, salle de bain). Entretien minimal (un détartrage tous les 2-3 ans)."
   - "**Thermodynamique :** Plus encombrant, il nécessite idéalement une pièce non chauffée de 20 m³ (garage) ou une installation avec gaines vers l'extérieur. Il demande un entretien régulier par un pro."
@@ -135,7 +135,7 @@ L'entretien est un aspect important à considérer pour maintenir la performance
 
 **Rentabilité à long terme**
 
-Bien que le chauffe-eau thermodynamique représente un investissement initial plus élevé, il peut s'avérer plus rentable à long terme grâce à ses économies d'énergie. En moyenne, un chauffe-eau thermodynamique permet de réaliser jusqu'à 70 % d'économies sur la facture d'électricité par rapport à un chauffe-eau électrique classique. De plus, les aides financières comme MaPrimeRénov', l'éco-prêt à taux zéro et les certificats d'économies d'énergie (CEE) peuvent réduire considérablement le coût initial.
+Bien que le chauffe-eau thermodynamique représente un investissement initial plus élevé, il peut s'avérer plus rentable à long terme grâce à ses économies d'énergie. En moyenne, un chauffe-eau thermodynamique permet de réaliser jusqu'à 70 % d'économies sur la facture d'électricité par rapport à un chauffe-eau électrique classique. De plus, les aides financières comme l'éco-prêt à taux zéro et les certificats d'économies d'énergie (CEE) peuvent réduire le coût initial. Depuis le 1er septembre 2026, MaPrimeRénov' ne l'aide plus seul, seulement dans une rénovation d'ampleur : [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
 
 ## Comparaison des coûts et de la rentabilité
 
@@ -163,7 +163,7 @@ Lorsqu'il s'agit de choisir entre un chauffe-eau électrique et un chauffe-eau t
 
 **Chauffe-eau thermodynamique**
 
-- **Aides** : Les chauffe-eaux thermodynamiques sont éligibles à plusieurs aides financières, telles que MaPrimeRénov', l'éco-prêt à taux zéro, les certificats d'économies d'énergie (CEE), et la TVA à taux réduit (5,5 %). Ces aides peuvent considérablement réduire le coût initial d'achat et d'installation.
+- **Aides** : Les chauffe-eaux thermodynamiques sont éligibles à plusieurs aides financières, telles que l'éco-prêt à taux zéro, les certificats d'économies d'énergie (CEE), et la TVA à taux réduit (5,5 %). Ces aides peuvent considérablement réduire le coût initial d'achat et d'installation. Depuis le 1er septembre 2026, MaPrimeRénov' ne finance plus le chauffe-eau thermodynamique seul, seulement dans une rénovation d'ampleur.
 
 ### Amortissement et économies réalisées
 
@@ -222,7 +222,7 @@ L'impact environnemental est un critère de plus en plus important dans le choix
 **Chauffe-eau thermodynamique**
 
 - **Réglementations** : Les chauffe-eaux thermodynamiques sont conformes aux réglementations environnementales en vigueur. Ils sont particulièrement adaptés aux constructions neuves et aux rénovations visant à améliorer l'efficacité énergétique.
-- **Aides financières** : Ils sont éligibles à diverses aides financières, telles que MaPrimeRénov', l'éco-prêt à taux zéro, les certificats d'économies d'énergie (CEE), et la TVA à taux réduit (5,5 %). Ces aides encouragent l'adoption de technologies plus respectueuses de l'environnement.
+- **Aides financières** : Ils sont éligibles à diverses aides financières, telles que l'éco-prêt à taux zéro, les certificats d'économies d'énergie (CEE), et la TVA à taux réduit (5,5 %). Ces aides encouragent l'adoption de technologies plus respectueuses de l'environnement.
 
 ### Impact sur le Diagnostic de Performance Énergétique (DPE)
 

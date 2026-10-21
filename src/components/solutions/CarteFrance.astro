@@ -1,0 +1,236 @@
+---
+// =========================================================================
+// COMPOSANT : CARTE DE FRANCE DES ZONES (src/components/solutions/CarteFrance.astro)
+// -------------------------------------------------------------------------
+// Créé le 20 octobre 2026. Bloc « Est-ce adapté à votre région ? » des
+// pages /solutions/… : carte des départements coloriés par zone, et sa
+// légende.
+//
+// FOND DE CARTE : public/cartes/departements.svg (IGN, ADMIN EXPRESS COG
+// CARTO PE 2026, Licence Ouverte 2.0 ; produit par
+// scripts/generer-carte-france.mjs). UN fichier pour toutes les pages, mis
+// en cache : la page n'écrit qu'un <use href="…#d-31"> par département,
+// qui en hérite la couleur (fill).
+//
+// COULEURS par niveau (charte, pas de vert/orange/rouge « vigilance
+// météo ») : NIVEAUX ci-dessous. Département dans aucune zone : « non
+// concerné », gris très clair (carte-vide).
+//
+// ACCESSIBILITÉ : rien ne repose sur la couleur seule.
+//   - un résumé en liste (lecteurs d'écran seulement) PRÉCÈDE la carte :
+//     chaque zone et ses départements, en toutes lettres ;
+//   - la carte est aria-hidden ;
+//   - la légende décrit chaque zone en toutes lettres ; sa pastille prend
+//     EXACTEMENT le remplissage de la carte (même couleur, même trame) ;
+//   - au survol, au toucher et au clavier (le cadre de la carte prend le
+//     focus ; flèches, Début, Fin), un libellé « Haute-Garonne — région
+//     intéressante ».
+//
+// CONTRÔLE À LA CONSTRUCTION : un code inconnu (faute de frappe, code
+// d'outre-mer, absent de la carte) ou un département cité dans deux zones
+// arrête la construction avec un message clair.
+// =========================================================================
+
+import LigneRepliable from './LigneRepliable.astro';
+import TexteMisEnForme from './TexteMisEnForme.astro';
+import { CADRE_CARTE, DEPARTEMENTS } from '../../data/departements';
+import type { NiveauZone, ZoneCarte } from '../../data/solutions/type';
+
+export interface Props {
+  zones: ZoneCarte[];
+  /** Pour le message d'erreur : « pompe-a-chaleur-air-eau ». */
+  slug: string;
+}
+
+const { zones, slug } = Astro.props;
+
+const FOND = '/cartes/departements.svg';
+
+// Remplissage de chaque niveau (classes Tailwind écrites EN ENTIER : il ne
+// génère que celles qu'il trouve dans le code). `trame` : hachures
+// par-dessus la couleur, pour que la carte reste lisible en niveaux de
+// gris (compte rendu du 20 octobre 2026) ; le département reçoit alors le
+// motif, qui porte la couleur.
+// Hachures dans les deux sens (`sens`) : « à étudier » et « déconseillée »
+// ont des teintes claires voisines, que seule la direction distingue en
+// niveaux de gris. Diagonales dessinées dans le carreau du motif (20
+// unités, un trait tous les 14 environ), raccordées d'un carreau à
+// l'autre par les deux bouts de coin.
+// RANGS (H10, 21 octobre 2026) : les zones portent un rang (1 = la plus
+// favorable, 4 au plus) ; le libellé vient de la page (`titre`). L'ordre et
+// les couleurs restent figés : rang 1 vert, 2 orange, 3 argile hachuré,
+// 4 crème foncé hachuré. Les noms internes ci-dessous ne servent qu'aux
+// identifiants des motifs (trame-a-etudier…) et ne s'affichent jamais.
+type NomNiveau = 'optimale' | 'interessante' | 'a-etudier' | 'deconseillee';
+const NOM_DU_RANG: Record<NiveauZone, NomNiveau> = { 1: 'optimale', 2: 'interessante', 3: 'a-etudier', 4: 'deconseillee' };
+const NIVEAUX: Record<NomNiveau | 'vide', { couleur: string; trame?: string; sens?: '/' | '\\' }> = {
+  optimale: { couleur: 'fill-vert-600' },
+  interessante: { couleur: 'fill-action-500' },
+  'a-etudier': { couleur: 'fill-argile', trame: 'stroke-argile-fonce', sens: '/' },
+  deconseillee: { couleur: 'fill-creme-fonce', trame: 'stroke-texte-doux', sens: '\\' },
+  vide: { couleur: 'fill-carte-vide' },
+};
+/** Classe de remplissage, ou motif (attribut fill) pour un niveau tramé. */
+const DIAGONALES = { '/': 'M-5 5 5-5M0 20 20 0M15 25 25 15', '\\': 'M-5 15 5 25M0 0 20 20M15-5 25 5' };
+const remplissage = (rang: NiveauZone | 'vide') => {
+  const niveau = rang === 'vide' ? 'vide' : NOM_DU_RANG[rang];
+  return NIVEAUX[niveau].trame ? { fill: `url(#trame-${niveau})` } : { class: NIVEAUX[niveau].couleur };
+};
+
+// --- Contrôle des rangs : du plus favorable au moins favorable, sans doublon,
+// quatre au plus (la construction s'arrête sinon).
+if (zones.length > 4) throw new Error(`src/data/solutions/${slug}.ts : ${zones.length} zones sur la carte, 4 au plus.`);
+zones.forEach((zone, i) => {
+  if (i > 0 && zone.niveau <= zones[i - 1].niveau)
+    throw new Error(`src/data/solutions/${slug}.ts : la zone « ${zone.titre} » (rang ${zone.niveau}) doit venir après « ${zones[i - 1].titre} » (rang ${zones[i - 1].niveau}) : rangs croissants, sans doublon, du plus favorable au moins favorable.`);
+});
+
+// --- Contrôle des codes --------------------------------------------------------
+const zoneDe = new Map<string, ZoneCarte>();
+for (const zone of zones)
+  for (const code of zone.departements) {
+    if (!(code in DEPARTEMENTS))
+      throw new Error(
+        `src/data/solutions/${slug}.ts, zone « ${zone.titre} » : département « ${code} » inconnu. ` +
+          `Codes acceptés : 01 à 95 avec 2A et 2B (pas 20), France métropolitaine seulement (pas d'outre-mer).`,
+      );
+    if (zoneDe.has(code))
+      throw new Error(`src/data/solutions/${slug}.ts : le département ${code} (${DEPARTEMENTS[code]}) est dans deux zones, « ${zoneDe.get(code)!.titre} » et « ${zone.titre} ».`);
+    zoneDe.set(code, zone);
+  }
+
+const libelleNiveau = (zone?: ZoneCarte) => (zone ? zone.titre.charAt(0).toLowerCase() + zone.titre.slice(1) : 'non concerné');
+// Tri explicite : JavaScript range d'abord les clés « entières » (10 à 95),
+// puis 01 à 09 et 2A, 2B. Ordre des codes = ordre des flèches du clavier.
+const departements = Object.entries(DEPARTEMENTS).sort(([a], [b]) => a.localeCompare(b)).map(([code, nom]) => ({
+  code,
+  nom,
+  niveau: zoneDe.get(code)?.niveau ?? ('vide' as const),
+  libelle: `${nom} — ${libelleNiveau(zoneDe.get(code))}`,
+}));
+const nonConcernes = departements.filter((d) => d.niveau === 'vide');
+const trames = (Object.keys(NIVEAUX) as (NomNiveau | 'vide')[]).filter((n) => NIVEAUX[n].trame);
+const nomsDe = (codes: string[]) => codes.map((code) => DEPARTEMENTS[code]).sort((a, b) => a.localeCompare(b, 'fr')).join(', ');
+---
+
+<div class="mt-6 grid gap-8 md:grid-cols-[minmax(0,25rem)_minmax(0,1fr)] md:items-start md:gap-12">
+  {/* RÉSUMÉ POUR LES LECTEURS D'ÉCRAN : la carte, en toutes lettres. */}
+  <div class="sr-only">
+    <p>Carte des départements de France métropolitaine :</p>
+    <ul>
+      {zones.map((zone) => <li>{zone.titre} : {nomsDe(zone.departements)}.</li>)}
+      {nonConcernes.length > 0 && <li>Non concernés : {nomsDe(nonConcernes.map((d) => d.code))}.</li>}
+    </ul>
+  </div>
+
+  {/* CARTE : décorative pour les lecteurs d'écran (résumé ci-dessus).
+      Le cadre prend le focus clavier pour parcourir les départements ;
+      le libellé s'affiche dans la bulle. */}
+  <div
+    data-carte
+    tabindex="0"
+    role="group"
+    aria-label="Carte des départements. Flèches gauche et droite : passer d'un département à l'autre."
+    class="relative mx-auto w-full max-w-[25rem] rounded-bloc focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-nuit-900"
+  >
+    <svg aria-hidden="true" viewBox={`0 0 ${CADRE_CARTE.largeur} ${CADRE_CARTE.hauteur}`} class="block h-auto w-full stroke-fond" stroke-width="2" stroke-linejoin="round">
+      {/* Trames : la couleur du niveau, hachurée. Une seule définition, pour
+          la carte ET les pastilles de la légende. */}
+      <defs>
+        {trames.map((niveau) => (
+          <pattern id={`trame-${niveau}`} patternUnits="userSpaceOnUse" width="20" height="20">
+            <rect width="20" height="20" class:list={[NIVEAUX[niveau].couleur, 'stroke-none']} />
+            <path d={DIAGONALES[NIVEAUX[niveau].sens!]} stroke-width="5" class={NIVEAUX[niveau].trame} />
+          </pattern>
+        ))}
+      </defs>
+      {departements.map((d) => (
+        <use href={`${FOND}#d-${d.code}`} data-libelle={d.libelle} {...remplissage(d.niveau)} />
+      ))}
+      {/* Contour du département survolé (repris par le script). */}
+      <use data-carte-surbrillance fill="none" stroke-width="7" class="pointer-events-none stroke-nuit-900" />
+    </svg>
+    <p data-carte-bulle aria-live="polite" hidden class="pointer-events-none absolute z-10 w-max max-w-full rounded-bloc bg-nuit-900 px-3 py-1.5 text-corps leading-snug font-semibold text-texte-inverse shadow-legere"></p>
+  </div>
+
+  {/* LÉGENDE : pastille au remplissage de la carte, cerclée de bleu nuit
+      (les teintes claires restent visibles sur blanc), zone en toutes
+      lettres.
+      LIGNES REPLIABLES (passe mobile, 21 octobre 2026), à TOUTES les
+      largeurs : même composant que « Est-ce fait pour chez vous ? »
+      (LigneRepliable), dans un bloc blanc à filets. Toujours visibles : la
+      pastille, le titre et les régions ; replié (fermé par défaut, dans le
+      code HTML) : le paragraphe, lien vers la PAC air-air compris. Le
+      paragraphe est aligné sur le titre (marge de la pastille).
+      « Non concerné » n'a rien à replier : simple ligne, sans chevron. */}
+  <ul class="min-w-0 divide-y divide-creme-fonce self-start overflow-hidden rounded-bloc bg-fond shadow-legere">
+    {zones.map((zone) => (
+      <li>
+        <LigneRepliable>
+          <div slot="entete" class="flex gap-4">
+            <svg aria-hidden="true" viewBox="0 0 70 70" class="mt-1 size-6 shrink-0 rounded-md border-2 border-nuit-900">
+              <rect width="70" height="70" {...remplissage(zone.niveau)} />
+            </svg>
+            <div class="min-w-0">
+              <p class="text-corps font-bold text-texte">{zone.titre}</p>
+              {zone.regions && <p class="text-corps text-texte-doux">{zone.regions}</p>}
+            </div>
+          </div>
+          <TexteMisEnForme texte={zone.texte} class="pt-1 pr-4 pb-5 pl-14 sm:pr-6 sm:pl-16" />
+        </LigneRepliable>
+      </li>
+    ))}
+    {nonConcernes.length > 0 && (
+      <li class="flex min-h-14 items-center gap-4 px-4 py-3 sm:px-6">
+        <svg aria-hidden="true" viewBox="0 0 70 70" class="size-6 shrink-0 rounded-md border-2 border-nuit-900">
+          <rect width="70" height="70" {...remplissage('vide')} />
+        </svg>
+        <p class="min-w-0 text-corps font-bold text-texte">Non concerné</p>
+      </li>
+    )}
+  </ul>
+</div>
+
+{/* LIBELLÉ AU SURVOL ET AU CLAVIER. Sans JavaScript : la carte et la
+    légende restent complètes, seul le libellé manque. */}
+<script>
+  document.querySelectorAll<HTMLElement>('[data-carte]').forEach((cadre) => {
+    const departements = [...cadre.querySelectorAll<SVGUseElement>('use[data-libelle]')];
+    const surbrillance = cadre.querySelector<SVGUseElement>('[data-carte-surbrillance]')!;
+    const bulle = cadre.querySelector<HTMLElement>('[data-carte-bulle]')!;
+    let actif = -1;
+
+    function montrer(index: number) {
+      actif = index;
+      const d = departements[index];
+      surbrillance.setAttribute('href', d.getAttribute('href')!);
+      bulle.textContent = d.dataset.libelle!;
+      bulle.hidden = false;
+      // Bulle centrée au-dessus du département, sans sortir du cadre.
+      const c = cadre.getBoundingClientRect();
+      const r = d.getBoundingClientRect();
+      const b = bulle.getBoundingClientRect();
+      const gauche = Math.max(0, Math.min(c.width - b.width, r.left - c.left + r.width / 2 - b.width / 2));
+      const haut = r.top - c.top - b.height - 6;
+      bulle.style.left = `${gauche}px`;
+      bulle.style.top = `${haut < 0 ? r.bottom - c.top + 6 : haut}px`;
+    }
+    function cacher() {
+      actif = -1;
+      surbrillance.removeAttribute('href');
+      bulle.hidden = true;
+    }
+
+    departements.forEach((d, index) => d.addEventListener('pointerenter', () => montrer(index)));
+    cadre.addEventListener('pointerleave', () => document.activeElement !== cadre && cacher());
+    cadre.addEventListener('focus', () => montrer(actif === -1 ? 0 : actif));
+    cadre.addEventListener('blur', cacher);
+    cadre.addEventListener('keydown', (evenement) => {
+      const n = departements.length;
+      const cible = { ArrowRight: actif + 1, ArrowDown: actif + 1, ArrowLeft: actif - 1, ArrowUp: actif - 1, Home: 0, End: n - 1 }[evenement.key];
+      if (cible === undefined) return;
+      evenement.preventDefault();
+      montrer((cible + n) % n);
+    });
+  });
+</script>

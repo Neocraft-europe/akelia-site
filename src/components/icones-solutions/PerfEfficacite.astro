@@ -1,0 +1,34 @@
+---
+// =========================================================================
+// ICÔNE : EFFICACITÉ ÉNERGÉTIQUE (src/components/icones-solutions/PerfEfficacite.astro)
+// -------------------------------------------------------------------------
+// 21 octobre 2026. Performances, commune aux 20 pages. Dessin propre :
+// l'échelle d'une étiquette énergie, sept flèches empilées de la plus
+// courte (en haut, vert) à la plus longue (en bas, rouge). L'une des DEUX
+// icônes en couleur (avec BienIsolation) : remplissage aux couleurs de
+// l'étiquette énergie européenne, contour en currentColor.
+// Décorative (aria-hidden) : le titre de la tuile porte le sens.
+// =========================================================================
+
+import { TRAIT, VIEWBOX } from './trait';
+
+export interface Props {
+  /** Côté en pixels. */
+  taille?: number;
+  class?: string;
+}
+
+const { taille = 88, class: classes } = Astro.props;
+const COULEURS = ['#00a651', '#50b848', '#bed630', '#fff200', '#fdb913', '#f37021', '#ed1c24'];
+const HAUTEUR = 2;
+/** Flèche n : de x = 3 à x = 9 + 2n, hauteur 2, pas de 2,6. */
+const fleches = COULEURS.map((couleur, n) => {
+  const y = 3.2 + n * 2.6;
+  const bout = 9 + n * 2;
+  return { couleur, points: `3,${y} ${bout - 1},${y} ${bout},${y + HAUTEUR / 2} ${bout - 1},${y + HAUTEUR} 3,${y + HAUTEUR}` };
+});
+---
+
+<svg aria-hidden="true" class:list={['shrink-0', classes]} width={taille} height={taille} viewBox={VIEWBOX} fill="none" stroke="currentColor" stroke-width={TRAIT} stroke-linecap="round" stroke-linejoin="round">
+  {fleches.map((f) => <polygon points={f.points} fill={f.couleur} />)}
+</svg>

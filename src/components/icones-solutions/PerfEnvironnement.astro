@@ -1,0 +1,41 @@
+---
+// =========================================================================
+// ICÔNE : IMPACT ENVIRONNEMENTAL (src/components/icones-solutions/PerfEnvironnement.astro)
+// -------------------------------------------------------------------------
+// 21 octobre 2026. Performances, commune aux 20 pages. Assemblage d'après
+// Tabler Icons (MIT, voir LICENSES.md) : feuille de papier à cases cochées
+// (file-check, checklist), surmontée de deux feuilles de plante (leaf),
+// coche dans un cercle (circle-check). Monochrome : currentColor.
+// Décorative (aria-hidden) : le titre de la tuile porte le sens.
+// =========================================================================
+
+import { TRAIT, VIEWBOX } from './trait';
+
+export interface Props {
+  /** Côté en pixels. */
+  taille?: number;
+  class?: string;
+}
+
+const { taille = 88, class: classes } = Astro.props;
+---
+
+<svg aria-hidden="true" class:list={['shrink-0', classes]} width={taille} height={taille} viewBox={VIEWBOX} fill="none" stroke="currentColor" stroke-width={TRAIT} stroke-linecap="round" stroke-linejoin="round">
+  {/* Feuille de papier, ouverte en bas à droite pour le cercle. */}
+  <path d="M13.2 21h-6.7a1.5 1.5 0 0 1 -1.5 -1.5v-10a1.5 1.5 0 0 1 1.5 -1.5h7.5a1.5 1.5 0 0 1 1.5 1.5v3.6" />
+  {/* Deux cases cochées et leurs lignes. */}
+  <rect x="7" y="10.2" width="2.4" height="2.4" rx="0.4" />
+  <path d="M7.6 11.4l.6 .6l1.4 -1.6" />
+  <path d="M11 11.4h2.4" />
+  <rect x="7" y="14.2" width="2.4" height="2.4" rx="0.4" />
+  <path d="M7.6 15.4l.6 .6l1.4 -1.6" />
+  <path d="M11 15.4h1.6" />
+  <path d="M7 18.9h4.4" />
+  {/* Tige et deux feuilles. */}
+  <path d="M10.5 8v-2.8" />
+  <path d="M10.5 6.6c0 -2 -1.3 -3.3 -3.6 -3.3c0 2.3 1.4 3.4 3.6 3.3z" />
+  <path d="M10.5 5.6c0 -2 1.4 -3 3.7 -3c0 2.2 -1.5 3.2 -3.7 3z" />
+  {/* Coche dans un cercle. */}
+  <circle cx="17.6" cy="17.4" r="3.4" />
+  <path d="M16.1 17.5l1.1 1.1l2.1 -2.2" />
+</svg>

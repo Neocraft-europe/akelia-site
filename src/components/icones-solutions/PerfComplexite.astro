@@ -1,0 +1,57 @@
+---
+// =========================================================================
+// ICÔNE : COMPLEXITÉ DES TRAVAUX (src/components/icones-solutions/PerfComplexite.astro)
+// -------------------------------------------------------------------------
+// 21 octobre 2026, redessinée le même jour (troisième passe) : la maison
+// est SUPPRIMÉE (redondante, et ses traits croisaient ceux des outils).
+// Clé (Tabler Icons « tool », MIT, voir LICENSES.md) et tournevis
+// (dessiné : absent de Tabler), croisés, agrandis à tout le cadre.
+// Croisement propre : la clé est masquée sous le tournevis, avec une marge
+// (masque SVG), pour qu'aucun trait n'en croise un autre. Monochrome :
+// currentColor.
+// Décorative (aria-hidden) : le titre de la tuile porte le sens.
+// =========================================================================
+
+import { TRAIT, VIEWBOX } from './trait';
+
+export interface Props {
+  /** Côté en pixels. */
+  taille?: number;
+  /** Identifiant du masque SVG (défaut : « masque-complexite »). */
+  idMasque?: string;
+  class?: string;
+}
+
+const { taille = 88, idMasque = 'masque-complexite', class: classes } = Astro.props;
+// Identifiant du masque : FIXE depuis le 21 octobre 2026 (il était tiré au
+// sort, et deux constructions identiques produisaient deux HTML
+// différents). L'icône n'apparaît qu'une fois par page ; si elle devait
+// apparaître deux fois, passer un `idMasque` distinct à la seconde (deux
+// masques de même identifiant mais de même contenu restent sans effet
+// visible, l'identifiant n'en serait pas moins dupliqué).
+const masque = idMasque;
+// Tournevis dessiné droit (pointe en haut), puis tourné de 45° autour du
+// centre : pointe en haut à droite, manche en bas à gauche.
+const TOURNEVIS = 'rotate(45 12 12)';
+---
+
+<svg aria-hidden="true" class:list={['shrink-0', classes]} width={taille} height={taille} viewBox={VIEWBOX} fill="none" stroke="currentColor" stroke-width={TRAIT} stroke-linecap="round" stroke-linejoin="round">
+  <defs>
+    <mask id={masque} maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+      <rect x="0" y="0" width="24" height="24" fill="#fff" />
+      <g transform={TOURNEVIS} fill="#000" stroke="#000" stroke-width={TRAIT * 3.5}>
+        <path d="M12 2.6v9.4" />
+        <rect x="10.3" y="12" width="3.4" height="9.4" rx="1.6" />
+      </g>
+    </mask>
+  </defs>
+  {/* Clé, tête en haut à gauche, à l'échelle 1 : tout le cadre. */}
+  <path mask={`url(#${masque})`} d="M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6 -6a6 6 0 0 1 -8 -8l3.5 3.5" />
+  {/* Tournevis : lame, manche, rainure. */}
+  <g transform={TOURNEVIS}>
+    <path d="M12 2.6v9.4" />
+    <path d="M11.3 2.6h1.4" />
+    <rect x="10.3" y="12" width="3.4" height="9.4" rx="1.6" />
+    <path d="M12 14.2v5" />
+  </g>
+</svg>

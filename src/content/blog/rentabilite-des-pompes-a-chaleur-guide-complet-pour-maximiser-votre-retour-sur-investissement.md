@@ -134,10 +134,12 @@ Si votre système de chauffage actuel fonctionne encore, il peut être rentable 
 
 **Calcul du délai de rentabilité avec les aides**
 
-**Exemple** : Pour une PAC air/eau haute gamme avec installation à 14 000 € Aides cumulables (MaPrimeRenov, CEE,...) 10 500 € (2025)
+**Exemple** : pour une PAC air/eau haute gamme installée à 14 000 €, le délai se calcule ainsi :
 
-- Gaz : (14 000 € - 10 500 €) ÷ 584 € = 6 ans
-- Fioul : (14 000 € - 10 500 €) ÷ 403 € = 8,5 ans
+- Face au gaz : (14 000 € - montant de vos aides) ÷ 584 € d'économies par an
+- Face au fioul : (14 000 € - montant de vos aides) ÷ 403 € d'économies par an
+
+Le montant des aides dépend de vos revenus : [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
 
 Avec les aides cependant la rentabilité est beaucoup plus intéressante.
 
@@ -153,9 +155,9 @@ En se basant sur les mêmes calculs que précédement
 
 **Formule** : Délai de récupération = (Prix d'achat de la PAC - les aides à l'achat - prix d'achat d'une chaudière à gaz) ÷ Économies annuelles
 
-**Exemple** : Pour une PAC air/eau haute gamme avec installation à 14 000 € Pour une chaudière à condensation haute gamme avec installation 4 000 € Aides cumulables (MaPrimeRenov, CEE,...) pour une pompe à chaleur 10 500 € (2025)(14 000 € - 4 000 € - 10 500) ÷ 584 € = 0 an avec un gain de 584 € / an
+**Exemple** : pour une PAC air/eau haute gamme installée à 14 000 €, face à une chaudière à condensation haute gamme installée à 4 000 € : (14 000 € - 4 000 € - montant de vos aides) ÷ 584 € d'économies par an. Le montant des aides dépend de vos revenus : [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
 
-C'est donc dans ce cas de figure qu'une pompe à chaleur devient extrêmement rentable. Car elle le sera dès la première année de fonctionnement.
+C'est donc dans ce cas de figure qu'une pompe à chaleur devient extrêmement rentable : dès que vos aides couvrent l'écart de prix avec la chaudière, elle l'est dès la première année de fonctionnement.
 
 ### Sans les aides financières
 

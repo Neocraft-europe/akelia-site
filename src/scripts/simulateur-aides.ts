@@ -15,20 +15,38 @@
 //
 // Ce fichier fournit :
 // - departementDepuisCodePostal : le département à partir du code postal ;
-// - evaluerAide : le verdict d'une aide selon le statut et les travaux ;
+// - estEnIleDeFrance, tranchesDeRevenus : les quatre tranches de revenu
+//   fiscal de référence du foyer (question 3) ;
+// - evaluerAide : le verdict d'une aide (CEE, Éco-PTZ, TVA) selon le
+//   statut et les travaux ;
+// - lignesMaPrimeRenov : MaPrimeRénov', UNE LIGNE PAR POSTE choisi, dans
+//   l'un des trois cas (aidé seul / rénovation d'ampleur seulement / non
+//   éligible), plus la ligne de la rénovation d'ampleur (20 octobre 2026) ;
 // - construireResultat : le bloc « Votre résultat » à afficher.
 // =========================================================================
 
 import {
   aidesNationales,
+  calendrierPassoires,
   departements,
+  ecretementGeste,
   mentionObligatoire,
+  mprAmpleur,
+  mprGesteConditions,
+  mprParGeste,
+  mprStatuts,
   noteOutreMer,
+  plafondsPour,
+  postesDesEquipements,
+  postesDesTravaux,
   regions,
   textesDepartement,
   textesRegion,
   type AideNationale,
   type Departement,
+  type Equipement,
+  type Poste,
+  type Profil,
   type Regle,
   type Statut,
   type StatutRegion,
@@ -69,6 +87,41 @@ export function departementDepuisCodePostal(codePostal: string): Departement | n
 }
 
 // -------------------------------------------------------------------------
+// FOYER ET REVENUS (question 3, 20 octobre 2026)
+// Les plafonds dépendent du nombre de personnes et de l'Île-de-France
+// (d'après le code postal). Outre-mer : table hors Île-de-France.
+// -------------------------------------------------------------------------
+export const estEnIleDeFrance = (departement: Departement) => departement.region === 'ile-de-france';
+
+const formatNombre = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
+const euro = (montant: number) => `${formatNombre.format(montant)} €`;
+
+/** Les quatre tranches de revenu fiscal de référence, en toutes lettres
+ *  (« entre 22 260 € et 31 185 € »), pour le foyer saisi. */
+export function tranchesDeRevenus(personnes: number, idf: boolean): Record<Profil, string> {
+  const [tresModeste, modeste, intermediaire] = plafondsPour(personnes, idf);
+  return {
+    'tres-modeste': `jusqu’à ${euro(tresModeste)}`,
+    modeste: `entre ${euro(tresModeste + 1)} et ${euro(modeste)}`,
+    intermediaire: `entre ${euro(modeste + 1)} et ${euro(intermediaire)}`,
+    superieur: `plus de ${euro(intermediaire)}`,
+  };
+}
+
+/** Libellé du profil dans les phrases du résultat. */
+const LIBELLE_PROFIL: Record<Profil, string> = {
+  'tres-modeste': 'revenus très modestes',
+  modeste: 'revenus modestes',
+  intermediaire: 'revenus intermédiaires',
+  superieur: 'revenus supérieurs',
+};
+
+const dateLongue = (iso: string) =>
+  new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+    .format(new Date(`${iso}T00:00:00Z`))
+    .replace(/^1 /, '1er ');
+
+// -------------------------------------------------------------------------
 // ÉVALUATION D'UNE AIDE
 // 1. Si le statut est exclu (verdict 'non' pour ce statut), l'aide est
 //    refusée, avec l'explication du statut.
@@ -85,11 +138,12 @@ export interface Evaluation {
   precisionStatut?: string;
 }
 
-export function evaluerAide(aide: AideNationale, statut: Statut, travaux: Travaux[]): Evaluation {
+export function evaluerAide(aide: AideNationale, statut: Statut, travaux: Travaux[], equipement?: Equipement): Evaluation {
   const regleStatut = aide.statuts[statut];
   if (regleStatut.verdict === 'non') return { verdict: 'non', texte: regleStatut.texte };
 
-  const regles: Regle[] = travaux.map((t) => aide.travaux[t]);
+  // « Chauffage » : la règle de l'équipement choisi, s'il en a une.
+  const regles: Regle[] = travaux.map((t) => (t === 'chauffage' && equipement && aide.equipements?.[equipement]) || aide.travaux[t]);
   const meilleure = regles.reduce((a, b) => {
     if (RANG_VERDICT[b.verdict] !== RANG_VERDICT[a.verdict]) return RANG_VERDICT[b.verdict] > RANG_VERDICT[a.verdict] ? b : a;
     return (b.montantMax ?? 0) > (a.montantMax ?? 0) ? b : a;
@@ -140,10 +194,15 @@ interface Ligne {
   nom: string;
   verdict: Verdict;
   montantMax?: number;
+  /** À la place d'un montant : « jusqu'à 80 % des travaux » (rénovation
+   *  d'ampleur, qui n'a pas de forfait). */
+  mention?: string;
   /** Paragraphes affichés une fois la ligne dépliée. */
   explications: string[];
   /** Liste à puces facultative (conditions principales). */
   conditions?: string[];
+  /** Paragraphes affichés APRÈS la liste des conditions. */
+  suite?: string[];
 }
 
 /**
@@ -161,11 +220,13 @@ function ligneDepliable(ligne: Ligne) {
     'summary',
     'grid min-h-12 cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-3 px-3 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900 [&::-webkit-details-marker]:hidden',
   );
-  resume.append(el('span', 'text-base leading-snug font-semibold text-texte', ligne.nom));
+  resume.append(el('span', 'text-corps leading-snug font-semibold text-texte', ligne.nom));
   const droite = el('span', 'flex flex-col items-end text-right leading-tight');
-  droite.append(el('span', 'text-base font-bold text-texte', style.libelle));
+  droite.append(el('span', 'text-corps leading-tight font-bold text-texte', style.libelle));
   if (ligne.montantMax) {
-    droite.append(el('span', 'text-base font-bold whitespace-nowrap text-texte', `jusqu'à ${formatEuros.format(ligne.montantMax)}`));
+    droite.append(el('span', 'text-corps leading-tight font-bold whitespace-nowrap text-texte', `jusqu'à ${formatEuros.format(ligne.montantMax)}`));
+  } else if (ligne.mention) {
+    droite.append(el('span', 'text-corps leading-tight font-bold whitespace-nowrap text-texte', ligne.mention));
   }
   resume.append(droite);
   // Flèche : pivote quand la ligne est ouverte
@@ -185,21 +246,178 @@ function ligneDepliable(ligne: Ligne) {
   details.append(resume);
 
   const contenu = el('div', 'space-y-2 border-t border-creme-fonce px-3 py-3');
-  ligne.explications.forEach((texte) => contenu.append(el('p', 'text-base text-texte', texte)));
+  ligne.explications.forEach((texte) => contenu.append(el('p', 'text-corps text-texte', texte)));
   if (ligne.conditions?.length) {
-    const liste = el('ul', 'list-disc space-y-1 pl-5 text-base text-texte');
+    const liste = el('ul', 'list-disc space-y-1 pl-5 text-corps text-texte');
     ligne.conditions.forEach((c) => liste.append(el('li', '', c)));
     contenu.append(liste);
   }
+  ligne.suite?.forEach((texte) => contenu.append(el('p', 'text-corps text-texte', texte)));
   details.append(contenu);
   li.append(details);
   return li;
 }
 
-/** Les lignes des aides nationales (aides accessibles d'abord). */
-function lignesNationales(statut: Statut, travaux: Travaux[]): Ligne[] {
+/** Les réponses au simulateur. */
+export interface Reponses {
+  statut: Statut;
+  departement: Departement;
+  personnes: number;
+  profil: Profil;
+  travaux: Travaux[];
+  /** Réponse à « Quel équipement ? » (seulement si « Chauffage » est coché). */
+  equipement?: Equipement;
+}
+
+/** Postes forfaitaires du barème (les seuls « aidés seuls »). */
+const postesForfaitaires = (Object.keys(mprParGeste) as Poste[]).filter((p) => mprParGeste[p].cas === 'aide-seul');
+
+/**
+ * Les postes du barème désignés par les réponses.
+ * - « Je ne sais pas encore » (travaux) : les postes encore aidés seuls ;
+ * - Chauffage, « Je ne sais pas encore » (équipement) : les deux
+ *   chauffages qui ouvrent un forfait, et une ligne qui renvoie au reste
+ *   (`autresChauffages`).
+ */
+export function postesChoisis(travaux: Travaux[], equipement?: Equipement): { postes: Poste[]; autresChauffages: boolean } {
+  if (travaux.includes('ne-sait-pas')) return { postes: postesForfaitaires, autresChauffages: false };
+  const postes: Poste[] = [];
+  let autresChauffages = false;
+  for (const t of travaux) {
+    if (t === 'ne-sait-pas') continue;
+    if (t !== 'chauffage') postes.push(postesDesTravaux[t]);
+    else if (equipement && equipement !== 'ne-sait-pas') postes.push(postesDesEquipements[equipement]);
+    else {
+      postes.push(...(Object.values(postesDesEquipements) as Poste[]).filter((p) => mprParGeste[p].cas === 'aide-seul'));
+      autresChauffages = true;
+    }
+  }
+  return { postes: [...new Set(postes)], autresChauffages };
+}
+
+const NOM_AMPLEUR = 'MaPrimeRénov’ : rénovation d’ampleur';
+
+/** Une ligne MaPrimeRénov' pour un poste : l'un des trois cas. */
+function ligneGeste(poste: Poste, profil: Profil, precisions: string[]): Ligne {
+  const cas = mprParGeste[poste];
+  const nom = `MaPrimeRénov’ : ${cas.nom}`;
+  if (cas.cas === 'non-eligible') return { nom, verdict: 'non', explications: [cas.motif] };
+  if (cas.cas === 'ampleur-seulement') {
+    return {
+      nom,
+      verdict: 'sous-conditions',
+      explications: [
+        `Plus aidé seul par MaPrimeRénov’ depuis le ${dateLongue(cas.depuis)}.`,
+        ...(cas.precision ? [cas.precision] : []),
+        `Il reste aidé dans une rénovation d’ampleur, sans montant forfaitaire : voir la ligne « ${NOM_AMPLEUR} ».`,
+        ...precisions,
+      ],
+    };
+  }
+  // Aidé seul : un forfait, sauf pour les revenus supérieurs.
+  if (profil === 'superieur') {
+    return {
+      nom,
+      verdict: 'non',
+      explications: [
+        `Aucun forfait pour les ${LIBELLE_PROFIL.superieur} dans le parcours par geste.`,
+        `Pour vous, MaPrimeRénov’ passe par une rénovation d’ampleur : ${mprAmpleur.taux.superieur} % du montant HT des travaux, sous réserve que votre logement en remplisse les conditions (voir la ligne « ${NOM_AMPLEUR} »).`,
+      ],
+    };
+  }
+  const forfait = cas.forfaits[profil];
+  return {
+    nom,
+    verdict: 'oui',
+    montantMax: forfait,
+    explications: [
+      `Aidé seul : forfait de ${euro(forfait)} pour des ${LIBELLE_PROFIL[profil]}, pour une dépense éligible plafonnée à ${euro(cas.plafondDepenseHT)} HT.`,
+      ...(cas.condition ? [cas.condition] : []),
+      `Avec les primes CEE, le total ne pourra pas dépasser ${ecretementGeste.mprEtCee[profil]} % du montant TTC de vos travaux.`,
+      ecretementGeste.toutesAides,
+      ...precisions,
+    ],
+    conditions: mprGesteConditions,
+    suite: [
+      `Logements classés F ou G : leur exclusion du parcours par geste est repoussée au ${dateLongue(calendrierPassoires.exclusionGeste)}, et l’obligation de DPE pour ce parcours au ${dateLongue(calendrierPassoires.obligationDpe)}.`,
+    ],
+  };
+}
+
+/** La ligne qui renvoie aux autres chauffages (équipement inconnu). */
+function ligneAutresChauffages(): Ligne {
+  const chauffages = Object.values(postesDesEquipements) as Poste[];
+  const noms = (cas: 'aide-seul' | 'ampleur-seulement' | 'non-eligible') =>
+    chauffages.filter((p) => mprParGeste[p].cas === cas).map((p) => mprParGeste[p].nom.toLowerCase());
+  return {
+    nom: 'MaPrimeRénov’ : les autres chauffages',
+    verdict: 'sous-conditions',
+    explications: [
+      `Seuls ces équipements ouvrent un forfait : ${noms('aide-seul').join(', ')}.`,
+      `Aidés seulement dans une rénovation d’ampleur : ${noms('ampleur-seulement').join(', ')}.`,
+      `Non éligibles : ${noms('non-eligible').join(', ')}.`,
+    ],
+  };
+}
+
+/** La ligne de la rénovation d'ampleur : un taux, jamais un forfait, et
+ *  ses conditions TOUJOURS écrites avant le reste (« sous réserve… »). */
+function ligneAmpleur(profil: Profil, outreMer: boolean, precisions: string[]): Ligne {
+  if (outreMer) {
+    return { nom: NOM_AMPLEUR, verdict: 'non', explications: ['La rénovation d’ampleur MaPrimeRénov’ est réservée aux logements de France métropolitaine.'] };
+  }
+  const taux = mprAmpleur.taux[profil];
+  return {
+    nom: NOM_AMPLEUR,
+    verdict: 'sous-conditions',
+    mention: `jusqu’à ${taux} %`,
+    explications: [`${taux} % du montant HT des travaux pour des ${LIBELLE_PROFIL[profil]}, sous réserve que votre logement remplisse ces conditions :`],
+    conditions: mprAmpleur.conditions,
+    suite: [
+      `Dépense éligible plafonnée à ${euro(mprAmpleur.plafondsDepenseHT.deuxClasses)} HT pour un gain de 2 classes, ${euro(mprAmpleur.plafondsDepenseHT.troisClassesEtPlus)} HT pour 3 classes ou plus.`,
+      `Plafond total, toutes aides comprises : ${mprAmpleur.ecretement[profil]} % du montant TTC des travaux (à ne pas confondre avec le taux de l’aide, ${mprAmpleur.taux[profil]} %).`,
+      `Accompagnateur Rénov’ : pris en charge à ${mprAmpleur.accompagnateur.taux[profil]} %, dans la limite de ${euro(mprAmpleur.accompagnateur.plafondTTC)} TTC.`,
+      mprAmpleur.nonCumulCee,
+      ...precisions,
+    ],
+  };
+}
+
+/** MaPrimeRénov' : une ligne par poste choisi, puis la rénovation d'ampleur. */
+export function lignesMaPrimeRenov(r: Reponses): Ligne[] {
+  const statut = mprStatuts[r.statut];
+  if (statut.verdict === 'non') return [{ nom: 'MaPrimeRénov’', verdict: 'non', explications: [statut.texte] }];
+  // Bailleur : l'engagement de location est rappelé sur chaque ligne.
+  const precisions = r.statut === 'proprietaire-bailleur' ? [statut.texte] : [];
+  const { postes, autresChauffages } = postesChoisis(r.travaux, r.equipement);
+  const outreMer = r.departement.numero.length === 3;
+  // Outre-mer : le guide Anah renvoie à un guide spécialisé, dont le
+  // barème n'est pas dans ce simulateur. Aucun montant, aucun verdict
+  // tranché : « à vérifier », avec une phrase explicite (décision du 20
+  // octobre 2026 : pas de barème outre-mer, le collectif n'y est pas).
+  // ⚠️ À ROUVRIR si Akelia recrute des artisans ultramarins.
+  if (outreMer) {
+    return [
+      ...postes.map((poste) => ({
+        nom: `MaPrimeRénov’ : ${mprParGeste[poste].nom}`,
+        verdict: 'a-verifier' as const,
+        explications: ['Les montants outre-mer suivent un barème distinct, que ce simulateur ne couvre pas. Rapprochez-vous de l’Anah.'],
+      })),
+      ligneAmpleur(r.profil, true, precisions),
+    ];
+  }
+  return [
+    ...postes.map((poste) => ligneGeste(poste, r.profil, precisions)),
+    ...(autresChauffages ? [ligneAutresChauffages()] : []),
+    ligneAmpleur(r.profil, false, precisions),
+  ];
+}
+
+/** Les lignes des autres aides nationales (CEE, Éco-PTZ, TVA ; aides
+ *  accessibles d'abord). */
+function lignesNationales(statut: Statut, travaux: Travaux[], equipement?: Equipement): Ligne[] {
   const lignes = aidesNationales.map((aide) => {
-    const evaluation = evaluerAide(aide, statut, travaux);
+    const evaluation = evaluerAide(aide, statut, travaux, equipement);
     const explications = [evaluation.texte];
     if (evaluation.precisionStatut && evaluation.verdict !== 'non') explications.push(evaluation.precisionStatut);
     explications.push(aide.nature + (aide.nomCourt ? ` : ${aide.nom}.` : '.'));
@@ -240,7 +458,7 @@ function lignesLocales(departement: Departement): Ligne[] {
 
 /** Titre de groupe de lignes (h4). */
 function titreGroupe(texte: string, id: string) {
-  const titre = el('h4', 'mt-5 mb-2 text-base font-bold tracking-wide text-nuit-900 uppercase', texte);
+  const titre = el('h4', 'mt-5 mb-2 text-corps font-bold tracking-wide text-nuit-900 uppercase', texte);
   titre.id = id;
   return titre;
 }
@@ -252,7 +470,8 @@ function titreGroupe(texte: string, id: string) {
  * c'est le script des étapes qui les relie (retour à la question 1, et
  * passage au formulaire de contact).
  */
-export function construireResultat(statut: Statut, travaux: Travaux[], departement: Departement) {
+export function construireResultat(reponses: Reponses) {
+  const { statut, travaux, departement } = reponses;
   const fragment = document.createDocumentFragment();
 
   // --- En-tête : titre et « Recommencer »
@@ -265,7 +484,17 @@ export function construireResultat(statut: Statut, travaux: Travaux[], departeme
   fragment.append(entete);
 
   // --- 1. Mention, EN PREMIER (aucun lien vers un service externe)
-  fragment.append(el('p', 'mt-3 rounded-bloc bg-creme p-3 text-base font-semibold text-texte', mentionObligatoire));
+  fragment.append(el('p', 'mt-3 rounded-bloc bg-creme p-3 text-corps font-semibold text-texte', mentionObligatoire));
+  // Rappel de la situation retenue (20 octobre 2026) : le lecteur voit sur
+  // quoi repose le calcul de MaPrimeRénov'.
+  const tranche = tranchesDeRevenus(reponses.personnes, estEnIleDeFrance(departement))[reponses.profil];
+  fragment.append(
+    el(
+      'p',
+      'mt-3 text-corps text-texte',
+      `Calcul pour un foyer de ${reponses.personnes} personne${reponses.personnes > 1 ? 's' : ''}${estEnIleDeFrance(departement) ? ' en Île-de-France' : ''}, revenu fiscal de référence ${tranche} : ${LIBELLE_PROFIL[reponses.profil]}.`,
+    ),
+  );
 
   // --- 2. BOUTON UNIQUE vers le formulaire de contact, juste sous la
   //        mention et AVANT la liste, pour être vu sans défiler. Taille
@@ -283,7 +512,7 @@ export function construireResultat(statut: Statut, travaux: Travaux[], departeme
 
   // --- 3. Lignes dépliables
   const groupes: [string, string, Ligne[]][] = [
-    ['Aides nationales', 'resultat-nationales', lignesNationales(statut, travaux)],
+    ['Aides nationales', 'resultat-nationales', [...lignesMaPrimeRenov(reponses), ...lignesNationales(statut, travaux, reponses.equipement)]],
     ['Aides de votre région et de votre département', 'resultat-locales', lignesLocales(departement)],
   ];
   groupes.forEach(([titre, id, lignes]) => {

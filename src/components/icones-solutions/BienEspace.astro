@@ -1,0 +1,37 @@
+---
+// =========================================================================
+// ICÔNE : UN EXTÉRIEUR ET UN ESPACE INTÉRIEUR (src/components/icones-solutions/BienEspace.astro)
+// -------------------------------------------------------------------------
+// 21 octobre 2026, redessinée le même jour (troisième passe) : la première
+// version (fenêtre au-dessus d'un balcon) se lisait comme une fenêtre posée
+// sur une barrière. C'est l'ESPACE EXTÉRIEUR qu'il faut montrer, l'espace
+// intérieur est dit par le texte : une maison vue de côté, et le groupe
+// extérieur posé au sol à côté d'elle (petit rectangle à ailettes), relié
+// au mur. Dessin propre. Monochrome : currentColor.
+// Décorative (aria-hidden) : le texte de la condition porte le sens.
+// =========================================================================
+
+import { TRAIT, VIEWBOX } from './trait';
+
+export interface Props {
+  /** Côté en pixels. */
+  taille?: number;
+  class?: string;
+}
+
+const { taille = 88, class: classes } = Astro.props;
+---
+
+<svg aria-hidden="true" class:list={['shrink-0', classes]} width={taille} height={taille} viewBox={VIEWBOX} fill="none" stroke="currentColor" stroke-width={TRAIT} stroke-linecap="round" stroke-linejoin="round">
+  {/* Sol. */}
+  <path d="M2.75 21h18.5" />
+  {/* Maison vue de côté : toit en long pan, mur, fenêtre. */}
+  <path d="M2.75 10.5l3 -4.5h6.5l3 4.5z" />
+  <path d="M4 10.5v10.5m10 -10.5v10.5" />
+  <rect x="6.5" y="13" width="3" height="3" rx="0.5" />
+  {/* Groupe extérieur au sol : caisson, ailettes, pieds, liaison au mur. */}
+  <rect x="16" y="14" width="5" height="5.6" rx="0.6" />
+  <path d="M17.2 15.6h2.6m-2.6 1.3h2.6m-2.6 1.3h2.6" />
+  <path d="M16.9 19.6v1.4m3.2 -1.4v1.4" />
+  <path d="M14 16.5h2" />
+</svg>

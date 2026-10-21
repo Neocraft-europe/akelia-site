@@ -121,7 +121,7 @@ Selon la compatibilité de votre système actuel et vos objectifs (économies, �
 **Coût moyen** :
 
 - Remplacement des radiateurs : 2 000 à 5 000 € selon le nombre de pièces.
-- Isolation : 15 à 400 €/m² (éligible aux aides comme MaPrimeRénov’).
+- Isolation : 15 à 400 €/m² (aidée par MaPrimeRénov’ dans une rénovation d’ampleur, plus seule depuis le 1er septembre 2026).
 
 **À savoir** : Ces travaux augmentent le coût initial, mais ils sont **indispensables** pour garantir l’efficacité de la PAC et réaliser des économies sur le long terme.
 

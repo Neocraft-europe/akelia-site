@@ -12,7 +12,7 @@ enBref:
   - "Le plancher chauffant hydraulique est un système basse température très performant. Pour maximiser son efficacité il doit être couplé à une solution capable d'avoir un rendement optimal."
   - "**-Le choix idéal :** La **Pompe à chaleur (PAC) air-eau** ou géothermique. C'est le système le plus naturel pour un plancher chauffant car il offre le meilleur rendement (COP > 4) à basse température."
   - "**Les alternatives :** La **chaudière à granulés** pour son combustible bon marché, ou la **chaudière gaz à condensation** pour un investissement initial plus faible (si raccordé au réseau)."
-  - "**Budget et Aides :** Les PAC et le bois bénéficient des aides les plus fortes (MaPrimeRénov', CEE), couvrant parfois 80 % du projet. Le gaz est le plus accessible."
+  - "**Budget et Aides :** Les PAC air-eau et géothermiques bénéficient des aides les plus fortes (MaPrimeRénov', CEE) ; le bois n'est plus aidé seul par MaPrimeRénov' depuis le 1er septembre 2026. Le gaz est le plus accessible."
 sources:
   - libelle: "effy.fr"
     lien: "https://www.effy.fr/travaux-energetique/chauffage/chaudiere/quelle-chaudiere-pour-plancher-chauffant"
@@ -121,7 +121,7 @@ La pompe à chaleur est l’une des solutions les plus adaptées pour un planche
 - **Rendement élevé** : Une PAC air-eau ou eau-eau offre un **COP (Coefficient de Performance)** supérieur à 3, ce qui signifie qu’elle produit 3 fois plus d’énergie qu’elle n’en consomme.
 - **Compatibilité parfaite** : Les PAC basse température sont conçues pour chauffer l’eau à 35-45 °C, idéale pour un plancher chauffant.
 - **Économies d’énergie** : Jusqu’à 50 % d’économies sur la facture de chauffage par rapport à une chaudière classique.
-- **Aides financières** : Éligible à MaPrimeRénov’ (jusqu’à 16 560 €), prime CEE, TVA réduite et éco-PTZ.
+- **Aides financières** : éligible à MaPrimeRénov’ (forfait selon vos revenus), prime CEE, TVA réduite et éco-PTZ ; [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
 
 **Les différents types de PAC :**
 

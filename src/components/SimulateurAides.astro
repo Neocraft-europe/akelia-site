@@ -16,7 +16,7 @@
 // - Simulateur.astro : le simulateur seul (message sans JavaScript,
 //   questions, résultat, démarrage des scripts), commun avec la page
 //   /aides-renovation depuis le 19 octobre 2026. Il contient :
-// - SimulateurQuestions.astro  : les 3 questions, une à la fois, et le
+// - SimulateurQuestions.astro  : les 4 questions, une à la fois, et le
 //   résultat (scripts simulateur-etapes.ts et simulateur-aides.ts) ;
 // - SimulateurEstimation.astro : le formulaire de contact « Obtenir vos aides
 //   réelles », affiché DANS le bloc du simulateur, à la place du résultat
@@ -46,8 +46,10 @@ const zoneBandeau = await zoneDessinee('bandeau-aides.png');
 
       {/* -------------------------------------------------------------------
           MOITIÉ 1 : ACCROCHE (textes raccourcis fournis le 15 octobre
-          2026, repris mot pour mot ; montant de 32 000 € NON CONFIRMÉ par
-          une source officielle, voir inventaire-charte.md)
+          2026, repris mot pour mot ; le montant « plus de 32 000 € », non
+          confirmé et égal à l'ancien maximum de la rénovation d'ampleur,
+          est SUPPRIMÉ depuis le 20 octobre 2026 : aucun montant d'aide
+          ici, la source unique est src/data/aides.ts)
           Fond BLANC depuis le 15 octobre 2026 (au soir ; lagon avant,
           lichen avant lui) : textes foncés, montant en vert-600 (6,3:1 sur
           blanc ; l'orange serait illisible). Entre deux sections sombres
@@ -61,11 +63,9 @@ const zoneBandeau = await zoneDessinee('bandeau-aides.png');
           restent à l'écran au lieu de laisser un grand vide sous eux.
       -------------------------------------------------------------------- */}
       <div class="accroche-colonne flex flex-col">
-        {/* TITRE : UNE seule phrase continue. Le montant est seulement en
-            vert et en gras, sans aplat ni retour à la ligne. Le montant
-            ne se coupe pas (espaces insécables). */}
+        {/* TITRE : UNE seule phrase continue, sans montant (20 octobre 2026). */}
         <p data-scene-titre class="text-h2 text-texte md:text-h1 md:font-black">
-          Augmentez la valeur de votre bien de <span class="text-vert-600">plus&nbsp;de&nbsp;32&nbsp;000&nbsp;€</span>.
+          Augmentez la valeur de votre bien.
         </p>
 
         {/* BANDEAU (bandeau-aides.png, 3D, 3:1, fond transparent), sous le

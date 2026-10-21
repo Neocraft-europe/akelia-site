@@ -37,6 +37,31 @@
 // sans marge). Utilisé par le bandeau du Collectif : avec le réglage
 // ci-dessus (30 % visible dans les 90 % supérieurs), il ne partait à 375px
 // qu'avec 100px de ses 117px déjà à l'écran (mesuré), donc trop tard.
+//
+// BANDES (data-scene-bande, pages /solutions/…, 20 octobre 2026) : MÊME
+// composant que l'accueil, pour qu'il n'existe qu'un système d'animation.
+// Depuis le 21 octobre 2026, EXACTEMENT LE COMPORTEMENT D'UNE SECTION DE
+// L'ACCUEIL (la règle « une seule fois » et le seuil de 15 % sont annulés) :
+// - même observateur que les sections (data-scene) : 25 % de la bande
+//   visible, ou 25 % de la hauteur de l'écran ;
+// - même animation qu'un titre de l'accueil (fondu, 20px de montée,
+//   0,5 s : global.css) ; seul le CONTENU de la bande la porte, pas son
+//   fond ;
+// - REJOUÉE au retour, après une sortie COMPLÈTE de l'écran (l'état est
+//   retiré à la sortie et remis au retour ; pas d'unobserve) ;
+// - les étapes (data-scene-etape) d'une bande sont remises à zéro avec
+//   elle, comme celles d'une section.
+// - COMPTEURS (data-compteur, dans une bande) : les nombres du texte
+//   montent de 0 à leur valeur en 800 ms, sortie amortie, à CHAQUE
+//   apparition de la bande (jamais deux décomptes à la fois). Le format est conservé (« 90–130 », « 5 000 »,
+//   « 2,5 », « +70 % »). Largeur figée pendant le décompte (aucun
+//   décalage de mise en page) ; la valeur finale reste lue par les
+//   lecteurs d'écran (copie sr-only, le décompte est aria-hidden).
+// - Les lettres (A, B) n'ont pas de compteur : elles apparaissent avec la
+//   bande.
+// - Sans script, sans IntersectionObserver ou avec « réduire les
+//   animations » : rien n'est caché, les valeurs finales sont écrites
+//   dans le HTML.
 // =========================================================================
 ---
 
@@ -53,7 +78,8 @@
     for (var i = 0; i <= 25; i++) seuils.push(i / 100);
 
     function demarrer() {
-      var scenes = document.querySelectorAll('[data-scene]');
+      // Sections de l'accueil ET bandes des pages solutions : même règle.
+      var scenes = document.querySelectorAll('[data-scene], [data-scene-bande]');
       Array.prototype.forEach.call(scenes, function (scene) {
         // arme : vrai au départ, puis seulement après une sortie complète.
         var arme = true;
@@ -70,6 +96,8 @@
           if (visible && arme) {
             arme = false;
             scene.setAttribute('data-etat', 'anime');
+            if (scene.hasAttribute('data-scene-bande'))
+              Array.prototype.forEach.call(scene.querySelectorAll('[data-compteur]'), compter);
           }
         }, { threshold: seuils }).observe(scene);
       });
@@ -100,7 +128,7 @@
       // Remise à zéro quand la section a entièrement quitté l'écran.
       var sections = [];
       etapes.forEach(function (etape) {
-        var section = etape.closest('[data-scene]');
+        var section = etape.closest('[data-scene], [data-scene-bande]');
         if (section && sections.indexOf(section) < 0) sections.push(section);
       });
       sections.forEach(function (section) {
@@ -113,6 +141,64 @@
       });
     }
 
+    // COMPTEURS DES BANDES (voir l'en-tête).
+    function compter(el) {
+      // Un décompte à la fois (bande quittée puis revue pendant le décompte).
+      if (el.hasAttribute('data-decompte')) return;
+      var final = el.textContent;
+      // Nombres écrits à la française : « 5 000 », « 2,5 », « 90 ».
+      var morceaux = final.split(/(\d[\d\u00a0\u202f ]*\d|\d)(,\d+)?/);
+      if (morceaux.length < 2) return;
+      var largeur = el.getBoundingClientRect().width;
+      var copie = document.createElement('span');
+      copie.className = 'sr-only';
+      copie.textContent = final;
+      el.parentNode.insertBefore(copie, el.nextSibling);
+      el.setAttribute('aria-hidden', 'true');
+      el.setAttribute('data-decompte', '');
+      el.style.display = 'inline-block';
+      el.style.minWidth = largeur + 'px';
+      // morceaux : [texte, entier, décimales, texte, entier, décimales, …]
+      var parts = [];
+      for (var i = 0; i < morceaux.length; i += 3) {
+        parts.push({ texte: morceaux[i] || '' });
+        if (i + 1 < morceaux.length && morceaux[i + 1] !== undefined) {
+          var entier = morceaux[i + 1];
+          var dec = morceaux[i + 2] || '';
+          parts.push({
+            valeur: Number(entier.replace(/[\u00a0\u202f ]/g, '') + (dec ? '.' + dec.slice(1) : '')),
+            decimales: dec ? dec.length - 1 : 0,
+            milliers: /[\u00a0\u202f ]/.test(entier) ? entier.match(/[\u00a0\u202f ]/)[0] : '',
+          });
+        }
+      }
+      function ecrire(t) {
+        el.textContent = parts.map(function (p) {
+          if (p.texte !== undefined) return p.texte;
+          var v = (p.valeur * t).toFixed(p.decimales).replace('.', ',');
+          if (p.milliers) v = v.replace(/\B(?=(\d{3})+(?!\d))/g, p.milliers);
+          return v;
+        }).join('');
+      }
+      var debut = null;
+      function pas(maintenant) {
+        if (debut === null) debut = maintenant;
+        var t = Math.min(1, (maintenant - debut) / 800);
+        if (t < 1) {
+          ecrire(1 - Math.pow(1 - t, 3));
+          requestAnimationFrame(pas);
+        } else {
+          el.textContent = final;
+          el.removeAttribute('aria-hidden');
+          el.removeAttribute('data-decompte');
+          el.style.minWidth = '';
+          el.style.display = '';
+          copie.remove();
+        }
+      }
+      ecrire(0);
+      requestAnimationFrame(pas);
+    }
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', demarrerEtapes);
     } else {

@@ -1,0 +1,42 @@
+---
+// =========================================================================
+// ICÔNE : AUTONOMIE ÉNERGÉTIQUE (src/components/icones-solutions/PerfAutonomie.astro)
+// -------------------------------------------------------------------------
+// 21 octobre 2026. Performances, troisième tuile quand la page choisit la
+// mesure « Autonomie énergétique » (énergie PRODUITE : photovoltaïque…),
+// à côté de PerfEconomie (« Économie d'énergie », consommation évitée).
+// Recréée à l'identique du premier dessin (remplacé le même jour par
+// PerfEconomie) : les deux icônes coexistent.
+// Assemblage d'après Tabler Icons (MIT, voir LICENSES.md) : maison (home),
+// panneaux solaires posés sur le versant droit du toit (solar-panel), soleil
+// (sun). Même viewBox et même trait que les autres (trait.ts). Monochrome :
+// currentColor.
+// Décorative (aria-hidden) : le titre de la tuile porte le sens.
+// =========================================================================
+
+import { TRAIT, VIEWBOX } from './trait';
+
+export interface Props {
+  /** Côté en pixels. */
+  taille?: number;
+  class?: string;
+}
+
+const { taille = 88, class: classes } = Astro.props;
+---
+
+<svg aria-hidden="true" class:list={['shrink-0', classes]} width={taille} height={taille} viewBox={VIEWBOX} fill="none" stroke="currentColor" stroke-width={TRAIT} stroke-linecap="round" stroke-linejoin="round">
+  {/* Maison : toit débordant, murs, porte. */}
+  <path d="M3 13l9 -8l9 8" />
+  <path d="M5 11.5v8a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5 -1.5v-8" />
+  <path d="M10 21v-4a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v4" />
+  {/* Panneaux solaires parallèles au versant droit : trois cellules sur
+      deux rangées. */}
+  <path d="M13.65 5.4l5.23 4.64l1.46 -1.64l-5.23 -4.64z" />
+  <path d="M14.38 4.58l5.23 4.64" />
+  <path d="M15.39 6.94l1.46 -1.64" />
+  <path d="M17.14 8.5l1.46 -1.64" />
+  {/* Soleil. */}
+  <circle cx="6" cy="5.6" r="1.7" />
+  <path d="M6 2.4v.7m0 5v.7m-3.2 -3.2h.7m5 0h.7m-5.5 -2.3l.5 .5m3.5 3.5l.5 .5m0 -4.5l-.5 .5m-3.5 3.5l-.5 .5" />
+</svg>

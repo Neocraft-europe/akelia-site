@@ -1,0 +1,57 @@
+---
+// =========================================================================
+// COMPOSANT : LIGNE REPLIABLE (src/components/solutions/LigneRepliable.astro)
+// -------------------------------------------------------------------------
+// 21 octobre 2026 (passe mobile). Extrait des lignes de « Est-ce fait pour
+// chez vous ? » (troisième passe) pour servir aussi à la légende de la
+// carte (CarteFrance.astro) : UN SEUL mécanisme de ligne repliable.
+// - <details> fermé par défaut, ouvert par un <summary> qui occupe TOUTE la
+//   ligne (56px au moins, cible ≥ 44px) ; s'ouvre sans JavaScript ;
+// - en-tête (slot « entete ») toujours visible, chevron à l'extrême
+//   droite qui pivote à l'ouverture ;
+// - contenu replié (slot par défaut) DANS le code HTML : Google le lit,
+//   rien n'est injecté ;
+// - hauteur animée en CSS (::details-content, interpolate-size), coupée
+//   par prefers-reduced-motion (chevron compris) ;
+// - `filet` : classe de bordure gauche de 3px (couleur du verdict), facultative.
+// Le conteneur (bloc blanc, filets entre les lignes) est écrit par
+// l'appelant.
+// =========================================================================
+
+export interface Props {
+  /** Classe de couleur de la bordure gauche de 3px (« border-l-vert-600 »). */
+  filet?: string;
+  class?: string;
+}
+
+const { filet, class: classes } = Astro.props;
+---
+
+<details data-ligne-repliable class:list={['group/ligne', filet && ['border-l-[3px]', filet], classes]}>
+  <summary class="flex min-h-14 cursor-pointer list-none items-center gap-4 px-4 py-3 hover:bg-creme focus-visible:outline-[3px] focus-visible:-outline-offset-[3px] focus-visible:outline-nuit-900 sm:px-6 [&::-webkit-details-marker]:hidden">
+    <div class="min-w-0 flex-1"><slot name="entete" /></div>
+    <svg aria-hidden="true" class="size-7 shrink-0 text-nuit-900 transition-transform duration-200 group-open/ligne:rotate-180 motion-reduce:transition-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6l6 -6" /></svg>
+  </summary>
+  <slot />
+</details>
+
+<style is:global>
+  /* Hauteur du contenu animée à l'ouverture et à la fermeture. Amélioration
+     progressive : un navigateur sans ::details-content ouvre d'un coup.
+     Avec « réduire les animations » : aucune transition. */
+  @media (prefers-reduced-motion: no-preference) {
+    details[data-ligne-repliable] {
+      interpolate-size: allow-keywords;
+    }
+    details[data-ligne-repliable]::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size 0.25s ease,
+        content-visibility 0.25s allow-discrete;
+    }
+    details[data-ligne-repliable][open]::details-content {
+      block-size: auto;
+    }
+  }
+</style>

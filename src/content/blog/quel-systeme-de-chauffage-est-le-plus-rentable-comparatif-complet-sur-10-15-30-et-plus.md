@@ -52,7 +52,7 @@ En ajoutant un contrat d'entretien obligatoire d'environ **200 € par an** et u
 
 ### La pompe à chaleur air/eau : une efficacité remarquable mais dépendante du climat
 
-La pompe à chaleur (PAC) air/eau capte les calories de l'air extérieur pour les injecter dans le circuit hydraulique. Son coût d'installation moyen tourne autour de **13 500 €**. Elle bénéficie de subventions significatives, s'élevant en moyenne à **2 800 €** et pouvant atteindre **10 000 €** pour les ménages les plus modestes, ce qui réduit considérablement le reste à charge.
+La pompe à chaleur (PAC) air/eau capte les calories de l'air extérieur pour les injecter dans le circuit hydraulique. Son coût d'installation moyen tourne autour de **13 500 €**. Elle bénéficie de subventions significatives, plus élevées pour les ménages les plus modestes, ce qui réduit considérablement le reste à charge ([estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre)).
 
 Sous un climat tempéré comme celui de la région de Tours, le rendement annuel moyen de la PAC air/eau s'établit à **350 %**. Concrètement, sur les 3,5 kWh de chaleur restitués, 1 kWh provient du réseau électrique et 2,5 kWh sont extraits de l'air extérieur. La consommation électrique annuelle baisse ainsi à environ 5 700 kWh. Malgré un coût de l'électricité trois à quatre fois supérieur à celui du bois, la facture d'énergie annuelle chute à **1 100 €**, soit une économie de 25 % par rapport à la biomasse.
 
@@ -149,7 +149,7 @@ Pour sélectionner la technologie optimale, la décision doit suivre une séquen
 
 1. **Élimination des systèmes électriques directs :** Sauf cas particulier d'un logement de très petite surface extrêmement isolé (type studio), les radiateurs et planchers chauffants électriques doivent être proscrits en raison de leur coût d'exploitation destructeur de valeur.
 2. **Évaluation du besoin de rafraîchissement estival :** Si la climatisation en période chaude constitue un critère prioritaire, la pompe à chaleur air/air (climatisation réversible) s'impose comme l'unique système assurant la double fonction thermique avec un bon niveau d'efficacité.
-3. **Analyse de l'éligibilité aux subventions :** Les barèmes d'aides publiques (MaPrimeRénov', CEE) varient selon les revenus du ménage. Un niveau de subvention maximal (jusqu'à 10 000 € pour l'air/eau et 16 000 € pour la géothermie) transforme immédiatement les pompes à chaleur en choix d'investissement prioritaires.
+3. **Analyse de l'éligibilité aux subventions :** Les barèmes d'aides publiques (MaPrimeRénov', CEE) varient selon les revenus du ménage. Au niveau de subvention le plus élevé (revenus très modestes), ces aides transforment immédiatement les pompes à chaleur en choix d'investissement prioritaires ([estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre)).
 4. **Appétence pour l'autonomie et les énergies de biomasse :** La chaudière à granulés reste une alternative de choix pour les usagers recherchant une indépendance vis-à-vis du réseau électrique, sous réserve d'accepter l'imprévisibilité à long terme du cours du bois.
 5. **Cas particulier de la chaudière gaz :** Elle ne conserve d'intérêt que dans le cas d'un budget d'installation très contraint, en l'absence totale d'éligibilité aux aides, sans projet d'autoconsommation photovoltaïque, et sous réserve de supporter un impact environnemental défavorable.
 

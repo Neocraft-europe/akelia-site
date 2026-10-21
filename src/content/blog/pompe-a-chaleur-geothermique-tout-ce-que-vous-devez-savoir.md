@@ -12,7 +12,7 @@ enBref:
   - "C'est le chauffage le plus performant et stable au monde. Elle puise l'énergie dans le sol, ce qui la rend insensible au grand froid et totalement silencieuse à l'extérieur."
   - "**Points forts :** Économies de facture jusqu'à 70 %, aucune nuisance sonore pour les voisins et performance constante même à -15°C."
   - "**Contraintes :** Installation lourde (forage ou terrassement) et prix initial élevé (**14 000 € à 25 000 €**)."
-  - "**Aides :** Jusqu'à **11 000 €** de MaPrimeRénov' + Prime CEE (si installateur RGE)."
+  - "**Aides :** MaPrimeRénov' (forfait selon vos revenus) + Prime CEE (si installateur RGE)."
   - "Idéal pour les **régions froides** et les propriétaires disposant d'un terrain."
 sources:
   - libelle: "qualit-enr.org"
@@ -154,8 +154,8 @@ Il est important de noter que ces coûts incluent, l'étude préalable, l'équip
 
 L'installation d'une pompe à chaleur géothermique peut bénéficier de plusieurs aides financières, ce qui permet de réduire considérablement le coût initial. Voici les principales aides disponibles :
 
-1. **MaPrimeRénov'** : Cette aide, octroyée par l'Agence nationale de l'habitat (Anah), est destinée aux propriétaires occupants, bailleurs et copropriétés. Le montant de l'aide dépend des revenus du ménage et peut atteindre jusqu'à 11 000 € pour les ménages très modestes.
-2. **Prime énergie (Certificats d'Économies d'Énergie - CEE)** : Cette prime, proposée par les fournisseurs d'énergie, est accessible à tous les ménages, sans condition de revenus. Elle peut atteindre plusieurs milliers d'euros et est cumulable avec d'autres aides.
+1. **MaPrimeRénov'** : Cette aide, octroyée par l'Agence nationale de l'habitat (Anah), est destinée aux propriétaires occupants, bailleurs et copropriétés. Le montant de l'aide dépend des revenus du ménage : [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
+2. **Prime énergie (Certificats d'Économies d'Énergie - CEE)** : Cette prime, proposée par les fournisseurs d'énergie, est accessible à tous les ménages, sans condition de revenus. Son montant dépend du fournisseur choisi, et elle est cumulable avec d'autres aides.
 3. **Éco-prêt à taux zéro (éco-PTZ)** : Ce prêt, sans intérêt, est destiné à financer les travaux de rénovation énergétique. Il peut atteindre jusqu'à 30 000 € et est remboursable sur une durée maximale de 20 ans.
 4. **TVA réduite à 5,5 %** : Les travaux d'installation d'une pompe à chaleur géothermique peuvent bénéficier d'une TVA réduite à 5,5 % au lieu de 10 % ou 20 %, sous certaines conditions.
 

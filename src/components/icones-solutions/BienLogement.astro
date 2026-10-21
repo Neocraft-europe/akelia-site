@@ -1,0 +1,34 @@
+---
+// =========================================================================
+// ICÔNE : MAISON OU APPARTEMENT (src/components/icones-solutions/BienLogement.astro)
+// -------------------------------------------------------------------------
+// 21 octobre 2026. « Est-ce adapté à votre bien ? », page pompe à chaleur
+// air-eau. D'après Tabler Icons (MIT, voir LICENSES.md : building, home) :
+// un immeuble et une maison côte à côte, séparés par un trait vertical.
+// Monochrome : currentColor.
+// Décorative (aria-hidden) : le texte de la condition porte le sens.
+// =========================================================================
+
+import { TRAIT, VIEWBOX } from './trait';
+
+export interface Props {
+  /** Côté en pixels. */
+  taille?: number;
+  class?: string;
+}
+
+const { taille = 88, class: classes } = Astro.props;
+---
+
+<svg aria-hidden="true" class:list={['shrink-0', classes]} width={taille} height={taille} viewBox={VIEWBOX} fill="none" stroke="currentColor" stroke-width={TRAIT} stroke-linecap="round" stroke-linejoin="round">
+  {/* Immeuble : quatre étages de deux fenêtres, porte. */}
+  <path d="M3.5 21v-15.5a1.5 1.5 0 0 1 1.5 -1.5h4.5a1.5 1.5 0 0 1 1.5 1.5v15.5z" />
+  <path d="M5.4 7.2h1m2 0h1m-4 3h1m2 0h1m-4 3h1m2 0h1m-4 3h1m2 0h1" />
+  <path d="M6.3 21v-2h1.9v2" />
+  {/* Trait de séparation. */}
+  <path d="M12.75 6v15" />
+  {/* Maison : toit débordant, murs, porte. */}
+  <path d="M14 14.5l3.75 -3.75l3.75 3.75" />
+  <path d="M15 13.6v7.4h5.5v-7.4" />
+  <path d="M17 21v-2.6a.75 .75 0 0 1 .75 -.75a.75 .75 0 0 1 .75 .75v2.6" />
+</svg>

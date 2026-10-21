@@ -9,10 +9,10 @@ image: "../../assets/blog/aide-financierepac.avif"
 imageAlt: "Illustration d'une famille heureuse devant leur maison écologique équipée d'une pompe à chaleur extérieure, symbolisant les économies d'énergie et les avantages financiers, perçu pour l'installation de la pompe à chaleur."
 importance: 5
 enBref:
-  - "Bien qu'une PAC coûte cher, le cumul des aides peut couvrir une part importante de l'investissement. En 2026, vous pouvez récupérer **plus de 12 600 €** de subventions (pour une PAC air-eau) selon vos revenus."
-  - "**Les aides de l'État (L'ANAH) :** **- MaPrimeRénov’ :** Jusqu'à **5 000 €** (air-eau) ou **11 000 €** (géothermie) pour les revenus très modestes. Attention : la PAC air-air (clim) est exclue de ce dispositif."
+  - "Bien qu'une PAC coûte cher, le cumul des aides peut couvrir une part importante de l'investissement. Le montant dépend de vos revenus et de l'équipement choisi : notre simulateur l'estime en quatre questions."
+  - "**Les aides de l'État (L'ANAH) :** **- MaPrimeRénov’ :** un forfait pour la PAC air-eau ou géothermique, selon vos revenus (les revenus supérieurs n'y ont pas droit). Attention : la PAC air-air (clim) est exclue de ce dispositif."
   - "**Les primes privées (Fournisseurs d'énergie) :**"
-  - "**CEE & Coup de Pouce Chauffage :** Jusqu'à **5 100 €** pour remplacer une vieille chaudière (fioul, charbon ou gaz). Ces primes sont versées par les énergéticiens et cumulables avec MaPrimeRénov'."
+  - "**CEE & Coup de Pouce Chauffage :** une prime pour remplacer une vieille chaudière (fioul, charbon ou gaz) ; depuis le 1er septembre 2026, le Coup de pouce Chauffage est réservé aux pompes à chaleur disposant d'un agrément officiel. Son montant dépend du fournisseur choisi. Ces primes sont versées par les énergéticiens et cumulables avec MaPrimeRénov'."
   - "**Le coup de pouce fiscal :**"
   - "**TVA à 5,5 % :** Appliquée directement sur la facture (équipement et pose)."
   - "**Exonération de Taxe Foncière :** Possible dans certaines communes (jusqu'à 100 %) si les travaux dépassent 10 000 €."
@@ -88,7 +88,7 @@ En plus des aides financières de l'État et des collectivités locales, plusieu
 
 **Fonctionnement et montants des primes :**Les Certificats d'Économie d'Énergie (CEE) sont un dispositif mis en place pour encourager les économies d'énergie. Les fournisseurs d'énergie (électricité, gaz, fioul, etc.) sont tenus de promouvoir des actions d'économies d'énergie auprès de leurs clients. En échange, ils délivrent des primes sous forme de chèques, de bons d'achat, ou de réductions directes sur les factures.
 
-- **Montants :**Les primes CEE peuvent atteindre jusqu'à 4 000 €, selon le type de pompe à chaleur installé et les revenus du ménage. Elles sont cumulables avec MaPrimeRénov' et l'éco-prêt à taux zéro.
+- **Montants :** il n'existe pas de barème officiel en euros : le montant dépend du fournisseur choisi, du type de pompe à chaleur installé et des revenus du ménage. Pour une estimation, [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre). Elles sont cumulables avec MaPrimeRénov' et l'éco-prêt à taux zéro.
 - **Conditions :**Pour bénéficier des CEE, l'installation doit être réalisée par un professionnel certifié RGE, et la demande de prime doit être effectuée avant la signature du devis.
 
 ### Le coup de pouce chauffage
@@ -165,7 +165,7 @@ En suivant ces conseils, vous optimiserez vos chances de bénéficier des aides 
 
 ### Conclusion
 
-L'installation d'une pompe à chaleur représente un investissement significatif, mais les nombreuses aides financières et possibilités de prêt disponibles permettent de réduire considérablement ce coût. En combinant des dispositifs comme MaPrimeRénov', le Coup de Pouce Chauffage, les Certificats d'Économie d'Énergie, et l'Éco-Prêt à Taux Zéro, vous pouvez financer une grande partie de votre projet. De plus, les aides locales et les prêts travaux offrent des solutions supplémentaires pour alléger votre budget. Au total, il est possible de récupérer plus 12 600 € pour une pompe à chaleur air-eau (sans compter les aides régionales) et plus pour une géothermie.
+L'installation d'une pompe à chaleur représente un investissement significatif, mais les nombreuses aides financières et possibilités de prêt disponibles permettent de réduire considérablement ce coût. En combinant des dispositifs comme MaPrimeRénov', le Coup de Pouce Chauffage, les Certificats d'Économie d'Énergie, et l'Éco-Prêt à Taux Zéro, vous pouvez financer une grande partie de votre projet. De plus, les aides locales et les prêts travaux offrent des solutions supplémentaires pour alléger votre budget. Le montant total dépend de vos revenus et de votre projet : [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
 
 Ces aides fonctionnent dans le cadre d'une rénovation, d'un changement de système de chauffage, ou encore d'une construction neuve.
 

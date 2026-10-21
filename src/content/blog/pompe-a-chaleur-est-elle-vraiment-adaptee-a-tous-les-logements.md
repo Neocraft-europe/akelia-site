@@ -131,7 +131,7 @@ Même la PAC la plus performante ne pourra compenser une **mauvaise isolation**.
 - **La consommation électrique augmente**, réduisant les économies promises.
 - **Le confort thermique est altéré**, avec des variations de température désagréables.
 
-**Solution :**Un **diagnostic thermique** permet d’identifier les points faibles (murs, toiture, fenêtres) et de prioriser les travaux d’isolation. Des aides comme **MaPrimeRénov’** ou les **Certificats d’Économies d’Énergie (CEE)** peuvent financer ces améliorations.
+**Solution :**Un **diagnostic thermique** permet d’identifier les points faibles (murs, toiture, fenêtres) et de prioriser les travaux d’isolation. Des aides comme les **Certificats d’Économies d’Énergie (CEE)** peuvent financer ces améliorations ; **MaPrimeRénov’** les finance dans une rénovation d’ampleur (plus pour un geste d’isolation seul depuis le 1er septembre 2026).
 
 ### 2. Régions froides : des performances en baisse
 

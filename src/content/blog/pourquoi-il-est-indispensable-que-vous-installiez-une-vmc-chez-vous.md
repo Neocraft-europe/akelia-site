@@ -12,7 +12,7 @@ enBref:
   - "L'air intérieur peut être jusqu'à huit fois plus pollué que l'air extérieur en raison des polluants chimiques et biologiques accumulés au quotidien."
   - "L'isolation hermétique des habitations bloque l'évaporation naturelle, favorisant la condensation, la prolifération de moisissures et la dégradation progressive du bâti."
   - "La VMC simple flux hygroréglable ou double flux permet de ventiler en continu tout en optimisant la performance thermique et en générant des économies d'énergie substantielles."
-  - "Plusieurs dispositifs d'aide financière, tels que les primes CEE, l'éco-PTZ et MaPrimeRénov', accompagnent l'installation de ces systèmes de ventilation performants."
+  - "Plusieurs dispositifs d'aide financière, tels que les primes CEE et l'éco-PTZ, accompagnent l'installation de ces systèmes de ventilation performants ; MaPrimeRénov' les finance seulement dans une rénovation d'ampleur."
 sources:
   - libelle: "effy.fr"
     lien: "https://www.effy.fr/travaux-energetique/ventilation/vmc-simple-flux"

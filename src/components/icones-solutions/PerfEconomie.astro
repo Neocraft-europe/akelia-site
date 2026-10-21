@@ -1,0 +1,33 @@
+---
+// =========================================================================
+// ICÔNE : ÉCONOMIE D'ÉNERGIE (src/components/icones-solutions/PerfEconomie.astro)
+// -------------------------------------------------------------------------
+// 21 octobre 2026. Performances, commune aux 20 pages (troisième tuile,
+// « Économie d'énergie », « −70 % »). Remplace PerfAutonomie (maison
+// solaire) : l'autonomie n'est plus le sujet de la tuile.
+// D'après Tabler Icons (MIT, voir LICENSES.md : home, arrow-down) : une
+// maison vue de face, une flèche descendante à côté. Monochrome :
+// currentColor.
+// Décorative (aria-hidden) : le titre de la tuile porte le sens.
+// =========================================================================
+
+import { TRAIT, VIEWBOX } from './trait';
+
+export interface Props {
+  /** Côté en pixels. */
+  taille?: number;
+  class?: string;
+}
+
+const { taille = 88, class: classes } = Astro.props;
+---
+
+<svg aria-hidden="true" class:list={['shrink-0', classes]} width={taille} height={taille} viewBox={VIEWBOX} fill="none" stroke="currentColor" stroke-width={TRAIT} stroke-linecap="round" stroke-linejoin="round">
+  {/* Maison : toit débordant, murs, porte. */}
+  <path d="M3 12l6.5 -6.5l6.5 6.5" />
+  <path d="M4.75 10.5v9a1.5 1.5 0 0 0 1.5 1.5h6.5a1.5 1.5 0 0 0 1.5 -1.5v-9" />
+  <path d="M8 21v-4a1 1 0 0 1 1 -1h1a1 1 0 0 1 1 1v4" />
+  {/* Flèche descendante. */}
+  <path d="M18.75 4v16" />
+  <path d="M16 17.25l2.75 2.75l2.75 -2.75" />
+</svg>

@@ -8101,3 +8101,1987 @@ D'après ce que j'ai observé, il est passé parce que les pages ne sont pas vid
 ### Questions en attente de réponse (commit)
 
 - Faut-il ajouter `*.zip` au `.gitignore`, ou supprimer ces archives du disque ?
+
+---
+
+## Pages solutions : carte, lisibilité et mise en page (20 octobre 2026)
+
+Page travaillée : `/solutions/pompe-a-chaleur-air-eau` (toujours la seule construite). Texte, simulateur et chiffres en attente d'arbitrage : **non touchés**.
+
+### 1. La carte de France en SVG
+
+**Source du fond de carte (vérifiée)**
+- **IGN, ADMIN EXPRESS COG CARTO PE**, édition 2026-01-01, couche `departement`, lue sur le service WFS de la Géoplateforme (`data.geopf.fr`, couche `ADMINEXPRESS-COG-CARTO-PE.2026:departement`).
+- **Licence Ouverte 2.0 (Etalab)** : fiche data.gouv.fr de l'IGN, licence « lov2 » : https://www.data.gouv.fr/datasets/admin-express-admin-express-cog-admin-express-cog-carto-admin-express-cog-carto-pe-admin-express-cog-carto-plus-pe
+- ⚠️ **Écartée** : le jeu « Contours administratifs » de data.gouv.fr (celui de l'API Découpage administratif). Il est déclaré sous **ODbL**, parce qu'il mêle des données OpenStreetMap. Aucune carte Wikipédia ni carte prise dans un dépôt.
+- La Licence Ouverte demande de **citer la source** (« IGN, ADMIN EXPRESS, 2026 »). Une mention unique dans les mentions légales suffit : pas de mention sur chaque page. Voir la question C2.
+
+**Traitement** : `scripts/generer-carte-france.mjs` (Node, sans dépendance), à lancer à la main seulement pour changer de millésime : `node scripts/generer-carte-france.mjs`.
+- France métropolitaine : 96 départements, Corse en **2A / 2B**. Outre-mer **non inclus** (voir la question C3).
+- Projection Lambert 93. Simplification **Douglas-Peucker** avec une tolérance de 1,5 km. Elle **préserve la topologie** : chaque frontière commune est simplifiée une seule fois, puis rendue aux deux départements. Résultat : ni trou ni chevauchement (vérifié sur fond noir à 1 200 px). Coordonnées entières, 1 unité = 1 km. Les îlots de moins de 40 km² sont supprimés (43 îlots).
+- **Poids : 30 977 octets bruts, 11 224 octets compressés (gzip -9), soit 11 Ko**, pour une cible à moins de 25 Ko.
+- **Un seul fichier**, `public/cartes/departements.svg`, partagé par toutes les pages et mis en cache par le navigateur. La page n'écrit qu'un `<use href="/cartes/departements.svg#d-31">` par département, qui reçoit sa couleur.
+- Le script produit aussi `src/data/departements.ts` : codes, noms officiels IGN et cadre de la carte. Fichier généré, à ne pas modifier à la main.
+
+**Composant `src/components/solutions/CarteFrance.astro`**. Il porte la carte **et** la légende, pour que les pastilles aient exactement le remplissage de la carte.
+- Couleurs de la charte : optimale `vert-600`, intéressante `action-500`, à étudier `argile`, déconseillée `creme-fonce`. Non concerné : nouveau jeton `carte-vide` (#f4f5f6, gris très clair) dans `global.css`.
+- **Niveaux de gris** (captures `captures/solutions-carte/gris-1440-carte.png` et démonstration à cinq niveaux) :
+  - optimale (foncé) et intéressante (moyen) se distinguent ;
+  - à étudier, déconseillée et non concerné ont trois teintes claires voisines. Le contraste argile / creme-fonce est d'environ 1,1:1, indiscernable en gris et presque en couleur.
+  - **Hachures ajoutées** : « à étudier » en `/` (argile-fonce sur argile, 4,32:1) et « déconseillée » en `\` (texte-doux sur creme-fonce, 5,77:1). Elles sont dessinées dans le motif plutôt que tournées par `patternTransform`, qui rendait le même sens dans les deux cas dans Chromium. Contrôlé à fort grossissement.
+- Accessibilité :
+  - un résumé en liste (`sr-only`) **précède** la carte : chaque zone et ses départements, en toutes lettres ;
+  - le SVG de la carte est `aria-hidden` ;
+  - la légende décrit chaque zone en toutes lettres ;
+  - une bulle « Haute-Garonne — région intéressante » s'affiche au survol, au toucher et au **clavier**. Le cadre de la carte prend le focus (une seule tabulation) ; les flèches, Début et Fin parcourent les départements par ordre de code. Texte blanc sur nuit-900, 14,47:1.
+  - Écart assumé : le cadre focalisable n'est **pas** dans la partie `aria-hidden`. Un élément focalisable caché aux lecteurs d'écran est une faute d'accessibilité. Le cadre porte donc un nom (« Carte des départements. Flèches… ») et la bulle est `aria-live="polite"`.
+- **Contrôle à la construction**, vérifié en remplaçant 60 par 971 : la construction s'arrête avec `src/data/solutions/pompe-a-chaleur-air-eau.ts, zone « Région optimale » : département « 971 » inconnu. Codes acceptés : 01 à 95 avec 2A et 2B (pas 20), France métropolitaine seulement (pas d'outre-mer).` Un département cité dans deux zones l'arrête aussi.
+- L'ancienne image `src/assets/solutions/pompe-a-chaleur-air-eau/carte-regions.png` est supprimée, ainsi que les champs `carte`, `carteAlt` et `couleur` du type.
+
+**Départements de la PAC air-eau : PROPOSITION, À VALIDER** (question C1). Déduits des régions écrites dans la légende, pas de l'ancienne image. Les 96 départements sont couverts, aucun « non concerné ». La page affiche déjà cette proposition.
+
+*Région optimale (Ouest, Centre et Bassin parisien) : 33 départements*
+- **Bretagne** : 22 Côtes-d'Armor, 29 Finistère, 35 Ille-et-Vilaine, 56 Morbihan
+- **Pays de la Loire** : 44 Loire-Atlantique, 49 Maine-et-Loire, 53 Mayenne, 72 Sarthe, 85 Vendée
+- **Normandie** : 14 Calvados, 27 Eure, 50 Manche, 61 Orne, 76 Seine-Maritime
+- **Centre-Val de Loire** : 18 Cher, 28 Eure-et-Loir, 36 Indre, 37 Indre-et-Loire, 41 Loir-et-Cher, 45 Loiret
+- **Île-de-France** : 75 Paris, 77 Seine-et-Marne, 78 Yvelines, 91 Essonne, 92 Hauts-de-Seine, 93 Seine-Saint-Denis, 94 Val-de-Marne, 95 Val-d'Oise
+- **Poitou-Charentes** : 16 Charente, 17 Charente-Maritime, 79 Deux-Sèvres, 86 Vienne
+- **Oise** : 60 Oise
+
+*Région intéressante (Sud-Ouest, pourtour méditerranéen, vallée du Rhône et Corse) : 25 départements*
+- **Sud-Ouest** : 09 Ariège, 24 Dordogne, 31 Haute-Garonne, 32 Gers, 33 Gironde, 40 Landes, 46 Lot, 47 Lot-et-Garonne, 64 Pyrénées-Atlantiques, 65 Hautes-Pyrénées, 81 Tarn, 82 Tarn-et-Garonne
+- **Pourtour méditerranéen** : 06 Alpes-Maritimes, 11 Aude, 13 Bouches-du-Rhône, 30 Gard, 34 Hérault, 66 Pyrénées-Orientales, 83 Var, 84 Vaucluse
+- **Vallée du Rhône** : 07 Ardèche, 26 Drôme, 69 Rhône
+- **Corse** : 2A Corse-du-Sud, 2B Haute-Corse
+
+*Région à étudier (Nord, Nord-Est, Massif central et Alpes) : 38 départements*
+- **Nord** : 02 Aisne, 59 Nord, 62 Pas-de-Calais, 80 Somme
+- **Grand Est** : 08 Ardennes, 10 Aube, 51 Marne, 52 Haute-Marne, 54 Meurthe-et-Moselle, 55 Meuse, 57 Moselle, 67 Bas-Rhin, 68 Haut-Rhin, 88 Vosges
+- **Bourgogne-Franche-Comté** : 21 Côte-d'Or, 25 Doubs, 39 Jura, 58 Nièvre, 70 Haute-Saône, 71 Saône-et-Loire, 89 Yonne, 90 Territoire de Belfort
+- **Massif central** : 03 Allier, 12 Aveyron, 15 Cantal, 19 Corrèze, 23 Creuse, 42 Loire, 43 Haute-Loire, 48 Lozère, 63 Puy-de-Dôme, 87 Haute-Vienne
+- **Alpes** : 01 Ain, 04 Alpes-de-Haute-Provence, 05 Hautes-Alpes, 38 Isère, 73 Savoie, 74 Haute-Savoie
+
+Cas limites, où j'ai tranché faute de mieux :
+- **Poitou-Charentes** (16, 17, 79, 86) en « Ouest » plutôt qu'en « Sud-Ouest » ;
+- **Oise** en « Bassin parisien », mais Aisne et Somme en « Nord » ;
+- **Yonne et Nièvre** en « Nord-Est » avec la Bourgogne, et non dans le Bassin parisien ou le Centre ;
+- **Lot, Tarn, Aveyron** : Lot et Tarn en Sud-Ouest, Aveyron en Massif central ;
+- **Alpes-de-Haute-Provence** en « Alpes », et non sur le pourtour méditerranéen ;
+- **Ain et Isère** en « Alpes », et non dans la vallée du Rhône ;
+- **Loire** (42) en Massif central.
+
+### 2. Sommaire horizontal
+
+- Nouveau composant `src/components/solutions/SommaireBarre.astro`. C'est une barre collante sous l'en-tête, pleine largeur, avec des pilules sur le modèle de `BarreCategories.astro`. Pilule en cours : fond nuit-900, texte blanc (14,47:1) ; autres pilules : texte sur blanc (16,34:1).
+- Sur téléphone et tablette, le cadre défile horizontalement ; la barre de défilement est masquée et le cadre suit la lecture tout seul.
+- Le contenu de la page est **dans** le composant : une barre collante ne colle qu'à l'intérieur de son parent.
+- Les sous-entrées Rénovation / Neuf sont supprimées.
+- Suivi de lecture : recalcul au défilement, une fois par image au plus. Ligne de lecture : bas de la barre + 2rem.
+- « Demander un devis » et le lien « Akelia, le collectif d'artisans locaux » passent dans l'appel à l'action final ; le lien est blanc souligné sur nuit-900.
+- **Ancres** : `.ancre-sommaire` ajoute désormais `--hauteur-barre-sommaire` (60px, posée par le composant ; 0 ailleurs) à la hauteur de l'en-tête.
+- **Mesuré**, en cliquant chaque pilule aux quatre largeurs :
+  - le haut de la barre touche exactement le bas de l'en-tête (73px, ou 122px à 1 440), sans chevauchement ;
+  - chaque titre visé s'arrête **16px sous la barre** (149px pour une barre qui finit à 133, ou 198px pour 182) ;
+  - la bonne pilule est active.
+- `Sommaire.astro` (articles et `/aides-renovation`) n'est pas modifié ; seul son commentaire d'en-tête a changé.
+
+### 3. Largeur de la colonne de contenu à 1 440px
+
+- **Avant : 848px. Après : 1 210px** (largeur du site moins les gouttières).
+- Les paragraphes gardent leur largeur de lecture de 70ch (`TexteMisEnForme`).
+- Hauteur de la page à 1 440px : 13 282px avant, 12 307px après ; à 375px : 21 063px avant, 20 410px après.
+
+### 4. « En bref » supprimé
+
+Le bloc et le champ `enBref` sont retirés du type et des données solutions. Le bloc reste sur les articles de blog (`content.config.ts` et le gabarit d'article ne sont pas touchés).
+
+### 5. Caractéristiques en grands chiffres
+
+- Type : `caracteristiques: { enGrand: [4 chiffres], autres: [...] }`. Chaque chiffre a `chiffre`, `libelle` et une `precision` facultative.
+- Modèle du bandeau de `/qui-sommes-nous` : chiffre en très gros, libellé dessous, filet orange. Deux colonnes, quatre à partir de 768px.
+- Valeurs **découpées sans recalcul** :
+
+| Chiffre | Libellé | Précision |
+|---|---|---|
+| ≃ 90 à 130 €/m² | coût d'installation | |
+| ≃ 20 à 25 ans | durée de vie moyenne | si elle est entretenue |
+| ≃ 6 500 € | de prime CEE | et ≃ 5 000 € de MaPrimeRénov' |
+| ≃ 5 à 6 ans | pour rentrer dans ses frais, avec les aides | sans les aides : ≃ 9 à 10 ans |
+
+- Les deux aides ne sont **pas additionnées** : ce chiffre est en attente d'arbitrage (voir la question C4).
+- L'indice de réparabilité passe en liste discrète, sous les chiffres.
+
+### 6. Performances en couleur
+
+- Échelle A à G : sept **barreaux horizontaux de même largeur**, empilés, du vert au rouge. Ce n'est pas l'escalier à flèches du DPE.
+- Barreau obtenu : plus haut (40px contre 24px), cerclé de nuit-900 sur 3px, lettre plus grande.
+- Nouveaux jetons `echelle-a` à `echelle-g` dans `global.css`. **Contraste de la lettre**, en gras et à 18px au moins :
+
+| Barreau | Couleur | Lettre | Contraste |
+|---|---|---|---|
+| A | #17663f | blanche | 6,98:1 |
+| B | #6aae47 | foncée | 6,04:1 |
+| C | #a3c63e | foncée | 8,33:1 |
+| D, jaune | #f2d02b | foncée | 10,76:1 |
+| E, orange | #f5a524 | foncée | 8,01:1 |
+| F | #ee7b31 | foncée | 5,85:1 |
+| G | #b02f2a | blanche | 6,39:1 |
+
+  - Le blanc est interdit de B à F (1,5:1 à 2,8:1). Tout dépasse le seuil AA ; A, F et G restent sous les 7:1 visés pour le texte courant (lettres décoratives, `aria-hidden`, la note étant écrite en grand au-dessus).
+- Jauge de complexité : couleur de son niveau (1/5 → A vert, 5/5 → G rouge ; 2,5/5 → C).
+- La phrase « Ces notes sont une échelle Akelia… » (`EchelleAkelia.astro`) passe en texte foncé semi-gras.
+- Piège rencontré : Tailwind 4 ne produit une variable de couleur que si une classe l'utilise. Les couleurs sont donc posées par des classes écrites en entier (`bg-echelle-a`, `fill-argile`…), jamais par `var(--color-…)` construit dans le code.
+
+### 7. « Est-ce adapté à votre bien ? » en liste de contrôle
+
+- Le type `adapteAuBien` devient `conditions: { condition, explication }[]`, sans icône : la coche verte suffit.
+- Nouveau champ `nomIndefini` (« une pompe à chaleur air-eau »), d'où la phrase « Pour installer une pompe à chaleur air-eau chez vous, il faut : ».
+- Intitulés : ceux du ticket. Explications : textes d'origine, inchangés, en seconde ligne (18px, texte-doux).
+- Hauteur du bloc :
+
+| Largeur | Avant | Après | Gain |
+|---|---|---|---|
+| 1 440px | 360px | 213px | −41 % |
+| 1 024px | 392px | 268px | −32 % |
+| 768px | 392px | 331px | −16 % |
+| 375px | 799px | 686px | −14 % |
+
+  - **L'objectif « trois fois moins » n'est pas atteint** : les explications d'origine sont longues, et le ticket interdit de toucher au texte (voir la question C5).
+
+### 8. Vérifications
+
+- `npm run build` sans erreur ; `scripts/verifier-build.mjs` passe (5 pages témoins).
+- À 375, 768, 1 024 et 1 440px :
+  - **aucun débordement horizontal** ;
+  - **aucune cible sous 44px** (liens et boutons hors texte courant) ;
+  - aucune erreur dans la console.
+- **Texte sous 18px** :
+  - corrigé : les pilules du sommaire étaient en 16px, comme sur le blog ; elles passent à 18px.
+  - restent, hors du périmètre de ce ticket car communs à tout le site : le **fil d'Ariane** (16px) et le **surtitre** de l'en-tête (13,6px, style de la charte). Voir la question C6.
+- **Contrastes** :
+  - pilules : 14,47:1 (active) et 16,34:1 (autres) ;
+  - pastilles de légende : cerclées de nuit-900 (14,47:1 sur blanc), ce qui rend visibles même les teintes claires ;
+  - carte : vert-600 / action-500 2,66:1, action-500 / argile 1,77:1, vert-600 / argile 4,72:1 ; les teintes claires sont distinguées par la trame ;
+  - lettres de l'échelle : tableau du point 6.
+- **Captures** dans `captures/solutions-carte/` :
+  - page entière : `pac-air-eau-{375,768,1024,1440}.png` ;
+  - blocs : `blocs-375-*.png` ;
+  - niveaux de gris : `gris-1440-*.png` ;
+  - démonstration des cinq niveaux : `demo-5-niveaux-couleur.png`.
+
+### Questions en attente de réponse (carte et mise en page)
+
+- **C1. Départements par zone** (liste au point 1) : validez-vous la proposition, et les cas limites ? Elle est en place sur la page en attendant.
+- **C2. Mention de la source IGN** : faut-il ajouter « Fond de carte : IGN, ADMIN EXPRESS 2026, Licence Ouverte 2.0 » aux mentions légales ? La licence demande de citer la source, une fois, quelque part sur le site.
+- **C3. Outre-mer** : faut-il ajouter les départements d'outre-mer en encarts sur la carte ? Aujourd'hui, un code 971 à 976 arrête la construction.
+- **C4. Aides en grand** : faut-il afficher le total (« plus de 11 000 € », comme dans les arguments de l'en-tête) plutôt que les deux montants ? Cela dépend des chiffres encore en attente d'arbitrage.
+- **C5. Liste de contrôle** : pour diviser vraiment la hauteur par trois, il faudrait raccourcir les explications, qui répètent en partie l'intitulé. Puis-je les réécrire ?
+- **C6. Fil d'Ariane (16px) et surtitre (13,6px)** : faut-il les passer à 18px sur tout le site ?
+- **C7. Première condition** : l'intitulé du ticket (« une maison ou un appartement équipé d'une chaudière ») écarte le neuf, alors que l'explication d'origine dit « neuf, ou qui possède une chaudière ». Faut-il ajuster l'intitulé ?
+
+---
+
+## Refonte du barème des aides : étape 1, lecture et structure actuelle (20 octobre 2026)
+
+Ticket « Refonte du barème des aides (barème au 20 octobre 2026) ». Comme demandé, **arrêt après la lecture** : rien n'est modifié. Ce point décrit la structure actuelle de `src/data/aides.ts` et ce qui empêche de la remplir avec le nouveau barème sans la refondre.
+
+### 1. Structure actuelle de `src/data/aides.ts` (764 lignes)
+
+**Vocabulaire**
+- `Statut` : propriétaire occupant, propriétaire bailleur, locataire.
+- `Travaux` : `isolation`, `fenetres`, `chauffage`, `ventilation`, `photovoltaique`, `ne-sait-pas`. Ce sont les six cases de la question 3.
+- `Verdict` : `oui`, `sous-conditions`, `non`, `a-verifier`.
+- `Regle` = `{ verdict, texte, montantMax? }`.
+
+**`aidesNationales: AideNationale[]`** : cinq aides, chacune avec la même forme `{ id, nom, nature, montantMax, conditions[], statuts: Record<Statut, Regle>, travaux: Record<Travaux, Regle>, sources, dateVerification }`.
+1. `maprimerenov-geste` : `montantMax: 11000`. Le chauffage vaut « oui jusqu'à 11 000 € », un seul montant pour tous les chauffages et tous les revenus. Isolation, fenêtres et ventilation sont déjà à « non, possible en rénovation d'ampleur ».
+2. `maprimerenov-ampleur` : `montantMax: 32000` (80 % × 40 000). « Sous conditions » pour tous les travaux.
+3. `cee` : `montantMax: null`, aucun montant en euros. Le texte du Coup de pouce parle encore de « remplacer une chaudière au fioul, au gaz ou au charbon ».
+4. `eco-ptz` : plafonds de 7 000 à 50 000 €. Hors du périmètre du ticket.
+5. `tva-reduite` : un taux, sans montant. Le commentaire date la PAC air-air au « 1er septembre 2026 », ce qui est faux : c'est le 18 juillet 2026.
+
+**Chiffres de la page `/aides-renovation`**, lus dans ce fichier :
+- `dateVerificationPage` (2026-10-19) ;
+- `tauxTva` (5,5 et 10) ;
+- `mprGesteMax` (11 000, lu dans l'aide 1) ;
+- `mprAmpleurTauxMax` (80) ;
+- **`ceeMontantMisEnAvant = 7500`**, à supprimer ;
+- `ecoPtzMax` et `plafondsEcoPtz`.
+
+**Aides locales** : `regions` (13, statut oui / non / inconnu, sans montant) et `departements` (101, tous « inconnu »). Le ticket n'y touche pas.
+
+**Logique** (`src/scripts/simulateur-aides.ts`) : pour chaque aide, une ligne dépliable. `evaluerAide` exclut d'abord selon le statut, puis retient la règle **la plus favorable** parmi les travaux cochés, et affiche « jusqu'à X € ». Le résultat est donc **une ligne par aide**, pas une ligne par poste de travaux.
+
+**Utilisateurs du type `Travaux`** :
+- `SimulateurQuestions.astro`, `simulateur-etapes.ts`, `Simulateur.astro` ;
+- `src/data/solutions/type.ts` (`equipementSimulateur: Travaux`) ;
+- `pompe-a-chaleur-air-eau.ts` (`'chauffage'`, case pré-cochée) ;
+- `/solutions/[slug].astro`.
+
+Le simulateur est un composant unique (`Simulateur.astro`), présent sur l'accueil, sur `/aides-renovation` et sur les pages solutions : pour une même saisie, le résultat sera identique partout par construction.
+
+### 2. Pourquoi la structure doit changer de forme, pas seulement de valeurs
+
+1. **Le simulateur ne connaît pas le profil de revenus.** Il pose trois questions : statut, code postal, travaux. Or le nouveau barème est un tableau poste × profil, et le profil « supérieur » n'a droit à aucun forfait. Impossible d'afficher « le montant selon le profil » ou de faire tourner les cas « très modeste » et « supérieur » sans une **nouvelle question**. Voir la question R1.
+2. **Il n'existe pas de sous-question « quel équipement ? ».** « Chauffage » est une seule case. Or, dans le nouveau barème, le chauffage se répartit dans les trois cas :
+   - **aidé seul** : PAC air/eau, PAC géothermique ;
+   - **rénovation d'ampleur seulement** : bois et biomasse, chauffe-eau thermodynamique, solaire thermique ;
+   - **non éligible** : chaudière gaz, PAC air-air.
+   Il faut donc créer cette sous-question, et pas seulement la simplifier. Voir la question R2.
+3. **Trois postes du barème n'ont pas de case** : raccordement à un réseau de chaleur ou de froid, dépose de cuve à fioul, audit énergétique. Voir la question R3.
+4. **Le résultat est organisé par aide**, avec la règle la plus favorable et un seul montant. Le ticket demande un verdict **par poste**, parmi trois cas : aidé seul (montant et plafond de dépense), rénovation d'ampleur seulement (conditions, sans montant), non éligible (raison). La fonction `evaluerAide` et la ligne MaPrimeRénov' doivent donc changer de logique.
+5. **`Regle` n'a qu'un `montantMax`** : il manque une dimension profil, le plafond de dépense HT, les conditions propres à un poste (l'audit n'est aidé qu'une fois, et avec un geste de travaux) et le motif d'exclusion.
+6. **`equipementSimulateur: Travaux`** des pages solutions passera au futur type « équipement » (`'pac-air-eau'` pour la page PAC air-eau).
+
+### 3. Structure proposée (à valider avant d'écrire)
+
+```ts
+type Profil = 'tres-modeste' | 'modeste' | 'intermediaire' | 'superieur';
+type Poste = 'pac-air-eau' | 'pac-geothermique' | 'reseau-chaleur' | 'depose-cuve-fioul' | 'audit'
+  | 'isolation' | 'fenetres' | 'ventilation' | 'bois-biomasse' | 'chauffe-eau-thermodynamique'
+  | 'solaire-thermique' | 'chaudiere-gaz' | 'pac-air-air' | 'photovoltaique';
+
+type CasGeste =
+  | { cas: 'aide-seul'; forfaits: Record<Exclude<Profil, 'superieur'>, number>; plafondDepenseHT: number; conditions?: string[] }
+  | { cas: 'ampleur-seulement'; depuis: string /* '2026-09-01' */; precision?: string }
+  | { cas: 'non-eligible'; raison: string };
+
+export const mprParGeste: Record<Poste, CasGeste>;     // le tableau du ticket, 5 postes « aide-seul »
+export const mprAmpleur = { taux: Record<Profil, number>, plafondsDepenseHT: { deuxClasses, troisClassesEtPlus },
+                            conditions: string[], accompagnateur: { plafondTTC, taux: Record<Profil, number> } };
+export const ecretement: Record<Profil, number>;      // 100 / 90 / 80 / 50 % du TTC
+export const plafondsRessources: { horsIdf: …, idf: … };  // 2026
+export const calendrierPassoires = { exclusionGeste: '2027-12-31', obligationDpe: '2028-01-01' };
+```
+
+- Les aides TVA, Éco-PTZ et CEE gardent leur forme actuelle (verdict par statut, sans montant pour les CEE). Seuls les textes changent.
+- Le résultat garde ses lignes dépliables. La ligne MaPrimeRénov' par geste se déplie en **une ligne par poste choisi**, dans l'un des trois cas. Pour le profil « supérieur », la ligne dit qu'il n'y a pas de forfait et oriente vers la rénovation d'ampleur (10 %).
+
+### Questions en attente de réponse (barème des aides)
+
+- **R1. Le profil de revenus** : comment le demander ? Ma recommandation : une question 4 « Combien de personnes vivent dans votre foyer ? », puis le choix parmi les quatre tranches de revenu fiscal de référence calculées pour ce foyer, sans saisir de montant. Le code postal dit déjà si le foyer est en Île-de-France. **Cela suppose la table complète d'Île-de-France** : pouvez-vous me la transmettre ? Autre possibilité : laisser la personne choisir sa couleur (Bleu, Jaune, Violet, Rose), plus simple mais moins fiable.
+- **R2. La sous-question « quel équipement ? »** quand « Chauffage » est coché. Je propose : PAC air/eau, PAC géothermique ou solarothermique, PAC air-air (climatisation réversible), chaudière gaz, poêle ou chaudière au bois ou granulés, chauffe-eau thermodynamique ou solaire, je ne sais pas encore. Cette liste vous convient-elle ?
+- **R3. Les trois postes sans case** (raccordement à un réseau de chaleur, dépose de cuve à fioul, audit énergétique) : faut-il les ajouter à la question des travaux ? Sinon, ces trois montants seraient dans les données, mais jamais affichés par le simulateur.
+- **R4. Propriétaires bailleurs et locataires** : le barème du ticket ne dit rien des bailleurs. Je garde la règle actuelle (bailleurs éligibles avec engagement de location de 6 ans, locataires exclus), tirée du guide Anah, sauf avis contraire ?
+- **R5. Rénovation d'ampleur, conditions non demandées** : le simulateur ne connaît ni la classe DPE, ni l'âge du logement, ni l'énergie de chauffage conservée. Je compte afficher ces conditions en toutes lettres (cas 2), sans les vérifier. D'accord ?
+- **R6. Ordre des étapes** : j'attends vos réponses à R1, R2 et R3 avant d'écrire quoi que ce soit, puisqu'elles fixent la forme des données. Les corrections indépendantes de la structure (section TVA, suppression des 7 500 € de CEE, date de vérification) peuvent être faites dans la même passe.
+
+---
+
+## Pages solutions : reprise du design (20 octobre 2026)
+
+Page : `/solutions/pompe-a-chaleur-air-eau`. La carte de France et la barre de sommaire, validées, ne sont **pas modifiées** (la barre est seulement vérifiée de nouveau).
+
+### 1. Mesures avant / après
+
+| Mesure | Avant | Après |
+|---|---|---|
+| Hauteur de la page à 1 440px | 12 307px | **11 169px (−9,2 %)** |
+| Hauteur de la page à 375px | 20 410px | 18 924px (−7,3 %) |
+| Bloc Performances à 1 440px (du titre à la phrase sur l'échelle) | 500px | **253px (−49 %)** |
+| Bloc Performances à 375px | 1 388px | 558px (−60 %) |
+| Points forts et inconvénients, mots des données (titres et phrases) | 189 | **111 (−41 %)** |
+| Points forts et inconvénients, mots affichés (avec les titres de colonne) | 196 | 118 |
+| « Notre avis », mots par sous-partie | 122 / 128 / 66 / 79 | 58 / 57 / 42 / 55 |
+
+**La baisse de la page reste modérée (−9 %)**, pour trois raisons :
+- l'espacement entre parties, porté à +25 % comme demandé, coûte environ 300px ;
+- de gros blocs sont hors du périmètre ou validés : simulateur, carte, en-tête, appel à l'action ;
+- les textes des cinq cas ne sont pas raccourcis (voir la question D3).
+
+Gains principaux : performances (−247px), « Notre avis » (1 823 → 1 637px), cas en deux colonnes (2 154 → 1 870px), étapes Akelia en deux colonnes (844 → 550px).
+
+### 2. Ce qui a changé
+
+**Rythme**
+- Chaque partie est une bande pleine largeur. Deux voisines n'ont jamais le même fond :
+
+| Bande | Fond |
+|---|---|
+| En-tête | crème |
+| Tout savoir | blanc |
+| Performances | crème |
+| Conditions et carte | blanc |
+| Travaux | brume |
+| Avis | action-50 |
+| Pour vous | lichen |
+| Aides | blanc |
+| Avec Akelia | crème |
+| FAQ | blanc |
+| À lire aussi | bruyère |
+| Appel à l'action | bleu nuit |
+
+- À lire aussi passe du crème au bruyère (la couleur des articles de l'accueil), pour ne pas suivre la bande crème d'Akelia.
+- Espacement entre parties : de 72 à 90px sur téléphone, de 120 à 150px ensuite.
+- Formes variées : cartes à filet, tuiles teintées, rangée d'indicateurs sans cartes, bloc vert, colonne étroite, cartes à étiquette.
+
+**Points forts et inconvénients**
+- Une phrase de 15 mots au plus, **coupée** dans le texte d'origine. Seul ajout de forme : « Elle peut… » au lieu de « Au-delà du chauffage, elle peut… ».
+- Icônes de 32px dans une pastille de 56px : blanches sur vert-600 (6,34:1) ou sur action-800 (5,47:1).
+- Filets de couleur gardés. Quatre points par colonne au plus (`slice(0, 4)`).
+- **Contrôle à la construction** : une phrase de plus de 15 mots arrête la construction.
+
+**Caractéristiques**
+- Quatre tuiles sur fond action-50, même structure pour toutes : icône (étiquette de prix, horloge, pièces, calendrier), nombre et unité sur une ligne, libellé, précision toujours au même endroit (ligne réservée).
+- Une colonne sous 480px (tuile en ligne), deux colonnes ensuite, quatre à partir de 1 280px : en dessous, les libellés passaient à la ligne.
+- Nouveau type `{ icone, nombre, unite, libelle, precision? }`. Nouvelles icônes `horloge`, `pieces` et `coche` dans `Icone.astro`.
+- Valeurs : « 90–130 €/m² », « 20–25 ans », « 6 500 € », « 5–6 ans ». Le « ≃ » disparaît des nombres, comme dans l'exemple du ticket.
+- Contrastes : icône action-800 sur action-50 4,88:1, texte 14,56:1, précision 6,34:1.
+
+**Performances**
+- Une rangée de quatre colonnes séparées par un filet, sur crème, sans cartes.
+- Lettre de 36px dans une pastille de sa couleur (contrastes inchangés : 5,85:1 à 10,76:1).
+- Sous la lettre, **une seule barre de 8px** en dégradé du vert au rouge, avec un repère rond cerclé de bleu nuit. Pas d'escalier, pas de flèche.
+- Chiffres à la même taille ; jauge de complexité conservée.
+- La phrase sur l'échelle Akelia reste dessous.
+
+**« Est-ce adapté à votre bien ? »**
+- Bloc vert-50 arrondi, coches blanches de 28px sur pastille vert-600 (40px).
+- Une colonne sur téléphone, deux à partir de 768px.
+- Contrastes : texte 14,41:1, texte-doux 6,27:1, coche 6,34:1.
+- **Lignes secondaires** (champ `explication`, désormais facultatif) :
+
+| Condition | Avant | Après |
+|---|---|---|
+| Maison ou appartement avec chaudière | « Idéal en maison ou appartement neuf, ou qui possède une chaudière. » | « Idéal aussi en maison ou appartement neuf. » (garde l'information du neuf) |
+| Extérieur et espace intérieur | « Nécessite un espace extérieur (balcon, jardin) et un espace intérieur (cellier, garage). » | **supprimée** (elle répétait l'intitulé) |
+| Isolation | « Moyenne à bonne. Au moins deux éléments isolés (par exemple fenêtres et combles) pour garantir la rentabilité. » | « Par exemple fenêtres et combles, pour garantir la rentabilité. » |
+| Radiateurs ou plancher | « Obligatoire. Vous devez posséder ou prévoir des radiateurs à eau ou un plancher chauffant. » | « Obligatoire : à posséder ou à prévoir. » |
+
+  Il ne reste plus aucune ligne qui répète son titre.
+
+**« Notre avis »**
+- Traitée en tribune : fond action-50, filet orange de 8px à gauche de toute la colonne, signature « L'avis des artisans du collectif » (texte-doux, 6,34:1).
+- Titres sur 46rem, texte limité à **65 caractères**.
+- h3 à la taille `text-h3` (27 à 38px), 2,5rem avant chacun.
+- Chaque sous-partie fait 60 mots au plus, coupée dans le texte d'origine (« il est regrettable que », « donc », phrases secondaires). **Contrôle à la construction** au-delà de 60 mots.
+
+**« Est-ce fait pour chez vous ? »**
+- Une carte blanche par cas, sur lichen : étiquette de verdict en toutes lettres, filet de la même couleur en haut, titre en h3, texte. Deux colonnes à partir de 992px.
+- Étiquettes :
+
+| Verdict | Fond | Texte | Contraste |
+|---|---|---|---|
+| Oui, clairement | vert-600 | blanc | 6,34:1 |
+| Oui, sous conditions | action-500 | foncé | 6,87:1 |
+| Plutôt non | texte-doux | blanc | 7,11:1 |
+| Non | **nouveau jeton `refus`** (#9b2c27) | blanc | 7,55:1 |
+
+- Nouveau type `VerdictCas`, champ `verdict` sur chaque cas.
+
+**Comment ça se passe avec Akelia** (`ParcoursAkelia.astro`) : deux colonnes à partir de 992px ; le filet qui relie les étapes n'existe plus qu'en une colonne.
+
+### 3. Attribution des verdicts : PROPOSITION À VALIDER (question D1)
+
+| Cas | Verdict proposé | Pourquoi (dans le texte du cas) |
+|---|---|---|
+| 1. Logement isolé avec émetteurs hydrauliques | **Oui, clairement** | « c'est le meilleur choix, à la fois économique et écologique » |
+| 2. Régions chaudes (sud de la France) | **Oui, sous conditions** | « pertinente, mais attention au confort d'été » ; rafraîchissement seulement avec un plancher réversible |
+| 3. Régions froides et budget disponible | **Plutôt non** | le cas conseille une autre solution : « optez pour la géothermie » |
+| 4. Passoires thermiques | **Plutôt non** | « isolez d'abord » ; exception possible si l'isolation est impossible |
+| 5. Logements sans émetteurs hydrauliques | **Non** | « la PAC air-eau n'est pas une solution » |
+
+Le cas 3 est le plus discutable. La PAC air-eau y reste possible, et « Notre avis » dit qu'elle est concurrentielle partout. « Oui, sous conditions » se défend aussi.
+
+### 4. Vérifications
+
+- `npm run build` sans erreur ; `scripts/verifier-build.mjs` passe.
+- À 375, 768, 1 024 et 1 440px :
+  - **aucun débordement** ;
+  - **aucune cible sous 44px** ;
+  - aucune erreur dans la console ;
+  - la barre de sommaire est inchangée : chaque titre s'arrête 16px sous la barre, et la bonne pilule est active.
+- **Texte sous 18px** : il ne reste que des éléments communs à tout le site, hors de ce ticket :
+  - fil d'Ariane (16px) ;
+  - surtitres (13,6px) ;
+  - phrase d'aide du simulateur (16px) ;
+  - dates et « Lire la suite » des cartes d'articles (14,4px).
+  Tout le texte créé par ce ticket fait 18px au moins.
+- **Captures** dans `captures/solutions-design/` :
+  - page entière : `pac-air-eau-{375,768,1024,1440}.png` ;
+  - une image par bande : `bande-375-*.png` et `bande-1440-*.png`.
+
+### Questions en attente de réponse (reprise du design)
+
+- **D1. Verdicts des cas** (tableau du point 3) : validez-vous l'attribution, en particulier le cas 3 ?
+- **D2. Les 6 500 € de prime CEE** affichés dans les caractéristiques : selon le ticket du barème des aides, aucun montant CEE en euros n'est sourçable. Je ne l'ai pas retiré ici (hors de ce ticket), mais il figurera dans l'inventaire des montants faux.
+- **D3. Hauteur de page** : pour baisser davantage, il faudrait raccourcir les cinq cas, qui font environ 60 mots chacun et que le ticket ne demandait pas de couper. Faut-il le faire ?
+- **D4. Condition « radiateurs ou plancher »** : « Obligatoire : à posséder ou à prévoir. » est une reformulation courte de la phrase d'origine, pas une simple coupe. Cela vous convient-il ?
+
+---
+
+## Refonte du barème des aides : barème au 20 octobre 2026 (20 octobre 2026)
+
+Suite de « étape 1, lecture et structure actuelle ». Réponses d'Akelia reçues (R1 à R6, et deux ajouts sur la structure). Les trois parties sont refaites ensemble : `src/data/aides.ts`, le simulateur et la page `/aides-renovation`.
+
+### 1. Barème, sources et vérification
+
+**Barème daté du 20 octobre 2026.** Sources :
+- **Guide Anah** « Les aides financières en 2026 », édition septembre 2026 : https://www.anah.gouv.fr/sites/default/files/2026-08/202609_guide-aides-financieres_WEB.pdf (téléchargé et lu le 20 octobre 2026, 65 pages) ;
+- arrêté du 25 août 2026 ;
+- economie.gouv.fr, « Ce qui change en septembre 2026 » ;
+- arrêté du 13 juillet 2026, NOR CPPE2619005A (TVA des PAC air/air).
+
+**Plafonds de ressources (page 7 du PDF)**
+- Hors Île-de-France : **identiques au ticket, les 18 chiffres**. Le guide précise que cette table vaut **aussi pour l'outre-mer**.
+- Île-de-France, **lue dans le guide** :
+
+| Personnes | Très modeste | Modeste | Intermédiaire |
+|---|---|---|---|
+| 1 | 24 031 € | 29 253 € | 40 851 € |
+| 2 | 35 270 € | 42 933 € | 60 051 € |
+| 3 | 42 357 € | 51 564 € | 71 846 € |
+| 4 | 49 455 € | 60 208 € | 84 562 € |
+| 5 | 56 580 € | 68 877 € | 96 817 € |
+| par personne en plus | + 7 116 € | + 8 663 € | + 12 257 € |
+
+**Recoupements avec le guide**
+- Barème par geste (PDF p. 14) et plafonds de dépense (p. 15) : **identiques au ticket**. Le tableau du guide est titré « au 1er janvier 2026 » alors que l'édition est de septembre : simple incohérence de titre, montants conformes au ticket.
+- Rénovation d'ampleur (taux, plafonds de dépense) et Mon Accompagnateur Rénov' (2 000 € TTC, 100 / 80 / 40 / 20 %) : **identiques au ticket**.
+
+⚠️ **Écart sur l'écrêtement : deux règles distinctes dans le guide**
+- les **100 / 90 / 80 / 50 %** du ticket sont l'écrêtement de la **rénovation d'ampleur** (toutes aides, % du coût TTC) ;
+- le **parcours par geste** a sa propre règle : MaPrimeRénov' + CEE plafonnés à **90 / 75 / 60 %** de la dépense éligible TTC (très modestes / modestes / intermédiaires), et **100 %** toutes aides comprises.
+
+Les deux sont dans les données (`mprAmpleur.ecretement`, `ecretementGeste`) et chacun est affiché dans son parcours. Voir la question B1.
+
+### 2. Nouvelle structure de `src/data/aides.ts` (validée le 20 octobre 2026)
+
+- **Types** :
+  - `Travaux` : la liste principale, plus `depose-cuve-fioul`, `audit`, `reseau-chaleur` ;
+  - `Equipement` : 8 réponses ;
+  - `Profil` ;
+  - `Poste` : 14 postes du barème.
+- **`mprParGeste: Record<Poste, CasGeste>`**, un des trois cas par poste :
+  - `aide-seul` : `forfaits` par profil, `plafondDepenseHT`, `condition` (l'audit) ;
+  - `ampleur-seulement` : `depuis` (2026-09-01), `precision` ;
+  - `non-eligible` : **`depuis`** (date de fin de l'aide, `null` si jamais aidé), **`motif`** (phrase affichée), **`raison`** (raison technique, jamais affichée). Ce sont les deux ajouts demandés : la chaudière gaz porte `depuis: '2025-01-01'`.
+- **Autres données** :
+  - `mprAmpleur` : taux, plafonds, écrêtement, conditions, non-cumul CEE, accompagnateur ;
+  - `ecretementGeste`, `calendrierPassoires` (31 décembre 2027 et 1er janvier 2028), `mprStatuts`, `mprGesteConditions` ;
+  - `plafondsRessources` (2026, hors Île-de-France et Île-de-France) et `plafondsPour(personnes, idf)`.
+- **Liens avec le simulateur** :
+  - `postesDesTravaux` et `postesDesEquipements` : réponses → postes ;
+  - `preselectionPour(poste)` : cases cochées d'avance sur les pages solutions.
+- **CEE, Éco-PTZ et TVA** gardent la forme `AideNationale`, avec un nouveau champ facultatif `equipements` : une règle propre à un équipement remplace la règle « chauffage ». Sans lui, une chaudière gaz recevait le « oui » général du chauffage pour l'Éco-PTZ et la TVA (constaté pendant les tests).
+- Pour les trois « Autres démarches », les CEE, l'Éco-PTZ et la TVA disent **« à vérifier »** : aucune source du barème ne les couvre.
+- **Supprimé** : `ceeMontantMisEnAvant` (7 500 €) et toute valeur CEE en euros.
+- **Corrections demandées** :
+  - texte du Coup de pouce : réservé depuis le 1er septembre 2026 aux PAC disposant d'un agrément officiel ;
+  - commentaire de `tva-reduite` : 18 juillet 2026, arrêté du 13 juillet 2026, article 92 de la loi de finances pour 2026, 1° bis de l'article 30-0 D ter de l'annexe IV du CGI.
+
+### 3. Le simulateur
+
+**Quatre questions** : statut, code postal, foyer, travaux.
+
+**Question 3, « Votre foyer »**, deux champs côte à côte (empilés sur téléphone) :
+- nombre de personnes de 1 à « 6 et plus ». « 6 et plus » fait apparaître un champ « Nombre exact » (6 à 20) : les plafonds augmentent avec chaque personne, et calculer un foyer de 8 avec les plafonds de 6 l'aurait classé trop haut ;
+- quatre tranches de revenu fiscal de référence **écrites en euros** (« entre 25 394 € et 32 553 € »), recalculées selon le nombre de personnes et l'Île-de-France (d'après le code postal). Aucune couleur à choisir.
+
+**Question 4, « Vos travaux »** :
+- « Chauffage » coché fait apparaître « Quel équipement de chauffage ? » (8 réponses, liste validée), obligatoire ;
+- groupe distinct « Autres démarches » : dépose d'une cuve à fioul, audit énergétique, raccordement à un réseau de chaleur ;
+- « Je ne sais pas encore » est exclusif.
+
+**Résultat**
+- Un rappel de la situation retenue (« Calcul pour un foyer de 2 personnes, revenu fiscal de référence entre … : revenus modestes »).
+- MaPrimeRénov' donne **une ligne par poste choisi**, dans l'un des trois cas :
+  - **aidé seul** : forfait selon le profil, plafond de dépense, écrêtement du geste, conditions, calendrier des passoires F et G ;
+  - **revenus supérieurs** sur un poste aidé : « Non », pas de forfait, renvoi aux 10 % de la rénovation d'ampleur ;
+  - **plus aidé seul** : « Sous conditions », date de sortie, renvoi à la rénovation d'ampleur, sans montant ;
+  - **non éligible** : le motif lisible, avec sa date.
+- Équipement « Je ne sais pas encore » : les deux PAC qui ouvrent un forfait, plus une ligne « les autres chauffages », générée depuis les données.
+- **Ligne « rénovation d'ampleur »** : « jusqu'à N % », puis **« sous réserve que votre logement remplisse ces conditions : »** suivi des conditions en toutes lettres, avant tout le reste ; ensuite plafonds, écrêtement, accompagnateur, non-cumul avec les CEE.
+- **Outre-mer** : le guide renvoie à un guide spécialisé, dont le barème n'est pas dans le simulateur. Les lignes par geste y sont donc « À vérifier », sans montant, et la rénovation d'ampleur « Non » (réservée à la métropole).
+- **Locataires** : « Non » à MaPrimeRénov', mais toujours les CEE et la TVA (R4). **Bailleurs** : l'engagement de location est rappelé.
+
+**Pages**
+- Titre « Estimez vos aides en **quatre** questions » sur `/aides-renovation` et sur la page PAC air-eau (« À la quatrième… »). L'accueil titre seulement « Estimez vos aides », sans nombre de questions : rien à changer.
+- La page PAC air-eau arrive avec « Chauffage » et « Pompe à chaleur air/eau » cochés : `equipementSimulateur: 'pac-air-eau'` est désormais un `Poste`.
+
+### 4. La page `/aides-renovation`
+
+- **MaPrimeRénov'** :
+  - les cinq gestes, lus dans les données, avec leurs montants de l'intermédiaire au très modeste ;
+  - encadré « Les autres travaux restent aidés en rénovation d'ampleur » (et chaudière gaz depuis 2025, PAC air-air jamais) ;
+  - le parcours accompagné donne ses taux et ses conditions.
+- **Profils** : la phrase et la pastille Rose disent « aucun droit par geste ; 10 % en rénovation d'ampleur ». Chaque pastille indique ses droits.
+- **Bandeau de chiffres** :
+  - « jusqu'à 11 000 € » est gardé, avec le libellé « MaPrimeRénov' pour une pompe à chaleur géothermique ou solarothermique, revenus très modestes » ;
+  - la tuile CEE (« plus de 7 500 € ») est **supprimée** et remplacée par « jusqu'à 80 % des travaux en rénovation d'ampleur, revenus très modestes ».
+- **« Ce qu'il faut retenir »** : CEE sans montant ; MaPrimeRénov' « de 300 € à 11 000 € selon le geste et vos revenus, pour 5 gestes seulement ».
+- **Section CEE** : « plus de 7 500 € » supprimé ; ajout de « pas de barème officiel en euros » et du Coup de pouce réservé aux PAC agréées.
+- **Section TVA** : texte du ticket appliqué, en trois critères et la phrase sur les appareils mobiles.
+- **Tableau « ce qui se cumule avec quoi »** : relu ligne par ligne contre le guide (cumuls par geste et en rénovation d'ampleur), **tout reste juste**, rien de modifié.
+- **Date de vérification** : 20 octobre 2026.
+
+### 5. Vérifications
+
+- `npm run build` sans erreur ; `scripts/verifier-build.mjs` passe.
+- **Type** : `@astrojs/check` n'est pas installé dans le projet (non ajouté). Le compilateur TypeScript 5.6.3, lancé à part, trouve 3 erreurs, **les mêmes 3 que sur la version validée** (types Node et modules `.astro` inconnus d'un tsc seul) ; aucune dans le code de ce ticket.
+- **Même résultat sur les trois pages** (accueil, `/aides-renovation`, PAC air-eau) pour les six cas : **OUI pour les six**. Test automatisé, propriétaire occupant, code postal 31000, 2 personnes.
+
+| Cas | MaPrimeRénov' par geste | Rénovation d'ampleur | CEE | Éco-PTZ | TVA 5,5 % |
+|---|---|---|---|---|---|
+| Très modeste, PAC air-eau | **Oui, jusqu'à 5 000 €** (plafond de dépense 12 000 € HT) | Sous conditions, jusqu'à 80 % | Sous conditions (sans montant) | Oui, jusqu'à 15 000 € | Oui |
+| Très modeste, isolation seule | **Sous conditions** : plus aidée seule depuis le 1er septembre 2026, renvoi à l'ampleur | Sous conditions, jusqu'à 80 % | Oui (sans montant) | Oui, jusqu'à 50 000 € | Oui |
+| Très modeste, chaudière gaz | **Non** : « plus financée depuis le 1er janvier 2025… » | Sous conditions, jusqu'à 80 % | Sous conditions | **Non** | **Non** (20 %) |
+| Supérieur, PAC air-eau | **Non** : pas de forfait, renvoi aux 10 % | Sous conditions, jusqu'à 10 % | Sous conditions | Oui, jusqu'à 15 000 € | Oui |
+| Supérieur, isolation seule | Sous conditions : plus aidée seule | Sous conditions, jusqu'à 10 % | Oui | Oui, jusqu'à 50 000 € | Oui |
+| Supérieur, chaudière gaz | Non (motif daté) | Sous conditions, jusqu'à 10 % | Sous conditions | Non | Non (20 %) |
+
+- **Autres cas testés** :
+  - Île-de-France, 3 personnes (tranches 42 357 / 51 564 / 71 846 €, conformes au guide) ;
+  - 7 personnes hors Île-de-France (51 137 / 65 544 / 92 621 €, soit 5 personnes plus 2 × l'incrément) ;
+  - chauffage « je ne sais pas » ;
+  - les trois autres démarches (800 €, 400 €, 800 € pour un profil modeste) ;
+  - travaux « je ne sais pas » (les cinq forfaits) ;
+  - locataire ; outre-mer (97400) ; bailleur avec PAC air-air (MaPrimeRénov' « Non », TVA « Sous conditions » avec les critères) ;
+  - messages d'erreur : tranche manquante, équipement manquant.
+- **Aucun montant CEE en euros** (grep sur `src/data`, `src/pages`, `src/components`, `src/scripts`) :
+  - plus rien dans `aides.ts`, le simulateur, l'accueil ni `/aides-renovation` ;
+  - **reste** : `src/data/solutions/pompe-a-chaleur-air-eau.ts`, l. 76 (« 6 500 € de prime CEE »), laissé volontairement : c'est une page solution, que le point 5 du ticket demande d'inventorier sans la corriger (voir la question B2).
+- **Section TVA**, contrôlée sur le HTML produit :
+  - « A++ », « A+ », « réseau numérique », « date de signature du devis », « fixes », « 18 juillet 2026 » : **présents** ;
+  - « Wi-Fi » : **absent** ;
+  - ⚠️ « **12 kW** » : **présent une fois**, dans le texte imposé par le ticket lui-même (« pour une puissance thermique nominale de 12 kW ou moins »). Le cas des plus de 12 kW n'est pas mentionné. Les deux consignes du ticket se contredisent : voir la question B3.
+- **375, 768, 1 024 et 1 440px**, sur `/aides-renovation`, la page PAC air-eau et l'accueil, à chaque étape (page, question 3, question 4 avec l'équipement ouvert, résultat déplié) : **aucun débordement, aucune cible sous 44px**.
+- **Captures** dans `captures/bareme-aides/` :
+  - `aides-renovation-{375,768,1024,1440}.png` ;
+  - `simulateur-etape3-*.png`, `simulateur-etape4-*.png`, `simulateur-resultat-*.png`.
+
+### 6. Inventaire des montants d'aide faux ailleurs sur le site (NON corrigés)
+
+Méthode : recherche des passages qui citent MaPrimeRénov', l'Anah, les CEE, une prime énergie ou un Coup de pouce **avec un montant en euros**, puis lecture de chacun. Les coûts de travaux, les montants de l'Éco-PTZ (inchangé) et les montants encore exacts sont écartés ; les montants exacts sont listés à part.
+
+**Pages solutions et composants**
+- `src/data/solutions/pompe-a-chaleur-air-eau.ts`, l. 76 : **« 6 500 € de prime CEE »** (aucun barème CEE en euros) ; la précision « ≃ 5 000 € de MaPrimeRénov' » n'est vraie que pour les revenus très modestes.
+- Même fichier, l. 46 (argument de l'en-tête) : **« plus de 11 000 € d'aides »** (5 000 € de MaPrimeRénov' plus 6 500 € de CEE non sourçables).
+- `src/components/SimulateurAides.astro` (accroche de l'accueil) : « Augmentez la valeur de votre bien de plus de 32 000 € ». Ce n'est pas un montant d'aide, mais **c'est exactement l'ancien maximum de la rénovation d'ampleur** (80 % × 40 000 €), et son commentaire le dit « non confirmé ». À surveiller.
+
+**Articles de blog : montants faux**
+
+| Article (`src/content/blog/`) | Ligne | Valeur en cause | Pourquoi c'est faux |
+|---|---|---|---|
+| `comment-ameliorer-simplement-le-dpe-dun-logement-avec-un-chauffe-eau-thermodynamique.md` | 148 | MaPrimeRénov' **1 200 €** | Le chauffe-eau thermodynamique n'est plus aidé seul |
+| (même article) | 150 | CEE **300 €** | CEE en euros |
+| (même article) | 19, 154 | reste à charge **1 500 €** | Déduit des deux montants ci-dessus |
+| `comment-financer-une-pompe-a-chaleur-les-aides-possibles.md` | 15 | « CEE & Coup de pouce Chauffage : jusqu'à **5 100 €** » | CEE en euros |
+| (même article) | 91 | CEE « jusqu'à **4 000 €** » | CEE en euros |
+| `installer-une-pompe-a-chaleur-en-appartement-est-ce-possible-guide-complet.md` | 150 | « jusqu'à **9 450 €** d'aides cumulées (MaPrimeRénov' et CEE) » | Le maximum de MaPrimeRénov' est 5 000 € ; le reste repose sur des CEE |
+| `la-technologie-inverter-pour-pompes-a-chaleur-fonctionnement-avantages-et-couts.md` | 168 | « Prime Effy… jusqu'à **4 450 €** » | CEE en euros (et un nom commercial) |
+| `poele-a-granules-ou-pompe-a-chaleur-air-air-quel-systeme-choisir-pour-votre-logement.md` | 204 | poêle à granulés MaPrimeRénov' « Éligible (jusqu'à **4 000 €**) » | Le bois est sorti du parcours par geste |
+| (même article) | 205 | CEE poêle « jusqu'à **2 500 €** » | CEE en euros |
+| (même article) | 17 | « poêle (qui bénéficie d'aide MaPrimeRénov') » | Plus vrai seul |
+| `pompe-a-chaleur-air-eau-reversible-fonctionnement-avantages-et-couts-pour-un-confort-toute-lannee.md` | 247 | CEE « entre **1 000 € et 3 000 €** » | CEE en euros |
+| `pompe-a-chaleur-ou-chaudiere-quel-systeme-choisir-pour-alimenter-un-plancher-chauffant-en-2025.md` | 124 | MaPrimeRénov' « jusqu'à **16 560 €** » | Aucun montant du barème ne correspond |
+| `quel-systeme-de-chauffage-est-le-plus-rentable-comparatif-complet-sur-10-15-30-et-plus.md` | 152 | subventions maximales « **10 000 €** air/eau, **16 000 €** géothermie » | Au-delà des forfaits ; repose sur des CEE |
+| `renovation-thermique-reussir-lite-et-les-ponts-thermiques.md` | 189 | Parcours accompagné « jusqu'à **63 000 €** » | Ancien barème ; maximum actuel 80 % de 40 000 € HT |
+| `rentabilite-des-pompes-a-chaleur-guide-complet-pour-maximiser-votre-retour-sur-investissement.md` | 137, 156 | aides cumulées PAC air/eau **10 500 € (2025)**, et le calcul de rentabilité qui en découle | Ancien barème et CEE |
+| `tout-savoir-sur-les-pompes-a-chaleur-hybrides-fonctionnement-avantages-et-installation.md` | 183 | MaPrimeRénov' **3 000 à 5 000 €** pour une PAC hybride | La PAC hybride n'est pas dans les cinq gestes |
+| (même article) | 184 | CEE **3 000 à 5 100 €** | CEE en euros |
+| `tout-savoir-pour-obtenir-la-prime-de-renovation-certificats-deconomies-denergie-cee.md` | 168 | MaPrimeRénov' « peut atteindre **20 000 €** » | Ne correspond à aucun plafond actuel |
+| `travaux-de-renovation-energetique-dans-quel-ordre-les-effectuer-guide-complet.md` | 69 | audit « **50 %** du montant, dans la limite de 500 € » | Ancienne règle ; aujourd'hui forfait de 500 / 400 / 300 €, conditionné à un geste de travaux |
+| (même article) | 15 | « jusqu'à 500 € » | Exact pour les très modestes, mais sans la condition |
+| `pompe-a-chaleur-haute-temperature-avantages-inconvenients-et-applications.md` | 142 | MaPrimeRénov' « jusqu'à **4 000 €** » pour une PAC haute température | Le maximum air/eau est 5 000 € ; 4 000 € correspond au profil modeste. À reformuler |
+
+**Articles de blog : à vérifier** (non tranché)
+- `tout-comprendre-sur-laide-financiere-maprimerenov-et-comment-lobtenir.md`, l. 175 : « jusqu'à 20 000 € d'aides sur 5 ans » par logement. Le guide cite une limite de 20 000 € par logement sur 5 ans dans un autre contexte (PDF p. 26) : la règle mérite d'être relue avant de trancher.
+- `travaux-de-renovation-energetique-dans-quel-ordre-les-effectuer-guide-complet.md`, l. 260 : « jusqu'à 11 000 € pour des travaux de rénovation énergétique ». Vrai seulement pour une PAC géothermique et des revenus très modestes.
+- `pompe-a-chaleur-et-chauffe-eau-quelles-sont-les-meilleurs-solutions-pour-la-production-deau-chaude.md`, l. 153 à 155 : tableau qui cite « MaPrimeRénov', prime énergie » comme aides des solutions d'eau chaude, chauffe-eau thermodynamique compris (plus aidé seul). Éligibilité, sans montant.
+
+**Montants encore exacts**, relevés pour mémoire : MaPrimeRénov' jusqu'à 5 000 € (air-eau) et 11 000 € (géothermie) pour les très modestes, dans :
+- `comment-financer-une-pompe-a-chaleur-les-aides-possibles.md` (l. 13) ;
+- `pompe-a-chaleur-geothermique-tout-ce-que-vous-devez-savoir.md` (l. 15 et 157) ;
+- `pompe-a-chaleur-air-eau-reversible-…` (l. 180 et 246) ;
+- `quel-type-de-pompe-chaleur-pour-chez-soi-guide-complet.md` (l. 22, sans préciser le profil).
+
+**Au-delà des montants** : une recherche automatique trouve **environ 16 articles** qui présentent MaPrimeRénov' comme une aide possible pour l'isolation, les fenêtres, la VMC, le bois, la chaudière gaz ou les chauffe-eau, sans montant. Ce comptage est approximatif ; la liste précise demandera une lecture article par article.
+
+### Questions en attente de réponse (barème des aides)
+
+- **B1. Écrêtement** : le ticket donnait 100 / 90 / 80 / 50 % sans préciser le parcours. Le guide les attribue à la rénovation d'ampleur, et donne 90 / 75 / 60 % (MaPrimeRénov' + CEE) et 100 % (toutes aides) pour le parcours par geste. J'ai appliqué les deux, chacun à son parcours. Est-ce bien votre lecture ?
+- **B2. « 6 500 € de prime CEE » et « plus de 11 000 € d'aides »** sur la page PAC air-eau : laissés en place (point 5 : inventorier sans corriger), alors que le point 6 demandait « plus aucun montant CEE en euros dans les pages ». Je les corrige dans un prochain ticket, ou maintenant ?
+- **B3. « 12 kW »** : votre texte TVA contient « 12 kW ou moins », et le contrôle demandait l'absence de « 12 kW ». J'ai gardé votre texte. Faut-il retirer la mention de la puissance (la condition deviendrait alors incomplète), ou était-ce le cas des plus de 12 kW qu'il fallait exclure ?
+- **B4. Taux de repli de la TVA** (« 20 % sur le matériel et 10 % sur la pose » si un critère manque) : phrase laissée, **non vérifiée**. L'arrêté du 13 juillet 2026 ne dit rien du taux de repli ; il est plausible au titre de l'article 279-0 bis du CGI.
+- **B5. Outre-mer** : faute du guide spécialisé, les lignes par geste y sont « À vérifier ». Voulez-vous que j'aille chercher le barème outre-mer de l'Anah ?
+- **B6. Texte du résultat en 16px** : tout le panneau de résultat du simulateur est en 16px, comme avant ce ticket (hors des contrôles demandés). Faut-il le passer à 18px, au prix d'un résultat plus long ?
+- **B7. Ordre des corrections** de l'inventaire (point 6) : 20 articles avec des montants faux, environ 16 avec des éligibilités périmées, et la page PAC air-eau.
+
+---
+
+## Clôture du barème + refonte visuelle des pages solutions (20 octobre 2026)
+
+Ticket en deux parties. Partie A (chiffres faux) faite en premier. Le travail a été interrompu une fois en cours de route, puis repris : tout ce qui suit est l'état final, vérifié.
+
+### PARTIE A — Clôture du barème des aides
+
+**A1. Écrêtement** (`src/data/aides.ts`, `src/scripts/simulateur-aides.ts`)
+- Parcours par geste : MaPrimeRénov' + CEE plafonnés à 90 / 75 / 60 % **« du montant TTC de vos travaux »** (formulation de l'Anah). L'écrêtement ne mentionne plus la « dépense éligible ». Revenus supérieurs : sans objet.
+- « 100 % toutes aides » : remplacé par la phrase du guide (`ecretementGeste.toutesAides`) : « Les aides des collectivités peuvent s'ajouter : l'ensemble ne doit pas excéder le montant total des travaux. »
+- Rénovation d'ampleur : deux champs distincts.
+  - `mprAmpleur.taux` (80 / 60 / 45 / 10 %) est le taux de l'aide.
+  - `mprAmpleur.ecretement` (100 / 90 / 80 / 50 %) est le plafond total TTC.
+  - Le simulateur affiche les deux ensemble : « Plafond total, toutes aides comprises : N % du montant TTC des travaux (à ne pas confondre avec le taux de l'aide, M %) ». Vérifié : aucun mélange.
+- Source citée en commentaire : « MaPrimeRénov' — Le mode d'emploi », Anah, septembre 2026, fiches 01, 02, 03, 05 et 07.
+
+**A2. Page PAC air-eau** (`src/data/solutions/pompe-a-chaleur-air-eau.ts`)
+- Tuile « Aides » :
+  - le montant est lu dans `mprParGeste['pac-air-eau']`, profil très modeste (`forfaitMprEnChiffres`) ;
+  - libellé « MaPrimeRénov' » ;
+  - précision « Pour les revenus très modestes. Prime CEE en plus, montant variable selon l'installateur. » ;
+  - « 6 500 € de prime CEE » supprimé.
+- L'argument « plus de 11 000 € d'aides » devient « Quatre aides cumulables : MaPrimeRénov', prime CEE, TVA à 5,5 % et éco-PTZ ».
+- **Nouveau contrôle, en avertissement** (`src/pages/solutions/[slug].astro`, en tête du module) :
+  - il lit le source de chaque fichier de `src/data/solutions/` ;
+  - il signale tout montant en euros à moins de 60 caractères de « MaPrimeRénov' », « CEE », « prime énergie » ou « Coup de pouce », avec le fichier, la ligne et le passage ;
+  - la construction continue.
+- Test du contrôle, fait à part :
+  - détectés : « 6 500 € … prime CEE », « 11 000 € d'aides MaPrimeRénov' », « Coup de pouce de 4000 euros » ;
+  - non détecté, comme prévu : le coût du compresseur (« 2 000 à 4 000 € », aucun nom d'aide à côté).
+- Le contrôle lit aussi les commentaires du code. Celui de la ligne 46, qui citait l'ancien montant, a été réécrit sans montant.
+
+**A3. TVA des PAC air/air** (`tvaPacAirAir` dans `aides.ts`, section TVA de `/aides-renovation`)
+- Le texte du ticket est appliqué :
+  - trois conditions ;
+  - 12 kW ou moins : A++ en monosplit, A+ en multisplit ;
+  - au-delà de 12 kW : 145 % / 250 % ;
+  - appareils en toiture : 130 % / 150 % ;
+  - taux applicable à la date de signature du devis.
+- En commentaire : l'arrêté du 13 juillet 2026 (NOR CPPE2619005A) et l'arrêté correctif du 14 août 2026, applicable au 10 septembre 2026.
+- Le contrôle « absence de 12 kW » est supprimé. Il est remplacé par un **avertissement** : la section doit contenir « 12 kW », « 145 », « 250 », « A++ » et « A+ » (`mentionsAttendues`). Il ne se déclenche pas.
+- ⚠️ **L'arrêté correctif du 14 août est connu par SYNASAV seulement, pas par Légifrance.** C'est noté en commentaire dans `aides.ts` et dans `/aides-renovation` (« À CONFIRMER SUR LÉGIFRANCE »). **Akelia doit confirmer avant la mise en ligne.**
+
+**A4. Taux de repli de la TVA** : en commentaire dans `aides.ts`.
+- Fourniture à 20 %, pose à 10 % : BOFiP BOI-TVA-LIQ-30-20-90-20 du 9 septembre 2026, § 50, 80 et 100.
+- Exclusion de la fourniture : la PAC air/air est nommée dans l'article 30-00 A de l'annexe IV du CGI.
+- Logement achevé depuis plus de deux ans : article 279-0 bis du CGI.
+- Attestation du client sur le devis ou la facture.
+- Les deux ajouts du ticket (logement de plus de deux ans, attestation) sont aussi dans le texte affiché.
+
+**A5. Outre-mer** : aucun barème construit.
+- Le verdict reste « À vérifier », avec la phrase : « Les montants outre-mer suivent un barème distinct, que ce simulateur ne couvre pas. Rapprochez-vous de l'Anah. »
+- Un commentaire signale la ligne à rouvrir si Akelia recrute des artisans ultramarins.
+
+**A6. Texte du résultat** : tout le panneau de résultat est en `text-corps` (1,125rem = 18px) : lignes, explications, listes et intertitres. Les boutons sont en 18px et 20px.
+
+**A7. Une seule source de vérité.** Les articles de blog ne portent plus de montant d'aide. À la place : une phrase et le lien « [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre) ». Ordre suivi :
+1. `pompe-a-chaleur-air-eau.ts` (point A2) ;
+2. **les 20 articles à montants faux** de l'inventaire précédent : tous corrigés, montants retirés ;
+3. **les articles à éligibilité périmée** : lus un par un, **17 articles corrigés** (liste ci-dessous) ;
+4. `SimulateurAides.astro` : « plus de 32 000 € » supprimé ; l'accroche devient « Augmentez la valeur de votre bien. ».
+
+Articles corrigés à l'étape 3 (`src/content/blog/`) :
+- `chauffe-eau-electrique-vs-thermodynamique-quel-choix-pour-votre-maison.md` : 4 passages, le chauffe-eau thermodynamique n'est plus aidé seul ;
+- `comment-ameliorer-simplement-le-dpe-dun-logement-avec-un-chauffe-eau-thermodynamique.md` : 3 passages ;
+- `comment-ameliorer-le-dpe-dun-studio.md` : fenêtres, chauffe-eau, isolation ;
+- `mon-systeme-de-chauffage-est-il-compatible-avec-une-pompe-a-chaleur-….md` : isolation ;
+- `poele-a-granules-ou-pompe-a-chaleur-air-air-….md` : tableau de synthèse et « Choisissez un poêle si » ;
+- `pompe-a-chaleur-est-elle-vraiment-adaptee-a-tous-les-logements.md` : isolation ;
+- `quel-systeme-de-chauffage-choisir-pour-une-renovation.md` : chaudière biomasse ;
+- `pompe-a-chaleur-ou-chaudiere-…-plancher-chauffant-en-2025.md` : bois, et « couvrant parfois 80 % » retiré ;
+- `pourquoi-il-est-indispensable-que-vous-installiez-une-vmc-chez-vous.md` ;
+- `pourquoi-la-vmc-est-le-parent-pauvre-….md` : 2 passages ;
+- `quel-systeme-de-chauffage-pour-un-plancher-chauffant.md` : chaudière bois, 2 passages ;
+- `triple-vitrage-vs-double-vitrage-….md` : fenêtres ;
+- `tout-comprendre-sur-laide-financiere-maprimerenov-et-comment-lobtenir.md` :
+  - l. 11 : « finance isolation, chauffage, ventilation… tout le monde peut y prétendre » ;
+  - l. 184 : projets successifs (isolation, puis fenêtres) ;
+- `choisir-son-isolation-murale-ite-ou-iti-le-comparatif-technique.md` : forfaits ITE / ITI ;
+- `devenir-autonome-en-energie-en-associant-pompe-a-chaleur-et-panneaux-solaires.md` : « accessible à tous les propriétaires » ;
+- `chaudiere-a-cogeneration-….md` :
+  - plus aucune chaudière gaz financée depuis le 1er janvier 2025 ;
+  - biomasse et hybride plus aidées seules ;
+  - affirmation « plus de primes CEE depuis 2024 » **retirée sans remplacement** : je ne l'ai pas vérifiée (question C5).
+
+Relus et laissés tels quels, car toujours justes :
+- `ameliorer-le-dpe-…` (l. 93) et `isolation-thermique-pourquoi-…` (l. 162) : rénovation globale / d'ampleur ;
+- `isolation-thermique-ete-et-hiver-…` (l. 139) : règle RGE ;
+- `faq-pompes-a-chaleur-…` (l. 412) et `comment-financer-…` (l. 51) : PAC air-eau, géothermique, solaire ;
+- `pompe-a-chaleur-et-chauffe-eau-…` (l. 79 et 99) : PAC avec ballon.
+
+Laissés tels quels, non tranchés (question C4) :
+- `comment-choisir-entre-climatisation-gainable-et-multi-split-….md` (l. 133) ;
+- `rafraichir-une-maison-sans-surconsommer-….md` (l. 15).
+
+Les trois cas « à vérifier » restent en place, comme demandé : 20 000 € sur 5 ans, 11 000 €, tableau eau chaude. J'attends vos vérifications pour l'étape 2.
+
+### PARTIE B — Pages solutions : refonte visuelle (gabarit PAC air-eau)
+
+**Fichiers**
+- Nouveaux :
+  - `src/components/solutions/NoteDifficulte.astro` ;
+  - `src/components/solutions/Illustration.astro` (image ou substitut neutre) ;
+  - `src/utils/echelle.ts` (couleur interpolée, mot de difficulté).
+- Modifiés :
+  - `src/pages/solutions/[slug].astro` ;
+  - `src/components/solutions/TravauxSolution.astro` ;
+  - `src/components/ParcoursAkelia.astro` ;
+  - `src/components/AnimationScenes.astro` ;
+  - `src/styles/global.css` ;
+  - `src/data/solutions/type.ts` et `pompe-a-chaleur-air-eau.ts`.
+
+**B1. Performances**
+- Quatre tuiles blanches sur fond crème. Chacune contient :
+  - une illustration de 112px ;
+  - le titre ;
+  - la valeur en gros (3rem) et en couleur ;
+  - la précision en italique.
+- Supprimés : la barre dégradée de 8px, le repère rond, la lettre en pastille, et les jetons `echelle-a` à `echelle-g`, devenus inutiles.
+- Disposition : 1 colonne sous 480px, 2 ensuite, 4 à partir de 1 280px.
+- Les lettres sont placées sur l'échelle de difficulté : A vert, G rouge.
+- **Illustrations communes**, reconnues par leur nom de fichier :
+  - `src/assets/solutions/communs/performance-efficacite.png` ;
+  - `performance-impact.png` ;
+  - `performance-economie.png` ;
+  - `performance-complexite.png` ;
+  - formats acceptés : png, jpg, webp ou svg.
+- Tant qu'elles manquent, un substitut neutre de même taille s'affiche (cercle crème, pointillés, pictogramme d'image). Il suffit de déposer les fichiers, sans toucher au code.
+- Les trois fautes du ticket étaient déjà corrigées : « Impact environnemental », « frigorigènes », « extérieur et intérieur ».
+
+**B2. Note de difficulté**
+- Cinq jetons `difficulte-1` à `difficulte-5` (valeurs et contrastes plus bas). Les demi-points sont mélangés entre leurs voisins (`color-mix`).
+- Le mot est **tiré de la note**, dans un vocabulaire figé : « simple » de 1 à 1,5, « moyen » de 2 à 3, « difficile » de 3,5 à 5. `difficulteTexte` est supprimé.
+- Affichage « 2,5/5 — moyen », avec une jauge de 5 segments colorés.
+- **Deux emplacements seulement** :
+  - la tuile « Complexité des travaux » ;
+  - l'en-tête de chaque parcours (« Rénovation 2,5/5 — moyen », « Neuf 1/5 — simple »).
+- `performances.complexite` vaut maintenant `{ note: 2.5 }`.
+
+**B3. Est-ce adapté à votre bien ?**
+- Illustrations de 88px, avec substitut neutre. Elles sont propres à chaque page : `src/assets/solutions/<slug>/condition-1.png`, `condition-2.png`, etc., dans l'ordre des conditions.
+- 4 colonnes à partir de 992px, 2 à partir de 480px, 1 en dessous.
+- Texte centré : intitulé en gras suivi de deux points, puis l'explication.
+- Ligne du réseau hydraulique : « Obligatoire : existants, ou à installer pendant les travaux. »
+
+**B4. Est-ce fait pour chez vous ?**
+- Ordre dans la carte : titre, puis verdict, puis texte.
+- Les cinq titres et verdicts du ticket sont appliqués ; le cas 3 passe à « Oui, sous conditions ».
+- Les quatre libellés sont figés (commentés dans le type et dans le gabarit).
+- Nouveaux avertissements : moins de 3 ou plus de 6 cas ; aucun cas « Plutôt non » ni « Non ».
+- Ajout : un pictogramme décoratif dans chaque étiquette (coche, « ! », tiret, croix). Il double le mot, il ne le remplace pas.
+
+**B5. L'avis Akelia**
+- Titre « L'avis Akelia ». La signature est supprimée.
+- Encadré fermé sur les quatre côtés : filet orange de 3px, fond action-50.
+- **Votre préférence est appliquée.** Trois sous-parties, textes d'origine coupés à 40 mots au plus, sans rien ajouter :
+  - « Pourquoi c'est la solution de référence » ;
+  - « Grand froid et prix de l'électricité » ;
+  - « Réparabilité : peut mieux faire ».
+- Le paragraphe sur la **PAC hybride** est versé dans le **cas 4 (passoire thermique)**. C'est là qu'il répond : un pansement pour ne pas isoler.
+- La puce « Isolation obligatoire » est retirée de l'avis : le cas 4 dit déjà « isolez d'abord ».
+
+**B6. Parcours**
+- Titre « Votre projet, étape par étape » (« Étape par étape » dans le sommaire).
+- À partir de 992px : 4 cartes en escalier montant, chacune 5rem plus haut (environ un quart de sa hauteur), reliées par une flèche orange en diagonale.
+- En dessous : vertical, numéroté, relié par un filet.
+- Balisage `<ol>` ; le décalage est purement CSS (variable `--montee`).
+
+**B7. Animations**
+- Elles réutilisent **`AnimationScenes.astro`**, le composant de l'accueil, étendu. Il n'y a pas de second système.
+- Bandes (`data-scene-bande`) :
+  - posé sur le **contenu** de chaque bande, jamais sur son fond, l'en-tête collant ou la barre de sommaire ;
+  - fondu avec 12px de montée, **une seule fois** ;
+  - déclenchement à 15 % de la bande visible, ou dès qu'elle occupe 15 % de l'écran.
+- Compteurs (`data-compteur`), sur les caractéristiques et les performances :
+  - 800 ms, sortie amortie (cubique) ;
+  - format conservé : « 90–130 », « 5 000 », « 2,5 », « +70 % » ;
+  - largeur figée pendant le décompte : aucun décalage ;
+  - une copie de la valeur finale reste lue par les lecteurs d'écran.
+- Les lettres A et B apparaissent en fondu, sans compteur.
+- **Contenu visible par défaut** : le CSS ne cache que sous `html[data-scenes]`, et le script ne pose cet attribut que si l'animation est possible.
+
+**B8. Appel intermédiaire** : après les cas.
+- Un filet, puis la phrase « Vous vous reconnaissez dans l'un de ces cas ? Un artisan du collectif vérifie la faisabilité chez vous. »
+- Un bouton à contour bleu nuit, fond blanc : « Faire étudier mon projet », vers /devis.
+- Pas d'aplat orange : il ne concurrence pas l'appel du bas.
+
+**B9. Ordre figé des douze bandes**, documenté en tête du gabarit :
+1. tout savoir (blanc) ;
+2. performances (crème) ;
+3. adapté à votre bien (blanc) ;
+4. adapté à votre région (crème) : **facultative**, la bande disparaît si `region` est absent ;
+5. travaux (brume) ;
+6. l'avis Akelia (blanc) ;
+7. pour vous, avec l'appel intermédiaire (lichen) ;
+8. aides (blanc) ;
+9. étape par étape (crème) ;
+10. FAQ (blanc), si `faq` n'est pas vide ;
+11. à lire aussi (bruyère) ;
+12. appel final (bleu nuit).
+
+Deux bandes voisines n'ont jamais le même fond, même quand une bande facultative disparaît. La carte devient une bande à part. Les quatre tuiles de caractéristiques restent quatre ; leurs mesures sont libres par solution, aucune n'impose « €/m² ».
+
+**B10. Contrôles**
+- Passés en **avertissements** (`console.warn`, avec le fichier, le titre et la phrase en cause) :
+  - 15 mots au plus pour un point fort ;
+  - 40 mots au plus pour une sous-partie d'avis (60 avant).
+- Ajoutés, eux aussi en avertissements :
+  - 3 sous-parties d'avis attendues ;
+  - nombre de cas, et au moins un cas négatif ;
+  - montants d'aide en dur (point A2).
+- `scripts/verifier-build.mjs` reste bloquant, et n'a pas changé.
+
+### Vérifications (B11)
+
+- `npm run build` : **sans erreur, sans aucun avertissement**. `verifier-build.mjs` : « 5 pages témoins complètes ».
+- **375, 768, 1 024 et 1 440px** :
+  - débordement horizontal : **0px** ;
+  - cible sous 44px : **aucune** (hors liens dans le texte) ;
+  - texte sous 18px : **aucun parmi les textes créés par ce ticket**.
+- Textes sous 18px qui restent, antérieurs à ce ticket et hors périmètre :
+  - le surtitre de l'en-tête (13,6px) ;
+  - l'étiquette « Chauffage » du simulateur (13,6px) ;
+  - les dates et « Lire la suite » des cartes d'articles (14,4px) ;
+  - le surtitre « Votre projet » de l'appel final (13,6px).
+- **Contrastes des jetons de difficulté**, mesurés (WCAG). Les valeurs de départ n'atteignaient pas 7:1 :
+
+| Jeton | Départ | Retenu | Sur blanc | Sur crème #f7f4ee |
+|---|---|---|---|---|
+| difficulte-1 | #1e6b3a (6,52 / 5,94) | **#1e5e31** | 7,78:1 | 7,08:1 |
+| difficulte-2 | #4a6b1e (6,15 / 5,60) | **#3a5b1e** | 7,79:1 | 7,10:1 |
+| difficulte-3 | #8a5a00 (5,93 / 5,40) | **#774700** | 7,82:1 | 7,12:1 |
+| difficulte-4 | #9b4a12 (6,21 / 5,66) | **#893b12** | 7,78:1 | 7,09:1 |
+| difficulte-5 = refus | #9b2c27 (7,55 / 6,87) | **#972c27** | 7,76:1 | 7,07:1 |
+
+- Demi-points (mélange à 50 %) : de 7,82 à 8,07:1 sur blanc, de 7,12 à 7,35:1 sur crème.
+- ⚠️ Le jeton **`refus`** passe de #9b2c27 à #972c27, ce qui touche aussi l'étiquette « Non ». La différence est invisible, et le texte blanc gagne en contraste (7,55 → 7,76:1).
+- **Sans JavaScript** : aucune bande masquée ; les compteurs affichent leurs valeurs finales (« 90–130 », « 20–25 », « 5 000 », « 5–6 », « +70 % », « 2,5 »).
+- **Animations réduites** (préférence système émulée) : `data-scenes` n'est pas posé, aucune bande masquée, **aucune animation** en cours, valeurs finales affichées tout de suite.
+- **Compteurs en temps normal** : valeurs intermédiaires relevées pendant le décompte (« 49–70 », « 2 711 ») ; valeurs finales exactes après 1,2 s.
+- **Hauteur des bandes à 1 440px** :
+
+| Bande | Hauteur | Image ou élément visuel |
+|---|---|---|
+| Tout savoir | 1 233px | oui (icônes des points forts et des caractéristiques) |
+| Performances | 586px | oui (4 illustrations) |
+| Adapté à votre bien | 491px | oui (4 illustrations) |
+| Adapté à votre région | 722px | oui (carte) |
+| Travaux | 843px | oui (photos des étapes) |
+| L'avis Akelia | 1 045px | non, mais sous 1 200px |
+| **Est-ce fait pour chez vous ?** | **2 006px** | **les pictogrammes des étiquettes seulement : ⚠️ hors critère** |
+| Les aides | 823px | simulateur |
+| Étape par étape | 950px | oui (escalier, flèches) |
+| À lire aussi | 741px | oui (images des articles) |
+| Appel final | 647px | non, sous 1 200px |
+
+La FAQ n'apparaît pas : `faq` est vide.
+- **Captures**, dans `captures/solutions-refonte/` :
+  - avant : `avant-performances-{375,1440}.png`, `avant-bien-{375,1440}.png` ;
+  - après : `apres-performances-{375,1440}.png`, `apres-bien-{375,1440}.png` ;
+  - en plus : `apres-etapes-1440.png`, `apres-travaux-1440.png`, `apres-avis-1440.png`.
+
+### Questions en attente de réponse (clôture du barème et refonte)
+
+- **C1. Arrêté correctif du 14 août 2026** (seuils de 145 / 250 % réservés aux plus de 12 kW hors toiture) : connu par SYNASAV seulement. **À confirmer sur Légifrance avant la mise en ligne.**
+- **C2. « Autonomie énergétique » ou « Économie d'énergie » ?**
+  - Le ticket cite « autonomie énergétique » parmi les quatre mesures.
+  - La page dit « Économie d'énergie » depuis le 19 octobre : la valeur (+70 %, « 3 à 4 fois moins d'énergie consommée ») mesure une économie, pas une autonomie, et le type porte « JAMAIS autonomie ».
+  - J'ai gardé « Économie d'énergie ». Lequel retenez-vous ? Le nom compte : l'illustration commune en dépend.
+- **C3. La bande « Est-ce fait pour chez vous ? » fait environ 2 000px à 1 440px**, sans autre élément visuel que les pictogrammes. Elle dépasse donc le critère de 1 200px.
+  - En trois colonnes, les cartes sont trop étroites et la bande s'allonge (2 038px).
+  - Je n'ai pas raccourci les textes des cas, qui sont rédigés par Akelia.
+  - Trois pistes : une illustration par cas ; un plafond de mots pour les cas (par exemple 60, en avertissement) ; des cartes repliables. Laquelle ?
+- **C4. Deux éligibilités du blog, non tranchées** :
+  - PAC air/air dans une rénovation d'ampleur : `comment-choisir-entre-climatisation-gainable-et-multi-split-….md`, l. 133 ;
+  - protections solaires et brasseurs d'air en Parcours accompagné : `rafraichir-une-maison-sans-surconsommer-….md`, l. 15.
+- **C5. Chaudières gaz et primes CEE** (`chaudiere-a-cogeneration-….md`) : j'ai retiré « plus de primes CEE depuis 2024 », faute de source. Faut-il la rétablir, et avec quelle référence ?
+- **C6. Illustrations à livrer**. Format conseillé : carré, au moins 240px de côté, fond transparent ou clair, au trait.
+  - Performances, communes aux 20 pages : `src/assets/solutions/communs/performance-{efficacite,impact,economie,complexite}.png`.
+  - Conditions de la PAC air-eau : `src/assets/solutions/pompe-a-chaleur-air-eau/condition-1.png` à `condition-4.png`.
+- **C7. Seuils du mot de difficulté** (« simple » jusqu'à 1,5, « moyen » jusqu'à 3, « difficile » au-delà) : fixés par moi, à valider.
+- **C8. Texte de l'appel intermédiaire** (« Vous vous reconnaissez dans l'un de ces cas ? … » / « Faire étudier mon projet ») : rédigé par moi, à valider.
+
+---
+
+## Pages solutions : deuxième passe de design (21 octobre 2026)
+
+Page : /solutions/pompe-a-chaleur-air-eau, gabarit des 19 autres. Ce ticket fait suite à celui du 20 octobre, dont les acquis sont gardés. Les sept points sont faits. Tout ce qui suit a été vérifié dans le site construit (`astro preview`, Chromium sans interface).
+
+**Fichiers**
+- Nouveaux :
+  - `src/components/icones-solutions/` : `PerfEfficacite`, `PerfEnvironnement`, `PerfAutonomie`, `PerfComplexite`, `BienLogement`, `BienEspace`, `BienIsolation` et `BienReseau` (`.astro`), plus `trait.ts` (calibrage) et `index.ts` (registre) ;
+  - `LICENSES.md` (licence MIT de Tabler Icons).
+- Modifiés :
+  - `src/pages/solutions/[slug].astro` ;
+  - `src/components/ParcoursAkelia.astro` ;
+  - `src/components/solutions/TravauxSolution.astro`, `NoteDifficulte.astro`, `TexteMisEnForme.astro` et `Illustration.astro` (commentaire seulement) ;
+  - `src/data/solutions/type.ts` et `pompe-a-chaleur-air-eau.ts`.
+
+### 1. Ordre et couleurs des bandes
+
+- La fin de page devient : FAQ → appel final → à lire aussi.
+- « Est-ce fait pour chez vous ? » passe de lichen à **brume**.
+- « À lire aussi » passe de bruyère à **crème**. Les cartes d'articles sont blanches, elles restent visibles sur ce fond.
+- Les bandes voisines ont toujours des fonds différents, y compris quand une bande facultative disparaît (région ou FAQ) :
+  - 4 crème ou absente / 5 brume ;
+  - 5 brume / 6 blanc / 7 brume ;
+  - 9 crème / 10 blanc ou absente / 11 bleu nuit / 12 crème.
+- ⚠️ **Le pied de page est crème lui aussi** (`Footer.astro`). Il touche donc « À lire aussi », qui est désormais crème et en dernière position. Je n'ai pas touché au pied de page, qui est commun à tout le site. J'ai ajouté un filet `creme-fonce` au bas de la bande pour séparer les deux. **Question D1**.
+- L'ordre figé des douze bandes est mis à jour en tête du gabarit :
+  1. tout savoir (blanc) ;
+  2. performances (crème) ;
+  3. adapté à votre bien (blanc) ;
+  4. adapté à votre région (crème), facultative ;
+  5. travaux (brume) ;
+  6. l'avis Akelia (blanc) ;
+  7. fait pour chez vous, avec l'appel intermédiaire (**brume**) ;
+  8. aides (blanc) ;
+  9. étape par étape (crème) ;
+  10. FAQ (blanc), facultative ;
+  11. **appel final (bleu nuit)** ;
+  12. **à lire aussi (crème)**, facultative.
+
+### 2. Les travaux : bandeau de difficulté à plat
+
+- Le nom du parcours (« Rénovation ») est maintenant **au-dessus**, en titre discret : h3 en 20px gras.
+- Dessous, **une seule ligne** posée sur le fond brume, sans carte ni fond : « Niveau de difficulté », puis la jauge de cinq segments, puis « 2,5/5 — moyen ». C'est la nouvelle variante `enLigne` de `NoteDifficulte`.
+- Hauteur du bandeau :
+  - avant : environ 130px (valeur du ticket ; la capture `avant-travaux-1440.png` le montre) ;
+  - après : **44px** à 768, 1 024 et 1 440px ;
+  - à 375px : **56px**. La ligne passe sur deux lignes, parce que l'intitulé, la jauge et la note font environ 355px pour 343px disponibles.
+- Contraste de la note en couleur sur brume : environ 5,4:1 au moins. Le texte fait 20px en gras : c'est conforme (seuil de 3:1 pour le grand texte), mais en dessous des 7:1 mesurés sur blanc et sur crème.
+- **Le nom du scénario n'est pas supprimé** (**question D2**). Il double l'onglet actif, mais il sert dans deux cas :
+  - sans JavaScript, les parcours s'affichent les uns sous les autres et n'ont pas d'autre titre ;
+  - c'est le h3 du plan de la page.
+  - Si Akelia est d'accord pour le supprimer, je propose de le garder pour les lecteurs d'écran (`sr-only`) et de le cacher à l'écran seulement quand il y a des onglets.
+- Illustrations des étapes : `image` devient facultative dans le type. Si elle manque, un **carré aux coins arrondis sur fond brume**, à la taille finale (300px de côté au plus), prend sa place avec un contour pointillé. Sans ce contour, le carré serait invisible sur la bande, qui est brume elle aussi.
+  - Les images actuelles de l'ancien site sont toujours là : le substitut ne s'affiche donc pas aujourd'hui.
+  - Le ticket parle d'un « substitut neutre qui reste en place ». Il n'existait pas encore pour les travaux : je l'ai créé.
+
+### 3. L'avis Akelia : centré et resserré
+
+- L'encadré est **centré** dans la bande (`mx-auto`). Le texte reste aligné à gauche.
+- Nouvelle variante `serre` de `TexteMisEnForme` :
+  - interligne **1,5**, contre 1,75 avant ;
+  - **0,375rem** entre deux puces, contre 0,75rem.
+- **1,5rem** avant chaque sous-titre, contre 2rem.
+- Hauteur de la bande à 1 440px : 1 013px avant, **895px** après.
+
+### 4. Est-ce fait pour chez vous ? : cartes repliables
+
+- La phrase d'introduction est supprimée. Le champ `introPourVous` est retiré du type, du gabarit et des données : aucune des 19 autres pages ne pourra en remettre une.
+- Chaque carte affiche toujours son titre et son étiquette de verdict. L'explication est dans un `<details>`, **fermé par défaut**, ouvert par un `<summary>` :
+  - libellé « Voir le détail », qui devient « Masquer le détail » une fois la carte ouverte ;
+  - chevron qui pivote ;
+  - cible de 44px.
+- Animation de la hauteur : en CSS seulement (`::details-content` et `interpolate-size`), à l'intérieur de `prefers-reduced-motion: no-preference`.
+  - Un navigateur qui ne connaît pas ces propriétés ouvre la carte d'un coup.
+  - Avec « réduire les animations », il n'y a aucune transition, ni sur la hauteur ni sur le chevron.
+- Le texte replié est **dans le code HTML**, jamais injecté par JavaScript.
+- **Écart avec le ticket du 20 octobre** : les cartes passent sur **3 colonnes à partir de 1 280px** (2 colonnes de 992 à 1 279px, 1 colonne en dessous).
+  - Repliées, elles tiennent en deux rangées. À 1 440 × 900, il y a **623px** du haut du titre au bas de la cinquième carte : les cinq cas tiennent dans un seul écran.
+  - En 2 colonnes, il en faudrait environ 760px : le cinquième cas passerait sous la ligne de flottaison.
+  - Les 3 colonnes avaient été écartées le 20 octobre pour des textes dépliés.
+  - Les cartes sont alignées en haut : en ouvrir une n'étire pas ses voisines.
+- Hauteur de la bande à 1 440px : 2 004px avant, **902px** repliée, 1 923px avec les cinq cartes ouvertes. La question C3 du 20 octobre est résolue par les cartes repliables.
+
+### 5. Votre projet, étape par étape : escalier descendant
+
+- Les cartes descendent de haut à gauche vers bas à droite, avec un décalage d'**un quart de hauteur** par carte. Des flèches orange **descendent** d'une carte à la suivante.
+- Sous 992px : une colonne numérotée, reliée par un trait orange.
+- Le balisage reste un `<ol>`. Le décalage vient uniquement du placement dans la grille CSS.
+- **Mécanique** : une grille de 4 colonnes et 7 rangées égales (`1fr`). La carte n commence à la rangée n et en couvre 4.
+  - Les quatre cartes ont donc **exactement** la même hauteur, celle de la plus remplie. Le décalage vaut exactement un quart de carte.
+  - **Écart avec le ticket : je n'ai pas écrit de hauteur fixe en dur.** À 992px, les colonnes ne font qu'environ 200px de large. Une hauteur en rem assez grande pour 992px laisserait du vide à 1 440px, et une hauteur plus petite ferait déborder le texte. Avec la grille, le résultat est le même (même taille au pixel près, aucune carte ajustée à son propre contenu), sans risque de débordement.
+  - Sous 992px, les rangées sont égales elles aussi (`auto-rows-fr`).
+- Les quatre textes du ticket sont repris mot pour mot, avec les titres « Estimation et devis », « Visite technique », « Installation » et « Suivi et aides ».
+- Un **avertissement** s'affiche à la construction si une étape dépasse 20 mots. Il ne se déclenche pas aujourd'hui (les textes font 13 à 16 mots).
+- ⚠️ Le nouveau texte dit « un artisan vous rappelle **sous 48 heures** ». L'appel final de la même page, `/devis` et le bas des articles disent « **sous 24 à 48 heures** ». J'ai appliqué le texte du ticket. **Question D3**.
+- Hauteur de la bande à 1 440px : 918px avant, **658px** après.
+
+### 6. Les huit icônes en SVG
+
+- Les huit icônes sont des **SVG en ligne**, un composant Astro chacune, dans `src/components/icones-solutions/` :
+  - `fill="none"`, trait en `currentColor` ;
+  - `aria-hidden="true"` ;
+  - aucun `<img>`, aucun fichier externe.
+- L'ancienne convention d'images (`src/assets/solutions/communs/performance-….png` et `<slug>/condition-N.png`) est **abandonnée**. Le code qui cherchait ces fichiers est supprimé, et la question C6 du 20 octobre tombe pour ces huit illustrations.
+- **Calibrage** : les huit partagent le même viewBox (`2 2 20 20`) et le même trait (0,625 unité, `trait.ts`). À 88px, cela donne 2,75px.
+  - Les tracés Tabler réduits dans un assemblage (la clé de `PerfComplexite`) reçoivent un trait recalculé (`trait(échelle)`), pour que le trait apparent reste le même.
+- Source : Tabler Icons 3.49.0, licence MIT. Les tracés sont **recopiés**, sans ajouter de dépendance. Le détail par icône et le texte de la licence sont dans `LICENSES.md`. Aucune attribution sur les pages.
+- ⚠️ **Le radiateur n'existe pas dans Tabler Icons** (vérifié dans les versions 3.35.0 et 3.49.0). Le ticket disait le contraire. `BienReseau` (radiateur à colonnes, robinet thermostatique) est donc dessiné à la main, dans le même style. Le tournevis de `PerfComplexite` n'existe pas non plus dans Tabler : il est dessiné de la même façon. L'immeuble (building) existe bien.
+- Couleur :
+  - `PerfEfficacite` utilise les sept couleurs de l'étiquette énergie européenne, de #00a651 à #ed1c24 ;
+  - `BienIsolation` utilise un vert #7cc47f, un jaune #ffd84d et un rouge clair #f4a09a, avec les lettres A, B, C en couleur du texte ;
+  - les six autres icônes sont monochromes, en `text-texte`.
+- Branchement :
+  - les quatre icônes Perf… sont fixes dans le gabarit. Elles restent à 112px dans les tuiles de performances, taille retenue le 20 octobre ;
+  - les icônes Bien… sont choisies par le nouveau champ `icone` de chaque condition, à 88px. Une condition sans icône affiche le substitut neutre (`Illustration.astro`).
+- ⚠️ **La troisième icône s'appelle `PerfAutonomie`** (une maison avec panneaux solaires), mais la tuile dit toujours « Économie d'énergie », comme le prévoyait la question C2, encore ouverte. Je n'ai pas renommé la tuile. **Question D4**.
+- Les illustrations des travaux ne sont pas concernées : elles restent des images (point 2).
+
+### 7. Vérifications
+
+- `npm run build` passe **sans erreur et sans avertissement**. `verifier-build.mjs` affiche « 5 pages témoins complètes ».
+- **Hauteur de la page à 1 440px : 11 238px avant, 9 682px après (−1 556px).**
+
+| Bande | Fond avant → après | Avant | Après |
+|---|---|---|---|
+| En-tête | crème | 578 | 578 |
+| 1. Tout savoir | blanc | 1 233 | 1 233 |
+| 2. Performances | crème | 586 | 586 |
+| 3. Adapté à votre bien | blanc | 491 | 491 |
+| 4. Adapté à votre région | crème | 722 | 722 |
+| 5. Travaux | brume | 843 | **767** |
+| 6. L'avis Akelia | blanc | 1 013 | **895** |
+| 7. Fait pour chez vous (replié) | lichen → **brume** | 2 004 | **902** |
+| 8. Les aides | blanc | 823 | 823 |
+| 9. Étape par étape | crème | 918 | **658** |
+| 10. FAQ | absente (`faq` vide) | — | — |
+| 11. Appel final | bleu nuit | 647 (12e) | 647 |
+| 12. À lire aussi | bruyère → **crème** | 741 (11e) | 742 (+1px de filet) |
+
+- **Fait pour chez vous, repliée puis dépliée**, aux quatre largeurs :
+  - débordement : 0px, que les cartes soient fermées ou ouvertes ;
+  - les cinq boutons font **44px** ;
+  - hauteur de la bande, repliée puis dépliée : 1 587 / 4 127px à 375px, 1 385 / 2 696px à 768px, 1 083 / 2 172px à 1 024px, 902 / 1 923px à 1 440px.
+- **Sans JavaScript** :
+  - les 5 `<details>` sont fermés au chargement ;
+  - un clic ouvre la carte (`open = true`, 534px de haut) ;
+  - le texte de chaque cas est dans le source HTML (« caniculaires », « géothermie est pourtant », « pansement », « quasi indépendant », le lien vers la PAC air-air).
+- **Animations réduites** (préférence système émulée) :
+  - aucune transition : sur le contenu replié, transition « all 0s » ; sur le chevron, `transition-property: none` ;
+  - la carte a sa hauteur finale dès le clic (534px tout de suite) ;
+  - `data-scenes` n'est pas posé.
+  - Pour comparaison, en mode normal : 45px juste après le clic, puis 534px après 0,5 s.
+- **Cartes d'étapes, hauteur au pixel près** : 159 ×4 à 375px, 132 ×4 à 768px, 261 ×4 à 1 024px, 234 ×4 à 1 440px.
+- **Les huit icônes à 88px, côte à côte** : trait apparent mesuré à **2,750px sur chacune**. La mesure multiplie l'épaisseur calculée de chaque tracé par l'échelle à l'écran, `getScreenCTM`. Capture : `icones-88px-cote-a-cote.png`.
+- **375, 768, 1 024 et 1 440px** :
+  - débordement horizontal : 0px ;
+  - aucune cible sous 44px, sauf deux exceptions admises :
+    - le lien d'évitement « Aller au contenu », masqué tant qu'il n'a pas le focus ;
+    - deux liens **dans le texte** des cas (« notre page dédiée à la géothermie », « PAC air-air »), de 25px de haut, exemptés comme liens dans une phrase ;
+  - textes sous 18px dans les cinq sections touchées : uniquement ceux des cartes d'articles, antérieurs à ce ticket (catégorie à 13,6px, dates et « Lire la suite » à 14,4px). **Aucun texte créé par ce ticket n'est sous 18px.**
+- **Captures** dans `captures/solutions-2e-passe/`, à 1 440 et à 375px :
+  - avant : `avant-{travaux,avis,pour-vous,etapes,a-lire}-{1440,375}.png`. Ces captures ont été prises avec l'en-tête collant visible, qui masque le haut de certaines bandes. Pour l'avis, seule la boîte a été capturée ;
+  - après, en-tête collant masqué : `apres-{travaux,avis,pour-vous,etapes,a-lire,performances,bien}-{1440,375}.png` et `apres-pour-vous-deplie-{1440,375}.png`.
+
+### Questions en attente de réponse (deuxième passe de design)
+
+- **D1. Pied de page crème.** « À lire aussi » (crème) est maintenant la dernière bande et touche le pied de page, crème lui aussi. Un filet `creme-fonce` les sépare pour l'instant. Trois possibilités :
+  - garder le filet ;
+  - changer le fond du pied de page sur tout le site ;
+  - choisir un autre fond pour « À lire aussi » (blanc, par exemple : son voisin est l'appel final en bleu nuit).
+- **D2. Le nom du scénario au-dessus du bandeau** (« Rénovation ») double l'onglet actif. Faut-il le supprimer ? Ma proposition : le garder pour les lecteurs d'écran et le cacher à l'écran quand il y a des onglets. Sans JavaScript, il resterait visible.
+- **D3. Délai de rappel** : « sous 48 heures » (texte du ticket, étape 1) ou « sous 24 à 48 heures » (appel final, /devis, articles) ? Il faut un seul délai sur tout le site.
+- **D4. Troisième tuile de performances** : l'icône représente l'autonomie (maison solaire), mais la tuile dit « Économie d'énergie », avec « +70 % ». Il faut trancher C2 : changer le libellé, ou demander une autre icône.
+- **D5. Icônes dessinées sans tracé Tabler** : le radiateur (`BienReseau`) et le tournevis (`PerfComplexite`), absents de Tabler malgré le ticket. Sont-ils acceptés ? Il en va de même pour les deux dessins propres demandés, `PerfEfficacite` et `BienIsolation`.
+- **D6. Cas en 3 colonnes à partir de 1 280px** : c'est un écart avec le ticket du 20 octobre, justifié par l'objectif des cinq cas sur un seul écran. Une carte ouverte fait alors environ 390px de large, soit environ 38 caractères par ligne. Est-ce acceptable ?
+- **D7. Escalier sans hauteur écrite en dur** : les hauteurs sont identiques au pixel près, mais calculées par la grille (point 5). Est-ce que cela convient, ou faut-il une valeur fixe malgré le risque de débordement à 992px ?
+
+---
+
+## Pages solutions : troisième passe (21 octobre 2026)
+
+Page : /solutions/pompe-a-chaleur-air-eau. Partie A : les réponses aux questions D1 à D7 sont appliquées. Partie B : les huit corrections sont faites. Tout a été vérifié sur le site construit (`astro preview`, Chromium sans interface).
+
+**Fichiers modifiés**
+- Pages : `src/pages/solutions/[slug].astro`, `devis.astro`, `aides-renovation.astro`, `post/[slug].astro`.
+- Composants : `ParcoursAkelia.astro`, `AnimationScenes.astro`, `CommentCaMarche.astro` ; dans `solutions/`, `TravauxSolution.astro` et `TexteMisEnForme.astro`.
+- Icônes : `icones-solutions/PerfAutonomie.astro`, renommée **`PerfEconomie.astro`** et redessinée ; `BienEspace.astro` et `PerfComplexite.astro`, redessinées ; `index.ts`.
+- Données : `src/data/solutions/type.ts`, `pompe-a-chaleur-air-eau.ts`.
+- Styles et licences : `src/styles/global.css`, `LICENSES.md`.
+
+### PARTIE A — Réponses D1 à D7, appliquées
+
+- **D1.** « À lire aussi » passe en **blanc**, et le filet `creme-fonce` est retiré.
+  - Voisinage : appel final (bleu nuit), puis à lire aussi (blanc), puis pied de page (crème).
+  - Sans articles : bleu nuit, puis pied de page.
+- **D2.** Le nom du parcours (« Rénovation ») porte maintenant `data-travaux-titre`.
+  - Quand les onglets s'affichent, le script de `TravauxSolution` lui ajoute `sr-only` : il est caché à l'écran mais reste lu par les lecteurs d'écran et compte dans le plan des titres.
+  - Sans JavaScript, il reste visible : mesuré à 28px de haut, pour les deux parcours.
+- **D3.** Le délai de rappel est « **sous 48 heures** » partout :
+  - l'appel final des pages solutions ;
+  - `/devis` (trois endroits) ;
+  - le bas des articles (`post/[slug].astro`) ;
+  - l'appel final de `/aides-renovation`, qui portait la même phrase.
+  - Il ne reste plus aucun « 24 à 48 heures » dans `src/`. Les articles de blog n'en contenaient pas.
+  - ⚠️ **Écart à valider (question E1)** : l'étape « Fonctionnement » de l'**accueil** (`CommentCaMarche.astro`) disait « **Sous 24 heures**, une entreprise du collectif… ». Je l'ai passée à « Sous 48 heures », par cohérence avec la consigne « partout ». Mais c'était une promesse plus courte, pas seulement une autre formulation.
+  - Comme demandé, Akelia doit confirmer ce délai avant la mise en ligne.
+- **D4.** Troisième tuile de performances :
+  - libellé « Économie d'énergie » ;
+  - valeur **« −70 % »**, avec un vrai signe moins (U+2212). Le compteur l'anime correctement ;
+  - précision « d'énergie consommée par rapport à une chaudière » ;
+  - icône : `PerfAutonomie` est renommée **`PerfEconomie`** et redessinée : une maison vue de face et une flèche descendante à côté, d'après les tracés Tabler home et arrow-down ;
+  - le type documente le signe moins.
+- **D5.** Acceptées, sans changement.
+- **D6.** Sans objet : les cas sont maintenant des lignes (B1).
+- **D7.** La grille de l'escalier est gardée.
+
+### PARTIE B — Les huit corrections
+
+**B1. « Est-ce fait pour chez vous ? » en lignes**
+- Cinq `<details>` empilés dans **un seul bloc blanc**, séparés par un filet `creme-fonce`.
+- Toute la ligne fermée est le `<summary>`, donc cliquable en entier. Sa hauteur minimale est de **56px**.
+- Disposition de la ligne :
+  - à partir de 768px : titre en gras à gauche (h3, 20px), puis l'étiquette de verdict dans une colonne de largeur fixe (15rem), puis le chevron à l'extrême droite ;
+  - sous 768px : l'étiquette passe sous le titre, le chevron reste à droite.
+- Le filet de couleur du verdict est maintenant en **bordure gauche de 3px** (avant : filet supérieur de 6px).
+- Le libellé « Voir le détail » disparaît : le chevron seul signale l'ouverture. Le nom accessible du `<summary>` est « titre + verdict ».
+- Une fois ouverte, l'explication se place sous le titre, alignée sur lui, à **72 caractères au plus** (648px mesurés).
+  - Pour cela, `TexteMisEnForme` reçoit une prop `mesure`. Deux classes `max-w` sur le même élément laissaient l'ordre du CSS choisir ; c'était déjà le cas pour l'avis, corrigé au passage.
+- Ce qui ne change pas : `<details>` fermé par défaut, texte dans le code HTML, animation de la hauteur en CSS, coupée par prefers-reduced-motion.
+
+**B2. Appel intermédiaire**
+- Bouton plein : fond action-500, texte foncé, 56px de haut, 20px semi-gras. C'est le style de l'appel final.
+- La consigne du 20 octobre (« ne pas concurrencer l'appel final ») est retirée du commentaire du gabarit.
+
+**B3. Étapes : un trait continu, pas de flèches**
+- Les quatre flèches sont supprimées.
+- Il reste **un seul trait** : 2px, action-300, sans pointe, du centre de la pastille 1 à celui de la pastille 4. Il passe **derrière** les cartes : on ne le voit que dans les espaces entre elles.
+  - Les centres des pastilles sont alignés, puisque les cartes ont la même taille et sont décalées régulièrement : un seul segment suffit.
+  - Sa position est calculée en pourcentage de la grille, sans JavaScript :
+    - largeur : 75 % de la grille + 3/4 de l'écart entre colonnes ;
+    - hauteur : 3/7 de la grille (escalier) ;
+    - en colonne sous 992px : 75 % de la hauteur + 1,125rem.
+- Les pastilles sont **pleines** (fond action-500, chiffre foncé, 6,87:1) et posées sur le trait.
+
+**B4. Animations : relancées au retour, un seul système**
+- J'ai lu `AnimationScenes.astro`. Les bandes des pages solutions suivent maintenant **exactement le comportement d'une section de l'accueil** :
+  - même observateur que `data-scene` : déclenchement quand 25 % de la bande est visible, ou quand elle occupe 25 % de la hauteur de l'écran ;
+  - même animation qu'un titre de l'accueil : fondu, 20px de montée, 0,5 s ;
+  - `data-etat` est **retiré quand la bande quitte complètement l'écran** et remis à son retour. Plus d'`unobserve` : la fonction `demarrerBandes` et ses réglages propres (15 %, 12px, 0,6 s, une seule fois) sont supprimés ;
+  - les compteurs repartent à chaque apparition, jamais deux décomptes à la fois (`data-decompte`).
+- Les cartes d'étapes sont des **`data-scene-etape`**, comme les étapes de l'accueil :
+  - 30 % de la carte visible dans les 90 % supérieurs de l'écran ;
+  - 0,7 s, 40px de montée ;
+  - **150 ms** d'écart entre les cartes qui arrivent ensemble ;
+  - remise à zéro quand la bande sort de l'écran.
+  - ⚠️ **Le ticket demandait 120 ms**, mais aussi de « reprendre exactement » le décalage de l'accueil, qui est de 150 ms. J'ai suivi l'accueil, pour n'avoir qu'une seule façon d'animer. **Question E2**.
+- Le trait se dessine de haut en bas (`pathLength` 1, `stroke-dashoffset` de 1 à 0, en 1,15 s, soit 3 × 150 ms + 0,7 s) dès que la première carte devient visible. Il se remet à zéro avec les cartes.
+- « Réduire les animations » : le script ne pose pas `data-scenes`, donc rien n'est caché ni animé, et le trait s'affiche entier. Le bloc `prefers-reduced-motion` de `global.css` force aussi `stroke-dashoffset: 0`.
+
+**B5. Caractéristiques : le chiffre en grand, sans icône**
+- Les quatre icônes sont supprimées, ainsi que le champ `ChiffreCle.icone` du type et des données.
+- Chiffre : 56px, puis 64px à partir de 992px, en gras (900).
+  - Il est resserré (`tracking-tight`) : à 64px, « 90–130 » plus « €/m² » dépassait de 2px la tuile entre 1 280 et 1 440px, et l'unité passait à la ligne.
+  - Mesuré après correction : l'unité est sur la ligne du chiffre aux quatre largeurs.
+- Unité à 20px, collée au chiffre (4px d'écart). Libellé à 18px gras. Précision à 18px en texte-doux.
+- Troisième précision : « Revenus très modestes. Prime CEE en plus. »
+- Hauteur identique : rangées égales (`auto-rows-fr`), comme pour l'escalier.
+
+**B6. BienEspace redessinée**
+- Une maison vue de côté (long pan du toit, une fenêtre) et le groupe extérieur posé au sol à côté : un caisson à trois ailettes, sur pieds, relié au mur.
+- C'est un dessin propre, désormais classé ainsi dans `LICENSES.md`.
+
+**B7. PerfComplexite sans maison**
+- La clé (tracé Tabler « tool », à l'échelle 1) et le tournevis sont croisés et occupent tout le cadre.
+- Pour que les traits ne se coupent pas, la clé est masquée sous le tournevis (masque SVG avec une marge) : le tournevis passe proprement par-dessus.
+
+**B8. L'avis Akelia**
+- Le seuil remonte à **60 mots** par sous-partie (gabarit, type, commentaires). Il reste trois sous-parties.
+- « Grand froid et prix de l'électricité » : le texte du ticket est repris **mot pour mot**, en trois paragraphes.
+- ⚠️ **Il compte 70 mots** selon le compteur du gabarit, qui compte aussi « −20 » et « °C ». La construction affiche donc **un avertissement** :
+  « ⚠️ src/data/solutions/pompe-a-chaleur-air-eau.ts : l'avis « Grand froid et prix de l'électricité » fait 70 mots, 60 au plus. »
+  - Je n'ai pas raccourci un texte qu'Akelia a rédigé. **Question E3**.
+- Les deux autres sous-parties ont été relues. Les puces qui ne se comprenaient plus seules sont complétées avec le texte de l'ancienne page (`Données webflow/…/pompe-a-chaleur-air-eau.html`), sans rien inventer :
+  - « Pourquoi c'est la solution de référence », 48 mots :
+    - Économique : « …que les autres systèmes, en utilisant les calories gratuites de l'air » ;
+    - Écologique : « en France, l'électricité est décarbonée : c'est la référence absolue » ;
+    - Neuf : « la solution reine pour répondre aux exigences de la RE2020 » ;
+  - « Réparabilité : peut mieux faire », 56 mots :
+    - compresseur : « c'est la panne la plus fréquente et la pièce la plus coûteuse à remplacer (2 000 à 4 000 €) » ;
+    - pièces détachées : « même les grandes marques ne les garantissent pas au-delà de 10 ans, pour un appareil qui en dure 20 ».
+  - L'ancienne page disait « la panne principale ». J'ai écrit « la plus fréquente », qui en est le sens. À vérifier par Akelia si la nuance compte.
+
+### Vérifications
+
+- `npm run build` : **aucune erreur**. `verifier-build.mjs` affiche « 5 pages témoins complètes ».
+  - ⚠️ **Il reste UN avertissement** : l'avis « Grand froid » à 70 mots (B8, question E3). Il n'y en a pas d'autre.
+- **Hauteur de la page à 1 440px : 9 734px avant, 9 583px après (−151px).**
+
+| Bande | Fond | Avant | Après |
+|---|---|---|---|
+| 1. Tout savoir | blanc | 1 233 | **1 190** (tuiles sans icône) |
+| 2. Performances | crème | 586 | 586 |
+| 3. Adapté à votre bien | blanc | 491 | 491 |
+| 4. Adapté à votre région | crème | 722 | 722 |
+| 5. Travaux | brume | 767 | **739** (titre du parcours caché, D2) |
+| 6. L'avis Akelia | blanc | 922 | **1 029** (60 mots, puces complétées) |
+| 7. Fait pour chez vous (replié) | brume | 902 | **716** |
+| 8. Les aides | blanc | 823 | 823 |
+| 9. Étape par étape | crème | 658 | 658 |
+| 10. FAQ | absente | — | — |
+| 11. Appel final | bleu nuit | 647 | 647 |
+| 12. À lire aussi | crème → **blanc** | 742 | 741 (filet retiré) |
+
+- **« Fait pour chez vous », bloc des cinq lignes repliées** :
+
+| Largeur | Avant (cartes) : bande entière | Après : bloc | Après : bloc tout déplié |
+|---|---|---|---|
+| 375px | 1 587px | **658px** | 3 237px |
+| 768px | 1 385px | **427px** | 1 809px |
+| 1 024px | 1 083px | **310px** | 1 693px |
+| 1 440px | 902px | **288px** | 1 670px |
+
+  - Lignes à 1 440px : 57px chacune. À 375px : 120 à 147px, avec l'étiquette sous le titre. Toutes font au moins 56px.
+  - **Étiquettes alignées** : même bord gauche sur les cinq lignes, à toutes les largeurs (1 009px à 1 440px, 688px à 1 024px, 432px à 768px, 39px à 375px). Les chevrons sont alignés aussi.
+  - Capture : `apres-pour-vous-1440.png`. Avec un cas ouvert : `apres-pour-vous-un-ouvert-{1440,375}.png`.
+- **Contraste de l'appel intermédiaire, mesuré** :
+  - texte #16212a sur le bouton #f0920f : **6,87:1** ;
+  - ⚠️ bouton sur le fond brume #ccdce8 : **1,70:1**. Le bouton se voit par sa teinte (orange franc sur bleu pâle) et par son ombre, pas par la luminance. Le critère WCAG 1.4.11 ne l'exige pas pour un bouton identifié par son texte. Mais si l'objectif est « il doit se voir » au sens d'un contraste mesurable, l'orange seul ne suffit pas sur brume. **Question E4**.
+- **Animations, relevé image par image** (défilement instantané, 1 440px) :
+  - 1er passage sur les étapes : carte 1 à 0,17 → 0,69 → 0,97 (45, 178, 467ms) ; carte 4 à 0 jusqu'à 467ms, puis 0,33 → 1 (530 à 1 062ms) ; trait 0,90 → 0,52 → 0,13 → 0 ;
+  - remontée en haut de page : la bande n'a plus `data-etat`, les cartes reviennent à 0, le trait à 1 ;
+  - **2e passage : la même courbe** (0,17 / 0,69 / 0,97 ; trait 0,90 → 0) ;
+  - compteurs de la bande 1 : « 3 222 » à 250ms au 1er passage, « **3 061** » à 250ms au 2e passage, après un aller-retour, puis « 5 000 » ;
+  - captures pendant l'animation, 330ms après l'arrivée : `animation-etapes-passage1-330ms.png` et `animation-etapes-passage2-330ms.png`, identiques ;
+  - **« Réduire les animations »** : `data-scenes` n'est jamais posé, les bandes et les cartes restent à l'opacité 1 à tous les relevés, et le trait est entier (`stroke-dashoffset` 0) ;
+  - sans JavaScript : trait entier, cas ouvrables, titres de parcours visibles ;
+  - remarque : avec le défilement doux du site (`scroll-smooth`), un saut de plusieurs milliers de pixels met environ 0,8 s à arriver, et l'animation part à l'arrivée. Ce n'est pas un retard du script : le déclenchement mesuré sur l'accueil et sur la page solutions est le même.
+- **Tuiles de caractéristiques, hauteur au pixel près** : 182,25 ×4 à 375px, 182,25 ×4 à 768px, 165,5 ×4 à 1 024px, 190,25 ×4 à 1 440px.
+- **Cartes d'étapes, hauteur au pixel près** (inchangées) : 159 ×4 à 375px, 132 ×4 à 768px, 261 ×4 à 1 024px, 234 ×4 à 1 440px.
+- **Les huit icônes à 88px, côte à côte, après redessin** : trait apparent de **2,750px sur chacune**. Les tracés du masque de PerfComplexite sont exclus, puisqu'ils ne s'affichent pas. Capture : `icones-88px-cote-a-cote.png`.
+- **375, 768, 1 024 et 1 440px** :
+  - débordement horizontal : **0px**, cas repliés ou dépliés ;
+  - cibles sous 44px : **aucune**, hors liens dans une phrase ;
+  - textes sous 18px dans les bandes de la page : seulement « Votre projet », le surtitre de l'appel final (13,6px), antérieur et hors ticket, et ceux des cartes d'articles (date, catégorie, « Lire la suite »), antérieurs aussi. **Aucun texte créé par ce ticket n'est sous 18px.**
+- **Captures avant / après**, collants masqués, dans `captures/solutions-3e-passe/`, à 1 440 et à 375px :
+  - `{avant,apres}-pour-vous-*` ;
+  - `{avant,apres}-etapes-*` ;
+  - `{avant,apres}-caracteristiques-*` ;
+  - `{avant,apres}-avis-*` ;
+  - `{avant,apres}-a-lire-*` ;
+  - en plus, pour les icônes : `{avant,apres}-performances-*` et `{avant,apres}-bien-*`.
+
+### Questions en attente de réponse (troisième passe)
+
+- **E1. Accueil, « Sous 24 heures »** (`CommentCaMarche.astro`, étape 2 de « Fonctionnement ») : je l'ai passé à « Sous 48 heures », par application de « partout ». C'était une promesse plus courte. Confirmez, ou je rétablis « 24 heures » sur l'accueil seulement.
+- **E2. Décalage entre les cartes d'étapes** : 150 ms, comme l'accueil (appliqué), ou 120 ms, comme le ticket ? Passer à 120 ms changerait aussi les étapes de l'accueil, puisqu'il n'y a qu'un seul système.
+- **E3. « Grand froid et prix de l'électricité » fait 70 mots** pour un plafond de 60. Le texte est repris mot pour mot, et la construction affiche l'avertissement. Trois possibilités :
+  - le raccourcir (proposition : retirer « Les modèles actuels tiennent le grand froid : » et « un écart qui pourrait se réduire », ce qui donne environ 58 mots) ;
+  - remonter le plafond à 70 ;
+  - garder l'avertissement.
+- **E4. Bouton de l'appel intermédiaire sur brume** : texte à 6,87:1, mais orange contre brume à 1,70:1 en luminance. Est-ce suffisant ? Sinon, deux possibilités : un contour bleu nuit de 2px autour du bouton plein, ou un fond blanc pour la zone d'appel.
+
+---
+
+## Pages solutions : passe mobile (21 octobre 2026)
+
+Page : /solutions/pompe-a-chaleur-air-eau. Partie A : les réponses aux questions E1 à E4 sont appliquées. Partie B : les cinq corrections sont faites. Tout a été vérifié sur le site construit (`astro preview`, Chromium sans interface).
+
+**Fichiers**
+- Nouveau : `src/components/solutions/LigneRepliable.astro`.
+- Modifiés :
+  - `src/pages/solutions/[slug].astro` ;
+  - `src/components/solutions/CarteFrance.astro` et `TravauxSolution.astro` ;
+  - `src/styles/global.css` (jeton `vert-700`) ;
+  - `src/data/solutions/type.ts` et `pompe-a-chaleur-air-eau.ts`.
+
+### PARTIE A — Réponses E1 à E4
+
+- **E1.** « Sous 48 heures » est gardé, accueil compris. Il n'y a rien à changer. Akelia confirme le délai avant la mise en ligne. S'il redevient 24 heures, ce sera sur tout le site.
+- **E2.** 150 ms, comme l'accueil : déjà en place.
+- **E3.** Le plafond de l'avis passe à **70 mots** (gabarit, type, commentaires). Le texte « Grand froid » reste tel quel. **L'avertissement a disparu : la construction n'en affiche plus aucun.**
+- **E4.** La zone d'appel intermédiaire est maintenant un **bloc blanc** (coins arrondis, ombre légère) posé sur la bande brume, avec le bouton orange plein à l'intérieur. Le filet supérieur est retiré.
+- **Correction de l'avis** : « c'est la panne **principale** et la pièce la plus coûteuse à remplacer (2 000 à 4 000 €) ». Le mot d'origine est rétabli ; la raison est notée en commentaire dans les données.
+
+### PARTIE B — Les cinq corrections
+
+**B1. Caractéristiques centrées sous 992px**
+- Sous 992px, tout est centré dans la tuile : chiffre, unité, libellé et précision (`items-center text-center`, ligne du chiffre `justify-center`).
+- À partir de 992px, tout reste aligné à gauche (`lg:items-start lg:text-left lg:justify-start`).
+
+**B2. Couleur des chiffres**
+- ⚠️ **Le jeton `vert-700` n'existait pas** dans la charte : la gamme verte s'arrêtait à vert-600 (#2a6b4f), qui ne fait que **5,65:1** sur action-50. Je l'ai **créé** dans `global.css` : **`--color-vert-700: #1f573f`**. C'est la même teinte que vert-600, un cran plus sombre.
+  - Mesuré : **7,51:1 sur action-50**, 8,42:1 sur blanc.
+  - J'ai écarté un vert intermédiaire (#235d44 : 6,88:1, sous la barre de 7:1).
+  - **Question F1** : faut-il garder ce nouveau jeton ?
+- Les quatre chiffres des caractéristiques passent en `text-vert-700`. L'unité, le libellé et la précision ne changent pas.
+- « −70 % » (tuile de performances) passe aussi en `vert-700`, à 8,42:1 sur blanc. Avant, il était dans la couleur de l'échelle (difficulte-1, #1e5e31), un vert très proche.
+- Les lettres A et B gardent la couleur de l'échelle, qui a un sens : leur place de A à G.
+
+**B3. « Adapté à votre bien » : cartes sous 992px**
+- Sous 992px, chaque condition est une carte :
+  - fond blanc, coins arrondis, filet `creme-fonce` de 1px ;
+  - icône en haut, texte centré dessous ;
+  - grille régulière (16px d'écart), largeurs égales, hauteurs égales (`auto-rows-fr`).
+- À partir de 992px, les quatre colonnes restent sans contenant, comme avant.
+- **Mon avis sur l'incohérence entre les deux largeurs (question F2)** : elle ne gêne pas à la lecture, puisque personne ne voit les deux versions à la fois. Deux défauts sont quand même visibles :
+  1. la bande est blanche, donc les cartes blanches ne se distinguent que par leur filet très clair. Elles « tiennent » à peine ;
+  2. avec des hauteurs égales, la carte la plus courte (« un extérieur et un espace intérieur », sans explication) a beaucoup de vide sous son texte, à 375px.
+  - Étendre les cartes à toutes les largeurs ne règle pas le point 1. Je n'ai rien changé : la décision vous revient.
+
+**B4. Légende de la carte en lignes repliables**
+- Les lignes de « Est-ce fait pour chez vous ? » sont maintenant un **composant**, `LigneRepliable.astro`. Il porte tout le mécanisme :
+  - `<details>` et `<summary>`, la ligne entière cliquable ;
+  - chevron à droite ;
+  - filet de couleur facultatif ;
+  - animation `::details-content` coupée par prefers-reduced-motion.
+- **Les cas et la légende l'utilisent tous les deux.** Le style d'animation est sorti du gabarit et se trouve dans le composant. L'ancien attribut `data-cas` disparaît. Il était aussi utilisé par les Cas types de l'accueil (`CasTypes.astro`), ce qui supprime un risque de confusion.
+- Légende, à toutes les largeurs :
+  - bloc blanc, filets entre les lignes ;
+  - toujours visibles : la pastille, le titre et les régions ;
+  - replié : le paragraphe, lien vers la PAC air-air compris, aligné sur le titre ;
+  - fermée par défaut.
+  - « Non concerné » n'a rien à replier : c'est une simple ligne sans chevron. Elle n'apparaît pas sur cette page, puisque les 96 départements sont couverts.
+
+**B5. Travaux : l'image au-dessus de l'étape sous 768px**
+- L'image vient d'abord, dans un cadre sur **toute la largeur** de l'étape, puis le numéro et le titre.
+- Le cadre mesure au plus 300px de haut, la taille réelle des images : elles ne sont **jamais agrandies**. L'image entière y est placée (`object-contain`), donc le **rapport de forme est conservé**.
+  - À 375px, le cadre fait 335 × 300px et l'image s'affiche en 300 × 300px, centrée sur fond blanc.
+  - Un cadre de 335px de haut aurait obligé à agrandir l'image au-delà de ses 300px.
+- À partir de 768px, rien ne change (cadre 300 × 300px, mesuré).
+- Le substitut neutre (carré brume, pour les images à venir) suit la même règle.
+
+### Vérifications
+
+- `npm run build` : **sans erreur et sans aucun avertissement**. `verifier-build.mjs` affiche « 5 pages témoins complètes ».
+- **Contrastes mesurés** :
+  - chiffres des caractéristiques (vert-700 sur action-50) : **7,51:1** ;
+  - « −70 % » sur blanc : **8,42:1** ;
+  - appel intermédiaire :
+    - texte sur le bouton : **6,87:1** ;
+    - bouton orange sur le bloc blanc : **2,38:1**, contre 1,70:1 sur brume avant ;
+    - bloc blanc sur brume : 1,40:1 ;
+    - bouton de 56px.
+  - L'orange sur blanc se détache bien plus franchement à l'œil, mais en luminance il reste sous 3:1. Le bouton se voit par sa teinte et par son texte. Je le signale pour information, sans rien changer.
+- **Légende de la carte, aux quatre largeurs** :
+  - débordement 0, repliée comme dépliée ;
+  - hauteur des lignes : 87 à 245px, toutes au-dessus de 44px ;
+  - sans JavaScript, elle s'ouvre ;
+  - « Rentabilité maximale », « La PAC air-air peut avoir plus de sens » et « biomasse ou gaz » sont dans le code source ;
+  - « réduire les animations » : aucune transition (0s ; chevron : `transition-property: none` sur les 8 lignes).
+
+| Largeur | Bloc de la légende, replié / déplié | Bande « adapté à votre région » |
+|---|---|---|
+| 375px | 389 / 1 123px | **1 346 → 876px** (repliée) ; 1 609px dépliée |
+| 768px | 515 / 1 501px | 724px repliée |
+| 1 024px | 295 / 745px | 580px repliée |
+| 1 440px | 263 / 650px | **722 → 580px** (repliée) ; 859px dépliée |
+
+- **Tuiles de caractéristiques** :
+  - hauteurs égales au pixel près : 182,25 ×4 à 375px, 182,25 ×4 à 768px, 165,5 ×4 à 1 024px, 190,25 ×4 à 1 440px ;
+  - à 375 et 768px : `text-align: center`, et le groupe chiffre + unité est centré dans la tuile (écart de 0px) ;
+  - à 1 024 et 1 440px : `text-align: left`, contenu à 20px du bord gauche.
+- **Cartes « adapté à votre bien » sous 992px** :
+  - 375px : 272 ×4 de haut, 335px de large ;
+  - 768px : 272 ×4 de haut, 356px de large ;
+  - aucun débordement.
+  - À 1 024 et 1 440px, il n'y a pas de bordure : colonnes inchangées.
+- **Travaux à 375px** :
+  - avant : étape de 96px de haut, image de 96 × 96px à gauche du titre ;
+  - après : étape de **352px** (368px quand le titre tient sur deux lignes), cadre de 335 × 300px pleine largeur, image de 300 × 300px.
+  - La bande « Travaux » passe de 766 à 1 805px à 375px. C'est le prix d'une image lisible.
+- **375, 768, 1 024 et 1 440px** :
+  - débordement 0 ;
+  - aucune cible sous 44px, hors liens dans une phrase ;
+  - aucun texte touché par ce ticket sous 18px. Seul reste « Votre projet », le surtitre de l'appel final (13,6px), antérieur et hors ticket.
+- **Hauteur totale de la page** : 9 583 → 9 472px à 1 440px ; 16 212 → 17 054px à 375px. Les images des travaux ajoutent environ 1 040px, et la légende en retire environ 470.
+- **Captures** dans `captures/solutions-passe-mobile/` :
+  - à 375px, avant/après : `{avant,apres}-caracteristiques-375`, `-bien-375`, `-region-375`, `-travaux-375` ;
+  - à 1 440px, avant/après : `{avant,apres}-caracteristiques-1440`, `-region-1440`, `-appel-intermediaire-1440` (et la version 375) ;
+  - en plus : `apres-region-une-ouverte-{375,1440}.png`, avec une ligne de la légende dépliée.
+
+### Questions en attente de réponse (passe mobile)
+
+- **F1. Jeton `vert-700` (#1f573f) créé** : le ticket le citait comme « le vert foncé de la charte », mais il n'existait pas. Faut-il le garder, ou préférez-vous une autre valeur ? Il faut au moins 7:1 sur action-50 ; la valeur actuelle fait 7,51:1.
+- **F2. Cartes de « adapté à votre bien »** : je garde les cartes sous 992px seulement, comme demandé. Sur la bande blanche, ces cartes blanches se distinguent à peine. Pour qu'elles ressortent, le plus simple serait de passer la bande en crème. Mais elle est entre « performances » (crème) et « région » (crème) : il faudrait revoir l'alternance des fonds. Les autres pistes : un filet plus marqué, ou une ombre légère (`shadow-legere`, comme les tuiles de performances). À arbitrer.
+
+---
+
+## Pages solutions : réponses F1 et F2 (21 octobre 2026)
+
+**F1. Jeton `vert-700`** (#1f573f, 7,51:1 sur action-50) : gardé tel quel, sans changement de code.
+
+**F2. Cartes de « Est-ce adapté à votre bien ? » sous 992px** (`src/pages/solutions/[slug].astro`) :
+- **Ombre légère** `shadow-legere`, celle des tuiles de performances, en plus du filet `creme-fonce`. La bande reste blanche et l'alternance des fonds ne change pas.
+- À partir de 992px : ni ombre (`lg:shadow-none`), ni filet. Ce sont les quatre colonnes sans contenant, comme avant.
+- **Hauteurs égales seulement à partir de 480px** (`sm:auto-rows-fr`, le point de rupture `sm` du site valant 480px), c'est-à-dire quand les cartes sont côte à côte. En une colonne, chaque carte prend la hauteur de son contenu : le vide sous la carte courte (« un extérieur et un espace intérieur ») disparaît.
+- Au passage, deux commentaires du gabarit disaient « 2 colonnes à partir de 640px ». C'est faux, et c'est corrigé en « 480px » : `sm` vaut 30rem dans `global.css`.
+
+**Vérifications**
+- `npm run build` : sans erreur et sans avertissement. `verifier-build.mjs` affiche « 5 pages témoins complètes ».
+- Hauteur des cartes, débordement et bande :
+
+| Largeur | Colonnes | Hauteur des cartes | Ombre / filet | Bande |
+|---|---|---|---|---|
+| 375px | 1 | 241 / 209 / 272 / 241 (contenu) | oui / 1px | 1 360 → **1 234px** |
+| 479px | 1 | 241 / 178 / 241 / 241 (contenu) | oui / 1px | 1 171px |
+| 480px | 2 | 367 ×4 (égales) | oui / 1px | 973px |
+| 768px | 2 | 272 ×4 (égales) | oui / 1px | 821px |
+| 1 024px | 4 | 262 ×4 | non / 0 | 523px |
+| 1 440px | 4 | 230 ×4 | non / 0 | 491px (inchangé) |
+
+- Débordement horizontal : 0 à toutes ces largeurs.
+- Captures : `captures/solutions-passe-mobile/apres-bien-ombre-{375,768}.png`.
+
+Aucune question en attente pour ce point.
+
+---
+
+## Inventaire, redirections et relecture de code (21 octobre 2026)
+
+Ce ticket ne crée aucune page et ne change aucun rendu. Il prépare le portage des 11 pages solutions restantes.
+
+**Source** : l'export `Données webflow/` (le site Webflow est hors ligne).
+- Le nom du dossier est en Unicode décomposé (NFD) : `ls` l'affiche bien, mais un chemin tapé au clavier ne le trouve pas. Il faut passer par un motif `Donn*`.
+- L'export contient **deux aspirations du site** :
+  - `ancien test /www.akelia.fr/` : un miroir complet, avec `sitemap.xml.rss`, les 12 pages solutions, les pages /ville et les articles ;
+  - `akelia_site_complet/` : la liste `listeURL.txt`, dont la plupart des pages sont des « Not Found ».
+- Les **images ne sont pas dans l'export** : les pages pointent vers le CDN Webflow (`cdn.prod.website-files.com`). Le CDN répondait encore le 21 octobre 2026 (HTTP 200), alors que `www.akelia.fr` renvoie 403.
+  - Je les ai téléchargées pour les mesurer, dans le dossier temporaire de la session seulement. Rien n'est ajouté au dépôt.
+
+### PARTIE 1 — Inventaire du contenu des 12 pages solutions (rapport, aucune modification)
+
+**Chemins.** Ancienne adresse : `https://www.akelia.fr/solutions/<slug>`. Fichier : `Données webflow/ancien test /www.akelia.fr/solutions/<slug>.html`. Les adresses sont identiques à celles du menu actuel.
+
+**Constats communs aux 12 pages**
+- **FAQ : absente partout.** Il n'y a aucune question-réponse. Le bloc « Les questions que vous vous posez », présent sur les 12 pages, est une liste de **liens vers des articles du blog**, pas une FAQ. Ce n'est pas une FAQ « présente mais sans réponses » : il n'y a pas de FAQ du tout.
+- **Verdicts des cas** : l'ancien site les marquait par des pastilles de couleur (🟢 🟡 🔵 🟣 🔴), sans mot. Ces couleurs ne correspondent pas au vocabulaire figé (« Oui, clairement », « Oui, sous conditions », « Plutôt non », « Non »). 🔵 et 🟣 n'ont pas d'équivalent, et 🟡 couvre aussi bien « oui avec réserve » que « nous déconseillons ».
+  - Pour la PAC air-eau, Akelia a fixé les verdicts à la main. **Il faudra le refaire pour chaque page.**
+- **L'avis** de l'ancien site est un texte long, en 2 à 6 parties. Le gabarit attend 3 sous-parties de 70 mots au plus, avec des titres choisis. Le contenu est exploitable, mais **à réduire** et à structurer (titres à fixer), comme pour la PAC air-eau.
+- **Les 4 mesures de performance** sont présentes sur les 11 pages. La troisième s'appelait « Autonomie énergétique » partout, avec un signe **+**. Le gabarit dit maintenant « Économie d'énergie » avec un signe **−** (décision D4). Le signe et le libellé sont donc à revoir page par page (voir 3b).
+- **Les étapes « Réalisez vos projets avec un artisan local Akelia »** (commun à toutes les pages) sont déjà remplacées par `ParcoursAkelia`.
+- **Les icônes « adapté à votre bien » et performances** de l'ancien site sont des PNG de 100 à 150px. Ils seront redessinés en SVG (convention du 21 octobre) et ne sont pas à reprendre.
+- **Les cartes de régions** sont des images. Le gabarit dessine la carte à partir de **listes de départements**, qu'aucune page ne fournit.
+  - ⚠️ L'image `carte France.png` (500 × 538, 230 Ko) est **la même** pour l'ITE, l'ITI et la PAC géothermique, alors que leurs légendes diffèrent. C'est une image générique : elle ne permet pas de déduire les départements.
+
+**Page par page.** E = exploitable ; R = exploitable mais à réduire ou corriger ; A = manque, Akelia doit fournir ; — = sans objet ; ? = ambigu.
+
+1. **PAC air-air** (`climatisation-reversible-pac-air-air`)
+   - En-tête : E. Titre « Confort thermique 2-en-1… », 4 arguments, chiffre clé « Déjà 1 logement sur 4 équipé en France ».
+   - Tout savoir : 4 points forts et 4 inconvénients : R (phrases à couper à 15 mots ; faute « millleu »).
+   - Caractéristiques : 5 valeurs pour 4 tuiles (durée 15-20 ans, split 70-90 €/m², gainable 110-150 €/m², réparabilité 65/100, rentabilité 5-7 ans) : choix à faire (A). Aides : « CEE ≃ 900 € / MPR 0 € » : MaPrimeRénov' est **non éligible** dans `aides.ts`, donc la tuile « aides » est impossible (voir 3b).
+   - Performances : A / B / +67 % / 1 sur 5 : R (signe).
+   - Bien : 4 conditions : E. La 4e (autorisations de copropriété et d'urbanisme) demande une icône nouvelle.
+   - Carte : 4 niveaux (optimale, adaptée, à étudier, peu pertinente), compatibles avec les 4 niveaux du gabarit, mais **sans départements** (A). Fautes dans la légende (« tés », « faib sauvera ») : texte tronqué (?).
+   - Travaux : 2 parcours (split 1/5, gainable 4/5), 4 étapes chacun, 8 images de 300 × 300 : E.
+   - Avis : 3 parties longues : R.
+   - Cas : 4 (🟢 🟡 🔵 🔴), verdicts à fixer (A).
+   - FAQ : absente.
+2. **PAC géothermique** (`pac-geothermique`)
+   - En-tête : E, 4 arguments. Le « chiffre clé » est une phrase sans chiffre (« L'investissement le plus rentable… »).
+   - ⚠️ Erreurs de copie : le h2 dit « Tout ce que vous devez savoir sur la **climatisation réversible** », et « adapté à votre bien » aussi.
+   - Tout savoir : 5 points forts (4 au plus affichés), 3 inconvénients : R.
+   - Caractéristiques : durée 20-25 ans pour l'unité et 75-100 ans pour le réseau, coût **20 000-30 000 €** (pas en €/m²), réparabilité 75/100, rentabilité 10-15 ans : R. Aides : la seule page dont le poste a un forfait MaPrimeRénov' (`pac-geothermique`) : la tuile est possible.
+   - Performances : A / A / +80 % / **4 sur 5**, alors que les travaux disent **5 sur 5** : contradiction à trancher (A).
+   - Bien : 4 conditions : E.
+   - Carte : 3 niveaux, image générique (?), sans départements (A).
+   - Travaux : 1 parcours, 4 étapes, 4 images (300 × 300, 18 à 28 Ko, très légères) : E.
+   - Avis : 3 parties longues : R.
+   - Cas : 4 (🟢 🟡 🔵 🔴) : A.
+   - FAQ : absente.
+3. **Chaudière biomasse** (`chaudiere-biomasse-bois-ou-pellets`)
+   - En-tête : 4 arguments, dont « +4000 € d'aides » : **montant d'aide en dur, interdit** (R). Chiffre clé sans chiffre.
+   - Tout savoir : 4 points forts et 4 inconvénients : R.
+   - Caractéristiques : durée, coût, aides (CEE 4 000 € / MPR 0 €), réparabilité, rentabilité avec et sans aides : R. Le poste `bois-biomasse` est « rénovation d'ampleur seulement » : pas de tuile d'aide possible.
+   - Performances : A / D / +20 % / 2 sur 5 : R.
+   - Bien : 4 conditions : E.
+   - Carte : 3 niveaux (avec intérêt, à étudier, sans intérêt), sans départements (A).
+   - Travaux : 2 parcours (rénovation 2/5, neuf 1/5), 8 images. ⚠️ Deux images viennent de la page PAC (« projet étude PAC », « PAC air eau en fonctionnement ») : une PAC illustre une chaudière bois (R).
+   - Avis : 5 parties et une conclusion : R.
+   - Cas : 4 (🟢 🟣 🟡 🔵), aucun marqué en rouge. Le 🟡 (« grandes agglomérations », « pas recommandée ») est en fait un « plutôt non ». Le 4e (« Vous êtes éco-anxieux ») ne conclut pas (A).
+   - FAQ : absente.
+4. **Chaudière gaz** (`chaudiere-gaz-condensation`)
+   - En-tête : 4 arguments, chiffre clé « + de 11 millions de logements équipés » : E.
+   - Tout savoir : 4 points forts et 4 inconvénients : E/R.
+   - Caractéristiques : rentabilité « Perte économique chaque année » (non chiffrée), aides 0 € et 0 € : la tuile d'aide est impossible (A).
+   - Performances : C / D / « +0 % – Neutre » / 1 sur 5 : R.
+   - Bien : 4 conditions : E.
+   - Carte : 2 niveaux, raccordé ou non au gaz de ville (?). Le réseau de gaz se décrit **par commune**, pas par département : la carte par départements ne convient pas.
+   - Travaux : 1 parcours, 4 étapes. Une image de la page PAC est réutilisée (« projet étude PAC ») (R).
+   - Avis : 5 parties longues : R.
+   - Cas : **2 seulement** (règle : 3 à 6), aucun « non » (A).
+   - FAQ : absente.
+5. **ITE** (`isolation-thermique-par-l-exterieur-ite`)
+   - En-tête : 4 arguments, chiffre clé « + 150 000 projets par an » : E.
+   - Tout savoir : 6 « points forts », dont un inconvénient (« ❗ Mais perte de place… »), et 5 inconvénients : R.
+   - Caractéristiques : 5 valeurs (durée, deux coûts, aides, rentabilité avec et sans aides) : choix à faire (A). Aides « 6 000 € + 6 000 € (exclu mono-geste) » : l'isolation n'est plus aidée par geste, pas de tuile possible.
+   - Performances : A / B / +25 % / 4 sur 5. Les arguments disent −25 %, les points forts −30 % : contradiction (A).
+   - Bien : 4 conditions, dont une liste dans la 3e : R.
+   - Carte : 3 niveaux qui ne forment **pas une échelle** (« optimale pour le confort d'été », « optimale pour le confort d'hiver », « à étudier »). Image générique (?), sans départements (A).
+   - Travaux : 1 parcours, avec un avertissement « autorisations d'urbanisme » à placer : R.
+   - Avis : 6 parties et une conclusion : R.
+   - Cas : 3 (🟢 🟡 🔴) : A pour les verdicts.
+   - FAQ : absente.
+6. **ITI** (`isolation-thermique-par-linterieur-iti`)
+   - En-tête : 4 arguments : E.
+   - Tout savoir : 5 points forts et 5 inconvénients : R.
+   - Caractéristiques : 4 valeurs (durée, coût, aides, rentabilité) : E. La tuile d'aide est impossible (isolation).
+   - Performances : B / B / +20 % / 2,5 sur 5 : R.
+   - Bien : 4 conditions : E.
+   - Carte : 3 niveaux. ⚠️ « Région adaptée » et « Région peu recommandée » sont toutes deux décrites comme aux « hivers relativement doux » (?). Image générique, sans départements (A).
+   - Travaux : 1 parcours, 2,5 sur 5 : E.
+   - Avis : 7 parties : R.
+   - Cas : 3. ⚠️ Le cas 3 dit « l'isolation par l'**extérieur** ne suffira pas » où il faut lire « intérieur », et l'introduction parle d'ITE au lieu d'ITI : erreurs de fond à corriger par Akelia (A).
+   - FAQ : absente.
+7. **Isolation toiture et combles** (`isolation-thermique-toiture-comble`)
+   - En-tête : **3 arguments**, chiffre clé « L'isolation la plus rentable » : E.
+   - Tout savoir : 3 points forts et 3 inconvénients : E.
+   - Caractéristiques : 3 coûts et 3 rentabilités, selon la méthode (A : choisir 4 chiffres ou accepter des variantes).
+   - Performances : A / B / +30 % / 2 sur 5 : R.
+   - Bien : 4 conditions : E.
+   - Carte : « intéressant peu importe votre région » → **pas de carte** (`region` absent) : E.
+   - Travaux : **3 parcours** (combles perdus, intérieur, extérieur), 12 images. Le premier dit « 1/5 (moyenne) » : mot contradictoire, mais le gabarit tire le mot de la note.
+   - Avis : 4 parties courtes : E/R.
+   - Cas : 3 (🟢 🟡 🔴). Le « 🔴 » (sarking) dit « peut se discuter », pas « non » (A).
+   - FAQ : absente.
+8. **Menuiseries** (`menuiseries-fenetres-volets`)
+   - En-tête : **3 arguments**.
+   - Tout savoir : 3 points forts et 3 inconvénients : E.
+   - Caractéristiques : coûts **par fenêtre** selon 3 matériaux, aides par fenêtre (fenêtres non aidées par geste aujourd'hui), rentabilité, durée : R/A.
+   - Performances : « C – Excellent rendement » : la lettre contredit le texte (A).
+   - Bien : 4 conditions. La 1re dit « Uw ≤ 2,0 », le cas 1 dit « Uw ≥ 2,0 » : contradiction (A).
+   - Carte : aucune, ce qui est voulu (`region` absent).
+   - Travaux : 1 parcours, 4 images : E.
+   - Avis : 2 parties : E.
+   - Cas : 3 (🟢 🟡 🔵), aucun marqué en rouge. Le 🟡 (« après 2001 », gain « pas assez important ») est en fait un « plutôt non » (A).
+   - FAQ : absente.
+9. **Panneaux photovoltaïques** (`panneaux-photovoltaiques`)
+   - En-tête : 4 arguments (faute « concraite »), chiffre clé « 100 000 à 150 000 logements équipés chaque année » : E/R.
+   - Tout savoir : 4 points forts et 4 inconvénients : R.
+   - Caractéristiques : durée, coût **par kWc**, « prime autoconsommation ≃ 3 916 € » (**montant en dur, absent de `aides.ts`**), réparabilité, rentabilité : R/A.
+   - Performances : A / B / +60 % « autonomie » / 2 sur 5. Ici, l'autonomie **est** le sujet : conflit avec « Économie d'énergie » (voir 3b).
+   - Bien : 4 conditions : E.
+   - Carte : 3 niveaux (optimale, performante, intéressante) chiffrés en euros par niveau, sans départements (A). Les montants par région sont à vérifier (?).
+   - Travaux : 1 parcours, 4 images : E.
+   - Avis : 5 parties longues : R.
+   - Cas : 3 (🟢 🔵 🟡), le 🟡 « nous déconseillons » : A.
+   - FAQ : absente.
+10. **VMC simple et double flux** (`ventilation-vmc-simple-et-double-flux`) : **structure incompatible avec le gabarit**.
+    - « Tout savoir » est un **tableau comparatif à deux colonnes** (simple flux / double flux) : principe, points forts, inconvénients, durée, coût, aides, réparabilité, rentabilité, et les **4 mesures de performance en double**.
+    - Bien : une seule phrase, sans les 4 conditions (A).
+    - Carte : « toutes les régions » → pas de carte.
+    - Travaux : 2 parcours (2/5, 4/5), 8 images, dont une de 900 × 900 et **599 Ko**, et une image de PAC gainable réutilisée (R).
+    - Avis : 3 parties : E/R.
+    - Cas : **aucun**, seulement deux paragraphes (A).
+    - FAQ : absente.
+    - Le chiffre clé « Déjà 1 logement sur 4 équipé en France » est identique à celui de la PAC air-air : probablement recopié (?).
+11. **Rénovation énergétique globale** (`renovation-energetique-globale`)
+    - En-tête : **3 arguments**, dont « subventions pouvant atteindre +50 000 € » (**montant d'aide en dur, interdit**).
+    - Tout savoir : 4 points forts (dont « +50 000 € d'aides », interdit) et 3 inconvénients : R.
+    - Caractéristiques : coût 350-600 €/m², aides en euros (interdit), audit et MAR, rentabilité. Pas de durée de vie ni de réparabilité (A).
+    - Performances : A / B / « **+100 %** – 5 à 6 × moins d'énergie » (incohérent) / 5 sur 5 (A).
+    - Bien : 4 conditions : E.
+    - Carte : « toutes les régions » → pas de carte.
+    - Travaux : 2 parcours (complète 5/5, réduite 3/5). **La réduite n'a qu'une image** (l'export n'en contient pas d'autre) (A).
+    - Avis : 5 parties longues : R.
+    - Cas : **2 seulement**, plus un encadré « Attention aux économies de conception » (A).
+    - FAQ : absente.
+    - Page hors méga-menu : le gabarit refuse aujourd'hui de la construire (voir 3b, H1).
+12. **PAC air-eau** : déjà portée (page témoin).
+
+**Images (téléchargées depuis le CDN, mesurées ; aucune dans le dépôt, sauf la PAC air-eau déjà importée sous d'autres noms)**
+
+| Page | Images du corps | Poids total | Au-delà de 300 Ko |
+|---|---|---|---|
+| PAC air-air | 20 | 1 069 Ko | aucune |
+| PAC géothermique | 14 | 474 Ko | aucune |
+| Chaudière biomasse | 19 | 1 237 Ko | aucune (la carte fait 285 Ko) |
+| Chaudière gaz | 15 | 1 068 Ko | **carte France raccordé au gaz.png** (500 × 464, 347 Ko) |
+| ITE | 15 | 1 221 Ko | **image d'en-tête** (512 × 387, 323 Ko) |
+| ITI | 15 | 1 195 Ko | **image d'en-tête** (512 × 387, 380 Ko) |
+| Toiture et combles | 22 | 2 183 Ko | **image d'en-tête** (512 × 387, 430 Ko) |
+| Menuiseries | 14 | 901 Ko | **image d'en-tête** (512 × 387, 408 Ko) |
+| Photovoltaïque | 15 | 1 268 Ko | **image d'en-tête** (512 × 387, 421 Ko) |
+| VMC | 11 | 1 626 Ko | **image d'en-tête** (512 × 387, 373 Ko) ; **Extracteur VMC salle de bain.png** (900 × 900, 599 Ko) |
+| Rénovation globale | 16 | 1 098 Ko | **image d'en-tête** (512 × 387, 401 Ko) |
+| PAC air-eau (rappel) | 20 | 1 193 Ko | aucune |
+
+- Par type d'image :
+  - en-tête : 512 × 387 (516 × 387 pour la PAC air-eau) ;
+  - icônes des performances : 100 × 100, 4 à 11 Ko ;
+  - icônes « bien » : 150 × 150, ou 55 × 55 pour certaines ;
+  - cartes : 450 à 500px de large, 230 à 347 Ko ;
+  - étapes de travaux : **300 × 300** (63 à 160 Ko), sauf l'image VMC de 900 × 900.
+- Les poids sont ceux des PNG d'origine. Une fois importées dans `src/assets/`, Astro les ré-encode en WebP aux largeurs affichées. Le poids réellement servi sera bien plus bas, mais **les en-têtes de 512px sont petits** pour un affichage jusqu'à 416px sur écran haute densité.
+- Les cartes et les icônes ne seront pas reprises : carte SVG par départements, icônes SVG.
+- ⚠️ **Le CDN Webflow peut disparaître à tout moment** : il faut télécharger les images d'en-tête et de travaux dans le dépôt **avant** qu'il ne ferme (question G1).
+
+**Décompte**
+- **Portables en l'état : 0 sur 11.** Aucune page ne remplit le gabarit sans arbitrage. Chacune demande au minimum les verdicts des cas, la restructuration de l'avis (3 × 70 mots) et le choix des 4 caractéristiques.
+- **Portables avec un arbitrage léger d'Akelia** (verdicts, avis à réduire, 4 chiffres à choisir), **6 pages** :
+  - **PAC air-air** : départements de la carte ; tuile d'aide (non éligible) ;
+  - **géothermie** : départements ; trancher la complexité, 4 ou 5 sur 5 ; corriger « climatisation réversible » dans deux titres ;
+  - **ITI** : départements et cohérence des niveaux de la carte ; corriger le cas 3 et l'introduction (« extérieur » ↔ « intérieur ») ;
+  - **toiture et combles** : rien de bloquant sauf le choix des chiffres, puisqu'il n'y a pas de carte ;
+  - **menuiseries** : lettre d'efficacité (C ou mieux ?) ; seuil Uw (≤ ou ≥ 2,0) ; verdicts ;
+  - **chaudière biomasse** : départements ; argument « +4 000 € d'aides » à retirer ; images de PAC à remplacer ; cas 4 à conclure.
+- **Demandent du contenu nouveau d'Akelia**, **5 pages** :
+  - **ITE** : carte à redéfinir (été/hiver n'est pas une échelle) ; −25 % ou −30 % ;
+  - **photovoltaïque** : mesure d'autonomie contre économie ; prime autoconsommation absente de `aides.ts` ; départements et montants par région ;
+  - **chaudière gaz** : 1 à 4 cas de plus, dont un « non » ; carte du gaz de ville, à repenser (commune et non département) ; tuile d'aide ;
+  - **VMC** : choix de structure (une page, deux variantes ?), 4 conditions, 3 à 6 cas ;
+  - **rénovation globale** : montants d'aide à retirer ; durée de vie et réparabilité ; mesure « +100 % » ; 3 images d'étapes manquantes ; 1 à 4 cas de plus ; page hors menu.
+
+### PARTIE 2 — Table des redirections
+
+Le fichier **`donnees/redirections.md`** est créé : la méthode, la table complète et les listes séparées s'y trouvent.
+- **131 anciennes adresses** :
+  - le plan du site (127) ;
+  - `/entreprise` et `/devis/bourdeaux-pac-aa-toulouse`, deux vraies pages de l'export absentes du plan ;
+  - deux articles publiés le 1er septembre 2026, après la date du plan.
+- **Décompte** :
+
+| Mention | Nombre |
+|---|---|
+| identique | 105 : accueil, /qui-sommes-nous, /mentions-legales, la PAC air-eau et les **101 articles**, vérifiés un par un (page construite et titre identique, 101 sur 101) |
+| redirigée vers | 4 : /devis-akelia → /devis ; /aides-renovation-energetique → /aides-renovation ; /entreprise → /rejoindre-le-collectif ; /devis/bourdeaux-pac-aa-toulouse → /devis (à confirmer) |
+| à créer | 22 : 11 pages solutions, 10 pages /ville, /conseil-chauffage/bourdeaux |
+| supprimée volontairement | 0 : aucune décision écrite, je n'en prends pas |
+
+- **Aucun équivalent raisonnable** : les 10 **/ville/…** (pages locales avec entreprise nommée) et **/conseil-chauffage/bourdeaux** (étude payante à 90 €). Elles sont classées « à créer » faute de décision (question G2).
+- **Liées mais introuvables** : 4 adresses liées environ 40 fois depuis les pages /ville (`/installation-de-pompe-a-chaleur-air-eau`, etc.). Elles sont absentes de l'export et du plan, et leur statut est inconnu. Les équivalents proposés sont dans le fichier.
+- **Pas d'anciennes pages** :
+  - les adresses capturées « Not Found » : /a-propos, /blog, /contact, /politique-de-confidentialite, et les 103 adresses de `listeURL.txt` ;
+  - les artefacts techniques : /_downloads, /cdn-cgi/… ;
+  - ⚠️ **/politique-de-confidentialite n'existe sur aucun des deux sites**, alors que le formulaire de devis collecte des coordonnées (question G3).
+- Le dépôt compte 102 articles : le 102e (cogénération) était un brouillon sur Webflow, sans adresse publique.
+
+### PARTIE 3a — Nettoyage (rendu inchangé)
+
+**Passé en revue** :
+- `src/pages/solutions/[slug].astro` ;
+- `src/data/solutions/` ;
+- `src/components/solutions/` et `src/components/icones-solutions/` ;
+- ce qu'ils utilisent : `ParcoursAkelia`, `AnimationScenes`, `aides/Icone.astro`, `utils/echelle.ts`, `utils/texte.ts`, `global.css`.
+
+**Supprimé ou modifié**
+- **Champ jamais lu** : `cas[].numero` (type et données PAC). L'ordre du tableau fait foi.
+- **Restes de l'ancienne convention d'images** :
+  - dans `Illustration.astro`, la branche « image fournie » (prop `image`, import de `Image`), que plus aucun appelant n'utilisait. Le composant n'est plus que le substitut d'icône ;
+  - dans `type.ts`, la description de la convention de noms de fichier (`communs/performance-….png`, `condition-N.png`), remplacée par un renvoi.
+- **Attribut orphelin** : `data-substitut-illustration` (dans `Illustration.astro` et `TravauxSolution.astro`), qu'aucun script ni style ne lisait. Il n'apparaissait dans aucune page construite : les substituts ne sont pas affichés aujourd'hui.
+- **Icônes définies mais jamais employées** dans `aides/Icone.astro` : `reseau`, `horloge`, `pieces`, `coche`. Les deux du milieu servaient aux caractéristiques des solutions, sans icône depuis la troisième passe.
+- **Logique dupliquée** : le comptage de mots existait deux fois (gabarit et `ParcoursAkelia`). Il est partagé dans `src/utils/texte.ts` (`nombreDeMots`).
+- **Commentaires périmés** : « 40 mots » corrigé en « 70 mots » dans le gabarit (deux endroits) et dans les données.
+
+**Vérifié, rien à supprimer**
+- Aucun import inutilisé dans les fichiers du périmètre (recherche automatique, identifiant par identifiant).
+- Aucun jeton de couleur sans usage : chaque `--color-*` du bloc `@theme` est employé par une classe ou une variable quelque part dans `src/`. Les trois `--font-weight-*: initial` sont des remises à zéro voulues.
+- Aucun sélecteur `[data-…]` ni aucune classe de `global.css` sans usage.
+
+**Repéré, non modifié** (le modifier changerait le HTML produit ou le comportement) :
+- dans `TravauxSolution.astro`, le gestionnaire de clic qui active l'onglet quand un **lien** vise un panneau. Plus aucun lien ne vise un panneau depuis la suppression du second niveau du sommaire (20 octobre). L'ouverture sur une ancre d'URL, elle, reste utile ;
+- dans `CarteFrance.astro`, la pastille de légende (SVG) est écrite deux fois (zones et « non concerné ») : 3 lignes, le factoriser serait plus lourd que la répétition ;
+- la FAQ du gabarit a son propre `<details>` avec chevron, au lieu de `LigneRepliable`. L'unifier changerait son apparence : c'est à décider avec la FAQ (aucune page n'en a) ;
+- l'identifiant du masque SVG de `PerfComplexite` est **aléatoire** (`Math.random`) : deux constructions produisent un HTML différent. C'est sans effet visible, mais cela gêne les comparaisons. On peut le rendre stable en même temps que le premier changement voulu de cette page.
+
+**Preuve « aucun changement de rendu »**
+- **Méthode** :
+  1. copie de `dist/` après une construction du code d'avant le nettoyage ;
+  2. nettoyage, puis nouvelle construction ;
+  3. comparaison **octet par octet** de tous les fichiers des deux `dist/` (HTML, CSS, JS, images) ;
+  4. seule normalisation : l'identifiant aléatoire du masque `masque-complexite-xxxxxx`, qui change à chaque construction, même sans aucune modification. Deux constructions successives du même code diffèrent uniquement par lui.
+- **Résultat** : 643 fichiers avant, 643 après, **0 différence**.
+- Pages témoins :
+  - `index.html`, `devis/index.html`, `aides-renovation/index.html` et `blog/index.html` : **identiques octet par octet**, sans normalisation ;
+  - `solutions/pompe-a-chaleur-air-eau/index.html` : **identique après normalisation** de l'identifiant du masque.
+- `npm run build` : **sans erreur et sans avertissement**. `verifier-build.mjs` affiche « 5 pages témoins complètes ».
+- Pas de vérification de types : TypeScript n'est pas installé dans le projet (`npx tsc` ne trouve pas le paquet), et `astro check` demande une installation interactive. Les changements de type sont cohérents avec les données (`numero` retiré des deux côtés).
+
+**Pages inutiles repérées (non supprimées)**
+- **`/test-charte`** : page de vérification visuelle, `noindex`, commentée « à supprimer avant la mise en ligne ».
+- **`/services`** (`src/pages/services/index.astro`) : ancien catalogue des « 5 domaines ».
+  - Elle est **encore liée** depuis le pied de page (« Services ») et le bloc « Deux façons de faire » de l'accueil (`MethodeFacons.astro`, « Voir nos solutions »).
+  - La supprimer demande d'abord de changer ces deux liens. L'ancien site n'avait pas de /services : aucune redirection à prévoir.
+
+### PARTIE 3b — Hypothèses cachées propres à la PAC air-eau (rapport, rien appliqué)
+
+Pour chaque hypothèse : ce qu'il faudrait changer pour la lever, et quand le faire.
+
+- **H1. La page doit être dans un groupe du méga-menu.**
+  - `getStaticPaths` **arrête la construction** si l'adresse n'est pas dans `menuSolutions[].groupes`. Or `/solutions/renovation-energetique-globale` et `/solutions/construction-neuve` sont des `liensDirects`.
+  - À changer : accepter aussi les liens directs, avec une rubrique dédiée.
+  - **Bloquant** pour ces deux pages.
+- **H2. L'aide est un forfait MaPrimeRénov' par geste.**
+  - La tuile « aides » des données appelle `forfaitMprEnChiffres(poste, 'tres-modeste')!`. Sur les 11 pages, **seule la géothermie** a un forfait. Pour les 10 autres, la fonction renvoie `undefined`, masqué par le `!` : la tuile sortirait **vide, sans erreur**.
+  - À changer :
+    - retirer le `!` et faire de l'absence une erreur de construction ;
+    - décider quoi afficher sans forfait (autre chiffre clé, « Non éligible à MaPrimeRénov' », CEE seulement).
+  - **Avant toute page autre que la géothermie.**
+- **H3. Le produit est un équipement aidé, présélectionnable dans le simulateur.**
+  - `equipementSimulateur: Poste` est obligatoire. Aucun poste n'existe pour : borne, batterie, thermostat, radiateurs, chauffe-eau électrique, construction neuve, rénovation globale.
+  - Le texte en dur de la bande « Les aides pour ce projet » (« Estimez vos aides en quatre questions. À la quatrième, les travaux de cette page sont déjà cochés ») est faux pour un produit non aidé : gaz, PAC air-air et photovoltaïque sont « non éligibles ».
+  - À changer : champ facultatif ; bande des aides facultative, ou texte adapté selon l'éligibilité, lu dans `aides.ts`.
+  - **Avant gaz, PAC air-air et photovoltaïque.**
+- **H4. Le nom est au singulier.**
+  - Titres en dur : « **Ses** points forts », « **Ses** inconvénients », « **Ses** caractéristiques techniques », « **Ses** performances ». C'est faux pour « les panneaux photovoltaïques » et « les menuiseries ».
+  - À changer : un champ de possessif dans les données (« ses » / « leurs »), ou des titres neutres (« Points forts », « Caractéristiques techniques »).
+  - **Avant photovoltaïque et menuiseries.**
+- **H5. On « installe » la solution.**
+  - « Pour installer {nomIndefini} chez vous, il faut : » ne va pas pour une isolation (« installer une isolation par l'extérieur »), ni pour une rénovation globale.
+  - À changer : la phrase entière dans les données (`introConditions`).
+  - **Avant les pages d'isolation.**
+- **H6. Les 4 mesures de performance ont un sens partout.**
+  - « Efficacité énergétique » (lettre) et « Impact environnemental » ne veulent rien dire pour une borne, une batterie ou un thermostat.
+  - « Économie d'énergie », écrite « −x % » (consommation évitée), ne convient ni au photovoltaïque (+60 % d'**autonomie**, c'est sa raison d'être) ni à la rénovation globale (« +100 % »).
+  - L'icône `PerfEconomie` et le libellé sont figés.
+  - À changer : laisser chaque page choisir entre deux libellés de la 3e mesure (économie ou autonomie, avec icône et signe), et accepter une mesure « sans objet » qui masque la tuile.
+  - Décision d'Akelia. **Avant le photovoltaïque.** Peut attendre pour borne, batterie et thermostat, qui n'ont pas encore de contenu.
+- **H7. Toujours 4 caractéristiques chiffrées, une valeur chacune.**
+  - Le type impose un quadruplet. VMC (2 variantes × chaque valeur), toiture (3 coûts, 3 rentabilités), menuiseries (3 matériaux, prix par fenêtre) et ITE (5 valeurs) n'entrent pas.
+  - Le gaz a une valeur non chiffrée (« Perte économique chaque année »).
+  - À changer : soit Akelia choisit 4 chiffres par page, soit la tuile accepte des variantes (« 15–50 à 150–250 €/m² » ou deux lignes).
+  - **Avant VMC et toiture.**
+- **H8. La complexité de la tuile est indépendante des parcours.**
+  - `performances.complexite.note` et `parcours[].difficulte` sont saisies séparément. L'ancien site se contredit déjà : géothermie 4 contre 5, toiture 2 contre 1 à 3,5.
+  - À changer : un contrôle à la construction (la note de la tuile doit être comprise entre les notes des parcours), ou la déduire.
+  - Peut attendre, mais c'est peu coûteux.
+- **H9. Toujours 4 étapes par parcours.**
+  - La grille passe à 4 colonnes à partir de 1 280px, mais le type ne l'impose pas. Les anciennes pages ont toutes 4 étapes.
+  - À changer : un avertissement si une étape manque ou est en trop.
+  - Peut attendre.
+- **H10. La carte : une échelle ordonnée de 4 niveaux, par département.**
+  - Elle disparaît proprement quand `region` est absent. **Vérifié** le 21 octobre par un essai temporaire sur la PAC air-eau, fichier restauré à l'identique :
+    - plus de titre, de carte ni d'appel à `departements.svg` ;
+    - fonds successifs blanc / crème / blanc / brume / blanc / brume / blanc / crème / bleu nuit / blanc : aucun voisin de même fond.
+  - Mais `NiveauZone` impose optimale / intéressante / à étudier / déconseillée, avec des couleurs figées. Cela ne convient ni à l'ITE (été / hiver), ni au gaz (raccordé / non, par commune), ni au photovoltaïque (niveaux chiffrés en euros).
+  - À changer : libellés de niveaux par page (couleurs gardées), ou carte remplacée par une autre forme pour le gaz.
+  - **Avant chacune de ces pages.**
+- **H11. Il y a des cas, et au moins un négatif.**
+  - `questionPourVous` et `cas` sont obligatoires. Le gabarit avertit en dessous de 3 cas ou sans cas négatif.
+  - La VMC n'a aucun cas. Le gaz et la rénovation globale n'en ont que 2. Biomasse, menuiseries, photovoltaïque et toiture n'ont aucun cas marqué en rouge : leurs refus sont codés en jaune, ou absents (toiture).
+  - À changer : rendre la section facultative, ou faire écrire les cas par Akelia.
+  - **Avant VMC, gaz et rénovation globale.**
+- **H12. L'avis tient en 3 sous-parties de 70 mots.**
+  - Les anciens avis ont 2 à 7 parties.
+  - À changer : réécriture par Akelia, ou plage de 2 à 4 sous-parties.
+  - Avant chaque page.
+- **H13. Le parcours avec l'artisan concerne un appareil à entretenir.**
+  - `ParcoursAkelia` dit « un technicien vérifie la faisabilité », « vous propose un **contrat d'entretien** ». C'est faux pour l'isolation et les menuiseries. Pour la rénovation globale, il manque l'audit et Mon Accompagnateur Rénov'.
+  - À changer : un texte d'étape 4 surchargeable par page, ou plus général.
+  - **Avant les pages d'isolation.**
+- **H14. Les icônes « adapté à votre bien » sont celles de la PAC.**
+  - `ICONES_BIEN` ne contient que 4 icônes. Chaque page en demandera de nouvelles (copropriété, gaz de ville, stockage de bois, orientation, ombre…).
+  - Le substitut neutre permet d'attendre, mais c'est une charge de dessin à prévoir : environ 25 icônes.
+- **H15. Le chiffre clé de l'en-tête est un chiffre.**
+  - Plusieurs anciennes pages ont une phrase à la place (biomasse, géothermie, toiture, menuiseries, ITI). Le gabarit l'affiche en grand et en gras : cela fonctionne, mais l'effet est différent.
+  - Peut attendre (décision éditoriale).
+- **H16. Aucun montant d'aide en dur.**
+  - La règle tient, et le contrôle à la construction l'avertira. Mais biomasse, ITE, ITI, toiture, menuiseries, rénovation globale et photovoltaïque en portent dans l'export : il faudra les retirer au portage.
+  - La « prime autoconsommation » du photovoltaïque n'existe pas dans `aides.ts` : à ajouter ou à abandonner.
+  - Au portage de chaque page.
+
+### Questions en attente de réponse (inventaire et redirections)
+
+- **G1. Images de l'ancien site** : elles ne sont plus que sur le CDN Webflow (encore en ligne le 21 octobre 2026). Faut-il les télécharger maintenant dans le dépôt (en-têtes et étapes de travaux des 11 pages, environ 100 fichiers), avant que le CDN ne ferme ?
+- **G2. Pages /ville/… (10) et /conseil-chauffage/bourdeaux** : faut-il les créer sur le nouveau site, les rediriger vers l'accueil ou /devis, ou les supprimer volontairement (410) ?
+- **G3. Politique de confidentialité** : aucune page n'existe, ni sur l'ancien site ni sur le nouveau, alors que /devis collecte des coordonnées. À créer avant la mise en ligne ?
+- **G4. /devis/bourdeaux-pac-aa-toulouse → /devis** : confirmez-vous cette redirection ? La page d'origine affichait un prix et un téléphone propres.
+- **G5. Les hypothèses H1 à H16** sont à arbitrer avant la page témoin suivante. Les plus urgentes : H1 (bloquant pour rénovation globale), H2 et H3 (aides), H4 et H5 (grammaire), H6 (mesures de performance).
+
+---
+
+## Sauvegarde des images et généralisation du gabarit (21 octobre 2026)
+
+Ce ticket ne porte aucune page et ne change aucun rendu. Les trois parties sont faites : la partie 1 en premier, comme demandé.
+
+### PARTIE 1 — Sauvegarde des images (faite en premier)
+
+- **Le CDN répondait encore** au moment de la sauvegarde (HTTP 200, 21 octobre 2026).
+- **Ce qui a été récupéré** : toutes les images (balises `<img>`) des 12 pages solutions, des 10 pages /ville et de /entreprise, telles que l'export `Données webflow/ancien test /www.akelia.fr/` les référence. Cela comprend les en-têtes, les étapes, les cartes, les icônes, et aussi les logos et les photos communes, recopiés dans chaque page qui les affiche.
+- **Rangement** :
+  - `src/assets/solutions/<slug>/` pour les 12 pages solutions ;
+  - `src/assets/ancien-site/ville-<ville>/` et `src/assets/ancien-site/entreprise/` pour les autres.
+- **Noms** : le nom d'origine (avec l'identifiant Webflow), assaini (sans accents ni espaces), sans autre changement. Aucune collision de noms.
+- **Aucune page modifiée.** Aucun fichier n'est importé : Astro ne publie que les images importées, et le site produit reste identique (vérifié plus bas).
+- **Bilan : 814 fichiers, 32,1 Mo.**
+
+| Page | Fichiers | Poids |
+|---|---|---|
+| PAC air-air | 35 | 1,69 Mo |
+| PAC géothermique | 29 | 1,11 Mo |
+| PAC air-eau | 35 | 1,81 Mo |
+| Chaudière biomasse | 34 | 1,85 Mo |
+| Chaudière gaz | 30 | 1,69 Mo |
+| ITE | 30 | 1,84 Mo |
+| ITI | 30 | 1,81 Mo |
+| Toiture et combles | 37 | 2,78 Mo |
+| Menuiseries | 29 | 1,53 Mo |
+| Photovoltaïque | 30 | 1,88 Mo |
+| VMC | 26 | 2,23 Mo |
+| Rénovation globale | 31 | 1,72 Mo |
+| 10 pages /ville | 42 à 44 chacune, 426 en tout | 0,91 à 0,95 Mo chacune, 9,26 Mo en tout |
+| /entreprise | 12 | 0,87 Mo |
+
+- **10 échecs**, un par page /ville, tous la même adresse : `https://cdn.prod.website-files.com/plugins/Basic/assets/placeholder.60f9b1840c.svg`, réponse **403**. C'est l'image générique que Webflow affiche quand un champ d'image d'une collection est vide : il n'y a aucun contenu perdu.
+- La liste complète (fichier, poids, adresse d'origine) et les échecs sont dans **`donnees/images-ancien-site.md`**.
+- Non couvert : les images de fond déclarées dans la feuille de style commune de Webflow. Aucune page solution n'en déclare dans son propre HTML (vérifié).
+
+### PARTIE 2 — Généralisation du gabarit (H1 à H13)
+
+**Méthode de non-régression**
+1. J'ai d'abord **stabilisé l'identifiant du masque SVG** de `PerfComplexite` (`masque-complexite`, prop `idMasque` pour un second exemplaire). Seule différence avec la construction précédente : cet identifiant, deux lignes.
+2. Deux constructions successives donnent alors un `dist/` **identique octet par octet** : c'est la référence.
+3. Après toute la partie 2, nouvelle construction : **`dist/` entier identique à la référence** (`diff -rq`, 0 différence, sur tous les fichiers HTML, CSS, JS et images). Les 5 pages témoins le sont aussi, PAC air-eau comprise, **sans normalisation**.
+4. Deux écarts sont apparus en cours de route, puis ont été corrigés :
+   - deux classes Tailwind nouvelles (pour la grille à 3 tuiles) changeaient la feuille de style, donc son nom haché dans toutes les pages. La grille à 3 tuiles utilise maintenant une classe déjà employée ailleurs sur le site ;
+   - un nom d'aide calculé à l'import alourdissait le script du simulateur. C'est maintenant un accesseur.
+
+**Ce qui a changé**
+- **H1** (`[slug].astro`) : les pages naissent des fichiers de `src/data/solutions/` (hors `type.ts`). Le nom du fichier doit être le slug, sinon la construction s'arrête. Le menu n'est plus vérifié que par des **avertissements** :
+  - une solution liée nulle part (ni groupe ni lien direct) ;
+  - une ou plusieurs entrées de menu `/solutions/…` sans fichier ;
+  - une rubrique différente du titre du groupe : c'était une erreur, c'est désormais un avertissement, puisque le menu n'est plus la source.
+- **H2** :
+  - `aides.ts` reçoit `tuileAide(poste)` ; `forfaitMprEnChiffres` n'est plus appelé avec `!` (un forfait manquant est une erreur).
+  - Une tuile de caractéristique peut être `{ aide: 'maprimerenov', siNonEligible? }`. Son contenu dépend du cas du poste :
+    - **forfait par geste** : montant et libellé lus dans le barème ; la précision « Revenus très modestes. » est complétée de « Prime CEE en plus. » si la prime CEE est ouverte ;
+    - **rénovation d'ampleur seulement** : « jusqu'à 80 % », libellé « d'aide en rénovation d'ampleur », précision « Revenus très modestes. Non cumulable avec les CEE. » (« jusqu'à » est affiché devant le nombre, en 20px : champ `avant`) ;
+    - **non éligible** : la mesure `siNonEligible` de la page, sinon la construction s'arrête.
+- **H3** :
+  - `equipementSimulateur` devient facultatif ; nouveau champ `posteAides`, facultatif, par défaut `equipementSimulateur`.
+  - `aidesOuvertes(poste)` (dans `aides.ts`) liste MaPrimeRénov', la prime CEE, l'éco-PTZ et la TVA à 5,5 % quand leur règle pour ce poste est « oui » ou « sous conditions ». « À vérifier » ne compte pas.
+  - Aucune aide, ou aucun poste : la **bande des aides et son entrée de sommaire disparaissent**.
+  - Les quatre aides ouvertes : la phrase d'origine. Une partie seulement : « Cette solution peut ouvrir droit à X et Y. Estimez vos aides en quatre questions. »
+  - La phrase « À la quatrième… » n'apparaît que si `equipementSimulateur` est renseigné.
+- **H4** : `possessif: 'ses' | 'leurs'` pilote les quatre titres.
+- **H5** : `introConditions` (phrase complète). `nomIndefini` est supprimé, puisqu'il ne servait qu'à cette phrase.
+- **H6** :
+  - `performances.economieEnergie` devient `performances.energie` avec `mesure: 'economie' | 'autonomie'` : « Économie d'énergie » avec `PerfEconomie`, ou « Autonomie énergétique » avec `PerfAutonomie`.
+  - **`PerfAutonomie` est recréée**, à l'identique de son premier dessin, avec le même calibrage de trait ; `LICENSES.md` est mis à jour.
+  - Chaque tuile de performance est facultative. À 4 tuiles, la grille d'origine ; à 3, une colonne puis trois à partir de 992px (jamais deux colonnes, où la troisième tuile resterait seule).
+  - Deux avertissements : moins de 3 tuiles, et signe incohérent (− pour l'économie, + pour l'autonomie).
+- **H7** : erreur de construction si une tuile de caractéristique n'a pas de chiffre dans `nombre`.
+- **H8** : avertissement si la note de complexité n'est pas comprise entre la plus petite et la plus grande note des parcours.
+- **H9** : avertissement si un parcours n'a pas exactement 4 étapes.
+- **H10** :
+  - `ZoneCarte.niveau` devient un **rang** (1 à 4, du plus favorable au moins favorable). Le libellé est le `titre` de la zone, propre à la page, comme avant.
+  - Couleurs et ordre figés dans `CarteFrance`. Les noms internes (« trame-a-etudier »…) ne servent qu'aux identifiants des motifs : le HTML ne change pas.
+  - Erreur de construction si les rangs ne sont pas croissants, s'il y a un doublon, ou plus de 4 zones.
+- **H12** : avertissement hors de 2 à 4 sous-parties, et toujours 70 mots au plus par sous-partie.
+- **H13** : `ParcoursAkelia` accepte `etapeSuivi` (titre facultatif, texte). Le texte actuel reste la valeur par défaut. Le champ `etapeSuivi` est ajouté au type.
+
+**Champs du type `Solution`**
+
+| Champ | Statut | Obligatoire ? | Valeur sur la PAC air-eau |
+|---|---|---|---|
+| `possessif` | ajouté | obligatoire | `'ses'` |
+| `introConditions` | ajouté | obligatoire | `'Pour installer une pompe à chaleur air-eau chez vous, il faut :'` |
+| `posteAides` | ajouté | facultatif | absent (déduit d'`equipementSimulateur`, soit `'pac-air-eau'`) |
+| `etapeSuivi` | ajouté | facultatif | absent (texte commun) |
+| `performances.energie` | remplace `economieEnergie` | facultatif | `{ mesure: 'economie', valeur: '−70 %', precision: 'd’énergie consommée par rapport à une chaudière' }` |
+| `performances.efficacite`, `.impact`, `.complexite` | deviennent facultatifs | facultatifs | inchangés (A, B, 2,5) |
+| `equipementSimulateur` | devient facultatif | facultatif | `'pac-air-eau'` |
+| `caracteristiques.enGrand[n]` | accepte `TuileAide` | — | 3e tuile : `{ aide: 'maprimerenov' }` (au lieu du montant lu avec `!`) |
+| `ChiffreCle.avant` | ajouté | facultatif | absent |
+| `ZoneCarte.niveau` | rang 1 à 4 au lieu d'un nom | obligatoire | 1, 2, 3 |
+| `nomIndefini` | **supprimé** | — | — |
+
+**Contrôles vus en échec**
+
+Chaque contrôle a été déclenché par une copie temporaire des données de la PAC (`src/data/solutions/essai-controles.ts`, supprimée après chaque essai), construite puis relevée.
+
+| Contrôle | Cas d'essai | Résultat |
+|---|---|---|
+| H1, solution liée nulle part | le fichier d'essai lui-même (absent du menu) | avertissement : « /solutions/essai-controles n'est lié nulle part dans le menu (src/data/menu.ts). La page est construite quand même. » La page est bien construite. |
+| H1, entrée de menu sans solution | l'état actuel du dépôt | avertissement : « src/data/menu.ts : 20 entrée(s) de menu sans solution […] » (liste des 20 adresses) |
+| H2, tuile d'aide impossible | `equipementSimulateur: 'pac-air-air'`, sans `siNonEligible` | **construction arrêtée** : « la tuile 3 des caractéristiques est une tuile d'aide, mais le poste « pac-air-air » n'ouvre pas droit à MaPrimeRénov' (src/data/aides.ts). Donnez une autre mesure chiffrée dans « siNonEligible ». » |
+| H2, tuile d'aide sans poste | `equipementSimulateur` retiré | **construction arrêtée** : « …tuile d'aide, mais la page n'a ni « posteAides » ni « equipementSimulateur ». » |
+| H7 | durée de vie `nombre: 'longue'` | **construction arrêtée** : « la tuile 2 des caractéristiques (« de durée de vie ») n'a pas de nombre : « longue ». Chaque tuile porte un nombre ; la nuance va dans « precision ». » |
+| H8 | complexité 4/5, parcours 2,5 et 1 | avertissement : « la complexité des performances (4/5) n'est pas comprise entre la plus petite et la plus grande note des parcours (1 à 2.5/5 : Rénovation 2.5, Neuf 1). » |
+| H9 | une étape retirée du parcours Rénovation | avertissement : « le parcours « Rénovation » a 3 étape(s), 4 attendues. » |
+| H12 | 2 sous-parties ajoutées à l'avis (5 en tout) | avertissement : « « L’avis Akelia » compte 5 sous-partie(s), de 2 à 4 attendues. » |
+| H6, nombre de tuiles | efficacité et impact retirés | avertissement : « 2 tuile(s) de performance, 3 ou 4 attendues. » |
+| H6, signe | économie à « +70 % » | avertissement : « la mesure « Économie d’énergie » s'écrit avec un signe « − » : « +70 % ». » |
+| H10 | deux zones au rang 1 | **construction arrêtée** : « la zone « Région intéressante » (rang 1) doit venir après « Région optimale » (rang 1) : rangs croissants, sans doublon… » |
+
+**Comportements vérifiés sur la copie d'essai**
+- `posteAides: 'isolation'`, `possessif: 'leurs'`, 3 tuiles de performance avec l'autonomie :
+  - tuile « jusqu’à 80 % – d’aide en rénovation d’ampleur – Revenus très modestes. Non cumulable avec les CEE. » ;
+  - titres « Leurs points forts / inconvénients / caractéristiques techniques / performances » ;
+  - grille de performance à 3 colonnes ;
+  - bande « Estimez vos aides en quatre questions. », sans la phrase de présélection (les quatre aides sont ouvertes) ;
+  - `introConditions` affichée.
+- `etapeSuivi` : l'étape 4 de « Votre projet » devient « Réception – L’artisan contrôle l’isolant… ».
+- `posteAides: 'photovoltaique'`, avec une mesure `siNonEligible` : **bande des aides absente**, ainsi que son entrée de sommaire. Les quatre règles du photovoltaïque sont « non » ou « à vérifier » dans `aides.ts`.
+- `equipementSimulateur: 'chaudiere-gaz'`, avec une mesure `siNonEligible` : la tuile de remplacement s'affiche. Mais **la bande des aides reste**, avec « Cette solution peut ouvrir droit à la prime CEE. » (question H-A ci-dessous).
+
+**Construction sur l'état actuel du dépôt**
+- `npm run build` : **sans erreur**. `verifier-build.mjs` affiche « 5 pages témoins complètes ».
+- ⚠️ **Il reste UN avertissement, celui de H1** : « 20 entrée(s) de menu sans solution ». C'est exact : 20 pages du menu ne sont pas encore portées et leurs liens mènent à des pages absentes. Je ne l'ai pas fait taire (question H-B).
+- **H8, H9 et H12 ne se déclenchent pas sur la PAC air-eau** : complexité 2,5 dans [1 ; 2,5], deux parcours de 4 étapes, 3 sous-parties d'avis.
+
+**Aucune page solution créée, aucune donnée de page portée.** `src/data/solutions/` ne contient que `pompe-a-chaleur-air-eau.ts` et `type.ts`.
+
+### PARTIE 3 — Table des redirections (`donnees/redirections.md`)
+
+- **Sujet des pages /ville, lu dans l'export** :
+  - les 10 pages ont le même modèle, titré « Installation pompe à chaleur & climatisation à <ville> » ;
+  - mots les plus fréquents : « pompe à chaleur » 22 fois, « climatisation » 13 à 16, « chauffe-eau » 10 ou 11, « air/air » 5 ou 6, « air/eau » 4 ou 5 ;
+  - **aucun sujet unique** : les 10 sont **redirigées vers /devis**.
+- **/conseil-chauffage/bourdeaux** : étude « chauffage et climatisation », sujet multiple, donc **/devis**.
+- Note ajoutée aux 11 lignes : pages à recréer après la publication, la redirection sera alors retirée.
+- **/devis/bourdeaux-pac-aa-toulouse → /devis** : confirmé.
+- **Nouveau décompte** : identique 105, redirigée vers 15, à créer 11 (les pages solutions), supprimée volontairement 0. Total 131.
+- Toujours **aucune redirection mise en œuvre**.
+
+### Questions en attente de réponse (sauvegarde et généralisation)
+
+- **H-A. Chaudière gaz et prime CEE.** Le ticket dit que la chaudière gaz n'ouvre droit à rien. Mais `aides.ts` n'a **pas de règle CEE propre à la chaudière gaz** : elle reçoit la règle générale du chauffage, « sous conditions » (« Possible selon l'équipement… »). Résultat : la bande des aides resterait, en citant la prime CEE. Pour qu'elle disparaisse, il faut ajouter au barème une règle CEE « non » pour l'équipement chaudière gaz. C'est une donnée du barème, avec sa source : je ne l'ai pas ajoutée sans votre confirmation. La chaudière gaz est-elle bien exclue des CEE ?
+- **H-B. Avertissement « 20 entrées de menu sans solution »** : il restera jusqu'au portage des pages, et il est vrai (20 liens du menu mènent à une 404). Trois possibilités :
+  - le garder comme rappel ;
+  - retirer ces entrées du menu jusqu'à leur portage ;
+  - marquer les entrées « à venir » dans `menu.ts` pour taire l'avertissement (ce que je déconseille : c'est ce genre de silence qui laisse des 404 en ligne).
+- **H-C. Solution sans poste dans le barème** (borne, batterie, thermostat…) : la bande des aides disparaît, puisque rien n'est connu dans `aides.ts`. Est-ce le comportement voulu, ou faut-il une bande générique ?
+- **H-D. Grille à 3 tuiles de performance** : une colonne sous 992px, trois au-dessus, sans étape à deux colonnes (pour éviter un trou et toute nouvelle classe CSS). D'accord ?
+- **H-E. Poids du dépôt** : la sauvegarde ajoute 32 Mo d'images, dont des doublons (logos et photos communes recopiés dans chaque dossier, comme demandé). Rien n'est commité. À commiter tel quel ?
+
+---
+
+## Réponses H-A à H-E : barème du gaz, compte à rebours, dédoublonnage, commit (21 octobre 2026)
+
+### H-A. Chaudière gaz : plus de prime CEE (`src/data/aides.ts`)
+
+- **Ajout** d'une règle CEE propre à l'équipement : `equipements: { 'chaudiere-gaz': { verdict: 'non', … } }`, sur l'aide `cee`.
+- **Texte affiché** par le simulateur : « Non. Les chaudières au gaz ne sont plus aidées par les primes CEE depuis le 1er janvier 2024 (suppression de la fiche BAR-TH-106). »
+- **Source en commentaire** : fiche BAR-TH-106 « Chaudière individuelle à haute performance énergétique », supprimée au 1er janvier 2024 par l'arrêté du 4 octobre 2023 (JO du 6 octobre 2023), vérifiée par Akelia.
+- **Effet** : `aidesOuvertes('chaudiere-gaz')` est vide (ni MaPrimeRénov', ni CEE, ni éco-PTZ, ni TVA à 5,5 %).
+- Vérifié sur une copie d'essai de la PAC avec `equipementSimulateur: 'chaudiere-gaz'` : **la bande des aides et son entrée de sommaire disparaissent**.
+- **Effet sur le site produit** : seul le script du simulateur change, puisqu'il embarque le barème. Les 3 pages qui l'affichent (accueil, /aides-renovation, PAC air-eau) ne diffèrent de la référence que par le nom de ce script (2 lignes chacune). Dans le script, seule la nouvelle règle diffère.
+- Relu : `/aides-renovation` dit déjà que « la chaudière gaz n'est plus financée depuis le 1er janvier 2025 » (MaPrimeRénov'). Rien ne contredit la nouvelle règle.
+
+### H-B. Compte à rebours des 404
+
+- **Avertissement reformulé** : « 20 entrées de menu mènent à une page inexistante (404). À ramener à zéro avant la mise en ligne : » suivi de la liste des adresses.
+- **Nouveau fichier : `donnees/liste-controle-publication.md`**, la liste de contrôle de publication. Ce compte à rebours en est le premier point.
+- J'y ai aussi rassemblé les autres points « avant la mise en ligne » déjà relevés dans cet inventaire, avec leurs références :
+  - redirections ;
+  - /test-charte ;
+  - /services ;
+  - politique de confidentialité ;
+  - délai de 48 heures ;
+  - arrêté du 14 août ;
+  - envoi réel des formulaires.
+- C'est la seule liste à tenir à jour : un point réglé est coché et daté, jamais effacé.
+
+### H-C. Solution sans poste dans le barème
+
+- **Nouvel avertissement** : « aucun poste dans le barème des aides (ni « posteAides » ni « equipementSimulateur ») : la bande des aides est retirée FAUTE DE SAVOIR, pas parce que la solution n'ouvre droit à rien. Vérifiez ses aides et, s'il y en a, ajoutez son poste à src/data/aides.ts. »
+- **Vu en échec** : sur une copie d'essai sans poste, l'avertissement apparaît et la bande des aides est absente. Il ne se déclenche pas sur la PAC air-eau.
+
+### H-D. Grille à 3 tuiles
+
+Confirmée par Akelia, rien à changer.
+
+### H-E. Dédoublonnage de la sauvegarde d'images, puis commit
+
+- **Méthode** :
+  - empreinte SHA-256 de chacun des 814 fichiers téléchargés ;
+  - chaque contenu n'est rangé qu'une fois ;
+  - aucun contenu identique n'existait sous deux noms différents.
+- **Rangement** :
+  - un contenu présent dans **plusieurs** dossiers va dans **`src/assets/ancien-site/communs/`** (55 contenus) ;
+  - un contenu **propre à une page** reste dans son dossier (87 contenus) ;
+  - **18 contenus étaient déjà dans le dépôt**, parmi les images que le site emploie : les 9 images du méga-menu (`src/assets/menu/`) et les 9 images de la PAC air-eau (en-tête et étapes, renommées le 19 octobre). Aucune copie de plus n'est gardée : le registre renvoie au fichier employé.
+- **Poids : 32,10 Mo (814 fichiers) avant, 12,04 Mo (142 fichiers) après.**
+- Les dossiers devenus vides sont supprimés :
+  - 9 des 10 pages /ville n'avaient **aucune** image propre (modèle commun) ; seule `ville-toulouse` en garde ;
+  - la PAC air-eau n'avait que des images déjà employées ou communes.
+- **Vérifié** : pour les 814 occurrences (page × image), le chemin de rangement existe et son empreinte est celle du fichier téléchargé, **0 écart**.
+- **Registre** : **`donnees/images-ancien-site.md`**, réécrit. Il contient le bilan, les 10 échecs, et une ligne par image affichée sur une page de l'ancien site (adresse d'origine, page, chemin de rangement, poids). Rien n'est perdu, seule la duplication l'est.
+- Site produit inchangé par le dédoublonnage : aucune de ces images n'est importée.
+
+**Commit**
+- Fait sur une **branche**, `sauvegarde-images-gabarit`, et non sur `main` (règle de travail de Claude Code : on ne commite pas directement sur la branche par défaut). Il n'est **pas poussé**.
+- **Contenu** : tout le travail en cours, comme le commit du 20 octobre (`git add -A`), **sauf** les trois archives `akelia-blog-102-articles*.zip`, toujours hors commit (question ouverte du 20 octobre).
+- `captures/` reste ignoré par `.gitignore`.
+
+### Questions en attente de réponse (H-A à H-E)
+
+- **I1. Fusion de la branche** : la branche `sauvegarde-images-gabarit` est à fusionner dans `main`, puis à pousser sur `origin`. Le faites-vous, ou dois-je le faire ?
+- **I2. Archives `*.zip`** : toujours hors commit. Faut-il les ajouter au `.gitignore`, ou les supprimer du disque ? (Question du 20 octobre, toujours ouverte.)

@@ -165,7 +165,7 @@ La prime CEE peut être cumulée avec d'autres aides financières pour maximiser
 
 ### MaPrimeRénov'
 
-MaPrimeRénov' est une aide financière distribuée par l'Agence nationale de l'habitat (Anah). Elle est destinée aux ménages réalisant des travaux de rénovation énergétique dans leur logement. Le montant de l'aide peut atteindre 20 000 € selon les travaux réalisés, vos revenus et votre lieu d'habitation. MaPrimeRénov' est cumulable avec la prime CEE, ce qui permet de financer une part plus importante de vos travaux.
+MaPrimeRénov' est une aide financière distribuée par l'Agence nationale de l'habitat (Anah). Elle est destinée aux ménages réalisant des travaux de rénovation énergétique dans leur logement. Son montant dépend des travaux réalisés, de vos revenus et de votre lieu d'habitation : [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre). Par geste, MaPrimeRénov' est cumulable avec la prime CEE ; dans une rénovation d'ampleur, en revanche, les CEE ne s'y ajoutent pas : l'Anah les valorise elle-même.
 
 ### MaPrimeRénov' Sérénité
 

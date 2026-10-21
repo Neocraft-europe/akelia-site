@@ -165,7 +165,7 @@ Il est important de noter que la technologie Inverter elle-même n'affecte pas s
 Pour encourager l'adoption de systèmes de chauffage écologiques et performants, plusieurs aides financières sont disponibles en France. Voici les principales subventions auxquelles vous pouvez prétendre :
 
 - **MaPrimeRénov'** : Cette aide de l'État peut couvrir une partie importante du coût d'installation d'une pompe à chaleur. Le montant de la prime dépend de vos revenus et du gain énergétique réalisé.
-- **Prime Effy** : Certaines entreprises proposent des primes énergie, comme la Prime Effy, qui peut atteindre jusqu'à 4 450 € pour l'installation d'une pompe à chaleur air-eau.
+- **Prime énergie (CEE)** : des fournisseurs d'énergie versent une prime pour l'installation d'une pompe à chaleur air-eau. Son montant dépend du fournisseur choisi : il n'existe pas de barème officiel en euros.
 - **TVA réduite à 5,5 %** : L'installation d'une pompe à chaleur bénéficie d'un taux de TVA réduit, ce qui permet de diminuer le coût total de l'investissement.
 - **Éco-prêt à taux zéro (Éco-PTZ)** : Ce prêt sans intérêt permet de financer les travaux de rénovation énergétique, y compris l'installation d'une pompe à chaleur.
 - **Aides locales** : Certaines collectivités locales proposent des subventions supplémentaires pour encourager les travaux de rénovation énergétique. Renseignez-vous auprès de votre mairie ou de votre région pour connaître les aides disponibles.

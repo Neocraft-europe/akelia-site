@@ -8,7 +8,7 @@ image: "../../assets/blog/tout-comprendre-sur-l-aide-financiere-maprimerenov-et-
 imageAlt: "Maison en rénovation énergétique avec des artisans installant des panneaux solaires, de l'isolation sur les murs et une pompe à chaleur."
 importance: 4
 enBref:
-  - "MaPrimeRénov' est une aide de l'État (versée par l'Anah) qui finance vos travaux d'isolation, de chauffage et de ventilation. Elle n'est plus réservée aux seuls revenus modestes : tout le monde peut y prétendre, mais le montant dépend de votre \"couleur\" de profil (Bleu, Jaune, Violet, Rose)."
+  - "MaPrimeRénov' est une aide de l'État (versée par l'Anah) qui finance vos travaux de rénovation énergétique. Depuis le 1er septembre 2026, elle n'aide plus par geste que le chauffage décarboné (pompe à chaleur air-eau ou géothermique, notamment) ; l'isolation et la ventilation le sont dans une rénovation d'ampleur. Le montant dépend de votre \"couleur\" de profil (Bleu, Jaune, Violet, Rose) ; les revenus supérieurs (Rose) n'ont droit qu'à la rénovation d'ampleur."
   - "**Les 3 parcours clés :** **- MaPrimeRénov' par geste :** Pour un changement ponctuel (ex: installer une PAC air-eau). Réservé aux logements qui ne sont pas des \"passoires thermiques\" (DPE A à E). **- MaPrimeRénov' Parcours accompagné :** Pour les rénovations d'ampleur (gain de 2 classes DPE minimum). L'accompagnement par un expert est ici obligatoire, mais les aides sont beaucoup plus massives (jusqu'à 90 % du montant des travaux pour les profils Bleus).**- MaPrimeRénov' Copropriété :** Pour les travaux sur les parties communes des immeubles."
   - "**Les conditions de succès :**"
   - "**Ancienneté :** Logement construit il y a plus de **15 ans**."
@@ -181,7 +181,7 @@ Voici quelques exemples de situations où il est possible de cumuler plusieurs a
 
 - **Rénovation par étapes** : Vous réalisez d'abord des travaux d'isolation thermique, puis dans un second temps, vous installez un nouveau système de chauffage. Chaque projet peut faire l'objet d'une demande d'aide distincte.
 - **Rénovation globale** : Vous entreprenez une rénovation d'ampleur qui nécessite plusieurs types de travaux (isolation, chauffage, ventilation). Vous pouvez demander une aide pour chaque type de travaux, dans la limite des plafonds de dépenses éligibles.
-- **Projets successifs** : Vous réalisez des travaux de rénovation énergétique sur plusieurs années. Par exemple, vous isolez votre toiture une année, puis vous remplacez vos fenêtres l'année suivante. Chaque projet peut bénéficier d'une aide MaPrimeRénov'.
+- **Projets successifs** : Vous réalisez des travaux de rénovation énergétique sur plusieurs années. Par exemple, vous installez une pompe à chaleur une année, puis vous faites d'autres travaux l'année suivante. Attention : depuis le 1er septembre 2026, l'isolation et les fenêtres ne sont plus aidées seules par MaPrimeRénov', seulement dans une rénovation d'ampleur.
 
 ### Points à vérifier avant de cumuler les aides
 

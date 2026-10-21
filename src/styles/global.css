@@ -122,6 +122,7 @@
   --color-vert-100: #d6eadf;  /* Survol de l'entrée « Construction neuve » du menu (texte vert-600 : 5,04:1) — 16 octobre 2026 */
   --color-vert-400: #4f9e7d;  /* Hachures, variantes */
   --color-vert-600: #2a6b4f;  /* Surtitres, icônes de la méthode, chiffres  */
+  --color-vert-700: #1f573f;  /* Vert foncé, même teinte que vert-600 : grands chiffres des pages solutions (caractéristiques, « −70 % ») — 21 octobre 2026. 7,51:1 sur action-50, 8,42:1 sur blanc */
 
   /* --- CRÈME -------------------------------------------------------------
      Fonds de section alternatifs : la différenciation entre sections et
@@ -184,6 +185,41 @@
   --color-mpr-jaune: #f5c518;  /* texte foncé 10,02:1 (blanc : 1,63:1, interdit) */
   --color-mpr-violet: #6a3d9a; /* texte blanc 7,64:1 */
   --color-mpr-rose: #f6b8cf;   /* texte foncé 9,86:1 (blanc : 1,66:1, interdit) */
+
+  /* --- ÉCHELLE DE DIFFICULTÉ ET DES NOTES (20 octobre 2026, refonte) -----
+     Cinq niveaux, du vert (1, simple) au rouge (5, difficile), 2 et 4 en
+     teintes intermédiaires. Couleurs de TEXTE (la note est écrite dans sa
+     couleur), toutes à 7:1 au moins sur blanc ET sur crème (#f7f4ee) :
+       1  #1e5e31  7,78:1 blanc  7,08:1 crème   (départ #1e6b3a : 6,52 / 5,94)
+       2  #3a5b1e  7,79:1        7,10:1         (départ #4a6b1e : 6,15 / 5,60)
+       3  #774700  7,82:1        7,12:1         (départ #8a5a00 : 5,93 / 5,40)
+       4  #893b12  7,78:1        7,09:1         (départ #9b4a12 : 6,21 / 5,66)
+       5  = refus  7,76:1        7,07:1         (refus #9b2c27 → #972c27 :
+                                                 6,87:1 sur crème avant)
+     Les demi-points (2,5 / 5) et les lettres A à G se placent sur la même
+     échelle par color-mix (src/utils/echelle.ts) ; les mélanges mesurés
+     restent au-dessus de 7:1 (7,12 à 8,07:1 sur crème au milieu de chaque
+     intervalle). La couleur ne porte JAMAIS seule l'information : la note
+     et le mot (« simple », « moyen », « difficile ») sont toujours écrits.
+     Les barreaux echelle-a à echelle-g (jauge à 8px) sont supprimés. */
+  --color-difficulte-1: #1e5e31;
+  --color-difficulte-2: #3a5b1e;
+  --color-difficulte-3: #774700;
+  --color-difficulte-4: #893b12;
+  --color-difficulte-5: var(--color-refus);
+
+  /* --- CARTE DES RÉGIONS (20 octobre 2026) --------------------------------
+     Départements « non concernés » de la carte de France
+     (CarteFrance.astro). Les quatre niveaux prennent des couleurs de la
+     charte : vert-600, action-500, argile, creme-fonce. */
+  --color-carte-vide: #f4f5f6;
+
+  /* --- VERDICT « NON » (20 octobre 2026) ----------------------------------
+     Rouge sobre de l'étiquette « Non » des cas des pages /solutions/…
+     (texte blanc 7,76:1). Plus sourd que alerte-700, réservé aux erreurs.
+     #9b2c27 → #972c27 le 20 octobre 2026 : 5e niveau de difficulté, il
+     devait atteindre 7:1 sur crème (6,87:1 avant). */
+  --color-refus: #972c27;
 
   /* --- SUCCÈS (conservé pour les formulaires) ----------------------------
      Vert de validation : messages de confirmation, verdict « Oui » du
@@ -537,12 +573,49 @@
 @keyframes scene-montee-titre { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
 @keyframes scene-montee-image { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
 
+/* BANDES DES PAGES SOLUTIONS (data-scene-bande, 20 octobre 2026) : le
+   contenu d'une bande apparaît comme un TITRE DE L'ACCUEIL (fondu, 20px de
+   montée, 0,5 s), quand 25 % de la bande est visible, et se REJOUE après
+   une sortie complète de l'écran (21 octobre 2026 : même comportement que
+   l'accueil ; avant : 12px, 0,6 s, une seule fois). Script :
+   AnimationScenes. Le fond de la bande ne bouge pas : seul son contenu
+   porte l'attribut. Sans script : visible (règle sous [data-scenes]
+   seulement). */
+[data-scenes] [data-scene-bande]:not([data-etat='anime']) {
+  opacity: 0;
+}
+[data-scenes] [data-scene-bande][data-etat='anime'] {
+  animation: scene-montee-titre 0.5s ease-out both;
+}
+
+/* TRAIT DES ÉTAPES (« Votre projet, étape par étape », ParcoursAkelia,
+   21 octobre 2026) : le trait qui relie les pastilles se dessine de haut
+   en bas (pathLength 1 : tiret de longueur 1, décalé de 1 à 0) pendant
+   l'arrivée des cartes : 1,15 s = 3 écarts de 150 ms + 0,7 s d'une étape.
+   Il part dès qu'une carte est visible, et se remet à zéro avec elles. */
+[data-trait-etapes] line {
+  stroke-dasharray: 1;
+}
+[data-scenes] [data-etapes]:not(:has([data-scene-etape][data-visible])) [data-trait-etapes] line {
+  stroke-dashoffset: 1;
+}
+[data-scenes] [data-etapes]:has([data-scene-etape][data-visible]) [data-trait-etapes] line {
+  animation: trait-etapes 1.15s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+@keyframes trait-etapes { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
 /* Réduire les animations : tout s'affiche immédiatement, sans mouvement. */
 @media (prefers-reduced-motion: reduce) {
-  [data-scene] :is([data-scene-titre], [data-scene-image], [data-scene-etape]) {
+  [data-scene] :is([data-scene-titre], [data-scene-image], [data-scene-etape]),
+  [data-scene-bande],
+  [data-scene-bande] [data-scene-etape] {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+  [data-trait-etapes] line {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
   }
 }
 
@@ -593,10 +666,13 @@
 
 /* Ancres du sommaire : le titre visé s'arrête 1rem sous l'en-tête collant,
    jamais caché dessous. Hors articles (page /aides-renovation), poser la
-   classe ancre-sommaire sur le titre visé. */
+   classe ancre-sommaire sur le titre visé.
+   --hauteur-barre-sommaire : hauteur de la barre de sommaire collante
+   des pages /solutions/… (SommaireBarre.astro), qui s'ajoute à celle de
+   l'en-tête. Posée par la barre sur son conteneur ; 0 ailleurs. */
 .prose :is(h2, h3),
 .ancre-sommaire {
-  scroll-margin-top: calc(var(--hauteur-entete) + 1rem);
+  scroll-margin-top: calc(var(--hauteur-entete) + var(--hauteur-barre-sommaire, 0px) + 1rem);
 }
 
 /* Sommaire collant des articles (ordinateur), liste des parties : quand

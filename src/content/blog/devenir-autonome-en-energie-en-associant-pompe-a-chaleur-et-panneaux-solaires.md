@@ -263,7 +263,7 @@ L'installation d'une pompe à chaleur associée à des panneaux solaires représ
 
 ### MaPrimeRénov'
 
-- **Description** : MaPrimeRénov' est une aide de l'État destinée à financer les travaux de rénovation énergétique. Elle est accessible à tous les propriétaires, qu'ils soient occupants ou bailleurs.
+- **Description** : MaPrimeRénov' est une aide de l'État destinée à financer les travaux de rénovation énergétique. Elle est accessible aux propriétaires occupants ou bailleurs ; par geste, elle finance la pompe à chaleur air-eau ou géothermique, sauf pour les revenus supérieurs.
 - **Montant** : Le montant de l'aide varie en fonction des revenus du ménage et du type de travaux réalisés. Pour l'installation d'une pompe à chaleur, le montant peut aller jusqu'à plusieurs milliers d'euros.
 - **Conditions** : Les travaux doivent être réalisés par un professionnel certifié RGE (Reconnu Garant de l'Environnement).
 

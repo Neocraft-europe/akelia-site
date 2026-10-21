@@ -6,25 +6,35 @@
 // à puces (lignes « - »), **gras** et liens internes. Découpage :
 // blocsDeTexte(), src/utils/texte.ts. Texte en 18px (text-corps), 70
 // caractères par ligne au plus.
+// SERRÉ (`serre`, 21 octobre 2026, « L'avis Akelia ») : interligne 1,5
+// (jamais moins : public âgé), 0,375rem entre deux puces.
+// MESURE (`mesure`, 21 octobre 2026) : largeur de ligne maximale, 70
+// caractères par défaut (« max-w-[72ch] » pour les cas, « max-w-[65ch] »
+// pour l'avis). Une prop plutôt qu'une classe ajoutée : deux max-w sur le
+// même élément, c'est l'ordre du CSS qui choisit.
 // =========================================================================
 
 import { blocsDeTexte } from '../../utils/texte';
 
 export interface Props {
   texte: string;
+  /** Interligne 1,5 et puces resserrées. */
+  serre?: boolean;
+  /** Classe de largeur maximale (défaut : max-w-[70ch]). */
+  mesure?: string;
   class?: string;
 }
 
-const { texte, class: classes } = Astro.props;
+const { texte, serre = false, mesure = 'max-w-[70ch]', class: classes } = Astro.props;
 const blocs = blocsDeTexte(texte);
 ---
 
-<div class:list={['max-w-[70ch] space-y-4 text-corps text-texte', classes]}>
+<div class:list={['space-y-4 text-corps text-texte', mesure, serre && 'leading-normal', classes]}>
   {blocs.map((bloc) =>
     bloc.type === 'paragraphe' ? (
       <p set:html={bloc.html} />
     ) : (
-      <ul class="list-disc space-y-3 pl-6 marker:text-vert-600">
+      <ul class:list={['list-disc pl-6 marker:text-vert-600', serre ? 'space-y-1.5' : 'space-y-3']}>
         {bloc.elements.map((html) => <li set:html={html} />)}
       </ul>
     ),

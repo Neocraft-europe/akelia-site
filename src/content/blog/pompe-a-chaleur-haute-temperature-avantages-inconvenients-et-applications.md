@@ -139,7 +139,7 @@ Il est important de noter que le coût de l'installation peut varier en fonction
 
 Il existe plusieurs aides financières pour faciliter l'installation d'une pompe à chaleur haute température. Voici les principales aides disponibles :
 
-- **MaPrimeRénov'**: Cette aide de l'État est destinée aux propriétaires occupants, bailleurs et copropriétés pour financer des travaux de rénovation énergétique. Le montant de l'aide dépend des revenus du foyer et peut aller jusqu'à 4 000 € pour l'installation d'une pompe à chaleur haute température.
+- **MaPrimeRénov'**: Cette aide de l'État est destinée aux propriétaires occupants, bailleurs et copropriétés pour financer des travaux de rénovation énergétique. Le montant de l'aide dépend des revenus du foyer : [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
 - **Certificats d'Économie d'Énergie (CEE)**: Les fournisseurs d'énergie sont tenus de promouvoir les économies d'énergie et peuvent proposer des primes pour l'installation de pompes à chaleur. Le montant de la prime varie en fonction des travaux réalisés et des offres des fournisseurs.
 - **Éco-Prêt à Taux Zéro (Éco-PTZ)**: Ce prêt sans intérêts permet de financer des travaux de rénovation énergétique, y compris l'installation d'une pompe à chaleur. Le montant du prêt peut aller jusqu'à 30 000 €, remboursable sur une période de 10 à 15 ans.
 - **TVA réduite à 5,5%**: Pour les travaux d'amélioration de la performance énergétique des logements de plus de deux ans, le taux de TVA est réduit à 5,5% au lieu de 20%.

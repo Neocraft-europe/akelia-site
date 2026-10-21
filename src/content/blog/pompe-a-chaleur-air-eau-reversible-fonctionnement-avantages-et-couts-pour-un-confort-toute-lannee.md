@@ -177,9 +177,9 @@ Opter pour une pompe à chaleur air/eau réversible, c’est faire le choix d’
 
 La PAC air/eau réversible est éligible à plusieurs dispositifs pour **réduire son coût** :
 
-- **MaPrimeRénov’** : Jusqu’à **5 000 €** selon vos revenus.
+- **MaPrimeRénov’** : un forfait selon vos revenus ([estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre)).
 - **Certificats d’Économies d’Énergie (CEE)** : Prime variable selon les fournisseurs d’énergie.
-- **Éco-PTZ** : Prêt à taux zéro jusqu’à **30 000 €** pour financer les travaux.
+- **Éco-PTZ** : Prêt à taux zéro pour financer le reste à charge.
 - **TVA réduite à 5,5 %** pour l’achat et la pose.
 
 **→ Un investissement rapidement rentabilisé** (en 5 à 10 ans selon les cas).
@@ -243,9 +243,9 @@ Plusieurs éléments peuvent influencer le coût total de votre installation :
 Il existe plusieurs moyens de réduire le coût d’une pompe à chaleur air/eau réversible :
 
 - **Profitez des aides financières** :
-  - **MaPrimeRénov’** : jusqu’à 5 000 € selon vos revenus.
-  - **Prime CEE (Certificats d’Économies d’Énergie)** : entre 1 000 € et 3 000 € selon les fournisseurs d’énergie.
-  - **Éco-PTZ (éco-prêt à taux zéro)** : jusqu’à 30 000 € pour financer vos travaux sans intérêts.
+  - **MaPrimeRénov’** : un forfait selon vos revenus ([estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre)).
+  - **Prime CEE (Certificats d’Économies d’Énergie)** : montant variable selon le fournisseur d’énergie choisi.
+  - **Éco-PTZ (éco-prêt à taux zéro)** : pour financer vos travaux sans intérêts.
   - **TVA réduite à 5,5 %** (au lieu de 20 %) sur l’achat et la pose de la PAC.
 - **Comparez les devis** :Demandez au moins trois devis à des installateurs **RGE (Reconnu Garant de l’Environnement)** pour obtenir le meilleur rapport qualité-prix. Méfiez-vous des offres trop alléchantes, qui peuvent cacher des arnaques.
 - **Choisissez un modèle adapté à vos besoins** :Évitez le surdimensionnement, car une PAC trop puissante entraînera des coûts inutiles. Privilégiez les marques reconnues comme Atlantic, Thermor ou Daikin pour une meilleure durabilité et des performances optimales.

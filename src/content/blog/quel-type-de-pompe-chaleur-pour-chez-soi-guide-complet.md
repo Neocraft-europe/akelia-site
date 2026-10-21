@@ -19,7 +19,7 @@ enBref:
   - "**L'isolation :** Une maison mal isolée rendra n'importe quelle PAC inefficace."
   - "**Le climat :** En zone très froide, privilégiez la géothermie ou l'hybride pour éviter que le rendement (COP) ne s'effondre."
   - "**Aides et rentabilité :**"
-  - "Les PAC **Air-Eau et Géothermiques** sont les plus subventionnées (MaPrimeRénov' jusqu'à 11 000 €, CEE, Éco-PTZ)."
+  - "Les PAC **Air-Eau et Géothermiques** sont les plus subventionnées (MaPrimeRénov', CEE, Éco-PTZ)."
   - "L'investissement est rentabilisé en moyenne sous **7 à 10 ans** grâce aux économies sur la facture."
 sources:
   - libelle: "izi-by-edf-renov.fr"
@@ -240,7 +240,7 @@ L'installation d'une pompe à chaleur peut représenter un investissement import
 
 MaPrimeRénov' est une aide de l'État destinée à encourager les travaux de rénovation énergétique. Elle est accessible à tous les propriétaires, qu'ils soient occupants ou bailleurs, et varie en fonction des revenus du foyer.
 
-- **Montant de l'aide** : Le montant de MaPrimeRénov' peut couvrir une partie importante des coûts d'installation d'une PAC. Par exemple, pour une PAC géothermique, l'aide peut atteindre jusqu'à 11 000 euros.
+- **Montant de l'aide** : Le montant de MaPrimeRénov' peut couvrir une partie importante des coûts d'installation d'une PAC. Son montant est un forfait qui dépend de vos revenus et de la pompe à chaleur choisie : [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
 - **Conditions d'éligibilité** : Pour bénéficier de MaPrimeRénov', les travaux doivent être réalisés par un professionnel certifié RGE (Reconnu Garant de l'Environnement).
 
 ### Éco-Prêt à taux zéro (Éco-PTZ)

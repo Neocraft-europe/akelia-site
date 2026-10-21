@@ -20,7 +20,7 @@ enBref:
   - "**Électrique :** À réserver aux petits espaces très bien isolés, car le coût à l'usage reste le plus élevé malgré une installation peu coûteuse."
   - "**Le système à bannir : Le Fioul**"
   - "Polluant, coûteux et progressivement interdit. Si vous en avez encore, les aides pour en sortir sont maximales."
-  - "Pour une rénovation durable, visez le combo **Isolation + PAC** ou **Chaudière Biomasse**. Ce sont les projets les mieux financés par les aides (**MaPrimeRénov’**, **Éco-PTZ**, **CEE**) et sont rapidement rentabilisés."
+  - "Pour une rénovation durable, visez le combo **Isolation + PAC** ou **Chaudière Biomasse**. Ce sont des projets bien financés par les aides (**Éco-PTZ**, **CEE**, et **MaPrimeRénov’** pour la PAC air-eau ou géothermique, ou dans une rénovation d’ampleur) et rapidement rentabilisés."
 sources:
   - libelle: "lamaisonsaintgobain.fr"
     lien: "https://www.lamaisonsaintgobain.fr/guides-travaux/tout-savoir-sur-le-chauffage-et-la-ventilation/quel-chauffage-renovation-maison#:~:text=Pour%20atteindre%20l'excellence%20environnementale,ce%20qui%20concerne%20les%20%C3%A9metteurs."

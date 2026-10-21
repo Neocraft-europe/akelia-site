@@ -91,3 +91,11 @@ export const idParcours = (prefixe: string, nom: string) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')}`;
+
+/** Nombre de mots d'un texte mis en forme, pour les contrôles de longueur
+ *  à la construction (pages solutions) : les « ** » ne comptent pas, ni
+ *  les tirets de liste (un « mot » contient au moins une lettre ou un
+ *  chiffre). Partagé le 21 octobre 2026 entre le gabarit des solutions et
+ *  ParcoursAkelia, qui comptaient chacun de leur côté. */
+export const nombreDeMots = (texte: string) =>
+  texte.replace(/\*\*/g, '').split(/\s+/).filter((m) => /[\p{L}\d]/u.test(m)).length;

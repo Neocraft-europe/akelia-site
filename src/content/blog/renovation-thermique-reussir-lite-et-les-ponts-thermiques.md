@@ -182,15 +182,17 @@ Les principaux mécanismes de financement cumulables comprennent :
 
 ```
 Plan de financement indicatif d'une rénovation globale (sortie de passoire F vers B) :
-┌──────────────────────────────────────┬──────────────────────────────────────────┐
-│ Poste de dépense / Financement       │ Proportion / Mécanisme                   │
-├──────────────────────────────────────┼──────────────────────────────────────────┤
-│ Cout global des travaux              │ 100 % (ITE + Menuiseries + VMC + Chauffage)│
-│ MaPrimeRénov' Parcours Accompagné   │ Jusqu'à 63 000 € selon ressources        │
-│ Primes CEE Rénovation globale        │ Variable selon surface et gain
-│ Reste à charge                       │ Financé via Éco-PTZ sur 20 ans           │
-└──────────────────────────────────────┴──────────────────────────────────────────┘
+┌────────────────────────────────────┬─────────────────────────────────────────────┐
+│ Poste de dépense / Financement     │ Proportion / Mécanisme                      │
+├────────────────────────────────────┼─────────────────────────────────────────────┤
+│ Coût global des travaux            │ 100 % (ITE + menuiseries + VMC + chauffage) │
+│ MaPrimeRénov' rénovation d'ampleur │ Taux selon vos revenus (voir le simulateur) │
+│ Primes CEE                         │ Non cumulables : valorisées par l'Anah      │
+│ Reste à charge                     │ Financé via Éco-PTZ sur 20 ans              │
+└────────────────────────────────────┴─────────────────────────────────────────────┘
 ```
+
+Pour connaître le taux de MaPrimeRénov' auquel vous avez droit, [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
 
 ### L'accompagnement à la maîtrise d'ouvrage et la sécurisation des parcours de travaux
 

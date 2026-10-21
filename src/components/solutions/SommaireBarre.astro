@@ -1,0 +1,114 @@
+---
+// =========================================================================
+// COMPOSANT : BARRE DE SOMMAIRE (src/components/solutions/SommaireBarre.astro)
+// -------------------------------------------------------------------------
+// Créé le 20 octobre 2026 pour les pages /solutions/… : remplace la
+// colonne de sommaire (Sommaire.astro, 300px de large, qui étranglait le
+// contenu). Les articles et /aides-renovation gardent Sommaire.astro.
+//
+// BARRE HORIZONTALE COLLANTE, pleine largeur, juste sous l'en-tête du site
+// (top = --hauteur-entete) : pilules sur le modèle de la barre des
+// catégories du blog (BarreCategories.astro), 44px de haut. Le cadre
+// défile horizontalement quand les pilules ne tiennent pas (téléphone,
+// tablette) : la page ne déborde jamais.
+//
+// LE CONTENU DE LA PAGE SE PLACE DANS LE COMPOSANT (slot) : une barre
+// collante ne colle qu'à l'intérieur de son parent. Le conteneur pose
+// aussi --hauteur-barre-sommaire, que le décalage des ancres
+// (.ancre-sommaire, global.css) ajoute à la hauteur de l'en-tête : un
+// titre visé s'arrête 1rem sous la barre, jamais dessous.
+//
+// SUIVI DE LA LECTURE : la pilule de la partie en cours passe en fond
+// plein (aria-current="location") et le cadre défile pour la garder
+// visible. Même règle que Sommaire.astro (dernier titre passé au-dessus
+// de la ligne de lecture), mais la ligne est le bas de LA BARRE. Écoute
+// aussi « sommaire:maj » (onglets des travaux).
+// =========================================================================
+
+export interface Props {
+  entrees: { id: string; texte: string }[];
+  /** Nom de la navigation pour les lecteurs d'écran. */
+  libelle: string;
+}
+
+const { entrees, libelle } = Astro.props;
+
+// 60px : pilule de 44px et 8px au-dessus et au-dessous ; le filet du bas
+// est compris (box-sizing).
+const HAUTEUR = '3.75rem';
+---
+
+<div style={`--hauteur-barre-sommaire: ${HAUTEUR}`}>
+  <nav
+    aria-label={libelle}
+    data-sommaire-barre
+    class="sticky top-[var(--hauteur-entete)] z-40 h-[var(--hauteur-barre-sommaire)] border-b border-creme-fonce bg-fond"
+  >
+    {/* « relative » sur le cadre qui défile : voir l'avertissement de
+        BarreCategories.astro. Barre de défilement masquée : la pilule
+        coupée au bord signale la suite, et le cadre suit la lecture. */}
+    <div data-sommaire-cadre class="relative mx-auto h-full max-w-site overflow-x-auto overscroll-x-contain px-gouttiere [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <ol class="flex h-full w-max items-center gap-2">
+        {entrees.map((entree) => (
+          <li>
+            <a
+              href={`#${entree.id}`}
+              data-sommaire-lien
+              class="inline-flex min-h-11 items-center whitespace-nowrap rounded-pilule border border-creme-fonce bg-fond px-4 text-corps leading-none font-semibold text-texte hover:border-nuit-900 hover:bg-creme focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-nuit-900 aria-[current]:border-nuit-900 aria-[current]:bg-nuit-900 aria-[current]:text-texte-inverse aria-[current]:focus-visible:outline-texte-inverse"
+            >
+              {entree.texte}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </nav>
+  <slot />
+</div>
+
+<script>
+  const barre = document.querySelector<HTMLElement>('[data-sommaire-barre]');
+  const cadre = document.querySelector<HTMLElement>('[data-sommaire-cadre]');
+  const liens = [...document.querySelectorAll<HTMLAnchorElement>('[data-sommaire-barre] [data-sommaire-lien]')];
+  const cible = (lien: HTMLAnchorElement) => decodeURIComponent(lien.hash.slice(1));
+  const titres = liens
+    .map((lien) => document.getElementById(cible(lien)))
+    .filter((titre): titre is HTMLElement => titre !== null);
+  const reduire = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /** Ligne de lecture : bas de la barre + 2rem. */
+  const ligneDeLecture = () => (barre?.getBoundingClientRect().bottom ?? 0) + 32;
+
+  let lienActif: HTMLAnchorElement | undefined;
+  function majPartieActive() {
+    const ligne = ligneDeLecture();
+    let active: HTMLElement | undefined;
+    for (const titre of titres) {
+      if (!titre.getClientRects().length) continue;
+      if (titre.getBoundingClientRect().top <= ligne + 1) active = titre;
+      else break;
+    }
+    const nouveau = liens.find((lien) => active && cible(lien) === active.id);
+    if (nouveau === lienActif) return;
+    lienActif?.removeAttribute('aria-current');
+    nouveau?.setAttribute('aria-current', 'location');
+    lienActif = nouveau;
+    // Le cadre défile (lui seul, jamais la page) pour centrer la pilule.
+    if (nouveau && cadre && cadre.scrollWidth > cadre.clientWidth)
+      cadre.scrollTo({ left: nouveau.offsetLeft - (cadre.clientWidth - nouveau.offsetWidth) / 2, behavior: reduire.matches ? 'auto' : 'smooth' });
+  }
+
+  // Recalcul au défilement, une fois par image au plus (8 titres : un
+  // calcul négligeable). Pas d'IntersectionObserver ici : sa zone dépend
+  // de la ligne de lecture, qui bouge tant que la barre n'est pas collée.
+  let image = 0;
+  const planifier = () => {
+    if (!image) image = requestAnimationFrame(() => ((image = 0), majPartieActive()));
+  };
+  if (titres.length) {
+    majPartieActive();
+    window.addEventListener('scroll', planifier, { passive: true });
+    window.addEventListener('resize', planifier);
+    window.addEventListener('sommaire:maj', planifier);
+  }
+</script>

@@ -16,7 +16,7 @@ enBref:
   - "**Sur air extérieur (gainé) :** Si vous n'avez pas de pièce adaptée, l'appareil puise et rejette l'air dehors via des conduits."
   - "**Le budget (2026) :**"
   - "**Prix :** Comptez entre **2 000 € et 4 000 €** (pose comprise)."
-  - "**Aides :** Éligible à **MaPrimeRénov'**, aux **CEE** et à la **TVA à 5,5 %**. Avec les aides, le reste à charge peut tomber autour de 1 500 €, rentabilisé en moins de 4 ans."
+  - "**Aides :** depuis le 1er septembre 2026, le chauffe-eau thermodynamique n'est plus aidé seul par **MaPrimeRénov'** (il l'est seulement dans une rénovation d'ampleur). Il reste éligible aux **CEE** et à la **TVA à 5,5 %**."
 sources:
   - libelle: "providenceimmobilier.com"
     lien: "https://providenceimmobilier.com/comment-un-chauffe-eau-thermodynamique-peut-vous-aider-a-ameliorer-votre-dpe/"
@@ -53,7 +53,7 @@ Le chauffe-eau thermodynamique présente plusieurs avantages significatifs, tant
 - **Réduction de la consommation énergétique** : En utilisant l'énergie thermique de l'air, le chauffe-eau thermodynamique consomme jusqu'à 70 % moins d'électricité qu'un chauffe-eau classique. Cela se traduit par des économies substantielles sur les factures d'énergie.
 - **Impact environnemental positif** : En réduisant la consommation d'électricité, le chauffe-eau thermodynamique contribue à la diminution des émissions de CO₂. Il utilise une énergie renouvelable, ce qui en fait une solution écologique.
 - **Amélioration du DPE** : Grâce à son efficacité énergétique, l'installation d'un chauffe-eau thermodynamique peut améliorer la classe énergétique de votre logement sur le DPE. Un meilleur DPE peut augmenter la valeur de votre bien immobilier et le rendre plus attractif pour les acheteurs ou locataires potentiels.
-- **Éligibilité aux aides financières** : L'installation d'un chauffe-eau thermodynamique peut vous rendre éligible à diverses aides financières, telles que MaPrimeRénov', l'éco-prêt à taux zéro, ou les Certificats d'Économies d'Énergie (CEE). Ces aides peuvent réduire considérablement le coût initial de l'installation.
+- **Éligibilité aux aides financières** : L'installation d'un chauffe-eau thermodynamique peut vous rendre éligible à diverses aides financières, telles que l'éco-prêt à taux zéro ou les Certificats d'Économies d'Énergie (CEE). Ces aides peuvent réduire considérablement le coût initial de l'installation. MaPrimeRénov' ne l'aide plus seul depuis le 1er septembre 2026.
 
 En résumé, le chauffe-eau thermodynamique est une solution moderne et performante qui permet de réaliser des économies d'énergie tout en contribuant à la préservation de l'environnement. Son impact positif sur le DPE en fait un investissement judicieux pour tout propriétaire soucieux d'améliorer la performance énergétique de son logement.
 
@@ -109,7 +109,7 @@ Il existe plusieurs types d'installation pour un chauffe-eau thermodynamique, ch
 ### Conseils pour une installation réussie
 
 - **Faire appel à un professionnel** : Il est recommandé de faire appel à un artisan qualifié, de préférence Reconnu Garant de l'Environnement (RGE), pour l'installation de votre chauffe-eau thermodynamique. Un professionnel pourra vous conseiller sur le modèle le plus adapté et assurer une installation conforme aux normes.
-- **Vérifier les aides disponibles** : Avant de procéder à l'installation, renseignez-vous sur les aides financières auxquelles vous pouvez prétendre, telles que MaPrimeRénov', l'éco-prêt à taux zéro, ou les Certificats d'Économies d'Énergie (CEE). Ces aides peuvent réduire considérablement le coût de l'installation.
+- **Vérifier les aides disponibles** : Avant de procéder à l'installation, renseignez-vous sur les aides financières auxquelles vous pouvez prétendre, telles que l'éco-prêt à taux zéro ou les Certificats d'Économies d'Énergie (CEE) : [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
 - **Entretien régulier** : Pour garantir le bon fonctionnement et la longévité de votre chauffe-eau thermodynamique, il est important de procéder à un entretien régulier. Cela inclut le nettoyage des filtres et la vérification du bon état de marche de la pompe à chaleur.
 
 ## Combien coûte un chauffe-eau thermodynamique ?
@@ -131,7 +131,7 @@ Le prix d'un chauffe-eau thermodynamique varie en fonction de plusieurs facteurs
 Pour réduire le coût initial de l'achat et de l'installation d'un chauffe-eau thermodynamique, plusieurs aides financières sont disponibles. Voici les principales :
 
 1. **MaPrimeRénov’** :
-  - Cette aide de l'État est destinée aux propriétaires occupants, bailleurs, et copropriétés pour financer des travaux de rénovation énergétique. Le montant de l'aide dépend des revenus du foyer et du gain énergétique réalisé. Pour un chauffe-eau thermodynamique, MaPrimeRénov’ peut couvrir une partie significative des coûts.
+  - Cette aide de l'État est destinée aux propriétaires occupants, bailleurs, et copropriétés pour financer des travaux de rénovation énergétique. Le montant de l'aide dépend des revenus du foyer et du gain énergétique réalisé. Depuis le 1er septembre 2026, elle ne finance plus le chauffe-eau thermodynamique seul : il n’est aidé que dans une rénovation d’ampleur, avec d’autres travaux.
 2. **Éco-prêt à taux zéro (Éco-PTZ)** :
   - L'Éco-PTZ permet de financer des travaux de rénovation énergétique sans intérêts. Il est accessible aux propriétaires occupants ou bailleurs et peut atteindre 50 000 €, remboursables sur une période allant jusqu'à 20 ans.
 3. **Certificats d’Économies d’Énergie (CEE)** :
@@ -145,15 +145,7 @@ Pour réduire le coût initial de l'achat et de l'installation d'un chauffe-eau 
 
 Prenons l'exemple d'un chauffe-eau thermodynamique de 200 litres coûtant 2 500 €, avec des frais d'installation de 500 €. Le coût total initial serait de 3 000 € en TVA 5,5 %.
 
-- **Aide MaPrimeRénov’** : 1 200 €
-- **Éco-PTZ** : 3 000 € (sans intérêts)
-- **CEE** : 300 €
-
-Après déduction des aides, le coût final serait de :
-
-3 000 € (coût initial) - 1 200 € (MaPrimeRénov’) - 300 € (CEE) = 1 500 €
-
-Avec un Éco-PTZ de 1 500 €, vous pouvez financer l'intégralité du projet sans avance de trésorerie.
+Depuis le 1er septembre 2026, ce chauffe-eau n'est plus aidé seul par MaPrimeRénov'. La prime CEE dépend du fournisseur choisi (il n'existe pas de barème officiel en euros), et l'Éco-PTZ peut financer le reste à charge sans intérêts. Pour connaître les aides de votre projet, [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
 
 En résumé, bien que le coût initial d'un chauffe-eau thermodynamique puisse sembler élevé, les aides financières disponibles et les économies d'énergie réalisées à long terme en font un investissement rentable. Pour en savoir plus vous pouvez lire notre article sur [la différence notamment économique entre une chauffe-eau éléctrique et un chauffe eau thermodynamique](/post/chauffe-eau-electrique-vs-thermodynamique-quel-choix-pour-votre-maison). N'hésitez pas à vous renseigner sur les dispositifs auxquels vous êtes éligible pour optimiser votre budget.
 

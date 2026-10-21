@@ -11,19 +11,21 @@
 // Le titre de la section est posé par la page qui l'appelle.
 // ⚠️ Un seul simulateur par page : les scripts cherchent des éléments
 // uniques (data-simulateur-bloc…).
-// `travauxPrecoches` (19 octobre 2026, pages /solutions/…) : cases de la
-// question « Vos travaux » déjà cochées à l'arrivée. Le calcul ne change
-// pas : même saisie, même résultat que sur l'accueil.
+// `preselection` (pages /solutions/…) : cases de la question « Vos
+// travaux », et équipement de chauffage, déjà cochés à l'arrivée. Le
+// calcul ne change pas : même saisie, même résultat que sur l'accueil.
 // =========================================================================
 
-import type { Travaux } from '../data/aides';
+import type { Equipement, Travaux } from '../data/aides';
 import SimulateurQuestions from './SimulateurQuestions.astro';
 
 export interface Props {
-  travauxPrecoches?: Travaux[];
+  /** Réponses cochées d'avance (pages /solutions/… : voir
+   *  preselectionPour() dans src/data/aides.ts). */
+  preselection?: { travaux: Travaux[]; equipement?: Equipement };
 }
 
-const { travauxPrecoches = [] } = Astro.props;
+const { preselection } = Astro.props;
 ---
 
 {/* Sans JavaScript : message de remplacement */}
@@ -34,7 +36,7 @@ const { travauxPrecoches = [] } = Astro.props;
   </p>
 </noscript>
 
-<SimulateurQuestions travauxPrecoches={travauxPrecoches} />
+<SimulateurQuestions preselection={preselection} />
 
 <script>
   // Démarre le simulateur : navigation entre les questions, puis formulaire

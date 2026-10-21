@@ -15,16 +15,28 @@
 //   différées) est propre à l'accueil : seul le principe est repris.
 // - SANS JAVASCRIPT : pas d'onglets, les parcours s'affichent les uns
 //   sous les autres, chacun sous son titre h3.
-// - SOMMAIRE : chaque panneau porte un id (« travaux-renovation ») visé
+// - SOMMAIRE : chaque panneau porte un id (« travaux-renovation »), visable
 //   par une entrée de second niveau du sommaire. Un clic sur un lien vers
 //   un panneau inactif active d'abord son onglet (sinon le navigateur ne
 //   peut pas y descendre) ; idem si la page s'ouvre sur cette ancre.
 //   Chaque changement d'onglet envoie « sommaire:maj » (Sommaire.astro).
+// - EN-TÊTE À PLAT (21 octobre 2026) : le nom du parcours en titre discret
+//   au-dessus, puis UNE ligne de 44px posée sur le fond de la bande (ni
+//   carte ni fond propre) : « Niveau de difficulté », jauge, note et mot.
+//   Le nom double l'onglet actif. Décision d'Akelia (21 octobre 2026) :
+//   quand les onglets s'affichent (JavaScript), le script le CACHE À
+//   L'ÉCRAN (sr-only) mais le garde pour les lecteurs d'écran et le plan
+//   des titres ; sans JavaScript (parcours empilés), il reste visible.
+// - ILLUSTRATIONS DES ÉTAPES : des scènes (pas des pictogrammes), images
+//   générées livrées plus tard. Absente : carré aux coins arrondis sur
+//   fond brume, à la taille finale de l'image (la mise en page ne bouge pas
+//   le jour de la livraison).
 // =========================================================================
 
 import { Image } from 'astro:assets';
 import type { Solution } from '../../data/solutions/type';
 import { idParcours } from '../../utils/texte';
+import NoteDifficulte from './NoteDifficulte.astro';
 
 export interface Props {
   parcours: Solution['parcours'];
@@ -35,10 +47,6 @@ export interface Props {
 const { parcours, prefixe } = Astro.props;
 
 const avecOnglets = parcours.length > 1;
-/** 2,5 → « 2,5 ». */
-const note = (n: number) => String(n).replace('.', ',');
-/** Remplissage de chacun des 5 segments de la jauge (0 à 1). */
-const segments = (n: number) => [0, 1, 2, 3, 4].map((i) => Math.max(0, Math.min(1, n - i)));
 ---
 
 <div data-travaux class="mt-8">
@@ -73,47 +81,45 @@ const segments = (n: number) => [0, 1, 2, 3, 4].map((i) => Math.max(0, Math.min(
       data-travaux-panneau
       class:list={['ancre-sommaire focus-visible:outline-[3px] focus-visible:outline-offset-8 focus-visible:outline-nuit-900', index > 0 && 'mt-12']}
     >
-      {/* EN-TÊTE DU PARCOURS : nom (h3) et niveau de difficulté, en
-          évidence : note en très grand, jauge de 5 segments (décorative :
-          la note est écrite), qualificatif. */}
-      <div class="flex flex-wrap items-end justify-between gap-x-8 gap-y-4 rounded-bloc border border-creme-fonce bg-creme p-5 sm:p-6">
-        <h3 class="text-h3 text-texte">{p.nom}</h3>
-        <div class="min-w-0">
-          <p class="text-corps font-semibold text-texte">Niveau de difficulté</p>
-          <p class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-2">
-            <span class="text-[2rem] leading-none font-black whitespace-nowrap text-texte tabular-nums">{note(p.difficulte)}<span class="text-h4 font-bold text-texte-doux"> / 5</span></span>
-            <span aria-hidden="true" class="flex gap-1">
-              {segments(p.difficulte).map((remplissage) => (
-                <span class="relative h-3 w-7 overflow-hidden rounded-full border border-nuit-900 bg-fond">
-                  <span class="absolute inset-y-0 left-0 bg-nuit-900" style={`width: ${remplissage * 100}%`}></span>
-                </span>
-              ))}
-            </span>
-            <span class="text-corps font-semibold text-texte">{p.difficulteTexte}</span>
-          </p>
-        </div>
-      </div>
+      {/* EN-TÊTE DU PARCOURS, À PLAT (21 octobre 2026) : nom (h3) en
+          titre discret, puis une ligne de 44px : intitulé, jauge, note et
+          mot (NoteDifficulte en ligne). C'est l'un des DEUX seuls
+          emplacements de la note : jamais par étape. Note en couleur sur
+          brume : 5,4:1 au moins (texte de 20px gras). */}
+      <h3 data-travaux-titre class="text-h4 font-bold text-texte">{p.nom}</h3>
+      <p class="flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1">
+        <span class="text-corps font-semibold text-texte">Niveau de difficulté</span>
+        <NoteDifficulte note={p.difficulte} enLigne />
+      </p>
 
       {/* LES ÉTAPES. Pastille numérotée cerclée d'orange (comme les
           étapes de /devis), illustration, titre. Images de 300px de large :
           jamais agrandies.
-          - sous 768px : une étape par ligne, image (6rem) à gauche du titre
-            (sur 2 colonnes, « raccordement » se coupait en plein mot) ;
+          - sous 768px (passe mobile, 21 octobre 2026) : une étape par
+            ligne, l'image AU-DESSUS, sur toute la largeur de la carte, puis
+            le numéro et le titre. Cadre pleine largeur, hauteur limitée à
+            300px (sa taille réelle : jamais agrandie), image entière dans
+            le cadre (object-contain) : rapport de forme conservé. Avant :
+            image de 96px à gauche du titre, trop petite ;
           - de 768 à 1279px : 2 colonnes, image au-dessus du titre ;
           - à partir de 1280px : 4 colonnes. */}
-      <ol class="mt-6 grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-2 md:gap-y-10 xl:grid-cols-4 xl:gap-x-4">
+      <ol class="mt-4 grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-2 md:gap-y-10 xl:grid-cols-4 xl:gap-x-4">
         {p.etapes.map((etape, n) => (
-          <li class="flex min-w-0 items-center gap-4 md:flex-col md:items-stretch md:gap-0">
-            <Image
-              src={etape.image}
-              alt={etape.imageAlt}
-              widths={[150, 300].filter((l) => l <= etape.image.width)}
-              sizes="(min-width: 768px) 300px, 96px"
-              format="webp"
-              loading="lazy"
-              class="aspect-square h-auto w-24 shrink-0 rounded-bloc bg-fond object-contain md:mx-auto md:w-full md:max-w-[300px]"
-            />
-            <p class="flex min-w-0 gap-3 md:mt-3 text-corps leading-snug font-semibold text-texte">
+          <li class="flex min-w-0 flex-col">
+            {etape.image ? (
+              <Image
+                src={etape.image}
+                alt={etape.imageAlt}
+                widths={[150, 300].filter((l) => l <= etape.image!.width)}
+                sizes="300px"
+                format="webp"
+                loading="lazy"
+                class="aspect-square max-h-[300px] w-full shrink-0 rounded-bloc bg-fond object-contain md:mx-auto md:h-auto md:max-w-[300px]"
+              />
+            ) : (
+              <span aria-hidden="true" class="aspect-square max-h-[300px] w-full shrink-0 rounded-bloc border-2 border-dashed border-brume-fonce/40 bg-brume md:mx-auto md:max-w-[300px]"></span>
+            )}
+            <p class="mt-3 flex min-w-0 gap-3 text-corps leading-snug font-semibold text-texte">
               <span aria-hidden="true" class="flex size-10 shrink-0 items-center justify-center rounded-pilule border-2 border-action-500 bg-fond text-h4 font-bold text-nuit-900">{n + 1}</span>
               <span class="min-w-0 pt-1.5 [overflow-wrap:anywhere]"><span class="sr-only">Étape {n + 1} : </span>{etape.titre}</span>
             </p>
@@ -147,6 +153,9 @@ const segments = (n: number) => [0, 1, 2, 3, 4].map((i) => Math.max(0, Math.min(
 
       liste.hidden = false;
       panneaux.forEach(function (panneau) { panneau.classList.remove('mt-12'); });
+      // Le nom du parcours double l'onglet actif : caché à l'écran, gardé
+      // pour les lecteurs d'écran.
+      Array.prototype.forEach.call(bloc.querySelectorAll('[data-travaux-titre]'), function (titre) { titre.classList.add('sr-only'); });
 
       // Ouverture sur l'ancre d'un panneau : son onglet est activé.
       var depart = panneaux.findIndex(function (p) { return '#' + p.id === decodeURIComponent(location.hash); });

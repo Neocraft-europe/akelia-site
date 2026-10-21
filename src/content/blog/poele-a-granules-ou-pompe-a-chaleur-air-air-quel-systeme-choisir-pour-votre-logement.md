@@ -14,7 +14,7 @@ enBref:
   - "**Impact :** La PAC est plus propre pour la qualité de l'air, et moins carbonné. Le poêle, bien que considéré comme énergie renouvelable, émet des particules fines et du CO2 dans son utilisation."
   - "**Entretien :** Simple pour la PAC (nettoyage des filtres). Exigeant pour le poêle (vidage des cendres régulier et ramonage obligatoire)."
   - "**Prix & Rentabilité :**"
-  - "**Installation :** Comptez 2 000 € à 5 000 € pour une PAC contre 1 500 € à 4 000 € pour un poêle (qui bénéfiecie d'aide MaPrimeRenov'). - **Combustible :** Le granulé est l'un des moins chers du marché (6 à 10 cts/kWh), tandis que l'électricité de la PAC coûte plus cher (18 à 22 cts/kWh) mais est compensée par son excellent rendement (300/400%)."
+  - "**Installation :** Comptez 2 000 € à 5 000 € pour une PAC contre 1 500 € à 4 000 € pour un poêle (qui n'est plus aidé seul par MaPrimeRénov' depuis le 1er septembre 2026). - **Combustible :** Le granulé est l'un des moins chers du marché (6 à 10 cts/kWh), tandis que l'électricité de la PAC coûte plus cher (18 à 22 cts/kWh) mais est compensée par son excellent rendement (300/400%)."
 sources:
   - libelle: "heero.fr"
     lien: "https://heero.fr/guide-travaux/chauffage/poele-bois/poele-a-granules-ou-climatisation-reversible/"
@@ -201,9 +201,9 @@ Les deux systèmes bénéficient d’aides, mais avec des différences majeures 
 
 | Aides | Pompe à chaleur air-air | Poêle à granulés |
 | --- | --- | --- |
-| MaPrimeRénov’ | ❌ Non éligible | ✅ Éligible (jusqu’à 4 000 €) |
-| Prime CEE | ✅ Éligible (montant variable) | ✅ Éligible (jusqu’à 2 500 €) |
-| TVA réduite (5,5 %) | ❌ Non éligible | ✅ Éligible |
+| MaPrimeRénov’ | ❌ Non éligible | ❌ Plus aidé seul depuis le 1er septembre 2026 (seulement en rénovation d’ampleur) |
+| Prime CEE | ✅ Éligible (montant variable) | ✅ Éligible (montant variable) |
+| TVA réduite (5,5 %) | ✅ Depuis le 18 juillet 2026, sous conditions | ✅ Éligible |
 | Éco-PTZ | ❌ Non éligible | ✅ Éligible |
 | Aides locales | ✅ Selon les régions | ✅ Selon les régions |
 
@@ -315,7 +315,7 @@ Le choix entre une **pompe à chaleur air-air** et un **poêle à granulés** d�
 | Confort thermique | Confort moyen (air soufflé). Régulation pièce par pièce. | Confort élevé (chaleur douce et rayonnante). Limité à la pièce d'installation. |
 | Coût d'achat | 5 000 € à 10 000 € (selon le nombre de splits). | 4 000 € à 6 500 € (pose incluse). |
 | Coût d'utilisation | 0,08 à 0,12 €/kWh (dépend du COP et du prix de l'électricité). | 0,06 à 0,10 €/kWh (dépend du prix des granulés). |
-| Aides financières | Peu d'aides (Prime CEE, aides locales). | Éligible à la plupart des aides (MaPrimeRénov', CEE, éco-PTZ, TVA réduite). |
+| Aides financières | Peu d'aides (prime CEE, TVA à 5,5 % sous conditions, aides locales). | Prime CEE, éco-PTZ, TVA réduite ; MaPrimeRénov' seulement en rénovation d'ampleur. |
 | Installation | Unité extérieure encombrante. Nécessite un espace aéré et des travaux électriques. | Nécessite un conduit d'évacuation. Stockage des granulés requis. |
 | Entretien | Léger (nettoyage des filtres, contrôle bisannuel). | Contraignant (nettoyage quotidien, ramonage obligatoire 2 fois/an, entretien annuel). |
 | Durabilité | 10 à 15 ans. Pièces sensibles (compresseur, carte électronique). | 10 à 20 ans. Pièces mécaniques remplaçables. |
@@ -353,7 +353,7 @@ Le choix entre une **pompe à chaleur air-air** et un **poêle à granulés** d�
 
 ✅ Vous habitez dans une région **froide** ou mal desservie par le gaz.
 
-✅ Vous pouvez bénéficier des **aides financières** (MaPrimeRénov’, CEE, éco-PTZ), réduisant significativement le coût.
+✅ Vous pouvez bénéficier des **aides financières** (prime CEE, éco-PTZ ; MaPrimeRénov’ seulement dans une rénovation d’ampleur), réduisant le coût.
 
 ✅ Vous acceptez un **entretien régulier** (nettoyage, ramonage) et avez un espace pour stocker les granulés.
 

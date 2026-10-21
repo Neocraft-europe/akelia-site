@@ -22,14 +22,22 @@
 // « inconnu », sans montant : les dispositifs locaux changent trop souvent
 // pour être chiffrés sans risque.
 //
-// SOURCES VÉRIFIÉES LE 8 OCTOBRE 2026 :
+// BARÈME AU 20 OCTOBRE 2026 (refonte du 20 octobre 2026). Sources :
 // - Anah, « Les aides financières en 2026 », édition septembre 2026 (guide
-//   à destination des professionnels, qui intègre le décret n° 2026-822 du
-//   25 août 2026) ;
-// - service-public.gouv.fr, fiche MaPrimeRénov' (vérifiée le 1er septembre
-//   2026) ;
-// Le détail de la vérification, et ce qui n'a pas pu être confirmé, est
-// consigné dans inventaire-charte.md (étape 12).
+//   à destination des professionnels) : barème par geste, rénovation
+//   d'ampleur, écrêtement, plafonds de ressources 2026 ;
+// - arrêté du 25 août 2026 (barème MaPrimeRénov' au 1er septembre 2026) ;
+// - economie.gouv.fr, « Ce qui change en septembre 2026 » ;
+// - arrêté du 13 juillet 2026 (TVA à 5,5 % des pompes à chaleur air/air).
+// Le détail de la vérification est dans inventaire-charte.md (« Refonte du
+// barème des aides »).
+//
+// STRUCTURE DEPUIS LE 20 OCTOBRE 2026 : MaPrimeRénov' n'est plus une
+// « aide » comme les autres (une règle par case cochée) : son barème
+// dépend du POSTE de travaux et du PROFIL de revenus. Voir « MAPRIMERÉNOV' »
+// plus bas : mprParGeste (un cas par poste), mprAmpleur, ecretement,
+// plafondsRessources. Les autres aides nationales (CEE, Éco-PTZ, TVA)
+// gardent la forme AideNationale.
 // =========================================================================
 
 
@@ -40,14 +48,36 @@
 /** Les 3 réponses possibles à la question « Vous êtes ». */
 export type Statut = 'proprietaire-occupant' | 'proprietaire-bailleur' | 'locataire';
 
-/** Les 6 réponses possibles à la question « Vos travaux ». */
+/** Les réponses possibles à la question « Vos travaux » : la liste
+ *  principale, puis le groupe « Autres démarches » (dépose de cuve, audit,
+ *  réseau de chaleur, ajoutés le 20 octobre 2026). */
 export type Travaux =
   | 'isolation'
   | 'fenetres'
   | 'chauffage'
   | 'ventilation'
   | 'photovoltaique'
+  | 'ne-sait-pas'
+  | 'depose-cuve-fioul'
+  | 'audit'
+  | 'reseau-chaleur';
+
+/** Sous-question « Quel équipement ? », posée quand « Chauffage » est
+ *  coché (20 octobre 2026). */
+export type Equipement =
+  | 'pac-air-eau'
+  | 'pac-geothermique'
+  | 'pac-air-air'
+  | 'bois-biomasse'
+  | 'chaudiere-gaz'
+  | 'chauffe-eau-thermodynamique'
+  | 'chauffe-eau-solaire'
   | 'ne-sait-pas';
+
+/** Profil de revenus MaPrimeRénov' (Bleu, Jaune, Violet, Rose sur la page
+ *  /aides-renovation). Le simulateur le déduit du foyer et du revenu
+ *  fiscal de référence : la personne ne choisit jamais une couleur. */
+export type Profil = 'tres-modeste' | 'modeste' | 'intermediaire' | 'superieur';
 
 /**
  * Le verdict affiché pour une aide :
@@ -99,6 +129,12 @@ export interface AideNationale {
    * n'a pas encore choisi ses travaux.
    */
   travaux: Record<Travaux, Regle>;
+  /**
+   * Quand « Chauffage » est coché : règle propre à un équipement, qui
+   * REMPLACE la règle `travaux.chauffage` (20 octobre 2026 : sans elle, une
+   * chaudière gaz recevait le « oui » général du chauffage).
+   */
+  equipements?: Partial<Record<Equipement, Regle>>;
   sources: Source[];
   /** Date de la dernière vérification des chiffres (AAAA-MM-JJ). */
   dateVerification: string;
@@ -135,148 +171,19 @@ const SOURCE_SERVICE_PUBLIC_MPR: Source = {
 };
 
 export const aidesNationales: AideNationale[] = [
-  // =======================================================================
-  // 1. MAPRIMERÉNOV' PAR GESTE
-  // Depuis le 1er septembre 2026 (décret n° 2026-822 du 25 août 2026), le
-  // parcours par geste ne finance plus que des systèmes de chauffage
-  // décarbonés : pompe à chaleur air/eau, pompe à chaleur géothermique ou
-  // solarothermique, raccordement à un réseau de chaleur (et l'audit
-  // énergétique ou la dépose d'une cuve à fioul).
-  // Isolation, fenêtres, ventilation, poêles et chauffe-eau ne sont plus
-  // financés par geste.
-  // Barème (Anah, septembre 2026), revenus très modestes / modestes /
-  // intermédiaires, revenus supérieurs non éligibles :
-  //   PAC air/eau            5 000 € / 4 000 € / 3 000 €
-  //   PAC géothermique      11 000 € / 9 000 € / 6 000 €
-  //   Réseau de chaleur      1 200 € /   800 € /   400 €
-  // =======================================================================
-  {
-    id: 'maprimerenov-geste',
-    nom: "MaPrimeRénov' par geste",
-    nature: "Prime de l'État (Anah)",
-    montantMax: 11000,
-    conditions: [
-      'Logement construit depuis au moins 15 ans, occupé en résidence principale.',
-      'Travaux réalisés par un professionnel RGE, demande déposée avant les travaux.',
-      'Ménages aux revenus très modestes, modestes ou intermédiaires (revenus supérieurs exclus).',
-    ],
-    statuts: {
-      'proprietaire-occupant': { verdict: 'oui', texte: 'Ouvert aux propriétaires occupants.' },
-      'proprietaire-bailleur': {
-        verdict: 'oui',
-        texte: "Ouvert aux propriétaires bailleurs, qui s'engagent à louer le logement en résidence principale pendant au moins 6 ans.",
-      },
-      locataire: {
-        verdict: 'non',
-        texte: "Réservé aux propriétaires : en tant que locataire, vous ne pouvez pas en bénéficier. Votre propriétaire, lui, le peut.",
-      },
-    },
-    travaux: {
-      chauffage: {
-        verdict: 'oui',
-        montantMax: 11000,
-        texte: "Oui pour une pompe à chaleur : jusqu'à 11 000 € pour une pompe à chaleur géothermique et jusqu'à 5 000 € pour une pompe à chaleur air/eau, selon vos revenus. Les ménages aux revenus les plus élevés n'y ont pas droit.",
-      },
-      isolation: {
-        verdict: 'non',
-        texte: "L'isolation n'est plus financée seule par MaPrimeRénov' depuis le 1er septembre 2026. Elle peut l'être dans une rénovation d'ampleur.",
-      },
-      fenetres: {
-        verdict: 'non',
-        texte: "Les fenêtres ne sont plus financées seules par MaPrimeRénov' depuis le 1er septembre 2026. Elles peuvent l'être dans une rénovation d'ampleur.",
-      },
-      ventilation: {
-        verdict: 'non',
-        texte: "La ventilation n'est plus financée seule par MaPrimeRénov' depuis le 1er septembre 2026.",
-      },
-      photovoltaique: {
-        verdict: 'non',
-        texte: "Les panneaux photovoltaïques ne font pas partie des travaux financés par MaPrimeRénov'.",
-      },
-      'ne-sait-pas': {
-        verdict: 'sous-conditions',
-        montantMax: 11000,
-        texte: "Seulement pour l'installation d'une pompe à chaleur : jusqu'à 11 000 € selon vos revenus.",
-      },
-    },
-    sources: [SOURCE_ANAH, SOURCE_SERVICE_PUBLIC_MPR],
-    dateVerification: '2026-10-08',
-  },
-
-  // =======================================================================
-  // 2. MAPRIMERÉNOV' RÉNOVATION D'AMPLEUR
-  // Projet global : au moins 2 gestes d'isolation et un gain d'au moins
-  // 2 classes énergétiques, logement classé E, F ou G, construit depuis au
-  // moins 15 ans, résidence principale, Accompagnateur Rénov' obligatoire,
-  // rendez-vous préalable avec un conseiller France Rénov' obligatoire.
-  // Depuis le 1er septembre 2026 en maison individuelle : impossible de
-  // conserver ou installer un chauffage au gaz ou au fioul.
-  // Taux (très modestes / modestes / intermédiaires / supérieurs) :
-  //   80 % / 60 % / 45 % / 10 % du montant HT des travaux, plafonné à
-  //   30 000 € HT (gain de 2 classes) ou 40 000 € HT (3 classes ou plus).
-  // Maximum : 80 % × 40 000 € = 32 000 €.
-  // =======================================================================
-  {
-    id: 'maprimerenov-ampleur',
-    nom: "MaPrimeRénov' rénovation d'ampleur",
-    nature: "Prime de l'État (Anah)",
-    montantMax: 32000,
-    conditions: [
-      'Logement classé E, F ou G, construit depuis au moins 15 ans, occupé en résidence principale.',
-      "Projet global : au moins 2 travaux d'isolation et un gain d'au moins 2 classes énergétiques.",
-      "Accompagnateur Rénov' et rendez-vous préalable avec un conseiller France Rénov' obligatoires.",
-      'En maison individuelle, pas de chauffage au gaz ou au fioul après les travaux.',
-    ],
-    statuts: {
-      'proprietaire-occupant': { verdict: 'oui', texte: 'Ouvert aux propriétaires occupants.' },
-      'proprietaire-bailleur': {
-        verdict: 'oui',
-        texte: "Ouvert aux propriétaires bailleurs, qui s'engagent à louer le logement en résidence principale pendant au moins 6 ans.",
-      },
-      locataire: {
-        verdict: 'non',
-        texte: "Réservé aux propriétaires : en tant que locataire, vous ne pouvez pas en bénéficier.",
-      },
-    },
-    travaux: {
-      isolation: {
-        verdict: 'sous-conditions',
-        montantMax: 32000,
-        texte: "Possible dans un projet de rénovation globale : jusqu'à 32 000 € selon vos revenus et le gain énergétique obtenu (de 10 % à 80 % du montant des travaux).",
-      },
-      fenetres: {
-        verdict: 'sous-conditions',
-        montantMax: 32000,
-        texte: "Possible si le changement des fenêtres fait partie d'un projet de rénovation globale : jusqu'à 32 000 € selon vos revenus.",
-      },
-      chauffage: {
-        verdict: 'sous-conditions',
-        montantMax: 32000,
-        texte: "Possible si le chauffage fait partie d'un projet de rénovation globale avec isolation : jusqu'à 32 000 € selon vos revenus.",
-      },
-      ventilation: {
-        verdict: 'sous-conditions',
-        montantMax: 32000,
-        texte: "Possible si la ventilation fait partie d'un projet de rénovation globale avec isolation : jusqu'à 32 000 € selon vos revenus.",
-      },
-      photovoltaique: {
-        verdict: 'a-verifier',
-        texte: "La prise en compte des panneaux photovoltaïques dans une rénovation d'ampleur n'a pas pu être confirmée : nous le vérifions avec vous.",
-      },
-      'ne-sait-pas': {
-        verdict: 'sous-conditions',
-        montantMax: 32000,
-        texte: "Possible pour un projet de rénovation globale avec isolation : jusqu'à 32 000 € selon vos revenus et le gain énergétique obtenu.",
-      },
-    },
-    sources: [SOURCE_ANAH, SOURCE_SERVICE_PUBLIC_MPR],
-    dateVerification: '2026-10-08',
-  },
+  // MaPrimeRénov' (par geste et rénovation d'ampleur) n'est plus dans ce
+  // tableau depuis le 20 octobre 2026 : voir « MAPRIMERÉNOV' » plus bas.
+  // TVA des pompes à chaleur air/air : voir `tvaPacAirAir`, plus bas.
 
   // =======================================================================
   // 3. CEE : CERTIFICATS D'ÉCONOMIES D'ÉNERGIE (« primes énergie »)
   // Primes versées par les fournisseurs d'énergie. Montant variable selon le
   // fournisseur, les travaux et les revenus : AUCUN MONTANT AFFICHÉ.
+  // Il n'existe AUCUN barème officiel en euros : l'État fixe des volumes en
+  // kWh cumac, et le montant dépend du signataire choisi par le client.
+  // Aucune valeur en euros ne doit apparaître, ni ici ni sur les pages.
+  // « Coup de pouce Chauffage » : réservé depuis le 1er septembre 2026 aux
+  // pompes à chaleur disposant d'un agrément officiel.
   // Bénéficiaires : propriétaires occupants, bailleurs, et locataires
   // « selon les aides ». Logement de plus de 2 ans. L'offre doit être
   // acceptée avant la signature du devis (ou dans les 14 jours après).
@@ -310,8 +217,8 @@ export const aidesNationales: AideNationale[] = [
         texte: "Oui, les travaux d'isolation du logement, dont les fenêtres, sont couverts. Montant variable selon le fournisseur et vos revenus.",
       },
       chauffage: {
-        verdict: 'oui',
-        texte: "Oui, notamment avec les primes « coup de pouce » pour remplacer une chaudière au fioul, au gaz ou au charbon. Montant variable selon le fournisseur et vos revenus.",
+        verdict: 'sous-conditions',
+        texte: "Possible selon l'équipement. La prime « Coup de pouce Chauffage » est réservée, depuis le 1er septembre 2026, aux pompes à chaleur disposant d'un agrément officiel. Il n'existe pas de barème officiel en euros : le montant dépend du fournisseur que vous choisissez.",
       },
       ventilation: {
         verdict: 'a-verifier',
@@ -324,6 +231,34 @@ export const aidesNationales: AideNationale[] = [
       'ne-sait-pas': {
         verdict: 'oui',
         texte: "Oui pour la plupart des travaux d'économies d'énergie (isolation, chauffage). Montant variable selon le fournisseur et vos revenus.",
+      },
+      // Autres démarches (20 octobre 2026) : non confirmé par les sources du
+      // barème, donc « à vérifier », sans rien supposer.
+      'depose-cuve-fioul': {
+        verdict: 'a-verifier',
+        texte: "La prise en charge de la dépose d'une cuve à fioul par une prime CEE n'a pas pu être confirmée : nous le vérifions avec vous.",
+      },
+      audit: {
+        verdict: 'a-verifier',
+        texte: "La prise en charge d'un audit énergétique par une prime CEE n'a pas pu être confirmée : nous le vérifions avec vous.",
+      },
+      'reseau-chaleur': {
+        verdict: 'a-verifier',
+        texte: "La prise en charge d'un raccordement à un réseau de chaleur par une prime CEE n'a pas pu être confirmée : nous le vérifions avec vous.",
+      },
+    },
+    // CHAUDIÈRE GAZ : PLUS DE PRIME CEE (21 octobre 2026, vérifié par
+    // Akelia). La fiche BAR-TH-106 « Chaudière individuelle à haute
+    // performance énergétique », qui portait les chaudières gaz à
+    // condensation, a été supprimée au 1er janvier 2024 par l'arrêté du
+    // 4 octobre 2023 (Journal officiel du 6 octobre 2023). Sans cette règle,
+    // la chaudière gaz recevait la règle générale « chauffage » (« sous
+    // conditions »). Elle n'ouvre donc plus droit à aucune aide du barème
+    // (ni MaPrimeRénov', ni CEE, ni éco-PTZ, ni TVA à 5,5 %).
+    equipements: {
+      'chaudiere-gaz': {
+        verdict: 'non',
+        texte: "Non. Les chaudières au gaz ne sont plus aidées par les primes CEE depuis le 1er janvier 2024 (suppression de la fiche BAR-TH-106).",
       },
     },
     sources: [SOURCE_ANAH],
@@ -390,6 +325,27 @@ export const aidesNationales: AideNationale[] = [
         montantMax: 50000,
         texte: "Oui pour des travaux d'économies d'énergie : jusqu'à 50 000 € selon l'ampleur du projet.",
       },
+      // Autres démarches (20 octobre 2026) : non confirmé, « à vérifier ».
+      'depose-cuve-fioul': {
+        verdict: 'a-verifier',
+        texte: "La dépose d'une cuve à fioul n'a pas pu être confirmée parmi les travaux finançables : nous le vérifions avec vous.",
+      },
+      audit: {
+        verdict: 'a-verifier',
+        texte: "L'audit énergétique seul n'a pas pu être confirmé parmi les dépenses finançables : nous le vérifions avec vous.",
+      },
+      'reseau-chaleur': {
+        verdict: 'a-verifier',
+        texte: "Le raccordement à un réseau de chaleur n'a pas pu être confirmé parmi les travaux finançables : nous le vérifions avec vous.",
+      },
+    },
+    // Même information que la règle « chauffage » ci-dessus, appliquée à
+    // l'équipement choisi.
+    equipements: {
+      'chaudiere-gaz': {
+        verdict: 'non',
+        texte: "L'Éco-PTZ finance un chauffage performant, pas une chaudière au gaz.",
+      },
     },
     sources: [SOURCE_ANAH],
     dateVerification: '2026-10-08',
@@ -403,8 +359,9 @@ export const aidesNationales: AideNationale[] = [
   // occupants à titre gratuit, SCI. Logement achevé depuis plus de 2 ans
   // (résidence principale ou secondaire).
   // Travaux : isolation thermique, chauffage et ventilation, eau chaude
-  // sanitaire (arrêté du 4 décembre 2024). Depuis le 1er septembre 2026,
-  // aussi les pompes à chaleur air-air. Chaudière au gaz : TVA à 20 %.
+  // sanitaire (arrêté du 4 décembre 2024). Chaudière au gaz : TVA à 20 %.
+  // POMPES À CHALEUR AIR/AIR : à 5,5 % depuis le 18 juillet 2026. Texte
+  // et références : `tvaPacAirAir`, juste après ce tableau.
   // =======================================================================
   {
     id: 'tva-reduite',
@@ -425,7 +382,7 @@ export const aidesNationales: AideNationale[] = [
       fenetres: { verdict: 'oui', texte: 'Oui, les fenêtres isolantes bénéficient de la TVA à 5,5 % (travaux d\'isolation thermique).' },
       chauffage: {
         verdict: 'oui',
-        texte: "Oui pour un chauffage économe ou renouvelable, dont les pompes à chaleur. Une chaudière au gaz reste à 20 %.",
+        texte: "Oui pour un chauffage économe ou renouvelable, dont les pompes à chaleur. Une climatisation réversible fixe (pompe à chaleur air/air) y a droit depuis le 18 juillet 2026, sous des critères techniques stricts. Une chaudière au gaz reste à 20 %.",
       },
       ventilation: { verdict: 'oui', texte: 'Oui, la ventilation bénéficie de la TVA à 5,5 %.' },
       photovoltaique: {
@@ -436,12 +393,360 @@ export const aidesNationales: AideNationale[] = [
         verdict: 'oui',
         texte: "Oui pour l'isolation, le chauffage économe, la ventilation et l'eau chaude.",
       },
+      // Autres démarches (20 octobre 2026) : non confirmé, « à vérifier ».
+      'depose-cuve-fioul': {
+        verdict: 'a-verifier',
+        texte: "Le taux de TVA de la dépose d'une cuve à fioul n'a pas pu être confirmé : à vérifier avec votre artisan.",
+      },
+      audit: {
+        verdict: 'a-verifier',
+        texte: "Le taux de TVA d'un audit énergétique n'a pas pu être confirmé ici : à vérifier avec le professionnel.",
+      },
+      'reseau-chaleur': {
+        verdict: 'a-verifier',
+        texte: "Le taux de TVA d'un raccordement à un réseau de chaleur n'a pas pu être confirmé : à vérifier.",
+      },
+    },
+    // Équipement choisi (mêmes informations que la règle « chauffage »).
+    equipements: {
+      'chaudiere-gaz': { verdict: 'non', texte: 'Une chaudière au gaz reste à la TVA à 20 %.' },
+      'pac-air-air': {
+        verdict: 'sous-conditions',
+        texte: "Depuis le 18 juillet 2026, une pompe à chaleur air/air fixe, dans un logement achevé depuis plus de deux ans, bénéficie de la TVA à 5,5 % si elle atteint le niveau de performance exigé (par exemple A++ en monosplit, A+ en multisplit jusqu'à 12 kW) et dispose d'un réseau numérique pour son pilotage et sa maintenance. Sinon : 20 % sur la fourniture, 10 % sur la pose.",
+      },
     },
     sources: [SOURCE_ANAH],
     dateVerification: '2026-10-08',
   },
 ];
 
+
+// -------------------------------------------------------------------------
+// TVA À 5,5 % DES POMPES À CHALEUR AIR/AIR (texte du 20 octobre 2026)
+// -------------------------------------------------------------------------
+// Affiché tel quel par /aides-renovation (section TVA) : une seule source.
+//
+// BASES LÉGALES :
+// - arrêté du 13 juillet 2026 (NOR CPPE2619005A), pris en application de
+//   l'article 92 de la loi de finances pour 2026, insérant un 1° bis à
+//   l'article 30-0 D ter de l'annexe IV du CGI : 5,5 % depuis le 18
+//   juillet 2026 ;
+// - arrêté correctif du 14 août 2026, applicable au 10 septembre 2026 :
+//   restreint les seuils de 145 % / 250 % aux appareils de plus de 12 kW
+//   HORS toiture (d'où la ligne propre aux appareils en toiture).
+//   ⚠️ CONNU PAR UNE SOURCE PROFESSIONNELLE (SYNASAV, « TVA 5,5 % PAC
+//   air/air : correction des critères au-delà de 12 kW »), PAS PAR
+//   LÉGIFRANCE : Akelia le confirme sur Légifrance avant la mise en ligne.
+//
+// TAUX DE REPLI (vérifié par Akelia le 20 octobre 2026) : fourniture à
+// 20 %, pose à 10 %. Source : BOFiP BOI-TVA-LIQ-30-20-90-20, version du 9
+// septembre 2026, § 50, 80 et 100. La pompe à chaleur air/air figure
+// nommément dans la liste des gros équipements de l'article 30-00 A de
+// l'annexe IV du CGI (« système de climatisation : tous les systèmes de
+// climatisation, ainsi que les pompes à chaleur de type air/air »), ce qui
+// exclut sa fourniture du taux réduit. Logement achevé depuis plus de deux
+// ans : article 279-0 bis du CGI. Le client atteste sur le devis ou la
+// facture que les conditions sont réunies.
+//
+// CONTRÔLE (avertissement à la construction, /aides-renovation) : le texte
+// doit contenir « 12 kW », « 145 », « 250 », « A++ » et « A+ ».
+// -------------------------------------------------------------------------
+export const tvaPacAirAir = {
+  intro:
+    'Depuis le 18 juillet 2026, la pose d’une pompe à chaleur air/air dans un logement achevé depuis plus de deux ans bénéficie de la TVA à 5,5 %, à trois conditions :',
+  conditions: [
+    { texte: 'L’appareil est fixe. Les appareils mobiles restent exclus.' },
+    {
+      texte: 'Il atteint le niveau de performance exigé :',
+      details: [
+        'pour une puissance thermique nominale de 12 kW ou moins : classe A++ en monosplit, A+ en multisplit, en chauffage comme en refroidissement ;',
+        'au-delà de 12 kW : efficacité énergétique saisonnière d’au moins 145 % en chauffage et 250 % en refroidissement ;',
+        'pour les appareils en toiture assurant plusieurs fonctions : 130 % en chauffage et 150 % en refroidissement.',
+      ],
+    },
+    { texte: 'Il dispose d’un réseau numérique permettant son pilotage et sa maintenance.' },
+  ],
+  dateDuDevis: 'Le taux applicable est celui en vigueur à la date de signature du devis.',
+  repli: {
+    debut: 'Si une condition manque, la TVA est de',
+    fourniture: '20 % sur la fourniture',
+    pose: '10 % sur la pose',
+    fin: 'Dans tous les cas, le logement doit être achevé depuis plus de deux ans, et vous attestez sur le devis ou la facture que les conditions sont réunies.',
+  },
+  /** Mentions obligatoires (contrôle en avertissement). */
+  mentionsAttendues: ['12 kW', '145', '250', 'A++', 'A+'],
+};
+
+// -------------------------------------------------------------------------
+// MAPRIMERÉNOV' : BARÈME AU 20 OCTOBRE 2026
+// -------------------------------------------------------------------------
+// Refondu le 20 octobre 2026. Toutes les valeurs ci-dessous ont été lues
+// dans le guide Anah « Les aides financières en 2026 », édition septembre
+// 2026 (pages citées), le 20 octobre 2026. Aucune n'est déduite.
+//
+// PARCOURS PAR GESTE (page 14 et 15) : CINQ postes, et cinq seulement, sont
+// encore aidés seuls. Revenus supérieurs : aucun forfait.
+// Sortis du parcours par geste au 1er septembre 2026 : isolation,
+// ventilation, menuiseries, bois et biomasse, pompes à chaleur dédiées à
+// l'eau chaude sanitaire (chauffe-eau thermodynamiques), solaire thermique
+// et hybride (sauf outre-mer). Ils restent aidés en rénovation d'ampleur.
+// Jamais ou plus du tout aidés : chaudière gaz (depuis le 1er janvier
+// 2025), pompe à chaleur air-air, photovoltaïque.
+//
+// POUR METTRE À JOUR UN FORFAIT : changer le nombre dans `forfaits`
+// (euros, sans espace), puis la date en haut du fichier. Les phrases du
+// simulateur sont construites à partir de ces nombres : rien d'autre à
+// modifier.
+// -------------------------------------------------------------------------
+
+/** Les postes du barème. Le simulateur affiche UNE LIGNE PAR POSTE choisi. */
+export type Poste =
+  | 'pac-air-eau' | 'pac-geothermique' | 'reseau-chaleur' | 'depose-cuve-fioul' | 'audit'
+  | 'isolation' | 'fenetres' | 'ventilation' | 'bois-biomasse'
+  | 'chauffe-eau-thermodynamique' | 'chauffe-eau-solaire'
+  | 'chaudiere-gaz' | 'pac-air-air' | 'photovoltaique';
+
+/** Les trois profils qui peuvent recevoir un forfait par geste. */
+export type ProfilAide = Exclude<Profil, 'superieur'>;
+
+/**
+ * Ce que MaPrimeRénov' par geste prévoit pour un poste : un des trois cas.
+ * - 'aide-seul'         : forfait selon le profil, et plafond de dépense ;
+ * - 'ampleur-seulement' : plus aidé seul (depuis `depuis`), mais aidé dans
+ *                         une rénovation d'ampleur ;
+ * - 'non-eligible'      : ni seul, ni en rénovation d'ampleur.
+ *   `depuis` : date de la fin de l'aide (null : jamais aidé, ou pas de
+ *   date connue) ; `motif` : la phrase AFFICHÉE au lecteur ; `raison` :
+ *   la raison technique, notée pour nous, jamais affichée.
+ */
+export type CasGeste =
+  | { cas: 'aide-seul'; nom: string; forfaits: Record<ProfilAide, number>; plafondDepenseHT: number; condition?: string }
+  | { cas: 'ampleur-seulement'; nom: string; depuis: string; precision?: string }
+  | { cas: 'non-eligible'; nom: string; depuis: string | null; motif: string; raison: string };
+
+const SORTIE_DU_GESTE = '2026-09-01';
+
+export const mprParGeste: Record<Poste, CasGeste> = {
+  // --- Aidés seuls (Anah, guide septembre 2026, p. 14 et 15) ---------------
+  'pac-geothermique': {
+    cas: 'aide-seul', nom: 'Pompe à chaleur géothermique ou solarothermique',
+    forfaits: { 'tres-modeste': 11000, modeste: 9000, intermediaire: 6000 }, plafondDepenseHT: 18000,
+  },
+  'pac-air-eau': {
+    cas: 'aide-seul', nom: 'Pompe à chaleur air/eau',
+    forfaits: { 'tres-modeste': 5000, modeste: 4000, intermediaire: 3000 }, plafondDepenseHT: 12000,
+  },
+  'reseau-chaleur': {
+    cas: 'aide-seul', nom: 'Raccordement à un réseau de chaleur ou de froid',
+    forfaits: { 'tres-modeste': 1200, modeste: 800, intermediaire: 400 }, plafondDepenseHT: 1800,
+  },
+  'depose-cuve-fioul': {
+    cas: 'aide-seul', nom: 'Dépose d’une cuve à fioul',
+    forfaits: { 'tres-modeste': 1200, modeste: 800, intermediaire: 400 }, plafondDepenseHT: 4000,
+  },
+  audit: {
+    cas: 'aide-seul', nom: 'Audit énergétique (hors obligation réglementaire)',
+    forfaits: { 'tres-modeste': 500, modeste: 400, intermediaire: 300 }, plafondDepenseHT: 800,
+    condition: 'Aidé une seule fois par logement, et seulement si au moins un geste de travaux est réalisé en même temps.',
+  },
+
+  // --- Plus aidés seuls depuis le 1er septembre 2026 -------------------------
+  isolation: { cas: 'ampleur-seulement', nom: 'Isolation', depuis: SORTIE_DU_GESTE },
+  fenetres: { cas: 'ampleur-seulement', nom: 'Fenêtres et menuiseries', depuis: SORTIE_DU_GESTE },
+  ventilation: { cas: 'ampleur-seulement', nom: 'Ventilation', depuis: SORTIE_DU_GESTE },
+  'bois-biomasse': { cas: 'ampleur-seulement', nom: 'Poêle ou chaudière au bois ou aux granulés', depuis: SORTIE_DU_GESTE },
+  'chauffe-eau-thermodynamique': {
+    cas: 'ampleur-seulement', nom: 'Chauffe-eau thermodynamique', depuis: SORTIE_DU_GESTE,
+    precision: 'Les pompes à chaleur dédiées à l’eau chaude sanitaire sont sorties du parcours par geste.',
+  },
+  'chauffe-eau-solaire': {
+    cas: 'ampleur-seulement', nom: 'Chauffe-eau solaire', depuis: SORTIE_DU_GESTE,
+    precision: 'Le solaire thermique et hybride reste aidé par geste en outre-mer.',
+  },
+
+  // --- Non éligibles ------------------------------------------------------------
+  'chaudiere-gaz': {
+    cas: 'non-eligible', nom: 'Chaudière gaz', depuis: '2025-01-01',
+    motif: 'La chaudière gaz n’est plus financée par MaPrimeRénov’ depuis le 1er janvier 2025. Un barème qui l’indique encore est périmé.',
+    raison: 'Énergie fossile : sortie du parcours par geste au 1er janvier 2025 ; en maison individuelle, exclue aussi de la rénovation d’ampleur depuis le 1er septembre 2026.',
+  },
+  'pac-air-air': {
+    cas: 'non-eligible', nom: 'Climatisation réversible (pompe à chaleur air-air)', depuis: null,
+    motif: 'La climatisation réversible n’a jamais été financée par MaPrimeRénov’. Elle peut en revanche bénéficier de la TVA à 5,5 %, sous conditions.',
+    raison: 'Jamais inscrite parmi les équipements éligibles à MaPrimeRénov’.',
+  },
+  photovoltaique: {
+    cas: 'non-eligible', nom: 'Panneaux photovoltaïques', depuis: null,
+    motif: 'Les panneaux photovoltaïques ne font pas partie des travaux financés par MaPrimeRénov’.',
+    raison: 'Production d’électricité : hors du champ de MaPrimeRénov’.',
+  },
+};
+
+/** Conditions générales du parcours par geste (affichées sous chaque ligne
+ *  « aidé seul »). Reprises de l'ancienne aide n° 1, vérifiée le 8 octobre
+ *  2026. */
+export const mprGesteConditions = [
+  'Logement construit depuis au moins 15 ans, occupé en résidence principale.',
+  'Travaux réalisés par un professionnel RGE, demande déposée avant les travaux.',
+];
+
+/** Droits selon le statut, pour les deux parcours (règle confirmée le 20
+ *  octobre 2026 : bailleurs éligibles avec engagement de location, locataires
+ *  exclus de MaPrimeRénov' mais pas des CEE ni de la TVA réduite). */
+export const mprStatuts: Record<Statut, Regle> = {
+  'proprietaire-occupant': { verdict: 'oui', texte: 'Ouvert aux propriétaires occupants.' },
+  'proprietaire-bailleur': {
+    verdict: 'oui',
+    texte: "Ouvert aux propriétaires bailleurs, qui s'engagent à louer le logement en résidence principale pendant au moins 6 ans.",
+  },
+  locataire: {
+    verdict: 'non',
+    texte: "Réservé aux propriétaires : en tant que locataire, vous ne pouvez pas en bénéficier. Votre propriétaire, lui, le peut.",
+  },
+};
+
+/** Écrêtement du parcours par geste. Sources : guide Anah, PDF p. 15 et 26 ;
+ *  « MaPrimeRénov' — Le mode d'emploi », Anah, septembre 2026, fiches 01,
+ *  02, 03, 05 et 07 (vérifié par Akelia le 20 octobre 2026).
+ *  - MaPrimeRénov' + CEE : au plus ce pourcentage du MONTANT TTC DES
+ *    TRAVAUX (formulation de l'Anah : « ne pourra pas dépasser 90 % du
+ *    montant TTC de vos travaux »), et non de la « dépense éligible » ;
+ *    revenus supérieurs : sans objet (aucun droit par geste).
+ *  - Toutes aides : le guide ne donne PAS un taux mais une phrase, affichée
+ *    telle quelle (`toutesAides`). */
+export const ecretementGeste = {
+  mprEtCee: { 'tres-modeste': 90, modeste: 75, intermediaire: 60 } satisfies Record<ProfilAide, number>,
+  toutesAides: 'Les aides des collectivités peuvent s’ajouter : l’ensemble ne doit pas excéder le montant total des travaux.',
+};
+
+/** Calendrier des passoires F et G pour le parcours par geste. */
+export const calendrierPassoires = {
+  /** Leur exclusion du parcours par geste est repoussée à cette date. */
+  exclusionGeste: '2027-12-31',
+  /** L'obligation de DPE pour ce parcours est repoussée à cette date. */
+  obligationDpe: '2028-01-01',
+};
+
+/** MaPrimeRénov' rénovation d'ampleur (guide, PDF p. 17 à 21 ; écrêtement p. 21 et 26). */
+export const mprAmpleur = {
+  // ⚠️ DEUX SÉRIES À NE JAMAIS CONFONDRE (rappel d'Akelia, 20 octobre
+  // 2026) : `taux` est le taux de l'AIDE MaPrimeRénov' (80 / 60 / 45 /
+  // 10 %, sur le HT) ; `ecretement` est le PLAFOND TOTAL de toutes les
+  // aides (100 / 90 / 80 / 50 %, sur le TTC). Jamais l'un pour l'autre.
+  /** TAUX DE L'AIDE : part du montant HT des travaux prise en charge, en %. */
+  taux: { 'tres-modeste': 80, modeste: 60, intermediaire: 45, superieur: 10 } satisfies Record<Profil, number>,
+  /** Plafonds de dépense éligible HT. */
+  plafondsDepenseHT: { deuxClasses: 30000, troisClassesEtPlus: 40000 },
+  /** PLAFOND TOTAL toutes aides cumulées, en % du montant TTC des travaux. */
+  ecretement: { 'tres-modeste': 100, modeste: 90, intermediaire: 80, superieur: 50 } satisfies Record<Profil, number>,
+  /** Conditions d'accès, affichées EN TOUTES LETTRES et précédées de
+   *  « sous réserve que votre logement remplisse ces conditions » : le
+   *  simulateur ne les vérifie pas. */
+  conditions: [
+    'Logement de 15 ans ou plus, classé E, F ou G, occupé en résidence principale au moins 8 mois par an.',
+    'Un gain d’au moins 2 classes de DPE, avec au moins deux gestes d’isolation.',
+    'Un Accompagnateur Rénov’ et un artisan RGE, obligatoires.',
+    'En maison individuelle, depuis le 1er septembre 2026 : aucun équipement susceptible d’utiliser des combustibles fossiles installé ou conservé.',
+  ],
+  nonCumulCee: 'Non cumulable avec les primes CEE : l’Anah en a l’exclusivité et les valorise elle-même.',
+  /** Mon Accompagnateur Rénov' : plafond TTC et part prise en charge. */
+  accompagnateur: {
+    plafondTTC: 2000,
+    taux: { 'tres-modeste': 100, modeste: 80, intermediaire: 40, superieur: 20 } satisfies Record<Profil, number>,
+  },
+};
+
+/**
+ * Plafonds de revenu fiscal de référence 2026 (guide, PDF p. 7), par nombre de
+ * personnes du foyer : [très modeste, modeste, intermédiaire]. Au-delà du
+ * plafond « intermédiaire » : revenus supérieurs. Outre-mer : table hors
+ * Île-de-France.
+ * Hors Île-de-France : identique au ticket du 20 octobre 2026.
+ * Île-de-France : lue dans le guide le 20 octobre 2026.
+ */
+export interface TablePlafonds {
+  /** Foyers de 1 à 5 personnes. */
+  parFoyer: [number, number, number][];
+  /** À ajouter par personne au-delà de 5. */
+  parPersonneEnPlus: [number, number, number];
+}
+
+export const plafondsRessources: { annee: number; horsIdf: TablePlafonds; idf: TablePlafonds } = {
+  annee: 2026,
+  horsIdf: {
+    parFoyer: [
+      [17363, 22259, 31185],
+      [25393, 32553, 45842],
+      [30540, 39148, 55196],
+      [35676, 45735, 64550],
+      [40835, 52348, 73907],
+    ],
+    parPersonneEnPlus: [5151, 6598, 9357],
+  },
+  idf: {
+    parFoyer: [
+      [24031, 29253, 40851],
+      [35270, 42933, 60051],
+      [42357, 51564, 71846],
+      [49455, 60208, 84562],
+      [56580, 68877, 96817],
+    ],
+    parPersonneEnPlus: [7116, 8663, 12257],
+  },
+};
+
+/** Plafonds [très modeste, modeste, intermédiaire] pour un foyer. */
+export function plafondsPour(personnes: number, idf: boolean): [number, number, number] {
+  const table = idf ? plafondsRessources.idf : plafondsRessources.horsIdf;
+  const n = Math.max(1, Math.round(personnes));
+  if (n <= 5) return table.parFoyer[n - 1];
+  const base = table.parFoyer[4];
+  return [0, 1, 2].map((i) => base[i] + (n - 5) * table.parPersonneEnPlus[i]) as [number, number, number];
+}
+
+/** Ce que la question des travaux (et sa sous-question) désigne comme
+ *  postes du barème. */
+export const postesDesTravaux: Record<Exclude<Travaux, 'chauffage' | 'ne-sait-pas'>, Poste> = {
+  isolation: 'isolation',
+  fenetres: 'fenetres',
+  ventilation: 'ventilation',
+  photovoltaique: 'photovoltaique',
+  'depose-cuve-fioul': 'depose-cuve-fioul',
+  audit: 'audit',
+  'reseau-chaleur': 'reseau-chaleur',
+};
+export const postesDesEquipements: Record<Exclude<Equipement, 'ne-sait-pas'>, Poste> = {
+  'pac-air-eau': 'pac-air-eau',
+  'pac-geothermique': 'pac-geothermique',
+  'pac-air-air': 'pac-air-air',
+  'bois-biomasse': 'bois-biomasse',
+  'chaudiere-gaz': 'chaudiere-gaz',
+  'chauffe-eau-thermodynamique': 'chauffe-eau-thermodynamique',
+  'chauffe-eau-solaire': 'chauffe-eau-solaire',
+};
+
+/** Cases cochées d'avance pour une page /solutions/… : le poste de la
+ *  page, traduit en réponses du simulateur. */
+export function preselectionPour(poste: Poste): { travaux: Travaux[]; equipement?: Equipement } {
+  const equipement = (Object.entries(postesDesEquipements) as [Equipement, Poste][]).find(([, p]) => p === poste)?.[0];
+  if (equipement) return { travaux: ['chauffage'], equipement };
+  const travaux = (Object.entries(postesDesTravaux) as [Travaux, Poste][]).find(([, p]) => p === poste)?.[0];
+  return { travaux: travaux ? [travaux] : [] };
+}
+
+/** Forfait MaPrimeRénov' par geste d'un poste, pour un profil, écrit pour
+ *  une tuile de chiffre clé (« 5 000 » et « € »). Les pages /solutions/…
+ *  le lisent ICI : aucun montant d'aide en dur dans src/data/solutions/
+ *  (règle du 20 octobre 2026). Renvoie undefined si le poste n'ouvre pas de
+ *  forfait. */
+export function forfaitMprEnChiffres(poste: Poste, profil: ProfilAide): { nombre: string; unite: string } | undefined {
+  const cas = mprParGeste[poste];
+  if (cas.cas !== 'aide-seul') return undefined;
+  return { nombre: new Intl.NumberFormat('fr-FR').format(cas.forfaits[profil]), unite: '€' };
+}
+
+/** Sources de MaPrimeRénov', affichées sous le résultat. */
+export const sourcesMpr: Source[] = [SOURCE_ANAH, SOURCE_SERVICE_PUBLIC_MPR];
 
 // -------------------------------------------------------------------------
 // CHIFFRES MIS EN AVANT SUR LA PAGE /aides-renovation (19 octobre 2026)
@@ -462,7 +767,7 @@ const aide = (id: string) => {
 
 /** Date de la dernière vérification des montants de la page
  *  /aides-renovation (AAAA-MM-JJ), affichée en bas de page. */
-export const dateVerificationPage = '2026-10-19';
+export const dateVerificationPage = '2026-10-20';
 
 /** Taux de TVA cités par la page (en %). */
 export const tauxTva = {
@@ -472,23 +777,99 @@ export const tauxTva = {
   intermediaire: 10,
 };
 
-/** MaPrimeRénov' par geste : montant maximum (pompe à chaleur
- *  géothermique, revenus très modestes). Lu dans l'aide ci-dessus. */
-export const mprGesteMax = aide('maprimerenov-geste').montantMax as number;
+// -------------------------------------------------------------------------
+// PAGES /solutions/… : TUILE D'AIDE ET BANDE DES AIDES (21 octobre 2026)
+// -------------------------------------------------------------------------
+// Le gabarit des solutions (src/pages/solutions/[slug].astro) ne connaît
+// aucune aide : il lit ici, pour le poste de la page, ce qu'il doit écrire.
 
-/** MaPrimeRénov' rénovation d'ampleur (Parcours Accompagné) : part
- *  maximale du devis prise en charge, en % (revenus très modestes).
- *  AJOUT du 19 octobre 2026 : le taux figurait seulement en commentaire
- *  (barème Anah, voir l'aide n° 2 ci-dessus). */
-export const mprAmpleurTauxMax = 80;
+/** Contenu de la tuile d'aide d'une page solution, selon le cas
+ *  MaPrimeRénov' du poste (H2) :
+ *  - 'forfait' : forfait par geste des revenus très modestes, en euros ;
+ *  - 'ampleur' : rénovation d'ampleur seulement, « jusqu'à » le taux des
+ *    revenus très modestes (aucun montant en euros : il dépend des
+ *    travaux) ;
+ *  - 'non-eligible' : pas de tuile d'aide possible. */
+export type TuileAideCalculee =
+  | { cas: 'forfait' | 'ampleur'; avant?: string; nombre: string; unite: string; libelle: string; precision: string }
+  | { cas: 'non-eligible' };
 
-/** Prime CEE : montant mis en avant (« plus de … € » pour les gestes les
- *  plus performants).
- *  AJOUT du 19 octobre 2026, repris du texte de la page fourni ce jour-là.
- *  ⚠️ NON CONFIRMÉ par une source officielle : les primes CEE varient
- *  selon le fournisseur ; c'est pourquoi le simulateur, lui, n'affiche
- *  toujours AUCUN montant CEE (montantMax: null ci-dessus). */
-export const ceeMontantMisEnAvant = 7500;
+export function tuileAide(poste: Poste): TuileAideCalculee {
+  const cas = mprParGeste[poste];
+  if (cas.cas === 'aide-seul') {
+    // Plus de « ! » (21 octobre 2026) : un forfait absent est une erreur,
+    // jamais une tuile vide.
+    const forfait = forfaitMprEnChiffres(poste, 'tres-modeste');
+    if (!forfait) throw new Error(`src/data/aides.ts : le poste « ${poste} » est « aide-seul » mais n'a pas de forfait pour les revenus très modestes.`);
+    const cee = aidesOuvertes(poste).includes(NOMS_AIDES.cee);
+    return { cas: 'forfait', ...forfait, libelle: 'MaPrimeRénov’', precision: `Revenus très modestes.${cee ? ' Prime CEE en plus.' : ''}` };
+  }
+  if (cas.cas === 'ampleur-seulement')
+    return {
+      cas: 'ampleur',
+      avant: 'jusqu’à',
+      nombre: String(mprAmpleur.taux['tres-modeste']),
+      unite: '%',
+      libelle: 'd’aide en rénovation d’ampleur',
+      precision: 'Revenus très modestes. Non cumulable avec les CEE.',
+    };
+  return { cas: 'non-eligible' };
+}
+
+/** Noms des quatre aides citées par la bande des aides des pages solutions. */
+export const NOMS_AIDES = {
+  mpr: 'MaPrimeRénov’',
+  cee: 'la prime CEE',
+  ecoPtz: 'l’éco-PTZ',
+  // Accesseur (et non valeur calculée à l'import) : le simulateur, qui
+  // importe ce fichier, n'embarque pas ce calcul dont il ne se sert pas.
+  get tva() {
+    return `la TVA à ${String(tauxTva.reduit).replace('.', ',')} %`;
+  },
+};
+
+/** Aides auxquelles un poste PEUT ouvrir droit (H3), dans l'ordre de
+ *  NOMS_AIDES : MaPrimeRénov' (forfait par geste ou rénovation d'ampleur),
+ *  puis prime CEE, éco-PTZ et TVA réduite quand leur règle pour ce poste
+ *  est « oui » ou « sous conditions ». Une règle « à vérifier » ne compte
+ *  PAS : on ne promet pas ce qu'on n'a pas confirmé. La règle lue est celle
+ *  de l'équipement si le poste en est un (elle remplace la règle générale
+ *  du chauffage), sinon celle des travaux. */
+export function aidesOuvertes(poste: Poste): string[] {
+  const equipement = (Object.entries(postesDesEquipements) as [Equipement, Poste][]).find(([, p]) => p === poste)?.[0];
+  const travaux = (Object.entries(postesDesTravaux) as [Travaux, Poste][]).find(([, p]) => p === poste)?.[0];
+  const ouverte = (id: string) => {
+    const aide = aidesNationales.find((a) => a.id === id);
+    if (!aide) throw new Error(`src/data/aides.ts : aide « ${id} » introuvable.`);
+    const regle = (equipement && aide.equipements?.[equipement]) || aide.travaux[equipement ? 'chauffage' : travaux!];
+    return regle?.verdict === 'oui' || regle?.verdict === 'sous-conditions';
+  };
+  return [
+    ...(mprParGeste[poste].cas !== 'non-eligible' ? [NOMS_AIDES.mpr] : []),
+    ...(ouverte('cee') ? [NOMS_AIDES.cee] : []),
+    ...(ouverte('eco-ptz') ? [NOMS_AIDES.ecoPtz] : []),
+    ...(ouverte('tva-reduite') ? [NOMS_AIDES.tva] : []),
+  ];
+}
+
+/** MaPrimeRénov' par geste : le forfait le plus élevé du barème, et le
+ *  poste qui le donne (pompe à chaleur géothermique, revenus très
+ *  modestes). Lu dans mprParGeste : la page doit TOUJOURS dire de quel
+ *  poste et de quel profil il s'agit (ce montant n'est vrai que là). */
+export const mprGesteMax = (() => {
+  let meilleur = { montant: 0, poste: '' as Poste };
+  for (const [poste, cas] of Object.entries(mprParGeste) as [Poste, CasGeste][])
+    if (cas.cas === 'aide-seul' && cas.forfaits['tres-modeste'] > meilleur.montant) meilleur = { montant: cas.forfaits['tres-modeste'], poste };
+  return meilleur;
+})();
+
+/** MaPrimeRénov' rénovation d'ampleur : part maximale du montant HT des
+ *  travaux prise en charge, en % (revenus très modestes). Lu dans
+ *  mprAmpleur. */
+export const mprAmpleurTauxMax = mprAmpleur.taux['tres-modeste'];
+
+// Le montant CEE « mis en avant » sur la page est SUPPRIMÉ depuis le 20
+// octobre 2026 : il n'existe aucun barème officiel des CEE en euros.
 
 /** Éco-PTZ : plafond le plus élevé (rénovation globale). Lu dans l'aide
  *  ci-dessus. */

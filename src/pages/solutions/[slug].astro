@@ -9,70 +9,161 @@
 // Détail et état des 21 pages : inventaire-charte.md, « Pages solutions :
 // le gabarit ».
 //
-// DE HAUT EN BAS :
-//   1. en-tête (crème) : fil d'Ariane, surtitre (nom), h1 (promesse),
-//      arguments à coche, bouton devis ; image et chiffre clé à droite à
-//      partir de 992px, dessous en dessous ;
-//   puis, sur fond blanc, à partir de 992px : sommaire collant à gauche
-//   (Sommaire.astro, avec le bouton devis), texte à droite :
-//   2. En bref (encart vert, comme les articles), puis le sommaire replié
-//      (téléphone et tablette) ;
-//   3. Tout ce que vous devez savoir : points forts et inconvénients CÔTE
-//      À CÔTE (768px et plus), caractéristiques, performances (et la
-//      phrase EchelleAkelia.astro), adapté à votre bien, adapté à votre
-//      région (absent si `region` manque) ;
-//   4. les travaux (TravauxSolution.astro : onglets s'il y a plusieurs
-//      parcours ; entrées de second niveau dans le sommaire) ;
-//   5. notre avis : une sous-partie = un h3 ;
-//   6. les cas : un h3 « Cas n° X — … » et une pastille numérotée chacun ;
-//   7. les aides : le simulateur (Simulateur.astro), case pré-cochée
-//      (`equipementSimulateur`), lien vers /aides-renovation ;
-//   8. Comment ça se passe avec Akelia (ParcoursAkelia.astro, commun) ;
-//   9. FAQ : seulement si `faq` n'est pas vide (JSON-LD FAQPage tiré du
-//      même tableau, absent lui aussi sinon) ;
-//   10. À lire aussi (crème, pleine largeur) : articlesPertinents() ;
-//   11. appel à l'action final (bleu nuit) vers /devis.
+// DOUZE BANDES, DANS UN ORDRE FIGÉ SUR LES 20 PAGES (refonte du 20
+// octobre 2026, ordre et fonds revus le 21 octobre) : une bande sans
+// contenu disparaît, les autres ne bougent pas. C'est ce qui permet de comparer deux solutions sans réapprendre la
+// page. Après l'en-tête et la barre de sommaire :
+//   1. tout savoir (blanc) : points forts et inconvénients côte à côte,
+//      quatre caractéristiques en grands chiffres (toujours quatre, mesures
+//      adaptées à la solution) ;
+//   2. performances (crème) : quatre tuiles à icône, MÊMES MESURES et
+//      mêmes icônes sur les 20 pages ;
+//   3. est-ce adapté à votre bien ? (blanc) : icônes propres à la page ;
+//   4. est-ce adapté à votre région ? (crème) : FACULTATIVE, seulement là
+//      où la région change la réponse (pompes à chaleur, photovoltaïque,
+//      solaire thermique, chauffage au bois) : `region` absent, la bande
+//      disparaît ;
+//   5. les travaux (brume) : note de difficulté par parcours ;
+//   6. l'avis Akelia (blanc, encadré fermé action-50, centré) ;
+//   7. est-ce fait pour chez vous ? (brume ; lichen jusqu'au 20 octobre),
+//      cinq lignes repliables dans un bloc blanc, puis l'appel à l'action
+//      intermédiaire, bouton plein action (21 octobre 2026) ;
+//   8. les aides (blanc) : le simulateur. FACULTATIVE depuis le 21 octobre
+//      2026 : absente si la solution n'ouvre droit à aucune aide du
+//      barème (ni MaPrimeRénov', ni CEE, ni éco-PTZ, ni TVA réduite), ou
+//      n'a pas de poste dans le barème. Sans elle : brume (7) puis crème
+//      (9), toujours deux fonds différents ;
+//   9. votre projet, étape par étape (crème, ParcoursAkelia) ;
+//   10. FAQ (blanc) : seulement si `faq` n'est pas vide ;
+//   11. appel à l'action final (bleu nuit) : AVANT « à lire aussi » depuis
+//       le 21 octobre 2026 ;
+//   12. à lire aussi (BLANC ; bruyère jusqu'au 20 octobre, crème le temps
+//       d'une passe) : seulement s'il y a des articles. Blanc parce que le
+//       pied de page, juste dessous, est crème (décision d'Akelia, 21
+//       octobre 2026 : ni filet, ni changement du pied de page).
+// Deux bandes voisines n'ont jamais le même fond, même quand une bande
+// facultative disparaît (vérifié le 21 octobre 2026 : 5 brume / 6 blanc /
+// 7 brume ; 9 crème / 10 blanc ou absente / 11 bleu nuit / 12 blanc /
+// pied de page crème). Sans articles : bleu nuit, puis pied de page crème.
 //
-// VÉRIFICATIONS À LA CONSTRUCTION : le slug doit être une adresse du menu
-// (src/data/menu.ts), la rubrique le titre de son groupe, et le nom du
-// fichier le slug. Sinon la construction s'arrête avec un message clair.
+// CRITÈRE DE MISE EN PAGE (20 octobre 2026) : la hauteur n'est plus
+// l'objectif ; aucune bande ne dépasse 1,5 hauteur d'écran (≈ 1 200px à
+// 1 440px) sans image ni élément visuel.
+//
+// ANIMATIONS : AnimationScenes.astro (le composant de l'accueil), avec
+// EXACTEMENT son comportement depuis le 21 octobre 2026 : le contenu de
+// chaque bande porte data-scene-bande (comme un titre de l'accueil : 25 %
+// visible, 0,5 s, 20px de montée), REJOUÉ à chaque retour après une
+// sortie complète de l'écran ; les étapes, data-scene-etape ; les chiffres
+// des performances et des caractéristiques, data-compteur. Rien sur l'en-tête collant ni sur la barre de sommaire.
+// Sans JavaScript ou avec « réduire les animations » : tout est visible,
+// valeurs finales écrites.
+//
+// CONTRÔLES À LA CONSTRUCTION, EN AVERTISSEMENT (20 octobre 2026) : phrase
+// d'un point fort ou d'un inconvénient, 15 mots au plus ; sous-partie de
+// l'avis, 70 mots au plus ; 3 à 6 cas dont au moins un négatif ; aucun
+// montant d'aide près d'un nom d'aide dans src/data/solutions/. La
+// construction continue.
+//
+// SOURCE DE VÉRITÉ (H1, 21 octobre 2026) : une page par fichier de
+// src/data/solutions/ (hors type.ts), quel que soit le menu. Le nom du
+// fichier doit être le slug (sinon la construction s'arrête). Le menu
+// (src/data/menu.ts) n'est vérifié que par AVERTISSEMENTS : solution liée
+// nulle part, entrée de menu sans solution, rubrique différente du titre
+// du groupe. Une page ne cesse pas d'exister parce qu'on a déplacé une
+// entrée de menu.
+//
+// ERREURS DE CONSTRUCTION (21 octobre 2026) : tuile d'aide impossible
+// (poste non éligible sans mesure de remplacement, ou page sans poste) ;
+// tuile de caractéristique sans nombre (H7) ; zones de carte hors de
+// l'ordre des rangs (CarteFrance).
+// AVERTISSEMENTS AJOUTÉS LE MÊME JOUR : note de complexité hors de la
+// plage des parcours (H8) ; parcours qui n'a pas 4 étapes (H9) ; avis
+// hors de 2 à 4 sous-parties (H12) ; moins de 3 tuiles de performance ;
+// signe de la mesure d'énergie (− économie, + autonomie).
 // =========================================================================
 
 import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import FilAriane from '../../components/FilAriane.astro';
-import Sommaire from '../../components/Sommaire.astro';
 import Simulateur from '../../components/Simulateur.astro';
 import CarteArticle from '../../components/CarteArticle.astro';
 import ParcoursAkelia from '../../components/ParcoursAkelia.astro';
+import AnimationScenes from '../../components/AnimationScenes.astro';
 import Icone from '../../components/aides/Icone.astro';
+import CarteFrance from '../../components/solutions/CarteFrance.astro';
 import EchelleAkelia from '../../components/solutions/EchelleAkelia.astro';
+import LigneRepliable from '../../components/solutions/LigneRepliable.astro';
+import { ICONES_BIEN, PerfAutonomie, PerfComplexite, PerfEconomie, PerfEfficacite, PerfEnvironnement } from '../../components/icones-solutions';
+import Illustration from '../../components/solutions/Illustration.astro';
+import NoteDifficulte from '../../components/solutions/NoteDifficulte.astro';
+import SommaireBarre from '../../components/solutions/SommaireBarre.astro';
 import TexteMisEnForme from '../../components/solutions/TexteMisEnForme.astro';
 import TravauxSolution from '../../components/solutions/TravauxSolution.astro';
-import type { Solution } from '../../data/solutions/type';
-import { menuSolutions } from '../../data/menu';
+import type { ChiffreCle, Solution, VerdictCas } from '../../data/solutions/type';
+import { liensDirects, menuSolutions } from '../../data/menu';
+import { aidesOuvertes, preselectionPour, tuileAide } from '../../data/aides';
 import { articlesPublies, articlesPertinents } from '../../utils/blog';
 import { filArianeJsonLd, jsonLdTexte } from '../../utils/seo';
-import { grasEnHtml, idParcours } from '../../utils/texte';
+import { nombreDeMots } from '../../utils/texte';
+import { couleurEchelle, noteDeLettre } from '../../utils/echelle';
 
 export async function getStaticPaths() {
   const fichiers = import.meta.glob<{ default?: Solution }>('../../data/solutions/*.ts', { eager: true });
-  // Adresses du méga-menu, avec le titre de leur groupe (la rubrique).
-  const groupes = new Map(
-    menuSolutions.flatMap((entree) => entree.groupes.flatMap((groupe) => groupe.liens.map((lien) => [lien.href, groupe.titre] as const))),
-  );
-  return Object.entries(fichiers)
+  const solutions = Object.entries(fichiers)
     .filter(([, module]) => module.default) // type.ts n'a pas d'export par défaut
     .map(([chemin, module]) => {
       const solution = module.default!;
       const fichier = chemin.split('/').pop()!.replace(/\.ts$/, '');
-      const adresse = `/solutions/${solution.slug}`;
       if (fichier !== solution.slug) throw new Error(`${chemin} : le slug « ${solution.slug} » doit être le nom du fichier.`);
-      if (!groupes.has(adresse)) throw new Error(`${chemin} : ${adresse} n'est pas une adresse du menu (src/data/menu.ts).`);
-      if (groupes.get(adresse) !== solution.rubrique)
-        throw new Error(`${chemin} : rubrique « ${solution.rubrique} », mais le menu range cette solution sous « ${groupes.get(adresse)} ».`);
-      return { params: { slug: solution.slug }, props: { solution } };
+      return solution;
     });
+
+  // MENU : AVERTISSEMENTS SEULEMENT (H1). Adresses du méga-menu avec le titre
+  // de leur groupe (la rubrique), et liens directs (sans groupe).
+  const groupes = new Map(
+    menuSolutions.flatMap((entree) => entree.groupes.flatMap((groupe) => groupe.liens.map((lien) => [lien.href, groupe.titre] as const))),
+  );
+  const direct = new Set(liensDirects.map((lien) => lien.href));
+  const adresses = new Set(solutions.map((solution) => `/solutions/${solution.slug}`));
+  for (const solution of solutions) {
+    const adresse = `/solutions/${solution.slug}`;
+    if (!groupes.has(adresse) && !direct.has(adresse))
+      console.warn(`⚠️ src/data/solutions/${solution.slug}.ts : ${adresse} n'est lié nulle part dans le menu (src/data/menu.ts). La page est construite quand même.`);
+    else if (groupes.has(adresse) && groupes.get(adresse) !== solution.rubrique)
+      console.warn(`⚠️ src/data/solutions/${solution.slug}.ts : rubrique « ${solution.rubrique} », mais le menu range cette solution sous « ${groupes.get(adresse)} ».`);
+  }
+  const orphelines = [...groupes.keys(), ...direct].filter((href) => href.startsWith('/solutions/') && !adresses.has(href));
+  // COMPTE À REBOURS JUSQU'À LA PUBLICATION (décision d'Akelia, 21 octobre
+  // 2026) : doit être à zéro avant la mise en ligne (liste de contrôle de
+  // publication : donnees/liste-controle-publication.md). Ne jamais le faire
+  // taire en marquant les entrées « à venir ».
+  if (orphelines.length > 0)
+    console.warn(`⚠️ src/data/menu.ts : ${orphelines.length} entrée${orphelines.length > 1 ? 's' : ''} de menu mène${orphelines.length > 1 ? 'nt' : ''} à une page inexistante (404). À ramener à zéro avant la mise en ligne :\n   ${orphelines.join('\n   ')}`);
+
+  return solutions.map((solution) => ({ params: { slug: solution.slug }, props: { solution } }));
+}
+
+// --- Contrôle : aucun montant d'aide en dur (20 octobre 2026) ----------------
+// Règle : aucun fichier de src/data/solutions/ ne contient de montant d'aide ;
+// tout vient de src/data/aides.ts. AVERTISSEMENT seulement (la construction
+// continue) : un montant en euros à moins de 60 caractères de
+// « MaPrimeRénov’ », « CEE », « prime énergie » ou « Coup de pouce ».
+// Exécuté une fois, au chargement du module.
+{
+  const sources = import.meta.glob<string>('../../data/solutions/*.ts', { query: '?raw', import: 'default', eager: true });
+  const MOT_AIDE = /MaPrimeR[ée]nov|\bCEE\b|prime [ée]nergie|Coup de pouce/gi;
+  const MONTANT = /\d[\d\s\u00a0\u202f.,]*(?:k€|€|euros?\b)/gi;
+  for (const [chemin, texte] of Object.entries(sources)) {
+    const fichier = chemin.replace('../../', 'src/');
+    for (const montant of texte.matchAll(MONTANT)) {
+      const debut = Math.max(0, montant.index! - 60);
+      const voisinage = texte.slice(debut, montant.index! + montant[0].length + 60);
+      if (!new RegExp(MOT_AIDE.source, 'i').test(voisinage)) continue;
+      const ligne = texte.slice(0, montant.index!).split('\n').length;
+      console.warn(`⚠️ ${fichier}, l. ${ligne} : montant « ${montant[0].trim()} » près d'un nom d'aide. Les montants d'aide viennent de src/data/aides.ts.\n   « ${voisinage.replace(/\s+/g, ' ').trim()} »`);
+    }
+  }
 }
 
 interface Props {
@@ -108,13 +199,63 @@ if (s.faq.length > 0) {
 // --- Articles -------------------------------------------------------------
 const articles = articlesPertinents(await articlesPublies(), s.motsClesArticles, 3);
 
+// --- Aides (H2, H3, 21 octobre 2026) -------------------------------------------
+// Poste du barème : `posteAides`, à défaut celui de la présélection. Tout ce
+// qui est écrit sur les aides vient de src/data/aides.ts.
+const posteAides = s.posteAides ?? s.equipementSimulateur;
+const aides = posteAides ? aidesOuvertes(posteAides) : [];
+// « Ne rien savoir » n'est pas « ne rien ouvrir » (décision d'Akelia, 21
+// octobre 2026) : sans poste dans le barème, la bande disparaît, mais un
+// avertissement le signale, pour qu'une aide réelle ne disparaisse pas en
+// silence (borne de recharge, thermostat… : aides à vérifier).
+if (!posteAides)
+  console.warn(`⚠️ src/data/solutions/${s.slug}.ts : aucun poste dans le barème des aides (ni « posteAides » ni « equipementSimulateur ») : la bande des aides est retirée FAUTE DE SAVOIR, pas parce que la solution n'ouvre droit à rien. Vérifiez ses aides et, s'il y en a, ajoutez son poste à src/data/aides.ts.`);
+const avecBandeAides = aides.length > 0;
+/** « A, B et C ». */
+const enListe = (mots: string[]) => (mots.length < 2 ? mots.join('') : `${mots.slice(0, -1).join(', ')} et ${mots.at(-1)}`);
+// Texte de la bande : les quatre aides → la phrase d'origine ; une partie
+// seulement → la liste de celles-là. La présélection n'est annoncée que si
+// la page la demande.
+const texteAides = [
+  aides.length === 4 ? '' : `Cette solution peut ouvrir droit à ${enListe(aides)}. `,
+  'Estimez vos aides en quatre questions.',
+  s.equipementSimulateur ? ' À la quatrième, les travaux de cette page sont déjà cochés : ajoutez-en d’autres si votre projet en compte.' : '',
+].join('');
+
+// --- Caractéristiques (H2, H7) ---------------------------------------------------
+// Une tuile d'aide est remplacée par son contenu calculé ; si le poste n'est
+// pas éligible, par la mesure `siNonEligible` de la page. Chaque tuile doit
+// porter un nombre.
+const tuiles: ChiffreCle[] = s.caracteristiques.enGrand.map((tuile, n) => {
+  let chiffre: ChiffreCle;
+  if ('aide' in tuile) {
+    if (!posteAides)
+      throw new Error(`src/data/solutions/${s.slug}.ts : la tuile ${n + 1} des caractéristiques est une tuile d'aide, mais la page n'a ni « posteAides » ni « equipementSimulateur ».`);
+    const calcul = tuileAide(posteAides);
+    if (calcul.cas === 'non-eligible') {
+      if (!tuile.siNonEligible)
+        throw new Error(`src/data/solutions/${s.slug}.ts : la tuile ${n + 1} des caractéristiques est une tuile d'aide, mais le poste « ${posteAides} » n'ouvre pas droit à MaPrimeRénov' (src/data/aides.ts). Donnez une autre mesure chiffrée dans « siNonEligible ».`);
+      chiffre = tuile.siNonEligible;
+    } else {
+      const { cas: _cas, ...contenu } = calcul;
+      chiffre = contenu;
+    }
+  } else chiffre = tuile;
+  if (!/\d/.test(chiffre.nombre))
+    throw new Error(`src/data/solutions/${s.slug}.ts : la tuile ${n + 1} des caractéristiques (« ${chiffre.libelle} ») n'a pas de nombre : « ${chiffre.nombre} ». Chaque tuile porte un nombre ; la nuance va dans « precision ».`);
+  return chiffre;
+});
+
+// --- Possessif des titres (H4) ------------------------------------------------
+const Possessif = s.possessif === 'leurs' ? 'Leurs' : 'Ses';
+
 // --- Sommaire --------------------------------------------------------------
-// Parcours de travaux en second niveau, seulement s'il y en a plusieurs
-// (un seul : l'entrée « Les travaux » suffit).
+// Une pilule par section. Plus de second niveau pour les parcours de
+// travaux : leurs onglets sont visibles dans la section.
 const ID = {
   savoir: 'tout-savoir',
   travaux: 'travaux',
-  avis: 'notre-avis',
+  avis: 'avis-akelia',
   pourVous: 'pour-vous',
   aides: 'aides',
   akelia: 'avec-akelia',
@@ -124,34 +265,103 @@ const ID = {
 const entreesSommaire = [
   { id: ID.savoir, texte: 'Tout savoir' },
   { id: ID.travaux, texte: 'Les travaux' },
-  ...(s.parcours.length > 1 ? s.parcours.map((p) => ({ id: idParcours(ID.travaux, p.nom), texte: p.nom, niveau: 2 as const })) : []),
-  { id: ID.avis, texte: 'Notre avis' },
+  { id: ID.avis, texte: 'L’avis Akelia' },
   { id: ID.pourVous, texte: 'Est-ce pour vous ?' },
-  { id: ID.aides, texte: 'Les aides' },
-  { id: ID.akelia, texte: 'Avec Akelia' },
+  ...(avecBandeAides ? [{ id: ID.aides, texte: 'Les aides' }] : []),
+  { id: ID.akelia, texte: 'Étape par étape' },
   ...(s.faq.length > 0 ? [{ id: ID.faq, texte: 'Questions fréquentes' }] : []),
   ...(articles.length > 0 ? [{ id: ID.lire, texte: 'À lire aussi' }] : []),
 ];
 
 // --- Performances -------------------------------------------------------------
-const LETTRES = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+// MÊMES MESURES SUR LES 20 PAGES, icônes SVG communes
+// (src/components/icones-solutions/, 21 octobre 2026 : plus d'images).
+// Valeur en gros, dans la couleur de l'échelle (src/utils/echelle.ts) :
+// lettres A à G placées sur l'échelle de 1 à 5 ; complexité : NoteDifficulte.
+// Troisième mesure AU CHOIX de la page (H6, 21 octobre 2026) : « Économie
+// d'énergie » (signe −, PerfEconomie) ou « Autonomie énergétique » (signe +,
+// PerfAutonomie). Chaque tuile est facultative : 3 tuiles comme 4.
+const { efficacite, impact, energie, complexite } = s.performances;
 const performances = [
-  { libelle: 'Efficacité énergétique', ...s.performances.efficacite, echelle: 'lettres' as const },
-  { libelle: 'Impact environnemental', ...s.performances.impact, echelle: 'lettres' as const },
-  { libelle: 'Économie d’énergie', ...s.performances.economieEnergie, echelle: undefined },
-  { libelle: 'Complexité des travaux', ...s.performances.complexite, echelle: 'sur5' as const },
+  ...(efficacite ? [{ icone: PerfEfficacite, libelle: 'Efficacité énergétique', valeur: efficacite.valeur, precision: efficacite.precision }] : []),
+  ...(impact ? [{ icone: PerfEnvironnement, libelle: 'Impact environnemental', valeur: impact.valeur, precision: impact.precision }] : []),
+  ...(energie
+    ? [energie.mesure === 'economie'
+        ? { icone: PerfEconomie, libelle: 'Économie d’énergie', valeur: energie.valeur, precision: energie.precision }
+        : { icone: PerfAutonomie, libelle: 'Autonomie énergétique', valeur: energie.valeur, precision: energie.precision }]
+    : []),
+  ...(complexite ? [{ icone: PerfComplexite, libelle: 'Complexité des travaux', note: complexite.note, precision: complexite.precision }] : []),
 ];
-/** « 2,5 / 5 » → 2.5 (jauge) ; NaN si la valeur n'a pas cette forme. */
-const surCinq = (valeur: string) => Number(valeur.split('/')[0].trim().replace(',', '.'));
+// Grille sans trou : à 4 tuiles, la grille d'origine (1, 2 puis 4
+// colonnes) ; à 3 tuiles, une colonne puis trois à partir de 992px (jamais
+// deux colonnes : la troisième tuile y resterait seule). Classes déjà
+// employées ailleurs sur le site : la feuille de style ne change pas.
+const classesGrillePerf = performances.length === 4 ? 'mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4' : 'mt-6 grid gap-4 lg:grid-cols-3';
+
+// --- Conditions : icône choisie par son nom (src/components/icones-solutions/) ---
+const conditions = s.conditions.map((c) => ({ ...c, Icone: c.icone ? ICONES_BIEN[c.icone] : undefined }));
+
+// --- Contrôles de longueur (reprise du design, 20 octobre 2026) -----------------
+// AVERTISSEMENTS depuis le 20 octobre 2026 (une raison éditoriale ne doit
+// jamais bloquer un déploiement) : fichier et phrase en cause affichés.
+// L'avis est passé de 60 à 40 mots par sous-partie le 20 octobre, puis
+// REVENU À 60 le 21 octobre 2026 (à 40, le raisonnement disparaissait),
+// puis 70 le même jour (passe mobile) : le compteur compte « −20 » et
+// « °C » comme des mots, et le texte d'Akelia sur le grand froid en fait 70.
+const MOTS_POINT = 15;
+const MOTS_AVIS = 70;
+for (const point of [...s.pointsForts, ...s.inconvenients])
+  if (nombreDeMots(point.texte) > MOTS_POINT)
+    console.warn(`⚠️ src/data/solutions/${s.slug}.ts : « ${point.titre} » fait ${nombreDeMots(point.texte)} mots, ${MOTS_POINT} au plus (le détail va dans « L’avis Akelia »).\n   « ${point.texte} »`);
+for (const partie of s.avis)
+  if (nombreDeMots(partie.texte) > MOTS_AVIS)
+    console.warn(`⚠️ src/data/solutions/${s.slug}.ts : l'avis « ${partie.titre} » fait ${nombreDeMots(partie.texte)} mots, ${MOTS_AVIS} au plus.\n   « ${partie.texte.replace(/\s+/g, ' ')} »`);
+// H12 : de 2 à 4 sous-parties (3 imposées jusqu'au 21 octobre 2026).
+if (s.avis.length < 2 || s.avis.length > 4) console.warn(`⚠️ src/data/solutions/${s.slug}.ts : « L’avis Akelia » compte ${s.avis.length} sous-partie(s), de 2 à 4 attendues.`);
+// H8 : la note de la tuile « Complexité des travaux » entre la plus petite et
+// la plus grande note des parcours.
+if (complexite) {
+  const notes = s.parcours.map((p) => p.difficulte);
+  const [min, max] = [Math.min(...notes), Math.max(...notes)];
+  if (complexite.note < min || complexite.note > max)
+    console.warn(`⚠️ src/data/solutions/${s.slug}.ts : la complexité des performances (${complexite.note}/5) n'est pas comprise entre la plus petite et la plus grande note des parcours (${min} à ${max}/5 : ${s.parcours.map((p) => `${p.nom} ${p.difficulte}`).join(', ')}).`);
+}
+// H9 : exactement 4 étapes par parcours.
+for (const p of s.parcours)
+  if (p.etapes.length !== 4) console.warn(`⚠️ src/data/solutions/${s.slug}.ts : le parcours « ${p.nom} » a ${p.etapes.length} étape(s), 4 attendues.`);
+// H6 : au moins 3 tuiles de performance ; signe de la mesure d'énergie.
+if (performances.length < 3) console.warn(`⚠️ src/data/solutions/${s.slug}.ts : ${performances.length} tuile(s) de performance, 3 ou 4 attendues.`);
+if (energie && !(energie.mesure === 'economie' ? /^[−-]/ : /^\+/).test(energie.valeur))
+  console.warn(`⚠️ src/data/solutions/${s.slug}.ts : la mesure « ${energie.mesure === 'economie' ? 'Économie d’énergie' : 'Autonomie énergétique'} » s'écrit avec un signe ${energie.mesure === 'economie' ? '« − »' : '« + »'} : « ${energie.valeur} ».`);
+// Cas : de 3 à 6, et au moins un négatif (une page sans « non » ne sera pas crue).
+if (s.cas.length < 3 || s.cas.length > 6) console.warn(`⚠️ src/data/solutions/${s.slug}.ts : ${s.cas.length} cas, de 3 à 6 attendus.`);
+if (!s.cas.some((c) => c.verdict === 'plutot-non' || c.verdict === 'non'))
+  console.warn(`⚠️ src/data/solutions/${s.slug}.ts : aucun cas « Plutôt non » ni « Non ». Il en faut au moins un par page.`);
+
+// --- Verdicts des cas ------------------------------------------------------------
+// VOCABULAIRE FIGÉ pour les 20 pages : ces quatre libellés, aucune autre
+// formulation, jamais. Étiquette en toutes lettres (jamais la couleur
+// seule). Contrastes : vert-600 / blanc 6,34:1 · action-500 / texte 6,87:1
+// · texte-doux / blanc 7,11:1 · refus / blanc 7,76:1.
+// Pictogramme décoratif dans l'étiquette (tracé SVG) : coche, point
+// d'exclamation, tiret, croix. Il double le mot, il ne le remplace pas.
+// Filet de la couleur du verdict en BORDURE GAUCHE de la ligne, 3px
+// (21 octobre 2026 ; filet supérieur de la carte avant).
+const VERDICTS: Record<VerdictCas, { libelle: string; etiquette: string; filet: string; picto: string }> = {
+  oui: { libelle: 'Oui, clairement', etiquette: 'bg-vert-600 text-texte-inverse', filet: 'border-l-vert-600', picto: 'M5 12.5l4.5 4.5L19 7.5' },
+  'sous-conditions': { libelle: 'Oui, sous conditions', etiquette: 'bg-action-500 text-texte', filet: 'border-l-action-500', picto: 'M12 6v8M12 18v.5' },
+  'plutot-non': { libelle: 'Plutôt non', etiquette: 'bg-texte-doux text-texte-inverse', filet: 'border-l-texte-doux', picto: 'M6 12h12' },
+  non: { libelle: 'Non', etiquette: 'bg-refus text-texte-inverse', filet: 'border-l-refus', picto: 'M7 7l10 10M17 7L7 17' },
+};
 
 // --- Classes communes ---------------------------------------------------------
 const classesH2 = 'ancre-sommaire text-h2 text-balance text-texte';
 const classesH3 = 'text-[1.5rem] leading-tight font-black text-balance text-texte md:text-[1.75rem]';
-const classesBoutonDevis =
-  'flex min-h-12 w-full items-center justify-center rounded-bloc bg-action-500 px-4 text-base font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900';
-const classesLienCollectif =
-  'mt-3 flex min-h-11 items-center justify-center text-center text-base text-texte-doux underline underline-offset-4 hover:text-nuit-900 focus-visible:outline-2 focus-visible:outline-nuit-900';
 const classesCarte = 'rounded-bloc border border-creme-fonce bg-fond';
+// Bande pleine largeur : largeur du site, et espacement entre parties 25 %
+// plus grand qu'avant (72px → 90px sur téléphone, 120px → 150px ensuite),
+// moitié en haut, moitié en bas de chaque bande.
+const classesBande = 'mx-auto max-w-site px-gouttiere py-[2.8125rem] md:py-[4.6875rem]';
 ---
 
 <Layout title={s.seo.titre} description={s.seo.description} canonicalURL={new URL(ADRESSE, SITE).href}>
@@ -159,7 +369,11 @@ const classesCarte = 'rounded-bloc border border-creme-fonce bg-fond';
     {jsonLd.map((objet) => <script type="application/ld+json" set:html={jsonLdTexte(objet)} />)}
   </Fragment>
 
-  {/* ===== 1. EN-TÊTE (crème) ===== */}
+  {/* Animations au défilement : le composant de l'accueil, placé avant le
+      contenu (aucun clignotement). */}
+  <AnimationScenes />
+
+  {/* ===== EN-TÊTE (crème) ===== */}
   <header class="bg-creme">
     <div class="mx-auto max-w-[calc(72rem+2*var(--spacing-gouttiere))] px-gouttiere pt-8 pb-14 md:pt-12 md:pb-20">
       <FilAriane etapes={filAriane} />
@@ -206,241 +420,336 @@ const classesCarte = 'rounded-bloc border border-creme-fonce bg-fond';
     </div>
   </header>
 
-  <div class="bg-fond">
-    <div class="mx-auto max-w-[calc(72rem+2*var(--spacing-gouttiere))] px-gouttiere pt-scene pb-scene lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-12">
-      <Sommaire forme="colonne" entrees={entreesSommaire} libelle={`Sommaire : ${s.nom}`}>
-        <a href="/devis" class={classesBoutonDevis}>Demander un devis</a>
-        <a href="/qui-sommes-nous" class={classesLienCollectif}>Akelia, le collectif d'artisans locaux</a>
-      </Sommaire>
+  <SommaireBarre entrees={entreesSommaire} libelle={`Sommaire : ${s.nom}`}>
 
-      <div class="min-w-0">
-        {/* ===== 2. EN BREF (encart des articles) ===== */}
-        <aside aria-labelledby="en-bref-titre" class="rounded-bloc border-l-[6px] border-vert-600 bg-vert-50 p-6 sm:p-8">
-          <h2 id="en-bref-titre" class="text-h4 font-black text-texte">En bref</h2>
-          <ul class="mt-4 list-disc space-y-3 pl-6 text-corps text-texte marker:text-vert-600">
-            {s.enBref.map((ligne) => <li set:html={grasEnHtml(ligne)} />)}
-          </ul>
-        </aside>
+  {/* ===== BANDES 1 À 4. TOUT CE QUE VOUS DEVEZ SAVOIR ===== */}
+  <section aria-labelledby={ID.savoir}>
+    {/* --- Bande 1 (blanc) : points forts, inconvénients, chiffres clés --- */}
+    <div class="bg-fond">
+      <div class={classesBande} data-scene-bande>
+        <h2 id={ID.savoir} class={classesH2}>Tout ce que vous devez savoir sur {s.nomDefini}</h2>
 
-        <Sommaire forme="replie" entrees={entreesSommaire} libelle={`Sommaire : ${s.nom}`} class="mt-8" />
-
-        <div class="mt-scene space-y-scene md:mt-scene-large md:space-y-scene-large">
-
-          {/* ===== 3. TOUT CE QUE VOUS DEVEZ SAVOIR ===== */}
-          <section aria-labelledby={ID.savoir}>
-            <h2 id={ID.savoir} class={classesH2}>Tout ce que vous devez savoir sur {s.nomDefini}</h2>
-
-            {/* POINTS FORTS ET INCONVÉNIENTS, côte à côte à partir de
-                768px : les deux se lisent ensemble. Filet vert / filet
-                orange foncé (action-600, 3,11:1) en haut de chaque carte. */}
-            <div class="mt-10 grid gap-6 md:grid-cols-2">
-              {[
-                { titre: 'Ses points forts', lignes: s.pointsForts, icone: 'valide' as const, filet: 'border-t-vert-600', couleur: 'text-vert-600' },
-                { titre: 'Ses inconvénients', lignes: s.inconvenients, icone: 'alerte' as const, filet: 'border-t-action-600', couleur: 'text-action-800' },
-              ].map((colonne) => (
-                <div class:list={[classesCarte, 'min-w-0 border-t-[6px] p-5 sm:p-6', colonne.filet]}>
-                  <h3 class="flex items-center gap-3 text-h4 font-black text-texte">
-                    <Icone nom={colonne.icone} class:list={['size-8 shrink-0', colonne.couleur]} />
-                    {colonne.titre}
-                  </h3>
-                  <ul class="mt-6 space-y-6">
-                    {colonne.lignes.map((ligne) => (
-                      <li class="flex gap-4">
-                        <Icone nom={ligne.icone} class:list={['mt-0.5 size-7 shrink-0', colonne.couleur]} />
-                        <div class="min-w-0 text-corps text-texte">
-                          <p class="font-bold">{ligne.titre}</p>
-                          <p class="mt-1">{ligne.texte}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-
-            {/* CARACTÉRISTIQUES : paires libellé / valeur. */}
-            <h3 class:list={[classesH3, 'mt-14']}>Ses caractéristiques techniques</h3>
-            <dl class="mt-6 grid gap-x-8 sm:grid-cols-2">
-              {s.caracteristiques.map((c) => (
-                <div class="min-w-0 border-t border-creme-fonce py-4">
-                  <dt class="text-corps text-texte-doux">{c.libelle}</dt>
-                  <dd class="mt-1 text-h4 font-bold text-texte">
-                    {c.valeur.split('\n').map((ligne) => <span class="block">{ligne}</span>)}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-
-            {/* PERFORMANCES : 4 indicateurs. Échelle A à G : lettre active
-                pleine (bleu nuit, texte blanc), autres au filet. Jauges
-                décoratives (aria-hidden) : la valeur est écrite. */}
-            <h3 class:list={[classesH3, 'mt-14']}>Ses performances</h3>
-            <dl class="mt-6 grid gap-4 sm:grid-cols-2">
-              {performances.map((indicateur) => (
-                <div class:list={[classesCarte, 'flex min-w-0 flex-col p-5']}>
-                  <dt class="text-corps font-semibold text-texte">{indicateur.libelle}</dt>
-                  <dd class="mt-2">
-                    <span class="block text-[2.5rem] leading-none font-black text-texte">{indicateur.valeur}</span>
-                    {indicateur.echelle === 'lettres' && LETTRES.includes(indicateur.valeur) && (
-                      <span aria-hidden="true" class="mt-3 flex flex-wrap gap-1">
-                        {LETTRES.map((lettre) => (
-                          <span class:list={[
-                            'flex size-8 items-center justify-center rounded-md text-corps font-bold',
-                            lettre === indicateur.valeur ? 'bg-nuit-900 text-texte-inverse' : 'border border-creme-fonce text-texte-doux',
-                          ]}>{lettre}</span>
-                        ))}
-                      </span>
-                    )}
-                    {indicateur.echelle === 'sur5' && !Number.isNaN(surCinq(indicateur.valeur)) && (
-                      <span aria-hidden="true" class="mt-3 flex gap-1">
-                        {[0, 1, 2, 3, 4].map((i) => (
-                          <span class="relative h-3 w-8 overflow-hidden rounded-full border border-nuit-900 bg-fond">
-                            <span class="absolute inset-y-0 left-0 bg-nuit-900" style={`width: ${Math.max(0, Math.min(1, surCinq(indicateur.valeur) - i)) * 100}%`}></span>
-                          </span>
-                        ))}
-                      </span>
-                    )}
-                    {indicateur.precision && <span class="mt-3 block text-corps text-texte-doux">{indicateur.precision}</span>}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-            <EchelleAkelia class="mt-5" />
-
-            {/* ADAPTÉ À VOTRE BIEN */}
-            <h3 class:list={[classesH3, 'mt-14']}>Est-ce adapté à votre bien ?</h3>
-            <ul class="mt-6 grid gap-4 sm:grid-cols-2">
-              {s.adapteAuBien.map((critere) => (
-                <li class:list={[classesCarte, 'flex min-w-0 gap-4 p-5']}>
-                  <span class="flex size-12 shrink-0 items-center justify-center rounded-pilule bg-vert-50 text-vert-600">
-                    <Icone nom={critere.icone} class="size-7" />
-                  </span>
-                  <div class="min-w-0 text-corps text-texte">
-                    <p class="font-bold">{critere.titre}</p>
-                    <p class="mt-1">{critere.texte}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-
-            {/* ADAPTÉ À VOTRE RÉGION : absent si `region` manque (pas de
-                titre orphelin). Légende : pastille de la couleur de la
-                carte, cerclée de bleu nuit (les couleurs claires restent
-                visibles sur blanc), et les régions écrites en toutes
-                lettres : la couleur n'est jamais la seule information. */}
-            {s.region && (
-              <>
-                <h3 class:list={[classesH3, 'mt-14']}>Est-ce adapté à votre région ?</h3>
-                <div class="mt-6 grid gap-8 md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-start">
-                  <Image
-                    src={s.region.carte}
-                    alt={s.region.carteAlt}
-                    widths={[272, s.region.carte.width].filter((l, i, t) => l <= s.region!.carte.width && t.indexOf(l) === i)}
-                    sizes={`min(272px, ${s.region.carte.width}px)`}
-                    format="webp"
-                    loading="lazy"
-                    class="mx-auto h-auto w-full max-w-[17rem]"
-                  />
-                  <ul class="min-w-0 space-y-6">
-                    {s.region.zones.map((zone) => (
-                      <li class="flex gap-4">
-                        <span aria-hidden="true" class="mt-1 size-6 shrink-0 rounded-md border-2 border-nuit-900" style={`background-color: ${zone.couleur}`}></span>
-                        <div class="min-w-0">
-                          <p class="text-corps font-bold text-texte">{zone.titre}</p>
-                          {zone.regions && <p class="text-corps text-texte-doux">{zone.regions}</p>}
-                          <TexteMisEnForme texte={zone.texte} class="mt-2" />
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </>
-            )}
-          </section>
-
-          {/* ===== 4. LES TRAVAUX ===== */}
-          <section aria-labelledby={ID.travaux}>
-            <h2 id={ID.travaux} class={classesH2}>Les travaux à réaliser</h2>
-            <TravauxSolution parcours={s.parcours} prefixe={ID.travaux} />
-          </section>
-
-          {/* ===== 5. NOTRE AVIS : une sous-partie = un vrai h3 ===== */}
-          <section aria-labelledby={ID.avis}>
-            <h2 id={ID.avis} class={classesH2}>Notre avis sur {s.nomDefini}</h2>
-            {s.avis.map((partie) => (
-              <>
-                <h3 class:list={[classesH3, 'mt-12']}>{partie.titre}</h3>
-                <TexteMisEnForme texte={partie.texte} class="mt-4" />
-              </>
-            ))}
-          </section>
-
-          {/* ===== 6. EST-CE FAIT POUR CHEZ VOUS ? =====
-              Un h3 par cas ; pastille numérotée bleu nuit (décorative : le
-              numéro est dans le titre) pour les repérer au défilement. */}
-          <section aria-labelledby={ID.pourVous}>
-            <h2 id={ID.pourVous} class={classesH2}>{s.questionPourVous}</h2>
-            {s.introPourVous && <p class="mt-6 max-w-[70ch] text-corps text-texte md:text-[1.25rem] md:leading-relaxed">{s.introPourVous}</p>}
-            <div class="mt-10 space-y-10">
-              {s.cas.map((cas) => (
-                <div class="border-t border-creme-fonce pt-8">
-                  <div class="flex items-start gap-4">
-                    <span aria-hidden="true" class="flex size-12 shrink-0 items-center justify-center rounded-pilule bg-nuit-900 text-h4 font-black text-texte-inverse tabular-nums">{cas.numero}</span>
-                    <h3 class="min-w-0 pt-1.5 text-[1.375rem] leading-snug font-bold text-balance text-texte">Cas n°&nbsp;{cas.numero} — {cas.titre}</h3>
-                  </div>
-                  <TexteMisEnForme texte={cas.texte} class="mt-4 sm:pl-16" />
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* ===== 7. LES AIDES : le simulateur, case pré-cochée =====
-              Montants : src/data/aides.ts, jamais écrits ici. */}
-          <section aria-labelledby={ID.aides}>
-            <h2 id={ID.aides} class={classesH2}>Les aides pour ce projet</h2>
-            <p class="mt-6 max-w-[70ch] text-corps text-texte">Estimez vos aides en trois questions. À la troisième, les travaux de cette page sont déjà cochés : ajoutez-en d’autres si votre projet en compte.</p>
-            <div class="mt-8">
-              <Simulateur travauxPrecoches={[s.equipementSimulateur]} />
-            </div>
-            <p class="mt-6">
-              <a href="/aides-renovation" class="inline-flex min-h-11 items-center gap-2 text-corps font-semibold text-nuit-900 underline underline-offset-4 hover:text-vert-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900">
-                Tout savoir sur les aides à la rénovation énergétique <span aria-hidden="true">→</span>
-              </a>
-            </p>
-          </section>
-
-          {/* ===== 8. COMMENT ÇA SE PASSE AVEC AKELIA (commun) ===== */}
-          <ParcoursAkelia id={ID.akelia} />
-
-          {/* ===== 9. FAQ : seulement si des questions sont écrites =====
-              Même présentation que /rejoindre-le-collectif. */}
-          {s.faq.length > 0 && (
-            <section aria-labelledby={ID.faq}>
-              <h2 id={ID.faq} class={classesH2}>Questions fréquentes</h2>
-              <div class="mt-10 space-y-4">
-                {s.faq.map((entree, index) => (
-                  <details open={index === 0} class="group/faq rounded-bloc border border-creme-fonce bg-creme">
-                    <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-bloc px-5 py-4 text-h4 font-bold text-texte focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900 sm:px-6 [&::-webkit-details-marker]:hidden">
-                      {entree.question}
-                      <svg class="size-6 shrink-0 text-nuit-900 transition-transform group-open/faq:rotate-180 motion-reduce:transition-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </summary>
-                    <p class="px-5 pb-6 text-corps text-texte sm:px-6">{entree.reponse}</p>
-                  </details>
+        {/* POINTS FORTS ET INCONVÉNIENTS, côte à côte à partir de 768px.
+            Filet de couleur en haut de chaque colonne (vert-600 / action-600).
+            Un point = un titre et une phrase courte ; 4 au plus par colonne.
+            Icône en pastille pleine : blanche sur vert-600 (6,34:1) ou sur
+            action-800 (5,47:1). */}
+        <div class="mt-10 grid gap-6 md:grid-cols-2">
+          {[
+            { titre: `${Possessif} points forts`, lignes: s.pointsForts, filet: 'border-t-vert-600', pastille: 'bg-vert-600' },
+            { titre: `${Possessif} inconvénients`, lignes: s.inconvenients, filet: 'border-t-action-600', pastille: 'bg-action-800' },
+          ].map((colonne) => (
+            <div class:list={[classesCarte, 'min-w-0 border-t-[6px] p-5 sm:p-6', colonne.filet]}>
+              <h3 class="text-h4 font-black text-texte">{colonne.titre}</h3>
+              <ul class="mt-5 space-y-5">
+                {colonne.lignes.slice(0, 4).map((ligne) => (
+                  <li class="flex items-start gap-4">
+                    <span aria-hidden="true" class:list={['flex size-14 shrink-0 items-center justify-center rounded-pilule text-texte-inverse', colonne.pastille]}>
+                      <Icone nom={ligne.icone} class="size-8" />
+                    </span>
+                    <div class="min-w-0 pt-1 text-corps text-texte">
+                      <p class="text-h4 leading-snug font-bold">{ligne.titre}</p>
+                      <p class="mt-1 text-texte-doux">{ligne.texte}</p>
+                    </div>
+                  </li>
                 ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* CARACTÉRISTIQUES : quatre tuiles sur fond teinté (action-50). PLUS
+            D'ICÔNE (21 octobre 2026) : le chiffre est l'élément visuel,
+            56px puis 64px à partir de 992px, en gras ; unité 20px collée
+            au chiffre ; libellé 18px gras ; précision 18px texte-doux.
+            MÊME HAUTEUR pour les quatre, au pixel près, à toutes les
+            largeurs : rangées égales (auto-rows-fr), comme l'escalier des
+            étapes. Chiffre resserré (tracking-tight) : à 64px, « 90–130 €/m² »
+            dépassait de 2px la tuile de 1 280 à 1 440px et l'unité passait
+            à la ligne. 1 colonne, 2 à partir de 480px, 4 à partir de 1280px.
+            Texte 14,56:1, précision texte-doux 6,34:1 sur action-50. Le
+            reste en liste discrète.
+            Passe mobile (21 octobre 2026) : sous 992px, contenu CENTRÉ dans
+            la tuile (chiffre, unité, libellé, précision) ; au-dessus, aligné
+            à gauche. Chiffre en vert-700 (7,51:1 sur action-50) ; unité,
+            libellé et précision gardent leur couleur. */}
+        <h3 class:list={[classesH3, 'mt-14']}>{Possessif} caractéristiques techniques</h3>
+        <dl class="mt-6 grid auto-rows-fr gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
+          {tuiles.map((c) => (
+            <div class="flex min-w-0 flex-col items-center rounded-bloc bg-action-50 p-5 text-center lg:items-start lg:text-left">
+              <dt class="order-2 mt-2 text-corps leading-snug font-bold text-texte">{c.libelle}</dt>
+              <dd class="order-1 flex flex-wrap items-baseline justify-center gap-x-1 leading-none lg:justify-start">
+                {c.avant && <span class="text-h4 font-bold whitespace-nowrap text-texte">{c.avant}</span>}
+                <span data-compteur class="text-[3.5rem] font-black tracking-tight whitespace-nowrap text-vert-700 tabular-nums lg:text-[4rem]">{c.nombre}</span>
+                <span class="text-h4 font-bold whitespace-nowrap text-texte">{c.unite}</span>
+              </dd>
+              {c.precision && <dd class="order-3 mt-1 text-corps leading-snug text-texte-doux">{c.precision}</dd>}
+            </div>
+          ))}
+        </dl>
+        {s.caracteristiques.autres.length > 0 && (
+          <dl class="mt-5 text-corps text-texte-doux">
+            {s.caracteristiques.autres.map((c) => (
+              <div class="flex flex-wrap gap-x-2">
+                <dt>{c.libelle} :</dt>
+                <dd class="font-semibold text-texte">{c.valeur}</dd>
               </div>
-            </section>
-          )}
+            ))}
+          </dl>
+        )}
+      </div>
+    </div>
+
+    {/* --- Bande 2 (crème) : performances, quatre tuiles illustrées ---
+        Refonte du 20 octobre 2026 : l'illustration (112px ; icône SVG
+        depuis le 21 octobre, couleur du texte) remplace la barre
+        dégradée, le repère rond et la lettre en pastille. Tuile : icône, titre,
+        valeur en gros et en couleur, précision en italique.
+        1 colonne sous 480px, 2 ensuite, 4 à partir de 1280px. Tuiles
+        blanches sur crème : valeurs à 7:1 au moins (jetons difficulte-…),
+        précision texte-doux 7,11:1. */}
+    <div class="bg-creme">
+      <div class={classesBande} data-scene-bande>
+        <h3 class={classesH3}>{Possessif} performances</h3>
+        <dl class={classesGrillePerf}>
+          {performances.map((indicateur) => (
+            <div class="flex min-w-0 flex-col items-center rounded-bloc bg-fond p-5 text-center shadow-legere sm:p-6">
+              <dt class="flex flex-col items-center gap-4 text-h4 leading-snug font-bold text-texte">
+                <indicateur.icone taille={112} class="text-texte" />
+                {indicateur.libelle}
+              </dt>
+              <dd class="mt-3">
+                {indicateur.note !== undefined ? (
+                  <NoteDifficulte note={indicateur.note} compteur class="items-center" />
+                ) : !Number.isNaN(noteDeLettre(indicateur.valeur!)) ? (
+                  <span class="block text-[3rem] leading-none font-black" style={`color: ${couleurEchelle(noteDeLettre(indicateur.valeur!))}`}>{indicateur.valeur}</span>
+                ) : (
+                  <span data-compteur class="block text-[3rem] leading-none font-black whitespace-nowrap text-vert-700 tabular-nums">{indicateur.valeur}</span>
+                )}
+              </dd>
+              {indicateur.precision && <dd class="mt-3 text-corps leading-snug text-texte-doux italic">{indicateur.precision}</dd>}
+            </div>
+          ))}
+        </dl>
+        <EchelleAkelia class="mt-6 leading-snug" />
+      </div>
+    </div>
+
+    {/* --- Bande 3 (blanc) : est-ce adapté à votre bien ? ---
+        Une icône par condition (88px), PROPRE À CHAQUE PAGE : SVG de
+        src/components/icones-solutions/, choisie par le champ `icone` de la
+        condition (21 octobre 2026) ; substitut neutre sinon. Texte
+        centré dessous : intitulé en gras suivi de deux points, puis
+        l'explication. 4 colonnes à partir de 992px, 2 à partir de 480px,
+        1 en dessous.
+        Passe mobile (21 octobre 2026) : SOUS 992px, chaque condition est
+        une CARTE (fond blanc, coins arrondis, filet creme-fonce ET ombre
+        légère shadow-legere, celle des tuiles de performances : du blanc
+        sur la bande blanche, décision d'Akelia du 21 octobre 2026), icône
+        en haut, texte centré, régulièrement espacées. Hauteurs égales
+        (auto-rows-fr) SEULEMENT à partir de 480px, quand les cartes sont
+        côte à côte ; en une colonne, chaque carte prend la hauteur de son
+        contenu (sinon, vide sous la carte courte). À partir de 992px : les
+        quatre colonnes sans contenant, inchangées. */}
+    <div class="bg-fond">
+      <div class={classesBande} data-scene-bande>
+        <h3 class={classesH3}>Est-ce adapté à votre bien ?</h3>
+        <p class="mt-4 text-h4 text-texte">{s.introConditions}</p>
+        <ul class="mt-8 grid gap-4 sm:auto-rows-fr sm:grid-cols-2 lg:auto-rows-auto lg:grid-cols-4 lg:gap-x-8 lg:gap-y-10">
+          {conditions.map((c) => (
+            <li class="flex min-w-0 flex-col items-center rounded-bloc border border-creme-fonce bg-fond p-5 text-center shadow-legere lg:rounded-none lg:border-0 lg:p-0 lg:shadow-none">
+              {c.Icone ? <c.Icone taille={88} class="text-texte" /> : <Illustration taille={88} />}
+              <p class="mt-4 text-corps text-texte">
+                <strong class="font-bold">{c.condition}{c.explication && ' :'}</strong>
+                {c.explication && <span class="text-texte-doux"> {c.explication}</span>}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    {/* --- Bande 4 (crème) : est-ce adapté à votre région ? FACULTATIVE ---
+        Seulement là où la région change la réponse ; `region` absent : la
+        bande disparaît. Carte, résumé et légende : CarteFrance (validée,
+        ne pas retoucher). */}
+    {s.region && (
+      <div class="bg-creme">
+        <div class={classesBande} data-scene-bande>
+          <h3 class={classesH3}>Est-ce adapté à votre région ?</h3>
+          <CarteFrance zones={s.region.zones} slug={s.slug} />
         </div>
       </div>
+    )}
+  </section>
+
+  {/* ===== BANDE 5. LES TRAVAUX (brume) ===== */}
+  <section aria-labelledby={ID.travaux} class="bg-brume">
+    <div class={classesBande} data-scene-bande>
+      <h2 id={ID.travaux} class={classesH2}>Les travaux à réaliser</h2>
+      <TravauxSolution parcours={s.parcours} prefixe={ID.travaux} />
+    </div>
+  </section>
+
+  {/* ===== BANDE 6. L'AVIS AKELIA (blanc) =====
+      Encadré FERMÉ sur les quatre côtés (filet orange de 3px, fond
+      action-50 : texte 14,56:1, texte-doux 6,34:1), colonne de lecture
+      (65 caractères). Trois sous-parties de 70 mots au plus. Plus de
+      signature (« L'avis des artisans du collectif » supprimé).
+      21 octobre 2026 : encadré CENTRÉ dans la bande, texte toujours aligné
+      à gauche ; interligne 1,5 (jamais moins : public âgé), 0,375rem entre
+      deux puces, 1,5rem avant chaque sous-titre. */}
+  <section aria-labelledby={ID.avis} class="bg-fond">
+    <div class={classesBande} data-scene-bande>
+      <div class="mx-auto max-w-[52rem] rounded-bloc border-[3px] border-action-500 bg-action-50 p-6 sm:p-8 md:p-10">
+        <h2 id={ID.avis} class={classesH2}>L’avis Akelia</h2>
+        {s.avis.map((partie) => (
+          <>
+            <h3 class="mt-6 text-[1.5rem] leading-tight font-black text-balance text-texte md:text-[1.75rem]">{partie.titre}</h3>
+            <TexteMisEnForme texte={partie.texte} serre mesure="max-w-[65ch]" class="mt-3" />
+          </>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ===== BANDE 7. EST-CE FAIT POUR CHEZ VOUS ? (brume) =====
+      CINQ LIGNES EMPILÉES dans un seul bloc blanc, séparées par un filet
+      (21 octobre 2026, troisième passe ; cartes en grille avant). But : les
+      cinq verdicts lisibles d'un seul regard, sur une seule colonne ; le
+      lecteur reconnaît sa situation et n'ouvre que celle-là.
+      Ligne fermée = <summary>, TOUTE la ligne est cliquable (56px au
+      moins) :
+      - à partir de 768px : titre du cas (h3, gras) à gauche, étiquette de
+        verdict dans une colonne de largeur FIXE (les cinq étiquettes sont
+        alignées verticalement), chevron à l'extrême droite ;
+      - sous 768px : l'étiquette passe sous le titre, le chevron reste à
+        droite.
+      Filet de la couleur du verdict en bordure gauche (3px). Étiquette :
+      texte + couleur, jamais la couleur seule ; pictogramme décoratif.
+      Ouverte : l'explication sous le titre, sur toute la largeur du bloc,
+      alignée sur le titre, 72 caractères par ligne au plus.
+      Inchangé depuis la passe précédente : <details> fermé par défaut,
+      s'ouvre sans JavaScript, texte DANS le code HTML (Google le lit),
+      hauteur animée en CSS (::details-content, LigneRepliable), rien avec
+      « réduire les animations ».
+      Lignes : LigneRepliable.astro (même composant que la légende de la
+      carte depuis la passe mobile du 21 octobre 2026).
+      Puis l'APPEL À L'ACTION INTERMÉDIAIRE : bouton PLEIN, fond action-500,
+      texte foncé (6,87:1), le même couple que l'étiquette « Oui, sous
+      conditions », DANS UN BLOC BLANC posé sur la bande brume (passe
+      mobile, décision d'Akelia : l'orange sur brume ne faisait que 1,70:1 ;
+      sur blanc, 2,38:1 mesuré, et le bloc sépare l'appel des cinq lignes). Il doit se voir : la consigne du 20 octobre (ne pas
+      concurrencer l'appel final) est annulée. C'est le seul endroit où le
+      lecteur vient de conclure « c'est mon cas ». */}
+  <section aria-labelledby={ID.pourVous} class="bg-brume">
+    <div class={classesBande} data-scene-bande>
+      <h2 id={ID.pourVous} class={classesH2}>{s.questionPourVous}</h2>
+      <div class="mt-8 divide-y divide-creme-fonce overflow-hidden rounded-bloc bg-fond shadow-legere">
+        {s.cas.map((cas) => (
+          <LigneRepliable filet={VERDICTS[cas.verdict].filet}>
+            <div slot="entete" class="grid items-center gap-x-6 gap-y-2 md:grid-cols-[minmax(0,1fr)_15rem]">
+              <h3 class="text-h4 leading-snug font-bold text-balance text-texte">{cas.titre}</h3>
+              <span class:list={['inline-flex items-center gap-2 justify-self-start rounded-pilule py-1 pr-4 pl-2 text-corps leading-snug font-bold whitespace-nowrap', VERDICTS[cas.verdict].etiquette]}>
+                <svg aria-hidden="true" class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d={VERDICTS[cas.verdict].picto} /></svg>
+                {VERDICTS[cas.verdict].libelle}
+              </span>
+            </div>
+            <TexteMisEnForme texte={cas.texte} mesure="max-w-[72ch]" class="px-4 pt-1 pb-6 sm:px-6" />
+          </LigneRepliable>
+        ))}
+      </div>
+      <div class="mt-10 flex flex-col items-start gap-5 rounded-bloc bg-fond p-6 shadow-legere sm:p-8 md:flex-row md:items-center md:justify-between">
+        <p class="max-w-[48ch] text-h4 text-texte">Vous vous reconnaissez dans l’un de ces cas ? Un artisan du collectif vérifie la faisabilité chez vous.</p>
+        <a href="/devis" class="inline-flex min-h-14 shrink-0 items-center justify-center rounded-bloc bg-action-500 px-8 py-3 text-h4 font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900">
+          Faire étudier mon projet
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* ===== BANDE 8. LES AIDES (blanc) : le simulateur, case pré-cochée =====
+      Montants : src/data/aides.ts, jamais écrits ici. FACULTATIVE (H3, 21
+      octobre 2026) : absente si la solution n'ouvre droit à aucune aide du
+      barème. Texte engendré depuis aides.ts (texteAides). */}
+  {avecBandeAides && (
+    <section aria-labelledby={ID.aides} class="bg-fond">
+      <div class={classesBande} data-scene-bande>
+        <h2 id={ID.aides} class={classesH2}>Les aides pour ce projet</h2>
+        <p class="mt-6 max-w-[70ch] text-corps text-texte">{texteAides}</p>
+        <div class="mt-8">
+          <Simulateur preselection={s.equipementSimulateur ? preselectionPour(s.equipementSimulateur) : undefined} />
+        </div>
+        <p class="mt-6">
+          <a href="/aides-renovation" class="inline-flex min-h-11 items-center gap-2 text-corps font-semibold text-nuit-900 underline underline-offset-4 hover:text-vert-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900">
+            Tout savoir sur les aides à la rénovation énergétique <span aria-hidden="true">→</span>
+          </a>
+        </p>
+      </div>
+    </section>
+  )}
+
+  {/* ===== BANDE 9. VOTRE PROJET, ÉTAPE PAR ÉTAPE (crème, commun) ===== */}
+  <div class="bg-creme">
+    <div class={classesBande} data-scene-bande>
+      <ParcoursAkelia id={ID.akelia} etapeSuivi={s.etapeSuivi} />
     </div>
   </div>
 
-  {/* ===== 10. À LIRE AUSSI (crème, pleine largeur) ===== */}
+  {/* ===== BANDE 10. FAQ (blanc) : seulement si des questions sont écrites =====
+      Même présentation que /rejoindre-le-collectif. */}
+  {s.faq.length > 0 && (
+    <section aria-labelledby={ID.faq} class="bg-fond">
+      <div class={classesBande} data-scene-bande>
+        <h2 id={ID.faq} class={classesH2}>Questions fréquentes</h2>
+        <div class="mt-10 space-y-4">
+          {s.faq.map((entree, index) => (
+            <details open={index === 0} class="group/faq rounded-bloc border border-creme-fonce bg-creme">
+              <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-bloc px-5 py-4 text-h4 font-bold text-texte focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nuit-900 sm:px-6 [&::-webkit-details-marker]:hidden">
+                {entree.question}
+                <svg class="size-6 shrink-0 text-nuit-900 transition-transform group-open/faq:rotate-180 motion-reduce:transition-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <p class="px-5 pb-6 text-corps text-texte sm:px-6">{entree.reponse}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* ===== BANDE 11. APPEL À L'ACTION FINAL (bleu nuit), AVANT « à lire aussi »
+      depuis le 21 octobre 2026 : la fin de page est FAQ → appel → à lire aussi. =====
+      Même texte que le bas des articles. Contour de focus blanc. Le lien
+      vers le collectif vient de l'ancien sommaire (20 octobre 2026) :
+      texte blanc souligné (14,47:1). */}
+  <section aria-labelledby="cta-titre" class="bg-nuit-900 text-texte-inverse">
+    <div class="mx-auto max-w-[calc(48rem+2*var(--spacing-gouttiere))] px-gouttiere py-scene text-center md:py-scene-large" data-scene-bande>
+      <p class="surtitre text-action-300">Votre projet</p>
+      <h2 id="cta-titre" class="mx-auto mt-3 max-w-[22ch] text-h2 text-balance">Un artisan du collectif étudie votre projet</h2>
+      <p class="mx-auto mt-6 max-w-[45ch] text-corps md:text-[1.25rem]">Il vous rappelle sous 48 heures, se déplace gratuitement et vous remet un devis détaillé.</p>
+      <a
+        href="/devis"
+        class="mt-10 inline-flex min-h-14 items-center justify-center rounded-bloc bg-action-500 px-8 py-3 text-h4 font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-texte-inverse"
+      >
+        Demander un devis gratuit
+      </a>
+      <p class="mt-6">
+        <a href="/qui-sommes-nous" class="inline-flex min-h-11 items-center text-corps underline underline-offset-4 hover:text-action-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-texte-inverse">
+          Akelia, le collectif d'artisans locaux
+        </a>
+      </p>
+    </div>
+  </section>
+  {/* ===== BANDE 12. À LIRE AUSSI (BLANC depuis le 21 octobre 2026 ; bruyère
+      avant : l'ouverture vers le blog ne doit pas être rose ; crème le temps
+      d'une passe). Dernière bande, après l'appel final (bleu nuit) : le
+      blanc se détache du pied de page crème sans filet. Cartes d'articles
+      blanches à bordure creme-fonce. ===== */}
   {articles.length > 0 && (
-    <section aria-labelledby={ID.lire} class="bg-creme">
-      <div class="mx-auto max-w-site px-gouttiere py-scene">
+    <section aria-labelledby={ID.lire} class="bg-fond">
+      <div class={classesBande} data-scene-bande>
         <h2 id={ID.lire} class="ancre-sommaire text-h3 text-texte">À lire aussi</h2>
         <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => <CarteArticle article={article} />)}
@@ -449,19 +758,6 @@ const classesCarte = 'rounded-bloc border border-creme-fonce bg-fond';
     </section>
   )}
 
-  {/* ===== 11. APPEL À L'ACTION FINAL (bleu nuit) =====
-      Même texte que le bas des articles. Contour de focus blanc. */}
-  <section aria-labelledby="cta-titre" class="bg-nuit-900 text-texte-inverse">
-    <div class="mx-auto max-w-[calc(48rem+2*var(--spacing-gouttiere))] px-gouttiere py-scene text-center md:py-scene-large">
-      <p class="surtitre text-action-300">Votre projet</p>
-      <h2 id="cta-titre" class="mx-auto mt-3 max-w-[22ch] text-h2 text-balance">Un artisan du collectif étudie votre projet</h2>
-      <p class="mx-auto mt-6 max-w-[45ch] text-corps md:text-[1.25rem]">Il vous rappelle sous 24 à 48 heures, se déplace gratuitement et vous remet un devis détaillé.</p>
-      <a
-        href="/devis"
-        class="mt-10 inline-flex min-h-14 items-center justify-center rounded-bloc bg-action-500 px-8 py-3 text-h4 font-semibold text-texte shadow-legere hover:bg-action-600 hover:inset-shadow-presse focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-texte-inverse"
-      >
-        Demander un devis gratuit
-      </a>
-    </div>
-  </section>
+  </SommaireBarre>
 </Layout>
+

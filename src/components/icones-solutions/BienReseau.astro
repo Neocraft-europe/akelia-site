@@ -1,0 +1,35 @@
+---
+// =========================================================================
+// ICÔNE : RADIATEURS À EAU OU PLANCHER CHAUFFANT (src/components/icones-solutions/BienReseau.astro)
+// -------------------------------------------------------------------------
+// 21 octobre 2026. « Est-ce adapté à votre bien ? », page pompe à chaleur
+// air-eau. Radiateur à colonnes vu de face, avec son robinet thermostatique.
+// ⚠️ Le ticket l'attribuait à Tabler (« radiator ») : l'icône n'existe pas
+// dans Tabler Icons (vérifié en version 3.49.0). Dessinée dans le même
+// style (coins arrondis, trait identique). Monochrome : currentColor.
+// Décorative (aria-hidden) : le texte de la condition porte le sens.
+// =========================================================================
+
+import { TRAIT, VIEWBOX } from './trait';
+
+export interface Props {
+  /** Côté en pixels. */
+  taille?: number;
+  class?: string;
+}
+
+const { taille = 88, class: classes } = Astro.props;
+/** Cinq colonnes de 2 de large, au pas de 2,6. */
+const colonnes = [0, 1, 2, 3, 4].map((n) => 3.5 + n * 2.6);
+---
+
+<svg aria-hidden="true" class:list={['shrink-0', classes]} width={taille} height={taille} viewBox={VIEWBOX} fill="none" stroke="currentColor" stroke-width={TRAIT} stroke-linecap="round" stroke-linejoin="round">
+  {colonnes.map((x) => <rect x={x} y="6" width="2" height="12.5" rx="1" />)}
+  {/* Pieds. */}
+  <path d="M4.5 18.5v2m10.4 -2v2" />
+  {/* Raccord, robinet et tête thermostatique, tuyau qui descend. */}
+  <path d="M15.9 16.5h3.6v4.5" />
+  <path d="M19.5 16.5v-1.3" />
+  <rect x="18.2" y="10.7" width="2.6" height="4.5" rx="1.1" />
+  <path d="M18.9 12.2h1.2m-1.2 1.4h1.2" />
+</svg>

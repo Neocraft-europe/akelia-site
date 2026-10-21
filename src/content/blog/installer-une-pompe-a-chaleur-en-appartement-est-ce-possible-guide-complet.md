@@ -144,11 +144,11 @@ L'installation d'une pompe à chaleur (PAC) dans un appartement représente un i
   - **Éco-prêt à taux zéro (Éco-PTZ)** : ce prêt permet de financer vos travaux de rénovation énergétique sans intérêts.
   - **Prime « Coup de pouce chauffage »** : elle offre une aide financière pour l'installation d'une PAC, notamment pour le remplacement d'une vieille chaudière.
   - **Certificats d'économie d'énergie (CEE)** : proposés par les fournisseurs d'énergie, ils financent l'installation de systèmes de chauffage écologiques, dont les PAC.
-  - **TVA à taux réduit** : la PAC air-eau est éligible à une TVA réduite de 5,5 % (main-d'œuvre et matériel compris). Pour la PAC air-air, la TVA est réduite à 10 % sur l'installation.
+  - **TVA à taux réduit** : la PAC air-eau est éligible à une TVA réduite de 5,5 % (main-d'œuvre et matériel compris). Pour la PAC air-air, la TVA est de 5,5 % depuis le 18 juillet 2026, sous conditions (appareil fixe, niveau de performance, pilotage par un réseau numérique).
   - **Aides locales** : certaines collectivités locales proposent des subventions supplémentaires pour l'installation de PAC. Renseignez-vous auprès de votre mairie ou de votre région.
 4. **Exemples de devis et de subventions** :
-  - Pour une PAC air-eau, vous pouvez obtenir jusqu'à 9 450 € d'aides cumulées (MaPrimeRénov' et CEE) si vous êtes dans la catégorie de revenus « très modeste ».
-  - Pour une PAC air-air, les subventions sont plus réduites, mais peuvent tout de même atteindre plusieurs centaines d'euros. Uniquement CEE
+  - Pour une PAC air-eau, MaPrimeRénov' et la prime CEE se cumulent ; leur montant dépend de vos revenus et du fournisseur choisi : [estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre).
+  - Pour une PAC air-air, pas de MaPrimeRénov' : la prime CEE et, sous conditions, la TVA à 5,5 % depuis le 18 juillet 2026.
 
 ## Démarches administratives
 

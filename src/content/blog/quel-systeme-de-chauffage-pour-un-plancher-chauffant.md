@@ -15,7 +15,7 @@ enBref:
   - "**La chaudière gaz à condensation :** Efficace si vous êtes déjà raccordé au gaz, mais elle n'est plus éligible aux aides de l'État."
   - "**La chaudière électrique :** **À fuir !** Facile à poser, mais elle fera exploser vos factures d'électricité."
   - "**L'entretien :** Contrairement à l'électrique qui n'en demande aucun, un plancher à eau nécessite un \"désembouage\" (nettoyage des boues dans les tuyaux) tous les 5 ans environ."
-  - "**Le Budget & les Aides :** Le plancher chauffant en lui-même n'est pas subventionné. En revanche, **la PAC ou la chaudière bois qui l'alimente le sont fortement** (MaPrimeRénov', CEE), à condition de passer par un artisan **RGE**."
+  - "**Le Budget & les Aides :** Le plancher chauffant en lui-même n'est pas subventionné. En revanche, **la PAC qui l'alimente l'est fortement** (MaPrimeRénov' pour la PAC air-eau ou géothermique, CEE), à condition de passer par un artisan **RGE**. La chaudière bois n'est plus aidée seule par MaPrimeRénov' depuis le 1er septembre 2026."
 sources:
   - libelle: "effy.fr"
     lien: "https://www.effy.fr/travaux-energetique/chauffage/chaudiere/quelle-chaudiere-pour-plancher-chauffant"
@@ -166,7 +166,7 @@ Il est possible de souscrire à un contrat d'entretien moyennant entre 100 et 20
 
 ## Aides financières disponibles
 
-L'installation d'un plancher chauffant en tant que tel n'est pas éligible aux aides financières. Cependant, les systèmes de chauffage qui l'alimentent, tels que les pompes à chaleur (PAC) et les chaudières à bois, peuvent bénéficier de certaines aides. Par exemple, MaPrimeRénov' peut financer une partie des travaux pour l'installation de ces systèmes de chauffage, sous réserve de respecter certaines conditions d'éligibilité. Pour en savoir plus sur les aides disponibles pour les pompes à chaleur, consultez notre article sur [comment financer une pompe à chaleur ?](/post/comment-financer-une-pompe-a-chaleur-les-aides-possibles)
+L'installation d'un plancher chauffant en tant que tel n'est pas éligible aux aides financières. Cependant, les systèmes de chauffage qui l'alimentent, tels que les pompes à chaleur (PAC) et les chaudières à bois, peuvent bénéficier de certaines aides. Par exemple, MaPrimeRénov' finance par un forfait la pompe à chaleur air-eau ou géothermique ; la chaudière bois, elle, n'est plus aidée seule depuis le 1er septembre 2026, seulement dans une rénovation d'ampleur ([estimez vos aides avec notre simulateur](/aides-renovation#simulateur-titre)). Pour en savoir plus sur les aides disponibles pour les pompes à chaleur, consultez notre article sur [comment financer une pompe à chaleur ?](/post/comment-financer-une-pompe-a-chaleur-les-aides-possibles)
 
 De plus, dans le cadre de travaux d'isolation des planchers, il est possible de bénéficier des Certificats d'Économies d'Énergie (CEE). Ce qui peut se faire dans le cadre de l'installation d'un plancher chauffant. Cette aide peut également être disponible en cas d'installation d'un plancher chauffant basse température.
 
